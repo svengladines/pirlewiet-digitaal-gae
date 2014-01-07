@@ -1,0 +1,36 @@
+// beschrijving van de velden.
+// kol 'A',0:gezinsnummer        			COLNO_gezinnr     			->  *   aanvraaginschr.gezinsnummer
+// kol 'B',1:individueel nummer   			COLNO_indiv_nr    			->  *   parkeer tijdelijk in deelnemer.rrnr. 
+// kol 'C',2:voornaam              			COLNO_deelnemer_voornaam   	->  *   deelnemer.persoon.voornaam
+// kol 'D',3:familienaam          			COLNO_deelnemer_famnaam    	->  *   deelnemer.persoon.familienaam.
+// kol 'E',4:MV                 			COLNO_deelnemer_mv      	->  *   deelnemer.geslacht
+// kol 'F',5:°                   			COLNO_deelnemer_gebdate     ->  *   deelnemer.geboortedatum.
+// kol 'G',6: naam dienst         			COLNO_dienst_naam    		->  *   dienst.naam
+// kol 'H',7:adres dienst          			COLNO_dienst_straatnr   	->  *    dienst.adres (straat + nummer)
+// kol 'I',8:postcode dienst       			COLNO_dienst_postcode   	->  *    dienst.adres.postcode
+// kol 'J',9:gemeente dienst         		COLNO_dienst_gemeenete 		->  *    dienst.adres.gemeente
+// kol 'k',10:telefoon dienst       		COLNO_dienst_tel   			->  *    dienst.telnr
+// kol 'L',11:e-mail dienst         		COLNO_dienst_email   		->  *    dienst.email
+// kol 'm',12:fax dienst             		COLNO_dienst_fax  			->   *   dienst.fax
+// kol 'n',13:contactpersoon dienst   		COLNO_dienst_contactpers 	->   *   dienst.contactpersoon.voornaam + achternaam
+// kol 'o',14:adres thuis           		COLNO_aanvraag_adres_straatnr   ->   *   deelnemer.adres.straat + deelnemer.adres.nummer
+// kol 'p',15:postcode thuis        		COLNO_aanvraag_adres_postcode   ->   *  deelnemer.adres.postcode
+// kol 'q',16:gemeente thuis         		COLNO_aanvraag_adres_gemeente  ->   *  deelnemer.adres.gemeente
+// kol 'r',17:telefoon thuis       			COLNO_deelnemer_tel    		->   *  deelnemer.persoon.telefoonnummer
+// kol 's',18:kamp 2010             		COLNO_kamp2010   			->      verbind de deelnemer via een aanvraaginschrijving met een vakantieproject met begindatum in 2010 en een type dat overeenkomt.
+// kol 't',19:Inschrform nummer      		COLNO_kamp2010_inschrNr  	->      ?????????  irrelevant ?
+// kol 'u',20:2de kamp 2010         		COLNO_kamp2010_II   		->      verbind de deelnemer via een aanvraaginschrijving met een vakantieproject met begindatum in 2010 en een type dat overeenkomt.
+// kol 'v',21:2de Inschrijform  nummer  	COLNO_kamp2010_II_inschrNr 	->      ?????????
+// kol 'w',22:datum inschrijving     		COLNO_aanvraag_datumInschr  ->      aanvraaginschrijving.inschr.datum.
+// kol 'x',23:Contact via gezin of dienst? 	COLNO_aanvraag_contactType --> aanvraaginschrijving.contacttype.
+// kol 'y',24:Status                		COLNO_status   				->      ?????????
+// kol 'z',25:Te Betalen            		COLNO_teBetalen   			->      ?????????
+// kol 'aa',26:2010                 		COLNO_2010   				->      zie kolommen s tot y; opsomming van codes van vakatieprojecten.
+// kol 'ab',27:3 Daagse 2008         		COLNO_2008_3D  				->      opsomming codes vak.proj..
+// kol 'ac',28:2007  dit moet 2009 zijn !!! COLNO_2009 					->  verbind de deelnemer via een aanvraaginschrijving met een vakantieproject met begindatum in 2009 en een type dat overeenkomt.
+// kol 'ad',29:2008                  		COLNO_2008  				-->     idem ?  voor een x : dummyproject. (1/1  --> 31/12)
+// kol 'ae',30:2007                  		COLNO_2007  				-->     idem ?  voor een x : dummyproject. (1/1  --> 31/12)
+// kol 'af',31:2006                  		COLNO_2006  				-->     idem ?  voor een x : dummyproject. (1/1  --> 31/12)
+// kol 'ag',32:2005                  		COLNO_2005  				-->     idem ?  voor een x : dummyproject. (1/1  --> 31/12)
+// kol 'ah',33:2004                  		COLNO_2004  				-->     idem ?  voor een x : dummyproject. (1/1  --> 31/12)
+// kol 'ai',34:opmerkingen           		COLNO_opm  					->      aanvraaginschr.opmerkingen ????   ziet eruit alsof in een entiteit 'gezin' thuishoort.
