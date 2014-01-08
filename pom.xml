@@ -9,6 +9,7 @@
 
 	<name>PirlewietRegistrations</name>
 	<url>http://maven.apache.org</url>
+	
 	<scm>
 		<connection>scm:git:git@github.com:svengladines/pirlewiet-registrations.git</connection>
 		<url>scm:git:git@github.com:svengladines/pirlewiet-registrations.git</url>
@@ -18,18 +19,30 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.springsecurityframework.version>3.1.0.RELEASE</org.springsecurityframework.version>
-		<org.springframework.version>3.1.1.RELEASE</org.springframework.version>
+		<org.springframework.version>3.2.1.RELEASE</org.springframework.version>
 		<cglib.version>2.2.2</cglib.version>
-		<netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
 		<tomcat.version>7.0.47</tomcat.version>
+		<jetty.version>9.0.0.M5</jetty.version>
 	</properties>
 
 	<dependencies>
 		<!-- Spring framework -->
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
+			<artifactId>spring-web</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
@@ -148,14 +161,13 @@
 			<artifactId>cglib-nodep</artifactId>
 			<version>${cglib.version}</version>
 		</dependency>
-
-		<!-- JSTL for jsp -->
+		
 		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+			<version>${jetty.version}</version>
 		</dependency>
-
+			
 		<!-- Tiles -->
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
@@ -195,13 +207,14 @@
 			<version>3.8</version>
 		</dependency>
 
+<!-- 
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>jsp-api</artifactId>
 			<version>2.2</version>
 			<scope>provided</scope>
 		</dependency>
-		
+-->		
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
@@ -253,8 +266,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					 <source>1.7</source>
+                     <target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -281,6 +294,18 @@
 			<!-- </execution> -->
 			<!-- </executions> -->
 			<!-- </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins
+				</groupId>
+				<artifactId>maven-surefire-plugin
+				</artifactId>
+				<configuration>
+					<includes>
+							<include>**/application/**</include>
+					</includes>
+					<useManifestOnlyJar>false</useManifestOnlyJar>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

@@ -1,38 +1,44 @@
 package be.pirlewiet.registrations.application.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import be.occam.utils.spring.configuration.ConfigurationProfiles;
-import be.pirlewiet.registrations.application.config.PirlewietApplicationConfigForTest;
-
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
+import be.occam.utils.spring.configuration.ConfigurationProfiles;
 
 @Configuration
 public class PirlewietApplicationConfig {
 	
-    @Autowired
-    Environment env;
-	
 	final static Logger logger
-		= LoggerFactory.getLogger( PirlewietApplicationConfigForTest.class );
+		= LoggerFactory.getLogger( PirlewietApplicationConfig.class );
 
 	final static String BASE_PKG = "be.pirlewiet.registrations";
 	
