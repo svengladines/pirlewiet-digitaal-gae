@@ -51,7 +51,7 @@
 					<td><form:input
 							path="adres.gemeente"
 							size="50" readonly="true"
-							onchange="changeLabelText('dienst_adres_gemeente',this.value)" /></td>
+							onchange="changeLabelText('adres.gemeente',this.value)" /></td>
 				</tr>
 				<tr>
 					<td>Tel:</td>

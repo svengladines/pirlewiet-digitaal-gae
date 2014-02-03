@@ -60,51 +60,30 @@
 	});
 </script>
 
+<nav class="nav navbar-collapse bs-navbar-collapse collapse">
 
-<ul id="menuList_left">
-
-	<li>
-		<spring:url var="secretariaatDropDownLink" value="/secretariaat/home" />
-		<form:form method="POST" commandName="screenDropDownObject" action="${secretariaatDropDownLink}" id="selectScreenForm">
-			<form:select path="screenName" onchange="this.form.submit()">
-				<form:options items="${screenDropDownObject.screens}" />
-			</form:select>
-		</form:form>
-	</li>
+	<ul id="menuList_left" class="nav navbar-nav">
+		<li>
+			<a href="${pageContext.request.contextPath}/secretariaat/vakanties.html">Vakanties</a>
+		</li>
+		<li>
+			<a href="${pageContext.request.contextPath}/secretariaat/diensten.html">Doorverwijzers</a>
+		</li>
+		<li>
+			<a href="${pageContext.request.contextPath}/secretariaat/deelnemers.html">Deelnemers</a>
+		</li>
+		</ul>
+		
+		<sec:authorize access="hasRole('ROLE_SECRETARIAAT') or hasRole('ROLE_SUPERUSER')">
+	<c:set var="selected" value="${param.selected}" />
 	
-	<c:if test='${screen == "Doorverwijzer"}'>
-		<li>
-			<form:form commandName="searchObject" id="doorverwijzer_search_form" method="POST">
-				<form:input path="searchterm" id="searchterm" /><input type="submit" id="searchButton" value=" " />
-			</form:form>
-		</li>
-
-		<li>
-			<button type="button" id="nieuweDienstBtn" class="button">Nieuw</button>
-		</li>
-	</c:if>
-	
-	<c:if test='${screen == "Vakantieprojecten"}'>
-		<li>
-			<button type="button" id="nieuwVakantieProjectBtn" class="button">Nieuw</button>
-		</li>
-	</c:if>
-</ul>
-
-<ul id="menuList">
-	<sec:authorize access="hasRole('ROLE_SECRETARIAAT') or hasRole('ROLE_SUPERUSER')">
-		<c:set var="selected" value="${param.selected}" />
+		<ul class="nav navbar-nav navbar-right">
 		
 		<li>
-			<span class="menuItem">
-				<a href="<c:url value="/j_spring_security_logout"/>">Log out (<sec:authentication property="principal.username" />)</a>
-			</span>
+			<a href="<c:url value="/j_spring_security_logout"/>">Log out (<sec:authentication property="principal.username" />)</a>
 		</li>
-
-		<li>
-			<span class="menuItem" <c:if test="${selected eq 'home'}">id="selectedMenuItem"</c:if>> 
-				<a href="<c:url value="/secretariaat/home"/>">Home</a>
-			</span>
-		</li>
+	
+		</ul>
 	</sec:authorize>
-</ul>
+		
+</nav>

@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import be.pirlewiet.registrations.AbstractTransactionalTest;
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Dienst;
@@ -36,7 +36,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
     
     @Test
     public void testPersistingInschrijving() {
-        AanvraagInschrijving aanvraag = DummyEntityBuilder.getDummyAanvraagInschrijving();
+        Inschrijving aanvraag = DummyEntityBuilder.getDummyAanvraagInschrijving();
 
         Contactpersoon contactpersoon = DummyEntityBuilder.getDummyContactpersoon();
         aanvraag.setContactpersoon(contactpersoon);
@@ -50,13 +50,13 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
         
         //Hier wel gelijk
         Logger logger = Logger.getLogger(this.getClass());
-        AanvraagInschrijving identicalButNotTheSameAanvraag = DummyEntityBuilder.getDummyAanvraagInschrijving();
+        Inschrijving identicalButNotTheSameAanvraag = DummyEntityBuilder.getDummyAanvraagInschrijving();
         identicalButNotTheSameAanvraag.setContactpersoon(contactpersoon);
         identicalButNotTheSameAanvraag.setDeelnemers(deelnemers);
         identicalButNotTheSameAanvraag.setVakantieproject(vakantieproject);
         
         logger.info(aanvraag.equals(identicalButNotTheSameAanvraag));
-        AanvraagInschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
+        Inschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
         logger.info(aanvraagInschrijving.equals(identicalButNotTheSameAanvraag));
 
         
@@ -74,7 +74,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
 
     @Test
     public void testPersistingInschrijvingVoorVakantieProject() {
-        AanvraagInschrijving aanvraag = DummyEntityBuilder.getDummyAanvraagInschrijving();
+        Inschrijving aanvraag = DummyEntityBuilder.getDummyAanvraagInschrijving();
 
         Contactpersoon contactpersoon = DummyEntityBuilder.getDummyContactpersoon();
         aanvraag.setContactpersoon(contactpersoon);
@@ -86,7 +86,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
         Deelnemer deelnemer = DummyEntityBuilder.getDummyDeelnemer();
         aanvraag.setDeelnemers(new ArrayList<Deelnemer>(Arrays.asList(deelnemer)));
 
-        AanvraagInschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
+        Inschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
         // Assert same object reference (==)
         assertTrue(aanvraagInschrijving.getVakantieproject().equals(aanvraag.getVakantieproject()));
 
@@ -98,7 +98,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
     @Test
     public void testPersistingInschrijvingVoorDeelnemer() {
         Date geboortedatum = Calendar.getInstance().getTime();
-        AanvraagInschrijving aanvraag = new AanvraagInschrijving();
+        Inschrijving aanvraag = new Inschrijving();
 
         Deelnemer deelnemer = new Deelnemer("Eén", "Deelnemer", Calendar.getInstance().getTime());
         deelnemer.setGeslacht(Geslacht.Man);
@@ -115,7 +115,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
         VakantieProject vakantieproject = new VakantieProject();
         aanvraag.setVakantieproject(vakantieproject);
 
-        AanvraagInschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
+        Inschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
         // Assert same object reference (==)
         assertTrue(aanvraagInschrijving.getDeelnemers().get(0).equals(deelnemer));
 
@@ -130,7 +130,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
 
     @Test
     public void testPersistingInschrijvingVoorContactPersoon() {
-        AanvraagInschrijving aanvraag = new AanvraagInschrijving();
+        Inschrijving aanvraag = new Inschrijving();
         Contactpersoon contactpersoon = new Contactpersoon("Contact", "Persoon1");
         contactpersoon.setFunctie("Functie");
         aanvraag.setContactpersoon(contactpersoon);
@@ -141,7 +141,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
         VakantieProject vakantieproject = new VakantieProject();
         aanvraag.setVakantieproject(vakantieproject);
 
-        AanvraagInschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
+        Inschrijving aanvraagInschrijving = inschrijvingsRepository.create(aanvraag);
 
         assertTrue(aanvraagInschrijving.getContactpersoon().equals(contactpersoon));
 
@@ -182,8 +182,8 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
     	Contactpersoon contactpersoon = new Contactpersoon("test1","test2");
     	contactpersoon.setDienst(d);
     	
-    	AanvraagInschrijving a = new AanvraagInschrijving();
-    	AanvraagInschrijving a2 = new AanvraagInschrijving();
+    	Inschrijving a = new Inschrijving();
+    	Inschrijving a2 = new Inschrijving();
     	
     	a.setContactpersoon(contactpersoon);
     	a2.setContactpersoon(contactpersoon);
@@ -196,7 +196,7 @@ public class InschrijvingRepositoryTest extends AbstractTransactionalTest {
     	inschrijvingsRepository.create(a);
     	inschrijvingsRepository.create(a2);
     	
-    	List<AanvraagInschrijving> resultaat = inschrijvingsRepository.findActueleInschrijvingenByDienst(d);
+    	List<Inschrijving> resultaat = inschrijvingsRepository.findActueleInschrijvingenByDienst(d);
     	LOGGER.info("RESULTAAT:" + resultaat);
     	
     	assertTrue(!resultaat.contains(a));

@@ -20,6 +20,12 @@
 		<put-attribute name="nieuweContactpersoonForm" value="/WEB-INF/views/forms/Contactpersoonformulier.jsp"/>
 	</definition>
 	
+	<definition name="dienst/inschrijving" extends="baseLayout">
+		<put-attribute name="title" value="Inschrijving" />
+		<put-attribute name="body" value="/WEB-INF/views/dienst/inschrijving.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/tiles/dienst/menu.jsp?selected=home"/>
+	</definition>
+	
 	<definition name="dienst/dienstDetail" extends="baseLayout">
 		<put-attribute name="title" value="DienstDetail" />
 		<put-attribute name="body" value="/WEB-INF/views/dienst/dienstDetail.jsp" />
@@ -60,18 +66,18 @@
     <definition name="secretariaat/home" extends="baseLayout">
 		<put-attribute name="title" value="Secretariaat" />
 		<put-attribute name="body" value="/WEB-INF/views/secretariaat/home.jsp" />
-		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp?selected=inschrijvingen"/>
+		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp"/>
 	</definition>
 	
 	<definition name="secretariaat/vakantieprojecten" extends="baseLayout">
 		<put-attribute name="title" value="Vakantieprojecten" />
 		<put-attribute name="body" value="/WEB-INF/views/secretariaat/vakantieprojecten.jsp" />
-		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp?selected=inschrijvingen"/>
+		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp"/>
 	</definition>
 	
 	<definition name="secretariaat/diensten" extends="baseLayout">
 		<put-attribute name="title" value="Diensten" />
-		<put-attribute name="body" value="/WEB-INF/views/secretariaat/diensten.jsp" />
+			<put-attribute name="body" value="/WEB-INF/views/secretariaat/vakantieprojecten.jsp" />
 		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp"/>
 	</definition>
 	

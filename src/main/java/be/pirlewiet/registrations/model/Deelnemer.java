@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.ldap.common.util.EqualsBuilder;
 import org.apache.ldap.common.util.HashCodeBuilder;
@@ -30,8 +32,12 @@ public class Deelnemer extends Persoon implements Serializable {
 //	@Column(nullable = false)	
 	private Geslacht geslacht;
 	
-	@ManyToMany(mappedBy = "deelnemers")
-	private Set<AanvraagInschrijving> inschrijvingen = new HashSet<AanvraagInschrijving>(0);
+	@Column(name="ffn")
+	private String flatFamilyName;
+	
+	// @ManyToMany(mappedBy = "deelnemers")
+	@Transient
+	private Set<Inschrijving> inschrijvingen = new HashSet<Inschrijving>(0);
 	
 	public Deelnemer(String rijksregisternr, String voornaam, String familienaam, Date geboortedatum) {
 		this(voornaam, familienaam, geboortedatum);
@@ -53,7 +59,7 @@ public class Deelnemer extends Persoon implements Serializable {
 		return geslacht;
 	}
 
-	public Set<AanvraagInschrijving> getInschrijvingen() {
+	public Set<Inschrijving> getInschrijvingen() {
 		return inschrijvingen;
 	}
 
@@ -62,7 +68,7 @@ public class Deelnemer extends Persoon implements Serializable {
 		this.geslacht = geslacht;
 	}
 
-	public void setInschrijvingen(Set<AanvraagInschrijving> inschrijvingen) {
+	public void setInschrijvingen(Set<Inschrijving> inschrijvingen) {
 		this.inschrijvingen = inschrijvingen;
 	}
 
@@ -90,6 +96,14 @@ public class Deelnemer extends Persoon implements Serializable {
 		this.geboortedatum = geboortedatum;
 	}
 	
+	public String getFlatFamilyName() {
+		return flatFamilyName;
+	}
+
+	public void setFlatFamilyName(String flatFamilyName) {
+		this.flatFamilyName = flatFamilyName;
+	}
+
 	@Override
 	public int hashCode() {
 		return (isNullOrEmpty(getRijksregisternr()) 

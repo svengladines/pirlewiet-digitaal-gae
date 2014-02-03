@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import be.pirlewiet.registrations.AbstractTransactionalTest;
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Dienst;
@@ -42,11 +42,11 @@ public class DeelnemerRepositoryTest extends AbstractTransactionalTest{
 	Deelnemer compleetIngevuldeDeelnemer = new Deelnemer();
 	
 	
-	AanvraagInschrijving inschr1 = new AanvraagInschrijving();
-	AanvraagInschrijving inschr2 = new AanvraagInschrijving();
-	AanvraagInschrijving inschr3 = new AanvraagInschrijving();
-	AanvraagInschrijving inschr4 = new AanvraagInschrijving();
-	AanvraagInschrijving inschr5 = new AanvraagInschrijving();
+	Inschrijving inschr1 = new Inschrijving();
+	Inschrijving inschr2 = new Inschrijving();
+	Inschrijving inschr3 = new Inschrijving();
+	Inschrijving inschr4 = new Inschrijving();
+	Inschrijving inschr5 = new Inschrijving();
 	
 	@Before
 	public void init(){

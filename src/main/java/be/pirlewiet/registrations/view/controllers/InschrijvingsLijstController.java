@@ -16,7 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.services.DienstService;
 import be.pirlewiet.registrations.services.InschrijvingService;
 
@@ -37,9 +37,9 @@ public class InschrijvingsLijstController {
     @Transactional
     public ModelAndView getList() {
         Model m = new ExtendedModelMap();
-        List<AanvraagInschrijving> aanvragen = inschrijvingService.findActueleInschrijvingenByDienst(dienstService.getLoggedInDienst());
+        List<Inschrijving> aanvragen = inschrijvingService.findActueleInschrijvingenByDienst(dienstService.getLoggedInDienst());
         
-        for (AanvraagInschrijving aanvraagInschrijving : aanvragen) {
+        for (Inschrijving aanvraagInschrijving : aanvragen) {
         	Hibernate.initialize(aanvraagInschrijving.getDeelnemers());
         }
         

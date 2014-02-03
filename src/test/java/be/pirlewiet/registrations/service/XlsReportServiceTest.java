@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactType;
 import be.pirlewiet.registrations.model.Contactpersoon;
@@ -64,19 +64,19 @@ public class XlsReportServiceTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void testCreateRowMapThrowsIllegalArgumentExceptionWhenAanvraagInschrijvingNull(){
-        AanvraagInschrijving aanvraagInschrijving = null;
+        Inschrijving aanvraagInschrijving = null;
         xlsReportService.createRowDataMap(aanvraagInschrijving);
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testCreateRowMapThrowsIllegalArgumentExceptionWhenAanvraagInschrijvingNoDeelnemers(){
-        AanvraagInschrijving aanvraagInschrijving = new AanvraagInschrijving();
+        Inschrijving aanvraagInschrijving = new Inschrijving();
         xlsReportService.createRowDataMap(aanvraagInschrijving);
     }
         
-    private AanvraagInschrijving createAanvraagInschrijving(){
+    private Inschrijving createAanvraagInschrijving(){
         
-       AanvraagInschrijving aanvraagInschrijving = new AanvraagInschrijving();
+       Inschrijving aanvraagInschrijving = new Inschrijving();
        Adres adres = createAdres();
        Deelnemer deelnemer = createDeelnemer();  
        Dienst dienst = createDienst(adres);

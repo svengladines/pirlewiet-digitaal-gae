@@ -48,7 +48,7 @@
 		<property name="roleUrlMap">
 			<map>
 				<entry key="ROLE_SECRETARIAAT" value="/secretariaat/home" />
-				<entry key="ROLE_DIENST" value="/home" />
+				<entry key="ROLE_DIENST" value="/dienst/home" />
 				<entry key="ROLE_SUPERUSER" value="/superuser/home" />
 			</map>
 		</property>

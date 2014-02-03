@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactType;
 import be.pirlewiet.registrations.model.Contactpersoon;
@@ -150,7 +150,7 @@ public class ImportSpreadSheetv2 {
 				Adres a = constructAdresDeelnemerFromRow(rownum, sheet);
 
 				VakantieProject[] vps;
-				AanvraagInschrijving ai;
+				Inschrijving ai;
 				vps = findCreateVakantieProject(2004, sheet.getCell(COLNO_2004, rownum), rownum);
 				ai = processOneVParray(vps, statusoude, c, a, dr, gezinsnummer, insdate, ct);
 
@@ -187,8 +187,8 @@ public class ImportSpreadSheetv2 {
 		}
 	}
 
-	public AanvraagInschrijving processOneVParray(VakantieProject[] vps, Status s, Contactpersoon c, Adres a, Deelnemer dr, String gezinsnummer, Date insdate, ContactType ct) {
-		AanvraagInschrijving ai = null;
+	public Inschrijving processOneVParray(VakantieProject[] vps, Status s, Contactpersoon c, Adres a, Deelnemer dr, String gezinsnummer, Date insdate, ContactType ct) {
+		Inschrijving ai = null;
 		if (vps != null) {
 			for (VakantieProject vp : vps) {
 				ai = findCreateAanvraagInschrijving(vp, c, a, dr, gezinsnummer, ct, s, "", insdate);
@@ -197,15 +197,15 @@ public class ImportSpreadSheetv2 {
 		return ai;
 	}
 
-	public AanvraagInschrijving findCreateAanvraagInschrijving(VakantieProject vp, Contactpersoon c, Adres a, Deelnemer d, String gezinsnummer, ContactType contacttype, Status s, String opmerkingen,
+	public Inschrijving findCreateAanvraagInschrijving(VakantieProject vp, Contactpersoon c, Adres a, Deelnemer d, String gezinsnummer, ContactType contacttype, Status s, String opmerkingen,
 			Date datumInschrijving) {
-		AanvraagInschrijving ai = null;
+		Inschrijving ai = null;
 
 		// find aanvraaginschrijving with vakproj, contactpers, adres. if it
 		// does not exist : create it.
-		List<AanvraagInschrijving> lai = inschrijvingService.findInschrijvingByContactVakprojAdrGezinsnrConttypeOpmDatuminschr(c, vp, a, gezinsnummer, contacttype, opmerkingen, datumInschrijving);
+		List<Inschrijving> lai = inschrijvingService.findInschrijvingByContactVakprojAdrGezinsnrConttypeOpmDatuminschr(c, vp, a, gezinsnummer, contacttype, opmerkingen, datumInschrijving);
 		if (lai.isEmpty()) {
-			ai = new AanvraagInschrijving();
+			ai = new Inschrijving();
 			ai.setContactType(contacttype);
 			ai.setContactpersoon(c);
 			ai.addDeelnemer(d);

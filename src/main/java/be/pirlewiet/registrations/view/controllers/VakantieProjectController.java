@@ -7,9 +7,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -22,44 +25,36 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.model.VakantieProject;
 import be.pirlewiet.registrations.services.VakantieProjectService;
+import be.pirlewiet.registrations.services.VakantietypeService;
 
 @Controller
+@RequestMapping( value = "/secretariaat/vakanties")
 public class VakantieProjectController {
+	
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
 
 	@Autowired
 	private VakantieProjectService vakantieProjectService;
 	
-//	@RequestMapping(value = "secretariaat/vakantieprojecten/add",produces="application/json")
-//	@Transactional
-//	public @ResponseBody Map<String,Object> createVakantieproject(@ModelAttribute("vakantieproject") VakantieProject vakantieproject, ModelMap modelMap) {
-//		
-//		Map<String, Object> data = new HashMap<String, Object>();
-//		vakantieProjectService.createVakantieProject(vakantieproject);
-//		data.put("resultaat", "Het nieuwe vakantieproject werd toegegvoegd!");
-//		data.put("resultaatId", vakantieproject.getId());
-//		data.put("vakanties", vakantieProjectService.getAllVakantieProjecten());
-//		
-//		return data;
-//	}
-	@RequestMapping(value = "secretariaat/vakantieprojecten/add",method = RequestMethod.POST)
-	public ModelAndView createVakantieproject(@ModelAttribute("vakantieproject") VakantieProject vakantieproject, Model model) {
+	@Autowired
+	private VakantietypeService vakantietypeService;
+	
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public String createVakantieproject(@ModelAttribute("vakantieproject") VakantieProject vakantieproject ) {
 		
-		Map<String, Object> data = new HashMap<String, Object>();
 		vakantieProjectService.createVakantieProject(vakantieproject);
-		model.addAttribute("resultaat", "Het nieuwe vakantieproject werd toegegvoegd!");
-		model.addAttribute("resultaatId", vakantieproject.getId());
-		model.addAttribute("vakanties", vakantieProjectService.getAllVakantieProjecten());
+		return "De vakantie werd toegevoegd";
 		
-		return new ModelAndView("tables/vakantieProjectenTable", model.asMap());
 	}
 
-	@RequestMapping(value = "vakantieproject/get/{projectId}")
+	@RequestMapping(value = "/{projectId}", method = RequestMethod.GET)
 	public @ResponseBody
 	Map<String, Object> getVakantieProjectById(@PathVariable long projectId) {
 		VakantieProject geselecteerdVakantieProject = vakantieProjectService
 				.findVakantieProjectById(projectId);
 		Map<String, Object> data = new HashMap<String, Object>();
-		
 
 		if (geselecteerdVakantieProject == null) {
 			return data;
@@ -74,19 +69,50 @@ public class VakantieProjectController {
 		return data;
 	}
 	
-//	@RequestMapping(value = "secretariaat/getAllVakanties", method = RequestMethod.POST)
-//	@Transactional
-//	public @ResponseBody Map<String,Object> getAllVakanties() {
-//		Map<String, Object> data = new HashMap<String, Object>();
-//		data.put("vakanties", vakantieProjectService.getAllVakantieProjecten());
-//		
-//		return data;
-//		
-//	}
-	@RequestMapping(value = "secretariaat/getAllVakanties", method = RequestMethod.GET)
-	public ModelAndView getAllVakanties(HttpServletRequest request, Model model) {
+	@RequestMapping(value = "/{projectId}", method = RequestMethod.DELETE)
+	public @ResponseBody String delete(@PathVariable long projectId) {
+		VakantieProject geselecteerdVakantieProject = vakantieProjectService.findVakantieProjectById(projectId);
+		Map<String, Object> data = new HashMap<String, Object>();
+
+		return "Vakantie werd verwijderd";
+	}
+	
+	@RequestMapping(value = "/{projectId}",method = RequestMethod.PUT)
+	@ResponseBody
+	public String editVakantieproject(@PathVariable long projectId, @ModelAttribute("vakantieproject") VakantieProject vakantieproject ) {
+		
+		VakantieProject geselecteerdVakantieProject = vakantieProjectService.findVakantieProjectById(projectId);
+		// vakantieProjectService.createVakantieProject(vakantieproject);
+		return "De vakantie werd gewijzigd";
+		
+	}
+	
+	@RequestMapping(value = "/{projectId}/formulier", method = RequestMethod.GET)
+	public ModelAndView getVakantieForm(@PathVariable String projectId) {
+		
+		Model m = new ExtendedModelMap();
+		
+		VakantieProject vakantie = null;
+		
+		if ( "nieuw".equals( projectId ) ) {
+			vakantie = new VakantieProject();
+		}
+		else {
+			vakantie = vakantieProjectService.findVakantieProjectById( Long.valueOf( projectId ));
+		}
+		
+		m.addAttribute("vakantie", vakantie );
+		m.addAttribute("vakantieTypes", this.vakantietypeService.getAllVakantietypes() );
+
+		return new ModelAndView("forms/VakantieprojectFormulier", m.asMap() );
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView get(HttpServletRequest request, Model model) {
 
 		model.addAttribute("vakanties", vakantieProjectService.getAllVakantieProjecten());
+		
+		logger.info( "vakanties: [{}]", model );
 		
 		return new ModelAndView("tables/vakantieProjectenTable", model.asMap());
 		

@@ -8,7 +8,7 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactType;
 import be.pirlewiet.registrations.model.Contactpersoon;
@@ -17,23 +17,23 @@ import be.pirlewiet.registrations.model.VakantieProject;
 import be.pirlewiet.registrations.model.Vakantietype;
 
 @Repository
-public class InschrijvingRepository extends AbstractRepository<AanvraagInschrijving> {
-    public List<AanvraagInschrijving> findActueleInschrijvingenByDienst(Dienst dienst) {
+public class InschrijvingRepository extends AbstractRepository<Inschrijving> {
+    public List<Inschrijving> findActueleInschrijvingenByDienst(Dienst dienst) {
         Query q = em.createQuery("SELECT DISTINCT a FROM AanvraagInschrijving a WHERE a.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.dienst = :dienst) AND a.vakantieproject.eindDatum >= CURRENT_DATE");
         q.setParameter("dienst", dienst);
 
-        return new ArrayList<AanvraagInschrijving>(q.getResultList());
+        return new ArrayList<Inschrijving>(q.getResultList());
     }
 
     @SuppressWarnings("unchecked")
-    public List<AanvraagInschrijving> findAanvraagInschrijvingByGezinsNummer(String gezinsnummer) {
+    public List<Inschrijving> findAanvraagInschrijvingByGezinsNummer(String gezinsnummer) {
         Query q = em.createQuery("SELECT DISTINCT a FROM AanvraagInschrijving a WHERE a.gezinsnummer like :gezinsnummer");
         q.setParameter("gezinsnummer", gezinsnummer);
-        return new ArrayList<AanvraagInschrijving>(q.getResultList());
+        return new ArrayList<Inschrijving>(q.getResultList());
     }
 
     @SuppressWarnings("unchecked")
-    public List<AanvraagInschrijving> findAanvraagInschrijvingByContactVakprojAdrGezinsnrConttypeOpmDatuminschr(Contactpersoon c, VakantieProject vp,Adres a, String gezinsnummer,  ContactType contacttype, String opmerkingen, Date datumInschrijving) {
+    public List<Inschrijving> findAanvraagInschrijvingByContactVakprojAdrGezinsnrConttypeOpmDatuminschr(Contactpersoon c, VakantieProject vp,Adres a, String gezinsnummer,  ContactType contacttype, String opmerkingen, Date datumInschrijving) {
         Query q = em.createQuery("SELECT DISTINCT a FROM AanvraagInschrijving a WHERE "
                 + " a.deelnemersAdres.straat = :adresstraat "
                 + " AND a.deelnemersAdres.postcode = :adrespostcode "
@@ -57,12 +57,12 @@ public class InschrijvingRepository extends AbstractRepository<AanvraagInschrijv
         q.setParameter("opmerkingen", opmerkingen);
         q.setParameter("datumIn", datumInschrijving);
 
-        return new ArrayList<AanvraagInschrijving>(q.getResultList());
+        return new ArrayList<Inschrijving>(q.getResultList());
     }
 
 
     @SuppressWarnings("unchecked")
-    public List<AanvraagInschrijving> findAanvraagInschrijvingByGezinsNummerJaar(String gezinsnummer, int jaar) {
+    public List<Inschrijving> findAanvraagInschrijvingByGezinsNummerJaar(String gezinsnummer, int jaar) {
         int centJaar = jaar;
         if ((centJaar > 0) && (centJaar < 100)) {
             centJaar += 2000;
@@ -72,11 +72,11 @@ public class InschrijvingRepository extends AbstractRepository<AanvraagInschrijv
         q.setParameter("gezinsnummer", gezinsnummer);
         q.setParameter("beginjaar", "01-01-" + jr);
         q.setParameter("eindjaar", "31-12-" + jr);
-        return new ArrayList<AanvraagInschrijving>(q.getResultList());
+        return new ArrayList<Inschrijving>(q.getResultList());
     }
 
     @SuppressWarnings("unchecked")
-    public List<AanvraagInschrijving> findAanvraagInschrijvingByGezinsNummerJaarType(String gezinsnummer, int jaar, Vakantietype vt) {
+    public List<Inschrijving> findAanvraagInschrijvingByGezinsNummerJaarType(String gezinsnummer, int jaar, Vakantietype vt) {
         int centJaar = jaar;
         if ((centJaar > 0) && (centJaar < 100)) {
             centJaar += 2000;
@@ -87,6 +87,6 @@ public class InschrijvingRepository extends AbstractRepository<AanvraagInschrijv
         q.setParameter("beginjaar", "01-01-" + jr);
         q.setParameter("eindjaar", "31-12-" + jr);
         q.setParameter("vt", vt);
-        return new ArrayList<AanvraagInschrijving>(q.getResultList());
+        return new ArrayList<Inschrijving>(q.getResultList());
     }
 }

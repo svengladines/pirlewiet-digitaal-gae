@@ -122,62 +122,156 @@ function initDienstenPage(){
 	});
 	
 }
-function initVakentieProjectPage(){
-	console.log("init vakantie");
+
+function laadVakanties(){
+	
+	$(".btn-add").click( function() {
+		laadFormulier( "vakanties", "nieuw", "add" );
+	});
+	
 	$.ajax({
 		type : "GET",
 		cache : false,
-		url : "getAllVakanties",
+		url : "vakanties",
 		success : function(data) {
-			$("#vakantieprojectTable").html(data);
+			
+			$("#vakanties").append(data);
+			
+			$(".btn-edit").click( function() {
+				laadFormulier( "vakanties", $(this).attr("data-id"), "edit" );
+			});
+			
+			$(".btn-delete").click( function() {
+				laadFormulier( "vakanties", $(this).attr("data-id"), "delete" );
+			});
 		},
 		error : function (){
 			console.log("error");
 		}
 	});
 }
-function initNieuweVakantieprojectBtn() {
+
+function laadFormulier( context, id, action ) {
+	
+	$(".modal-form-" + action ).load( context + "/" + id + "/formulier", function() {
+		
+		$(".modal-" + action).modal("toggle");
+		
+		$('.btn-action-add').click(
+				function() {
+					$.ajax({
+						type : "POST",
+						cache : false,
+						url: context,
+						data : $(".form-form").serialize(),
+						success : function(response) {
+							$(".result").addClass("alert-success");
+							$(".result-message").text(response);
+							laadVakanties();
+						}
+					});
+					return false;
+				}
+		);
+		
+		$('.btn-action-edit').click(
+				function() {
+					$.ajax({
+						type : "PUT",
+						cache : false,
+						url: context + "/" + id,
+						data : $(".form-form").serialize(),
+						success : function(response) {
+							$(".result").addClass("alert-success");
+							$(".result-message").text(response);
+							laadVakanties();
+						}
+					});
+					return false;
+				}
+		);
+		
+		$('.btn-action-remove').click(
+				function() {
+					$.ajax({
+						type : "DELETE",
+						cache : false,
+						url: context + "/" + id,
+						data : $(".form-form").serialize(),
+						success : function(response) {
+							$(".result").addClass("alert-success");
+							$(".result-message").text(response);
+							laadVakanties();
+						}
+					});
+					return false;
+				}
+		);
+		
+		$('.btn-cancel').click(
+			function() {
+				$(this).parents(".modal").modal("toggle");
+			}
+		);
+		
+		$('.btn-action').click(
+				function() {
+					$(this).attr("disabled","disabled");
+				}
+		);
+		
+		$('.btn-close').click(
+			function() {
+				$(this).parents(".modal").modal("toggle");
+			}
+		);
+		
+	});
+
+}
+
+function initVakantieProjectFormulier () {
+	
 	initFields();
 	
-	$("#nieuwVakantieprojectDialog").dialog({
-		autoOpen : false,
-		modal : true,
-		resizable : false,
-		title : 'Nieuw vakantieproject',
-		draggable : false,
-		width : 'auto'
-	});
-
-	$("#nieuwVakantieProjectBtn").click(function() {
-		$("#nieuwVakantieprojectDialog").dialog('open');
-	});
-
-	
-	$('#nieuwVakantieProjectForm').submit(
+	$('#nieuwVakantieProjectFormBtn').click(
 			function() {
-				$("#nieuwVakantieprojectDialog").dialog('close');
-
 				$.ajax({
 					type : "POST",
 					cache : false,
-					url : "vakantieprojecten/add",
+					url : "vakantieprojecten",
 					data : $("#nieuwVakantieProjectForm").serialize(),
-					success : function(data) {						
-						$("#vakantieprojectTable").html(data);
-						
-						showMessage("Vakantieproject werd toegevoegd", "info");
-						resetVakantieValues();
-	
+					success : function(response) {
+						$(".result").addClass("alert-success");
+						$("#resultMessage").text(response);
+						laadVakanties();
 					}
 				});
 				return false;
 			}
 	);
 	
+	$('.btn-cancel').click(
+		function() {
+			$(this).parents(".modal").modal("toggle");
+		}
+	);
+	
+	$('.btn-action').click(
+			function() {
+				$(this).attr("disabled","disabled");
+			}
+	);
+	
+	$('.btn-close').click(
+		function() {
+			$(this).parents(".modal").modal("toggle");
+		}
+	);
 
 }
 //after submitting a new Vakantie, reset the values of the form
-function resetVakantieValues(){
+function resetVakantieForm(){
 	$("#vakatieDropDown").val("Paaskinderkamp");
 	$("#beginDatum").val("");
 	$("#eindDatum").val("");

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -64,17 +64,17 @@ public class XlsReportService {
         fillRow(sheet, rowIndex, createHeaderMap());
         
         //retrieve data
-        List<AanvraagInschrijving> inschrijvingen = inschrijvingService.getInschrijvingen();
+        List<Inschrijving> inschrijvingen = inschrijvingService.getInschrijvingen();
         fillRows(inschrijvingen, ++rowIndex, sheet);
         return workbook;
     }
     
     //fill rows, whilst iterating data
-    private void fillRows(final List<AanvraagInschrijving> inschrijvingen, final int firstRowIndex, Sheet sheet) {
+    private void fillRows(final List<Inschrijving> inschrijvingen, final int firstRowIndex, Sheet sheet) {
         int rowIndex = firstRowIndex;
         HashMap<Integer, String> rowData;
-        for (Iterator<AanvraagInschrijving> it = inschrijvingen.iterator(); it.hasNext();) {
-            AanvraagInschrijving aanvraagInschrijving = it.next(); 
+        for (Iterator<Inschrijving> it = inschrijvingen.iterator(); it.hasNext();) {
+            Inschrijving aanvraagInschrijving = it.next(); 
             rowData = createRowDataMap(aanvraagInschrijving);
             fillRow(sheet, rowIndex, rowData);
             rowIndex++;
@@ -101,7 +101,7 @@ public class XlsReportService {
      * @param aanvraagInschrijving
      * @return 
      */
-    public HashMap<Integer, String> createRowDataMap(final AanvraagInschrijving aanvraagInschrijving){
+    public HashMap<Integer, String> createRowDataMap(final Inschrijving aanvraagInschrijving){
         Assert.notNull(aanvraagInschrijving, "Argument value aanvraagInschrijving cannot be NULL.");
         Assert.notEmpty(aanvraagInschrijving.getDeelnemers(), "Argument property value deelnemers cannot be emtpy. At least one deelnemer should be associated with aanvraagInschrijving");
         Assert.notNull(aanvraagInschrijving.getContactpersoon(), "Argument property value contactPersoon cannot be NULL.");

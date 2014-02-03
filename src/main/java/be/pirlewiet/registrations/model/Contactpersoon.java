@@ -22,7 +22,7 @@ public class Contactpersoon extends Persoon implements Serializable {
 	private Dienst dienst;
 
 	@OneToMany(mappedBy="contactpersoon")
-	private Set<AanvraagInschrijving> aanvragen = new HashSet<AanvraagInschrijving>(0);
+	private Set<Inschrijving> aanvragen = new HashSet<Inschrijving>(0);
 	
 	// Nog in dienst bij 'Dienst' instance of niet?
 	private Boolean isPassive = false;
@@ -54,7 +54,7 @@ public class Contactpersoon extends Persoon implements Serializable {
 		return dienst;
 	}
 
-	public Set<AanvraagInschrijving> getAanvragen() {
+	public Set<Inschrijving> getAanvragen() {
 		return aanvragen;
 	}
 

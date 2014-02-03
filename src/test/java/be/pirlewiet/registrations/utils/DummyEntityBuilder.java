@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -20,8 +20,8 @@ public class DummyEntityBuilder {
     
     private static final Logger LOGGER = Logger.getLogger(DummyEntityBuilder.class.getName());
 
-    public static AanvraagInschrijving getDummyAanvraagInschrijving() {
-        AanvraagInschrijving aanvraag = new AanvraagInschrijving();
+    public static Inschrijving getDummyAanvraagInschrijving() {
+        Inschrijving aanvraag = new Inschrijving();
         String opmerking = "Lorem ipsum dolor sit amet, consectetur...";
         aanvraag.setOpmerkingen(opmerking);
         aanvraag.setDeelnemersAdres(getDummyAdres());

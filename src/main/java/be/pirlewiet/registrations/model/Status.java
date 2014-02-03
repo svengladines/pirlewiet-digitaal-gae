@@ -2,6 +2,8 @@ package be.pirlewiet.registrations.model;
 
 public enum Status {
     NIEUW(false,"Nieuw"),
+    VAKANTIEGEKOZEN(false,"Vakantie gekozen"),
+    DEELNEMERTOEGEVOEGD(false,"Deelnemer toegevoegd"),
     INBEHANDELING(true,"In behandeling"),
     HUISBEZOEK(false,"Huisbezoek gepland"),
     WACHTLIJST(false,"Wachtlijst"),
@@ -31,8 +33,5 @@ public enum Status {
     public String getDisplayString() {
 		return displayString;
 	}
-	@Override
-    public String toString() {
-    	return displayString;
-    }
+
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class InschrijvingenForm {
 	private List<Deelnemer> participants;
-	private AanvraagInschrijving aanvraagInschrijving;
+	private Inschrijving aanvraagInschrijving;
 
 	public List<Deelnemer> getParticipants() {
 		return participants;
@@ -14,11 +14,11 @@ public class InschrijvingenForm {
 		this.participants = participants;
 	}
 
-	public AanvraagInschrijving getAanvraagInschrijving() {
+	public Inschrijving getAanvraagInschrijving() {
 		return aanvraagInschrijving;
 	}
 
-	public void setAanvraagInschrijving(AanvraagInschrijving aanvraagInschrijving) {
+	public void setAanvraagInschrijving(Inschrijving aanvraagInschrijving) {
 		this.aanvraagInschrijving = aanvraagInschrijving;
 	}
 }

@@ -1,42 +1,95 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<script type="text/javascript">
-	$(document)
-			.ready(
-					function() {
-						initNieuweVakantieprojectBtn();
-					});
-</script>
 
-<div>	
-	<button type="button" id="nieuwVakantieProjectBtn" class="button">Nieuw vakantieproject toevoegen</button>
-	<table class="overviewTable" id="vakantieprojectenTable">
+<div>
+	<p>
+		<button type="button" class="btn btn-primary btn-add">+ vakantie</button>
+	</p>
+	<table id="vakantieprojectenTable" class="table table-bordered">
 		<thead>
-		<tr class="ui-widget-header">
+		<tr>
 			<th>Type</th>
-			<th class="centerAlign">Vakantie periode</th>
-			<th class="centerAlign">Inschrijving periode</th>
-			<th class="centerAlign">Max. deelnemers</th>
-			<th class="centerAlign">Min. leeftijd</th>
-			<th class="centerAlign">Max. leeftijd</th>
+			<th>Vakantie periode</th>
+			<th>Inschrijving periode</th>
+			<th>Max. deelnemers</th>
+			<th>Min. leeftijd</th>
+			<th>Max. leeftijd</th>
+			<th></th>
 		</tr>
 		</thead>
-		<tbody>
-		<c:forEach items="${vakanties}" var="vakantie">
-			<tr>
-				<td>${vakantie.vakantietype.displaynaam}</td>
-				<td class="centerAlign"><fmt:formatDate pattern="d MMM" value="${vakantie.beginDatum}"/> - <fmt:formatDate pattern="d MMM" value="${vakantie.eindDatum}"/></td>
-				<td class="centerAlign"><fmt:formatDate pattern="d MMM" value="${vakantie.beginInschrijving}"/> - <fmt:formatDate pattern="d MMM" value="${vakantie.eindInschrijving}"/></td>
-				<td class="centerAlign">${vakantie.maxDeelnemers}</td>
-				<td class="centerAlign">${vakantie.minLeeftijd}</td>
-				<td class="centerAlign">${vakantie.maxLeeftijd}</td>
-			</tr>
-		</c:forEach>
+		<tbody id="vakanties">
 		</tbody>
 	</table>
 </div>
 
-<div id="nieuwVakantieprojectDialog">
-	<jsp:include page="/WEB-INF/views/forms/VakantieprojectFormulier.jsp"></jsp:include>
+<div class="modal modal-add">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3>Nieuwe Vakantie</h3>	
+			</div>
+			<div class="modal-body modal-form-add">
+				
+			</div>
+			<div class="modal-footer result">
+	      		<div class="form-group">
+	      			<span class="col-sm-5 result-message"></span>
+	      			<div class="col-sm-5">
+	      				<button type="button" value="Voeg toe" class="btn btn-default btn-close">Sluit</button>
+	      				<button type="button" value="Voeg toe" class="btn btn-primary btn-action btn-action-add">Voeg toe</button>
+	      			</div>
+	      		</div>
+      	</div>
+		</div>
+	</div>
 </div>
-<div id="resultMessage"></div>
+
+<div class="modal modal-edit">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3>Wijzig vakantie</h3>	
+			</div>
+			<div class="modal-body modal-form-edit">
+				
+			</div>
+			<div class="modal-footer result">
+	      		<div class="form-group">
+	      			<span class="col-sm-5 result-message"></span>
+	      			<div class="col-sm-5">
+	      				<button type="button" value="Voeg toe" class="btn btn-default btn-close">Sluit</button>
+	      				<button type="button" value="Voeg toe" class="btn btn-primary btn-action btn-action-edit">Wijzig</button>
+	      			</div>
+	      		</div>
+      	</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal modal-delete">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3>Verwijder vakantie</h3>	
+			</div>
+			<div class="modal-body modal-form-delete">
+				
+			</div>
+			<div class="modal-footer result">
+	      		<div class="form-group">
+	      			<span class="col-sm-5 result-message"></span>
+	      			<div class="col-sm-5">
+	      				<button type="button" value="Voeg toe" class="btn btn-default btn-close">Sluit</button>
+	      				<button type="button" value="Voeg toe" class="btn btn-primary btn-action btn-action-delete">Verwijder</button>
+	      			</div>
+	      		</div>
+      	</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	laadVakanties();
+	// initNieuweVakantieProjectForm();
+	// initNieuweVakantieprojectBtn();
+</script>

@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactType;
 import be.pirlewiet.registrations.model.Contactpersoon;
@@ -34,7 +34,7 @@ public class PropertyCheckerTest {
         Dienst dienst = createDienst(adresDienst);
         Contactpersoon contactPersoon = createContactpersoon(dienst);
         Deelnemer deelnemer = createDeelnemer();
-        AanvraagInschrijving aanvraagInschrijving = createAanvraagInschrijving(contactPersoon, deelnemer, adresDeelnemer);        
+        Inschrijving aanvraagInschrijving = createAanvraagInschrijving(contactPersoon, deelnemer, adresDeelnemer);        
         String testResult = PropertyChecker.getAsString(aanvraagInschrijving, "contactpersoon.dienst.adres.gemeente", "");
         assertEquals("GemeenteDienst", testResult);        
     }
@@ -47,7 +47,7 @@ public class PropertyCheckerTest {
         Dienst dienst = createDienst(adresDienst);
         Contactpersoon contactPersoon = createContactpersoon(dienst);
         Deelnemer deelnemer = createDeelnemer();
-        AanvraagInschrijving aanvraagInschrijving = createAanvraagInschrijving(contactPersoon, deelnemer, adresDeelnemer);        
+        Inschrijving aanvraagInschrijving = createAanvraagInschrijving(contactPersoon, deelnemer, adresDeelnemer);        
         String testResult = PropertyChecker.getAsString(aanvraagInschrijving, "contactpersoon.dienst.adres.gemeente", "");
         assertEquals("", testResult);        
     }
@@ -60,21 +60,21 @@ public class PropertyCheckerTest {
         Dienst dienst = createDienst(adresDienst);
         Contactpersoon contactPersoon = createContactpersoon(dienst);
         Deelnemer deelnemer = createDeelnemer();
-        AanvraagInschrijving aanvraagInschrijving = createAanvraagInschrijving(contactPersoon, deelnemer, adresDeelnemer);        
+        Inschrijving aanvraagInschrijving = createAanvraagInschrijving(contactPersoon, deelnemer, adresDeelnemer);        
         String testResult = PropertyChecker.getAsString(aanvraagInschrijving, "deelnemersAdres.straat", "");
         assertEquals("", testResult);  
     }  
        
-     private List<AanvraagInschrijving> createAanvraagInschrijvingen(AanvraagInschrijving aanvraagInschrijving){
-        ArrayList<AanvraagInschrijving> aanvraagInschrijvingen = new ArrayList<AanvraagInschrijving>();
+     private List<Inschrijving> createAanvraagInschrijvingen(Inschrijving aanvraagInschrijving){
+        ArrayList<Inschrijving> aanvraagInschrijvingen = new ArrayList<Inschrijving>();
         aanvraagInschrijvingen.add(aanvraagInschrijving);
         
         return aanvraagInschrijvingen;
     }
     
-    private AanvraagInschrijving createAanvraagInschrijving(Contactpersoon contactPersoon, Deelnemer deelnemer, Adres adresDeelnemers){
+    private Inschrijving createAanvraagInschrijving(Contactpersoon contactPersoon, Deelnemer deelnemer, Adres adresDeelnemers){
         
-       AanvraagInschrijving aanvraagInschrijving = new AanvraagInschrijving();
+       Inschrijving aanvraagInschrijving = new Inschrijving();
               
        aanvraagInschrijving.setDeelnemers(new ArrayList<Deelnemer>(Arrays.asList(deelnemer)));     
        aanvraagInschrijving.setContactpersoon(contactPersoon);

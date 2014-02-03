@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import be.pirlewiet.registrations.model.AanvraagInschrijving;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.ContactType;
 import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -57,7 +57,7 @@ public class HomeController {
 
 	private Logger logger = Logger.getLogger(this.getClass());
 
-	@RequestMapping(value = { "/home", "/" })
+	@RequestMapping(value = { "/dienst/home", "/" })
 	public ModelAndView navigate(Principal principal) {
 		Model m = new ExtendedModelMap();
 
@@ -66,7 +66,7 @@ public class HomeController {
 		Contactpersoon contactpersoon = new Contactpersoon();
 		contactpersoon.setDienst(dienstService.getLoggedInDienst());
 
-		AanvraagInschrijving aanvraagInschrijving = new AanvraagInschrijving();
+		Inschrijving aanvraagInschrijving = new Inschrijving();
 		aanvraagInschrijving.setContactpersoon(contactpersoon);
 		aanvraagInschrijving.setVakantieproject(new VakantieProject());
 		inschrijvingenForm.setAanvraagInschrijving(aanvraagInschrijving);
@@ -118,7 +118,7 @@ public class HomeController {
 	@RequestMapping(value = "model/inschrijving/add", method = RequestMethod.POST)
 	@Transactional
 	public ModelAndView addInschrijving(@ModelAttribute("command") InschrijvingenForm inschrijvingenForm) {
-		AanvraagInschrijving inschrijving = inschrijvingenForm.getAanvraagInschrijving();
+		Inschrijving inschrijving = inschrijvingenForm.getAanvraagInschrijving();
 		// kan deze blok optimaler?????
 		Dienst eventueelAangepasteDienst = inschrijving.getContactpersoon().getDienst();
 		Contactpersoon eventueelAangepasteContactpersoon = inschrijving.getContactpersoon();

@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +39,8 @@ public class Dienst implements Serializable {
 	private String emailadres;
 	private String afdeling;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dienst")
+	// SGL| eager, anders fout in dienstDetail.jsp
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dienst", fetch=FetchType.EAGER )
 	private Set<Contactpersoon> contactpersonen = new HashSet<Contactpersoon>(0);
 
 	public Dienst() {

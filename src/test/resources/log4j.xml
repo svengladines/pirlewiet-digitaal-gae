@@ -17,31 +17,27 @@
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="INFO" />
+		<level value="info" />
 	</logger>
 	
 	<logger name="org.springframework.beans">
-		<level value="INFO" />
+		<level value="info" />
 	</logger>
 	
 	<logger name="org.hibernate">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 
 	<logger name="org.springframework.web">
-		<level value="INFO" />
-	</logger>
-	
-	<logger name="org.hibernate">
-		<level value="INFO" />
+		<level value="info" />
 	</logger>
 	
 	<logger name="be.pirlewiet">
-		<level value="DEBUG" />
+		<level value="debug" />
 	</logger>
 	
-	<logger name="org.springframework.security">
-		<level value="INFO" />
+	<logger name="org.springframework">
+		<level value="info" />
 	</logger>
 
 
