@@ -56,14 +56,10 @@ public class DeelnemerService {
 			deelnemers.add( this.deelnemerRepository.findOneByRRN( normalized ) );
 		}
 		else {
-			deelnemers.addAll( this.deelnemerRepository.findByFlatFamilyName( normalized ) );
+			List<Deelnemer> list
+				= this.deelnemerRepository.findByFlatFamilyName( normalized );
+			deelnemers.addAll( list );
 		}
-		
-		Deelnemer peter
-			= new Deelnemer("Peter", "Truyens", new Date() );
-		peter.setId( 1 );
-		
-		deelnemers.add( peter );
 		
 		return deelnemers;
 		

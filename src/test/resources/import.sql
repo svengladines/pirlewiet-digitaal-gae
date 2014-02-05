@@ -26,9 +26,9 @@ INSERT INTO vakantietype (id, naam, displaynaam) VALUES (7,'DRIEDAAGSE','Driedaa
 INSERT INTO vakantietype (id, naam, displaynaam) VALUES (8,'BEGELEIDWONENBRUSSEL','Begeleid wonen brussel');
 INSERT INTO vakantietype (id, naam, displaynaam) VALUES (9,'DUMMYVAKANTIE','Dummy; Onbekend vakantietype bij import uit excel.');
 
-INSERT INTO vakantieproject (vakantietype_id,beginDatum,eindDatum,beginInschrijving, eindInschrijving) VALUES(3,'2012-07-11','2012-08-11','2012-01-01','2012-05-31');
-INSERT INTO vakantieproject (vakantietype_id,beginDatum,eindDatum,beginInschrijving, eindInschrijving) VALUES(5,'2012-09-02','2012-09-16','2012-03-01','2012-08-15');
-INSERT INTO vakantieproject (vakantietype_id,beginDatum,eindDatum,beginInschrijving, eindInschrijving) VALUES(6,'2012-08-05','2012-08-16','2012-02-01','2012-06-30');
+INSERT INTO vakantieproject (vakantietype_id,beginDatum,eindDatum,beginInschrijving, eindInschrijving) VALUES(3,'2014-07-11','2014-08-11','2014-01-01','2014-05-31');
+INSERT INTO vakantieproject (vakantietype_id,beginDatum,eindDatum,beginInschrijving, eindInschrijving) VALUES(5,'2014-09-02','2014-09-16','2014-03-01','2014-08-15');
+INSERT INTO vakantieproject (vakantietype_id,beginDatum,eindDatum,beginInschrijving, eindInschrijving) VALUES(6,'2014-08-05','2014-08-16','2014-02-01','2014-06-30');
 
 INSERT INTO dienst (gemeente,nummer,postcode,straat,emailadres,naam,telefoonnummer,credentials_id, afdeling) VALUES ('Heist-op-den-Berg','20','2220','Stationstraat','ocmw@heist-op-den-berg.be','OCMW Heist-op-den-Berg','015/123456',1, 'OCMW 1');
 INSERT INTO dienst (gemeente,nummer,postcode,straat,emailadres,naam,telefoonnummer,credentials_id, afdeling) VALUES ('OCMW Heist-op-den-Berg','22','3600','Kerkstraat','ocmw@heist-op-den-berg.be','ocmw Heist-op-den-Berg','015/654321',4, 'ocmw 2 brussel');
@@ -39,12 +39,15 @@ INSERT INTO dienst (gemeente,nummer,postcode,straat,emailadres,naam,telefoonnumm
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum) VALUES ('D',1,'Van Woensel','Gerd','015/242811','gerdvanwoensel@pirlewiet.be','0496077199','254-12 23.23.23','1989-10-02');
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,ffn) VALUES ('D',4,'Truyens','Peter','015/242812','tp@pirlewiet.be','0496077198','254-12 24.24.24','1988-10-02','truyens');
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum) VALUES ('D',5,'Haesevoet','Joris','015/242813','hj@pirlewiet.be','0496077197','254-12 25.25.25','1987-10-02');
+INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,ffn) VALUES ('D',99,'Flintstone','Pebbles','015/242812','tp@pirlewiet.be','0496077198','254-12 24.24.99','1998-11-02','flintstone');
+INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,ffn) VALUES ('D',100,'Flintstone','Fred','015/242812','tp@pirlewiet.be','0496077198','254-12 24.24.100','1988-10-02','flintstone');
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,dienst_id,isPassive) VALUES ('C',2,'Van Goeddoel','Sofie','015/241325','s.vg@pirlewiet.be','0496012398','254-11 98.87.23','1989-10-02',1,false);
+INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,dienst_id,isPassive) VALUES ('C',13,'Simpson','Homer','015/241325','homer.simpson@springfield.net','0496012398','254-11 98.87.23','1989-10-02',1,false);
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,dienst_id,isPassive,functie) VALUES ('C',3,'Van Goeddoel','Frans','015/242832','f.vg@pirlewiet.be','0496012399','254-12 98.87.23','1989-10-03',1,false,'verantwoordelijke');
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,credentials_id, displayed) VALUES ('S',6,'werker','mede',1, true);
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,credentials_id, displayed) VALUES ('S',7,'marco','not displayed',2, true);
 
-INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,inschrijvingsdatum,contactType,straat,nummer,gemeente) VALUES (1,1,1,2,'2012-07-17',1,'Goorse baan',22,'Goor');
+INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,inschrijvingsdatum,contactType,straat,nummer,gemeente) VALUES (1,1,1,2,'2014-07-17',1,'Goorse baan',22,'Goor');
 INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (1,1);
 
 INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,status,contactType) VALUES (2,2,1,2,1,0);

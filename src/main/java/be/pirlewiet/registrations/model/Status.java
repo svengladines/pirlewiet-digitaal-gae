@@ -4,6 +4,10 @@ public enum Status {
     NIEUW(false,"Nieuw"),
     VAKANTIEGEKOZEN(false,"Vakantie gekozen"),
     DEELNEMERTOEGEVOEGD(false,"Deelnemer toegevoegd"),
+    OPMERKINGENINGEVULD(false,"Opmerkingen ingevuld"),
+    CONTACTBEVESTIGD(false,"Contactgegevens bevestigd"),
+    INGEDIEND(false,"Inschrijving ingediend"),
+    
     INBEHANDELING(true,"In behandeling"),
     HUISBEZOEK(false,"Huisbezoek gepland"),
     WACHTLIJST(false,"Wachtlijst"),

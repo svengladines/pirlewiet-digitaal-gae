@@ -7,8 +7,10 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 @SuppressWarnings("serial")
@@ -21,7 +23,9 @@ public class Contactpersoon extends Persoon implements Serializable {
 	@ManyToOne(cascade = CascadeType.ALL, optional=true)
 	private Dienst dienst;
 
-	@OneToMany(mappedBy="contactpersoon")
+	// @OneToMany(mappedBy="contactpersoon")
+	// @OneToMany
+	@Transient
 	private Set<Inschrijving> aanvragen = new HashSet<Inschrijving>(0);
 	
 	// Nog in dienst bij 'Dienst' instance of niet?
@@ -70,6 +74,16 @@ public class Contactpersoon extends Persoon implements Serializable {
 		this.isPassive = isPassive;
 	}
 	
+	@Override
+	public String getVoornaam() {
+		return super.getVoornaam();
+	}
+
+	@Override
+	public String getFamilienaam() {
+		return super.getFamilienaam();
+	}
+
 	@Override
 	public String toString() {
 		return getVoornaam() + " " + getFamilienaam();

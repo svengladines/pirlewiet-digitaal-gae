@@ -58,10 +58,15 @@ function listen( context, next ){
 	
 }
 
-function laadFormulier( context, id, action ) {
-	
-	$("#deelnemerslijst").load( context + "/" + id + "/formulier", function() {
-		
+function query( context ) {
+	$.ajax({
+		type : "GET",
+		cache : false,
+		url: $(".form-query").attr("action"),
+		data : $(".form-query").serialize(),
+		success : function(jsp) {
+			$("#" + context).html(jsp);
+		}
 	});
-		
+	return false;
 }

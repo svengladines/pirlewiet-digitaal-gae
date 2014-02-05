@@ -35,8 +35,6 @@ public class DienstService {
 
 	public Dienst findDienstById(Long id) {
 		Dienst dienst = dienstRepository.find(id);
-		LOG.debug("findDienstById: {}", dienst.toString());
-
 		return dienst;
 	}
 

@@ -19,6 +19,7 @@ import javax.persistence.OneToOne;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 
@@ -40,8 +41,9 @@ public class Dienst implements Serializable {
 	private String afdeling;
 
 	// SGL| eager, anders fout in dienstDetail.jsp
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dienst", fetch=FetchType.EAGER )
-	private Set<Contactpersoon> contactpersonen = new HashSet<Contactpersoon>(0);
+	// @OneToMany(cascade = CascadeType.ALL, mappedBy = "dienst", fetch=FetchType.EAGER )
+	@JsonIgnore
+	// private Set<Contactpersoon> contactpersonen = new HashSet<Contactpersoon>(0);
 
 	public Dienst() {
 		// TODO Auto-generated constructor stub
@@ -105,10 +107,10 @@ public class Dienst implements Serializable {
 	 * Geeft ALLE contactpersonen terug van deze Dienst, ongeacht hun isPassive-boolean.
 	 * 
 	 * @return
-	 */
 	public Set<Contactpersoon> getContactpersonen() {
 		return contactpersonen;
 	}
+	*/
 
 	public Credentials getCredentials() {
 		List<String> roles = new ArrayList<String>();
@@ -122,7 +124,7 @@ public class Dienst implements Serializable {
 	}
 
 	public void setContactpersonen(Set<Contactpersoon> contactpersonen) {
-		this.contactpersonen = contactpersonen;
+		// this.contactpersonen = contactpersonen;
 	}
 
 	public String getAfdeling() {
@@ -133,12 +135,14 @@ public class Dienst implements Serializable {
 		this.afdeling = afdeling;
 	}
 
+	/*
 	public void addContactpersoon(Contactpersoon contactpersoon) {
 		if (this.getContactpersonen() == null) {
 			this.setContactpersonen(new HashSet<Contactpersoon>());
 		}
 		this.getContactpersonen().add(contactpersoon);
 	}
+	*/
 
 	@Override
 	public String toString() {

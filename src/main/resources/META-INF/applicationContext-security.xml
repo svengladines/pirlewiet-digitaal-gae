@@ -9,6 +9,21 @@
 
 	<security:http pattern="/resources/**" security="none"
 		use-expressions="true" />
+		
+	<security:http pattern="/dienst/**" security="none"
+		use-expressions="true" />
+		
+	<security:http pattern="/secretariaat/**" security="none"
+		use-expressions="true" />
+		
+	<security:http pattern="/inschrijvingen/**" security="none"
+		use-expressions="true" />
+		
+	<security:http pattern="/deelnemer/**" security="none"
+		use-expressions="true" />
+		
+	<security:http pattern="/deelnemers/**" security="none"
+		use-expressions="true" />
 
 	<security:http auto-config='true' use-expressions="true">
 		<security:intercept-url pattern="/login"

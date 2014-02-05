@@ -9,16 +9,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.apache.ldap.common.util.EqualsBuilder;
 import org.apache.ldap.common.util.HashCodeBuilder;
@@ -38,10 +35,8 @@ public class Inschrijving implements Serializable {
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Contactpersoon contactpersoon;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
-//	@IndexColumn(name="deelnemers_col")
-    private List<Deelnemer> deelnemers
-    	= new ArrayList<Deelnemer>();
+    @ManyToOne
+    private Deelnemer deelnemer;
 
     @Embedded
     private Adres deelnemersAdres;
@@ -92,19 +87,12 @@ public class Inschrijving implements Serializable {
         this.id = id;
     }
 
-    public List<Deelnemer> getDeelnemers() {
-        return deelnemers;
+    public Deelnemer getDeelnemer() {
+        return deelnemer;
     }
 
-    public void setDeelnemers(List<Deelnemer> deelnemers) {
-        this.deelnemers = deelnemers;
-    }
-
-    public void addDeelnemer(Deelnemer deelnemer) {
-        if (this.deelnemers == null){
-            this.deelnemers = new ArrayList<Deelnemer>();
-        }
-        this.deelnemers.add(deelnemer);
+    public void setDeelnemer(Deelnemer deelnemer) {
+        this.deelnemer = deelnemer;
     }
 
     public Contactpersoon getContactpersoon() {
@@ -154,11 +142,13 @@ public class Inschrijving implements Serializable {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+	
+	
 
 	@Override
     public int hashCode() {
         return new HashCodeBuilder().append(getVakantieproject()).
-                append(getDeelnemers()).append(getContactpersoon()).toHashCode();
+                append(getDeelnemer()).append(getContactpersoon()).toHashCode();
     }
 
     @Override
@@ -173,7 +163,7 @@ public class Inschrijving implements Serializable {
 
         return new EqualsBuilder().append(getVakantieproject(),
                 castOther.getVakantieproject()).
-                append(getDeelnemers(), castOther.getDeelnemers())
+                append(getDeelnemer(), castOther.getDeelnemer())
                 .append(getContactpersoon(), castOther.getContactpersoon())
                 .append(getInschrijvingsdatum(), castOther.getInschrijvingsdatum())
                 .isEquals();

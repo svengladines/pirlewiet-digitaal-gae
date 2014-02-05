@@ -13,16 +13,24 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Dienst;
 import be.pirlewiet.registrations.model.DienstJsonObject;
+import be.pirlewiet.registrations.model.Inschrijving;
 import be.pirlewiet.registrations.model.SearchObject;
+import be.pirlewiet.registrations.model.Secretariaatsmedewerker;
+import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.VakantieProject;
 import be.pirlewiet.registrations.services.DienstService;
+import be.pirlewiet.registrations.services.InschrijvingService;
+import be.pirlewiet.registrations.services.SecretariaatsmedewerkerService;
 import be.pirlewiet.registrations.services.VakantieProjectService;
 import be.pirlewiet.registrations.services.VakantietypeService;
 import be.pirlewiet.registrations.utils.JSONUtils;
@@ -40,9 +48,15 @@ public class SecretariaatController {
 
 	@Autowired
 	private VakantietypeService vakantietypeService;
+	
+	@Autowired
+	private InschrijvingService inschrijvingService;
 
 	@Autowired
 	private DienstService dienstService;
+	
+	@Autowired
+	private SecretariaatsmedewerkerService secretariaatsmedewerkerService;
 
 	@Autowired
 	private JSONUtils jsonUtils;
@@ -50,43 +64,34 @@ public class SecretariaatController {
 	@Autowired
 	private MenuUtils menuUtils;
 
-	@RequestMapping("/home")
-	public ModelAndView navigate(@ModelAttribute(value = "screenDropDownObject") ScreenDropDownObject dropDownObject) {
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public ModelAndView home(@RequestParam("gebruiker") String userId ) {
+		
+		Model m = new ExtendedModelMap();
 
-		LOGGER.info("Screen: " + dropDownObject.getScreenName());
-		ScreenDropDownObject newDropDownObject = menuUtils.createDropDownObject();
-		Map<String, Object> data = new HashMap<String, Object>();
+		Secretariaatsmedewerker medewerker
+			= this.secretariaatsmedewerkerService.findById( Long.valueOf( userId ) );
+		
+		m.addAttribute("gebruiker", medewerker );
 
-		if (dropDownObject.getScreenName() == null || dropDownObject.getScreenName().equals(MenuUtils.DEELNEMERS)) {
-			data.put("screen", MenuUtils.DEELNEMERS);
-			newDropDownObject.setScreenName(MenuUtils.DEELNEMERS);
-		} else if (dropDownObject.getScreenName().equals(MenuUtils.DOORVERWIJZER)) {
+		return new ModelAndView("secretariaat/home", m.asMap() );
+		
+	}
+	
+	@RequestMapping(value = "/inschrijving/{id}", method = RequestMethod.GET)
+	@Transactional
+	public ModelAndView viewInschrijving(@PathVariable Long id ) {
 
-			data.put("screen", MenuUtils.DOORVERWIJZER);
-			data.put("diensten", dienstService.getAllDiensten());
-			data.put("dienst_object", new Dienst());
-			data.put("dienstList", null);
-			data.put("searchObject", new SearchObject());
-			newDropDownObject.setScreenName(MenuUtils.DOORVERWIJZER);
-		} else if (dropDownObject.getScreenName().equals(MenuUtils.INSCHRIJVINGEN)) {
-			data.put("screen", MenuUtils.INSCHRIJVINGEN);
+		Inschrijving inschrijving
+			= this.inschrijvingService.findInschrijvingById( id );
+		
+		Map<String, Object> model 
+			= new HashMap<String, Object>();
+	
+		model.put( "inschrijving", inschrijving );
 
-			newDropDownObject.setScreenName(MenuUtils.INSCHRIJVINGEN);
-		} else if (dropDownObject.getScreenName().equals(MenuUtils.VAKANTIEPROJECTEN)) {
-			// Set the vars for vakantieprojecten on the model
-			data.put("screen", MenuUtils.VAKANTIEPROJECTEN);
-			data.put("vakanties", vakantieprojectService.getAllVakantieProjecten());
-			data.put("vakantieproject", new VakantieProject());
-			data.put("vakantieTypes", vakantietypeService.getAllVakantietypes());
-			newDropDownObject.setScreenName(MenuUtils.VAKANTIEPROJECTEN);
-		} else if (dropDownObject.getScreenName().equals(MenuUtils.DEELNEMERS)) {
-			data.put("screen", MenuUtils.DEELNEMERS);
-			newDropDownObject.setScreenName(MenuUtils.DEELNEMERS);
-		}
+		return new ModelAndView( "secretariaat/inschrijving", model );
 
-		data.put("screenDropDownObject", newDropDownObject);
-
-		return new ModelAndView("secretariaat/home", data);
 	}
 
 	@RequestMapping("/vakanties.html")

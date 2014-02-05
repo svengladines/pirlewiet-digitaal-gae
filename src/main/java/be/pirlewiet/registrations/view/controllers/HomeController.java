@@ -57,7 +57,7 @@ public class HomeController {
 
 	private Logger logger = Logger.getLogger(this.getClass());
 
-	@RequestMapping(value = { "/dienst/home", "/" })
+	//@RequestMapping(value = { "/dienst/home", "/" })
 	public ModelAndView navigate(Principal principal) {
 		Model m = new ExtendedModelMap();
 
@@ -113,70 +113,6 @@ public class HomeController {
 		Deelnemer removed = deelnemers.remove(rowID);
 
 		return removed;
-	}
-
-	@RequestMapping(value = "model/inschrijving/add", method = RequestMethod.POST)
-	@Transactional
-	public ModelAndView addInschrijving(@ModelAttribute("command") InschrijvingenForm inschrijvingenForm) {
-		Inschrijving inschrijving = inschrijvingenForm.getAanvraagInschrijving();
-		// kan deze blok optimaler?????
-		Dienst eventueelAangepasteDienst = inschrijving.getContactpersoon().getDienst();
-		Contactpersoon eventueelAangepasteContactpersoon = inschrijving.getContactpersoon();
-
-		long idVanGeselecteerdeContactpersoon = inschrijving.getContactpersoon().getId();
-
-		Contactpersoon c = contactpersoonService.findById(idVanGeselecteerdeContactpersoon);
-		if (eventueelAangepasteContactpersoon.getEmail() != null) {
-			c.setEmail(eventueelAangepasteContactpersoon.getEmail());
-		} else {
-			c.setEmail("");
-		}
-		if (eventueelAangepasteContactpersoon.getTelefoonnr() != null) {
-			c.setTelefoonnr(eventueelAangepasteContactpersoon.getTelefoonnr());
-		} else {
-			c.setTelefoonnr("");
-		}
-		if (eventueelAangepasteContactpersoon.getFunctie() != null) {
-			c.setFunctie(eventueelAangepasteContactpersoon.getFunctie());
-
-		} else {
-			c.setFunctie("");
-		}
-
-		c.getDienst().setAdres(eventueelAangepasteDienst.getAdres());
-		c.getDienst().setEmailadres(eventueelAangepasteDienst.getEmailadres());
-		c.getDienst().setFaxnummer(eventueelAangepasteDienst.getFaxnummer());
-		c.getDienst().setTelefoonnummer(eventueelAangepasteDienst.getTelefoonnummer());
-		inschrijving.setContactpersoon(c);
-		// -----------------------------------------------------------------------------------
-
-		VakantieProject gekozenVp = vakantieProjectService.findVakantieProjectById(inschrijving.getVakantieproject()
-				.getId());
-		inschrijving.setVakantieproject(gekozenVp);
-
-		// ---- Create list of deelnemers ----
-		Deelnemer identicalParticipant = null;
-		List<Deelnemer> aanvraagDeelnemers = new ArrayList<Deelnemer>();
-
-		for (Deelnemer dnr : deelnemers.values()) {
-			identicalParticipant = deelnemerService.findIdenticalDeelnemer(dnr.getRijksregisternr());
-			if (identicalParticipant != null) {
-				dnr = identicalParticipant;
-			}
-
-			aanvraagDeelnemers.add(dnr);
-		}
-		// -------------------------------------
-
-		inschrijving.setDeelnemers(aanvraagDeelnemers);
-		inschrijving.setStatus(Status.NIEUW);
-
-		// Moet nog geset worden naar een waarde uit het formulier
-
-		inschrijving = inschrijvingService.createInschrijving(inschrijving);
-		deelnemers.clear();
-
-		return new ModelAndView("dienst/inschrijvingBevestiging", "inschrijvingID", inschrijving.getId());
 	}
 
 	// Accept date input in standard text input fields (format dd/MM/yyyy)

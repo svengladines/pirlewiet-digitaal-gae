@@ -48,16 +48,30 @@ public class InschrijvingService {
 		Inschrijving i = this.findInschrijvingById( id );
 		VakantieProject vakantie = this.vakantieProjectService.findVakantieProjectById( vakantieId );
 		i.setVakantieproject( vakantie );
-		i.setDeelnemers( new ArrayList<Deelnemer>() );
 		i.setStatus( Status.VAKANTIEGEKOZEN );
 		return this.inschrijvingRepository.update( i );
 	}
 	
 	@Transactional(readOnly=false)
-	public Inschrijving addDeelnemer(long id, long deelnemerId ) {
+	public Inschrijving updateOpmerkingen(long id, String opmerkingen ) {
+		Inschrijving i = this.findInschrijvingById( id );
+		i.setOpmerkingen( opmerkingen );
+		i.setStatus( Status.OPMERKINGENINGEVULD );
+		return this.inschrijvingRepository.update( i );
+	}
+	
+	@Transactional(readOnly=false)
+	public Inschrijving updateStatus(long id, Status status ) {
+		Inschrijving i = this.findInschrijvingById( id );
+		i.setStatus( status );
+		return this.inschrijvingRepository.update( i );
+	}
+	
+	@Transactional(readOnly=false)
+	public Inschrijving updateDeelnemer(long id, long deelnemerId ) {
 		Inschrijving i = this.findInschrijvingById( id );
 		Deelnemer deelnemer = this.deelnemerService.find( deelnemerId );
-		i.getDeelnemers().add( deelnemer );
+		i.setDeelnemer( deelnemer );
 		i.setStatus( Status.DEELNEMERTOEGEVOEGD );
 		return this.inschrijvingRepository.update( i );
 	}
@@ -82,6 +96,14 @@ public class InschrijvingService {
 
 	public List<Inschrijving> getInschrijvingen() {
 		return inschrijvingRepository.findAll();
+	}
+	
+	public List<Inschrijving> findActueleInschrijvingen() {
+		return inschrijvingRepository.findActueleInschrijvingen();
+	}
+	
+	public List<Inschrijving> findActueleInschrijvingenByContactPersoon(Contactpersoon contact) {
+		return inschrijvingRepository.findActueleInschrijvingenByContactPersoon(contact);
 	}
 
 	public List<Inschrijving> findActueleInschrijvingenByDienst(Dienst dienst) {

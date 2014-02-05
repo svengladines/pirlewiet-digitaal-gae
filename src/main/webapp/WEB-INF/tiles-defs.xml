@@ -87,6 +87,12 @@
 		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp"/>
 	</definition>
 	
+	<definition name="secretariaat/inschrijving" extends="baseLayout">
+		<put-attribute name="title" value="Inschrijving" />
+		<put-attribute name="body" value="/WEB-INF/views/secretariaat/inschrijving.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/tiles/secretariaat/menu.jsp"/>
+	</definition>
+	
 	<definition name="error/accessdenied" extends="baseLayout">
 		<put-attribute name="title" value="Access denied" />
 		<put-attribute name="body" value="/WEB-INF/views/error/accessdenied.jsp" />

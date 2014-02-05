@@ -134,7 +134,7 @@ public class DeelnemerCrudController {
 		Map<String,Object> resultaat = new HashMap<String, Object>();
 		resultaat.put("deelnemers", deelnemers );
 		
-		return new ModelAndView( "/forms/inschrijving_deelnemers", resultaat );
+		return new ModelAndView( "/forms/inschrijving_deelnemer", resultaat );
 		
 	}
 

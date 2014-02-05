@@ -8,17 +8,8 @@
 	<title><tiles:insertAttribute name="title" ignore="true" /></title>
 	
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap-3/css/bootstrap.css" />
-<!-- 
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/css/templateStyle.css" />
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/css/dialogStyle.css" />
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/css/aanvraagSummary.css" />
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/resources/css/jquery-ui/jquery-ui-1.8.21.custom.css" />
-<style type="text/css" title="currentStyle"></style>
--->
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/internal.css" />
+	
 <script type="text/javascript" language="javascript"
 	src="<%=request.getContextPath()%>/resources/DataTables/media/js/jquery.js"></script>
 <script type="text/javascript" language="javascript"
@@ -44,14 +35,7 @@
 </head>
 
 <body>
-	<header class="navbar navbar-inverse navbar-static-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<a href="${secretariaatDropDownLink}" class="navbar-brand">Pirlewiet</a>
-			</div>
-			<tiles:insertAttribute name="menu" />
-		</div>
-	</header>
+	<tiles:insertAttribute name="menu" />
 
 	<div id="content" class="container">
 		<tiles:insertAttribute name="body" />

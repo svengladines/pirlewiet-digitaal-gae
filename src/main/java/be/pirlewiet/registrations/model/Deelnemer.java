@@ -36,9 +36,6 @@ public class Deelnemer extends Persoon implements Serializable {
 	private String flatFamilyName;
 	
 	// @ManyToMany(mappedBy = "deelnemers")
-	@Transient
-	private Set<Inschrijving> inschrijvingen = new HashSet<Inschrijving>(0);
-	
 	public Deelnemer(String rijksregisternr, String voornaam, String familienaam, Date geboortedatum) {
 		this(voornaam, familienaam, geboortedatum);
 		this.rijksregisternr = rijksregisternr;
@@ -50,7 +47,6 @@ public class Deelnemer extends Persoon implements Serializable {
 	}
 	
 	public Deelnemer() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Geslacht getGeslacht() {
@@ -59,17 +55,8 @@ public class Deelnemer extends Persoon implements Serializable {
 		return geslacht;
 	}
 
-	public Set<Inschrijving> getInschrijvingen() {
-		return inschrijvingen;
-	}
-
-
 	public void setGeslacht(Geslacht geslacht) {
 		this.geslacht = geslacht;
-	}
-
-	public void setInschrijvingen(Set<Inschrijving> inschrijvingen) {
-		this.inschrijvingen = inschrijvingen;
 	}
 
 	public String getGsmnr() {
@@ -102,6 +89,16 @@ public class Deelnemer extends Persoon implements Serializable {
 
 	public void setFlatFamilyName(String flatFamilyName) {
 		this.flatFamilyName = flatFamilyName;
+	}
+	
+	@Override
+	public String getVoornaam() {
+		return super.getVoornaam();
+	}
+
+	@Override
+	public String getFamilienaam() {
+		return super.getFamilienaam();
 	}
 
 	@Override

@@ -18,10 +18,21 @@ import be.pirlewiet.registrations.model.Vakantietype;
 
 @Repository
 public class InschrijvingRepository extends AbstractRepository<Inschrijving> {
-    public List<Inschrijving> findActueleInschrijvingenByDienst(Dienst dienst) {
+	
+	public List<Inschrijving> findActueleInschrijvingenByContactPersoon(Contactpersoon contact) {
+        Query q = em.createQuery("SELECT DISTINCT i FROM Inschrijving i WHERE i.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.id = :contactId) AND i.vakantieproject.eindDatum >= CURRENT_DATE");
+        q.setParameter("contactId", contact.getId() );
+        return new ArrayList<Inschrijving>(q.getResultList());
+    }
+	
+	public List<Inschrijving> findActueleInschrijvingen() {
+        Query q = em.createQuery("SELECT DISTINCT i FROM Inschrijving i where i.vakantieproject.eindDatum >= CURRENT_DATE");
+        return new ArrayList<Inschrijving>(q.getResultList());
+    }
+    
+	public List<Inschrijving> findActueleInschrijvingenByDienst(Dienst dienst) {
         Query q = em.createQuery("SELECT DISTINCT a FROM AanvraagInschrijving a WHERE a.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.dienst = :dienst) AND a.vakantieproject.eindDatum >= CURRENT_DATE");
         q.setParameter("dienst", dienst);
-
         return new ArrayList<Inschrijving>(q.getResultList());
     }
 

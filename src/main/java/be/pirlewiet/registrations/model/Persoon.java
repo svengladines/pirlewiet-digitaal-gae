@@ -20,21 +20,18 @@ import org.apache.ldap.common.util.HashCodeBuilder;
 @Entity
 @Table(name = "PERSOON") 
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE) 
-@DiscriminatorColumn(name="discriminator", discriminatorType=DiscriminatorType.CHAR)
-@DiscriminatorValue(value="P")
-public class Persoon implements Serializable {
+@DiscriminatorColumn(name="discriminator", discriminatorType=DiscriminatorType.STRING)
+public abstract class Persoon implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	private String voornaam;
+	protected String voornaam;
 
 //	@Column(nullable = false)
-	private String familienaam;
+	protected String familienaam;
 
 	private String telefoonnr;
-
-	
 	
 	public void setId(long id) {
 		this.id = id;

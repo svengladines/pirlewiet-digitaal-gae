@@ -37,10 +37,10 @@ public class DeelnemerRepository extends AbstractRepository<Deelnemer> {
 	}
 	
 	public List<Deelnemer> findByFlatFamilyName(String ffn) {
-		Query q = em.createQuery("SELECT d FROM Deelnemer d WHERE d.flatFamilyName = :ffn");
+		Query q = em.createQuery("SELECT d FROM Deelnemer d WHERE d.flatFamilyName LIKE :ffn");
 //		Query q = em.createQuery("SELECT d FROM Deelnemer d JOIN d.inschrijvingen a WHERE a.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.dienst = :dienst)");
-		q.setParameter("ffn",ffn);
-		
-		return new ArrayList<Deelnemer>(q.getResultList());
+		q.setParameter("ffn", new StringBuilder(ffn).append("%").toString() );
+		List<Deelnemer> list = q.getResultList();
+		return list;
 	}
 }

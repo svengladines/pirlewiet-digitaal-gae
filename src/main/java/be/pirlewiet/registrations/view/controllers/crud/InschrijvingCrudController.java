@@ -13,21 +13,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import be.pirlewiet.registrations.model.Contactpersoon;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Dienst;
 import be.pirlewiet.registrations.model.Inschrijving;
+import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.services.ContactpersoonService;
 import be.pirlewiet.registrations.services.DeelnemerService;
 import be.pirlewiet.registrations.services.DienstService;
@@ -55,63 +58,58 @@ public class InschrijvingCrudController {
 	@Autowired
 	private ContactpersoonService contactpersoonService;
 	
-	private HashMap<String, Deelnemer> deelnemers = new HashMap<String, Deelnemer>();
-	
-	/**
-	 * This method generates dummy data for a datatable. The only requirement is that the main object in JSON is of type 'aaData'.
-	 * The logic in this method must be replaced with a service call to retrieve live data.
-	 * @param req
-	 * @param map
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "datatabledatagenerated", produces = "application/json")
-	@ResponseBody
-	public Map<String, Object> dataTableJson(ModelMap model) {
+	@RequestMapping( method=RequestMethod.GET, produces=MediaType.TEXT_HTML_VALUE)
+	public ModelAndView queryView(@RequestParam(required=false) String contact, @RequestParam(required=false) String dienst, @RequestParam(required=true) String context ) {
 		
-		Dienst loggedInDienst = dienstService.getLoggedInDienst();
-		List<Deelnemer> lijstDeelnemersPerDienst = deelnemerService.getDeelnemersByDienst(loggedInDienst); //new ArrayList<Deelnemer>();
-		logger.info("Dienst logged in: " + loggedInDienst);
+		Map<String,Object> resultaat = new HashMap<String, Object>();
 		
-		List<Object> b = new ArrayList<Object>();
-		DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
-		for (Deelnemer deelnemer : lijstDeelnemersPerDienst) {
-			List<String> a = new ArrayList<String>();
-			a.add(deelnemer.getId() +"");
-			a.add(deelnemer.getVoornaam());
-			a.add(deelnemer.getFamilienaam());
-			a.add(df.format(deelnemer.getGeboortedatum()));
-			a.add(deelnemer.getGeslacht() + "");
-			b.add(a);
+		if ( contact != null && ( ! contact.isEmpty() ) ) {
+			
+			Contactpersoon contactPersoon
+				= this.contactpersoonService.findById( Long.valueOf( contact ) );
+			
+			List<Inschrijving> inschrijvingen 
+				= this.inschrijvingService.findActueleInschrijvingenByContactPersoon( contactPersoon );
+			
+			for ( Inschrijving inschrijving : inschrijvingen ) {
+				inschrijving.setContactpersoon( contactPersoon );
+			}
+			resultaat.put("inschrijvingen", inschrijvingen );
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("aaData", b);
-		
-		Map<String,Object> sessionData = (Map<String,Object>)model.get("deelnemersDatatableData");
-		if (sessionData == null) {
-			logger.info("deelnemersDatatableData op de sessie is null ");
-			model.put("deelnemersDatatableData", map);
-		} else {
-			logger.info("Er is al een deelnemersDatatableTabel op de sessie geplaatst...");
-			return sessionData;
+		else {
+			
+			List<Inschrijving> inschrijvingen 
+				= this.inschrijvingService.findActueleInschrijvingen();
+			logger.debug( "found [{}] inschrijvingen", inschrijvingen.size() );
+			resultaat.put("inschrijvingen", inschrijvingen );
 		}
-		return map;
+		
+		resultaat.put("context", context);
+		
+		return new ModelAndView( "/tables/inschrijvingenTable", resultaat );
+		
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@Transactional
 	@ResponseBody
-	public ResponseEntity<Inschrijving> post(@ModelAttribute("command") Inschrijving inschrijving ) {
+	public ResponseEntity<Inschrijving> post(@RequestParam String contact ) {
 		
-		if ( inschrijving.getId() == 0L ) {
+		Contactpersoon contactPersoon
+			= this.contactpersoonService.findById( Long.valueOf( contact) );
+		
+		if ( contactPersoon != null ) {
+			Inschrijving inschrijving
+				= new Inschrijving();
+			inschrijving.setContactpersoon( contactPersoon );
 			inschrijving = this.inschrijvingService.create( inschrijving );
 			logger.info( "created inschrijving met id [{}]", inschrijving.getId() );
+			return response( inschrijving, HttpStatus.OK );
 		}
 		else {
-			inschrijving = inschrijvingService.update( inschrijving );
+			return response( HttpStatus.NOT_FOUND );
 		}
 		
-		return response( inschrijving, HttpStatus.OK );
 		
 	}
 	
@@ -129,7 +127,21 @@ public class InschrijvingCrudController {
 		
 	}
 	
-	@RequestMapping(value="{id}/deelnemers", method = RequestMethod.POST)
+	@RequestMapping(value="{id}/opmerkingen", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Inschrijving> setOpmerkingen(
+			@PathVariable String id,
+			@RequestParam String opmerkingen ) {
+		
+		logger.info( "[{}], set opmerkingen [{}]", id, opmerkingen );
+		
+		Inschrijving inschrijving = inschrijvingService.updateOpmerkingen( Long.valueOf(id), opmerkingen );
+		
+		return response( inschrijving, HttpStatus.OK );
+		
+	}
+	
+	@RequestMapping(value="{id}/deelnemer", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Inschrijving> addDeelnemer(
 			@PathVariable String id,
@@ -137,7 +149,21 @@ public class InschrijvingCrudController {
 		
 		logger.info( "[{}], set deelnemer [{}]", id, deelnemerId );
 		
-		Inschrijving inschrijving = inschrijvingService.addDeelnemer( Long.valueOf(id), Long.valueOf( deelnemerId ) );
+		Inschrijving inschrijving = inschrijvingService.updateDeelnemer( Long.valueOf(id), Long.valueOf( deelnemerId ) );
+		
+		return response( inschrijving, HttpStatus.OK );
+		
+	}
+	
+	@RequestMapping(value="{id}/status", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Inschrijving> setStatus(
+			@PathVariable String id,
+			@RequestParam Status status ) {
+		
+		logger.info( "[{}], set status [{}]", id, status );
+		
+		Inschrijving inschrijving = inschrijvingService.updateStatus( Long.valueOf(id), status );
 		
 		return response( inschrijving, HttpStatus.OK );
 		
