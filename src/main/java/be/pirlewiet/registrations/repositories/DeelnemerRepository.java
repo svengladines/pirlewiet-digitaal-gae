@@ -1,46 +1,11 @@
 package be.pirlewiet.registrations.repositories;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Query;
-
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import be.pirlewiet.registrations.model.Deelnemer;
-import be.pirlewiet.registrations.model.Dienst;
 
-@Repository
-public class DeelnemerRepository extends AbstractRepository<Deelnemer> {
+public interface DeelnemerRepository extends JpaRepository<Deelnemer, Long>{
+	
+	public Deelnemer findById( Long id );
 
-	@SuppressWarnings("unchecked")
-	public List<Deelnemer> findDeelnemersByDienstID(Dienst dienst) {
-		Query q = em.createQuery("SELECT DISTINCT a.deelnemers FROM AanvraagInschrijving a WHERE a.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.dienst = :dienst)");
-//		Query q = em.createQuery("SELECT d FROM Deelnemer d JOIN d.inschrijvingen a WHERE a.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.dienst = :dienst)");
-		q.setParameter("dienst",dienst);
-		
-		return new ArrayList<Deelnemer>(q.getResultList());
-	}
-	
-	public Deelnemer findOneByRRN(String rijksregisternr){
-		Query q = em.createQuery("SELECT d FROM Deelnemer d WHERE d.rijksregisternr = :rijksregisternr");
-		
-		q.setParameter("rijksregisternr", rijksregisternr);
-		List<Deelnemer> resultList = q.getResultList();
-		Deelnemer result = null;
-		
-		if (resultList.size() > 0) {
-			result = resultList.get(0);
-		}
-		
-		return result;
-	}
-	
-	public List<Deelnemer> findByFlatFamilyName(String ffn) {
-		Query q = em.createQuery("SELECT d FROM Deelnemer d WHERE d.flatFamilyName LIKE :ffn");
-//		Query q = em.createQuery("SELECT d FROM Deelnemer d JOIN d.inschrijvingen a WHERE a.contactpersoon IN (SELECT c FROM Contactpersoon c WHERE c.dienst = :dienst)");
-		q.setParameter("ffn", new StringBuilder(ffn).append("%").toString() );
-		List<Deelnemer> list = q.getResultList();
-		return list;
-	}
 }

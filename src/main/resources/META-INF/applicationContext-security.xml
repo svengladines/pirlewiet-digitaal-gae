@@ -15,6 +15,12 @@
 		
 	<security:http pattern="/secretariaat/**" security="none"
 		use-expressions="true" />
+	
+	<security:http pattern="/procedures/**" security="none"
+		use-expressions="true" />
+		
+	<security:http pattern="/procedure/**" security="none"
+		use-expressions="true" />
 		
 	<security:http pattern="/inschrijvingen/**" security="none"
 		use-expressions="true" />

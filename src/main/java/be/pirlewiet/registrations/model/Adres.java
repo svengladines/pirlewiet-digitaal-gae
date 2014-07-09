@@ -4,28 +4,20 @@
  */
 package be.pirlewiet.registrations.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 
-import org.apache.log4j.Logger;
-
-/**
- * 
- * @author bgri978
- */
-@SuppressWarnings("serial")
 @Embeddable
-public class Adres implements Serializable {
+public class Adres {
+	
+	// @Id
+    // @GeneratedValue(strategy = GenerationType.AUTO)
+    // private long id;
+	
 	private String straat;
 	private String postcode;
 	private String gemeente;
 	private String nummer;
 	
-	@Transient
-	Logger logger = Logger.getLogger(this.getClass());
-
 	public String getPostcode() {
 		return postcode;
 	}

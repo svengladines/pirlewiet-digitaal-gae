@@ -46,17 +46,3 @@ INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmn
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,telefoonnr,email,gsmnr,rijksregisternr,geboortedatum,dienst_id,isPassive,functie) VALUES ('C',3,'Van Goeddoel','Frans','015/242832','f.vg@pirlewiet.be','0496012399','254-12 98.87.23','1989-10-03',1,false,'verantwoordelijke');
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,credentials_id, displayed) VALUES ('S',6,'werker','mede',1, true);
 INSERT INTO persoon (discriminator,id,familienaam,voornaam,credentials_id, displayed) VALUES ('S',7,'marco','not displayed',2, true);
-
-INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,inschrijvingsdatum,contactType,straat,nummer,gemeente) VALUES (1,1,1,2,'2014-07-17',1,'Goorse baan',22,'Goor');
-INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (1,1);
-
-INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,status,contactType) VALUES (2,2,1,2,1,0);
-INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (2,5);
-INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (2,1);
-INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (2,4);
-
-INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,status,contactType) VALUES (3,3,1,3,2,1);
-INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (3,1);
-
-INSERT INTO aanvraaginschrijving (id,vakantieproject_id,gezinsnummer,contactpersoon_id,status,contactType) VALUES (4,1,1,3,3,0);
-INSERT INTO aanvraaginschrijving_persoon (inschrijvingen_id,deelnemers_id) VALUES (4,4);

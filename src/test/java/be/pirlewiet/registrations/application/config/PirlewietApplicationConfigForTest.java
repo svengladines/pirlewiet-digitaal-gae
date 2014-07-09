@@ -2,6 +2,7 @@ package be.pirlewiet.registrations.application.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -10,6 +11,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
+import be.pirlewiet.registrations.jtests.TestData;
 
 @Configuration
 public class PirlewietApplicationConfigForTest {
@@ -35,10 +37,18 @@ public class PirlewietApplicationConfigForTest {
 			// vendorAdapter.setGenerateDdl(true);
 			vendorAdapter.setShowSql(true);
 			vendorAdapter.getJpaPropertyMap().put( "hibernate.hbm2ddl.auto", "create-drop" );
-			vendorAdapter.getJpaPropertyMap().put( "hibernate.hbm2ddl.import_files", "import.sql" );
+			// vendorAdapter.getJpaPropertyMap().put( "hibernate.hbm2ddl.import_files", "import.sql" );
 			
 			return vendorAdapter;
 		}
+		
+	}
+	
+	@Bean
+	@Lazy(false)
+	public TestData testData() {
+		
+		return new TestData();
 		
 	}
 	

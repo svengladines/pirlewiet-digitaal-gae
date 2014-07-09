@@ -1,17 +1,19 @@
 package be.pirlewiet.registrations.application.config;
 
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
@@ -20,11 +22,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
+import be.pirlewiet.registrations.model.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.repositories.SecretariaatsMedewerkerRepository;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories(basePackages="be.pirlewiet.registrations.repositories")
 public class PirlewietApplicationConfig {
 	
 	final static Logger logger
@@ -43,17 +48,50 @@ public class PirlewietApplicationConfig {
 	}
 	
 	@Configuration
-	@ComponentScan(basePackages="be.pirlewiet.registrations")
+	// @ComponentScan(basePackages="be.pirlewiet.registrations")
 	@ImportResource( "classpath:/META-INF/applicationContext.xml" )
 	public static class XmlConfig {
 		
 	}
 	
 	@Configuration
+	public static class BeansConfig {
+		
+		@Bean
+		SecretariaatsMedewerker secretariaatsMedewerker( SecretariaatsMedewerkerRepository secretariaatsmedewerkerRepository ) {
+			
+			List<SecretariaatsMedewerker> list
+				= secretariaatsmedewerkerRepository.findAll();
+			
+			if ( list.isEmpty() ) {
+				return new SecretariaatsMedewerker();
+			}
+			else {
+				return list.get( 0 );
+			}
+			
+		}
+		
+	}
+	
+	
+	/*
+	@Configuration
 	@ImportResource( "classpath:/META-INF/applicationContext-security.xml" )
 	public static class SecurityConfig {
 		
+		@Bean
+		CredentialsService credentialsService() {
+			return new CredentialsService();
+		}
+		
+		@Bean
+		CredentialsRepository credentialsRepository() {
+			return new CredentialsRepository();
+		}
+		
 	}
+	*/
 	
 	@Configuration
 	// @EnableJpaRepositories(value="be.kuleuven.toledo.extern.infrastructure.repository.iam", entityManagerFactoryRef="iamLocalContainerEntityManagerFactoryBean", transactionManagerRef="iamTransactionManager")
@@ -67,12 +105,12 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
-		public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean(DataSource dataSource,HibernateJpaVendorAdapter vendorAdapter) {
+		public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,HibernateJpaVendorAdapter vendorAdapter) {
 			LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 			factory.setJpaVendorAdapter(vendorAdapter);
 			factory.setPackagesToScan(BASE_PKG);
 			factory.setDataSource(dataSource);
-			factory.setPersistenceUnitName("pirlewietRegistrations");
+			factory.setPersistenceUnitName("pirlewiet-registrations");
 			factory.afterPropertiesSet();
 			return factory;
 		}

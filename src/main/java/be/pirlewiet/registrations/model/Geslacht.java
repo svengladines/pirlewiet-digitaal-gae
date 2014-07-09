@@ -1,7 +1,7 @@
 package be.pirlewiet.registrations.model;
 
 public enum Geslacht {
-	Onbekend("-"),Vrouw("Vrouw"),Man("Man");
+	Onbekend("-"),Vrouw("v"),Man("m");
 	
 	private String indicator;
 	
@@ -16,4 +16,5 @@ public enum Geslacht {
 	public String toString() {
 		return indicator;
 	}
+	
 }
