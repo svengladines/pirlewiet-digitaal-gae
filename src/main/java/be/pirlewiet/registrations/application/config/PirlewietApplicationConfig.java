@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.model.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.SecretariaatsMedewerkerRepository;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -70,6 +71,11 @@ public class PirlewietApplicationConfig {
 				return list.get( 0 );
 			}
 			
+		}
+		
+		@Bean
+		public Vragen vragen () {
+			return new Vragen();
 		}
 		
 	}
