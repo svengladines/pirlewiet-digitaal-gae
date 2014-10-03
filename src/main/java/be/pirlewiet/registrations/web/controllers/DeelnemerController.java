@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Deelnemer;
-import be.pirlewiet.registrations.model.SecretariaatsMedewerker;
 
 @Controller
 @RequestMapping( {"/inschrijvingen/{inschrijving}/deelnemers/{id}"} )
@@ -43,20 +43,22 @@ public class DeelnemerController {
 	@RequestMapping( method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Deelnemer> update(
+			 	@PathVariable String id,
 				@RequestBody Deelnemer deelnemer ) {
 		
 		Deelnemer updated
-			= this.secretariaatsMedewerker.pasAan( deelnemer );
+			= this.secretariaatsMedewerker.guard().updateDeelnemer( Long.valueOf( id ), deelnemer );
 		
 		return response( updated, HttpStatus.OK );
 		
 	}
 	
 	@ExceptionHandler(Exception.class)
+	@ResponseBody
 	public ResponseEntity<String> handleError( Exception e ){
 		
 		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
+		return response( e.getMessage(), HttpStatus.BAD_REQUEST );
 		
 	}
 	

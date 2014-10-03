@@ -20,8 +20,10 @@ import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
+import be.pirlewiet.registrations.model.Vraag.Type;
 
 /**
  * Dit scenario doorloopt de volledige workflow voor het inschrijven van 2 kinderen uit hetzelfde gezin voor een zomers Kika kamp.
@@ -53,7 +55,7 @@ public class TestInschrijvingKika extends JTest {
 	
 		InschrijvingX inschrijving
 			= new InschrijvingX();
-		inschrijving.setVakantie( vakantie );
+		inschrijving.getVakanties().add( vakantie.getId() );
 		
 		ResponseEntity<InschrijvingX> response
 			= postJSON( collectionUrl, inschrijving );
@@ -174,12 +176,10 @@ public class TestInschrijvingKika extends JTest {
 		
 		// de medewerker beantwoordt de extra vragen
 		Vraag vraagAntwoord
-			= new Vraag();
+			= new Vraag( Type.Text, Tags.TAG_ACTIVITIES, "Watyadoing ?");
 	
-		String vraag = "Watyadoing ?";
 		String antwoord = "Just hangin'";
 	
-		vraagAntwoord.setVraag( vraag );
 		vraagAntwoord.setAntwoord( antwoord );
 	
 		ResponseEntity<Vraag> vraagResponse

@@ -37,8 +37,13 @@
 	</logger>
 	
 	<logger name="org.springframework">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
+	
+	<logger name="org.springframework.orm.jpa.EntityManagerFactoryUtils">
+		<level value="error" />
+	</logger>
+	
 
 
 	<!-- Root Logger -->

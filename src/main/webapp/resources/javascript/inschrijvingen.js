@@ -1,8 +1,7 @@
-var Inschrijving = function ( vakantie ) {
+var Inschrijving = function ( id ) {
 
-	if ( vakantie != null ) {
-		this.vakantie = new Object();
-		this.vakantie.id = vakantie.id;
+	if ( id != null ) {
+		this.id = id;
 	}
 	
 };
@@ -70,7 +69,7 @@ var retrieveInschrijving = function ( id ) {
 				inschrijving = ix;
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			alert( errorThrown );
+			//alert( errorThrown );
 		}
 	});
 	
@@ -86,7 +85,7 @@ var retrieveInschrijvingen = function ( ) {
 				$jq.each( inschrijvingen, viewInschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			alert( errorThrown );
+			// alert( errorThrown );
 		}
 	});
 	
@@ -105,7 +104,7 @@ var postInschrijving = function ( rx ) {
 				window.location.href = "/rs/inschrijvingen/" + inschrijving.id + ".html";
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			alert( errorThrown );
+			// alert( errorThrown );
 		}
 	});
 	
@@ -125,13 +124,13 @@ var postDeelnemer = function ( inschrijving, dx, callback ) {
 				callback( dx );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			alert( errorThrown );
+			// alert( errorThrown );
 		}
 	});
 	
 };
 
-var putDeelnemer = function ( inschrijving, dx ) {
+var putDeelnemer = function ( inschrijving, dx, errorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -142,16 +141,15 @@ var putDeelnemer = function ( inschrijving, dx ) {
 		data: JSON.stringify(dx),
 		success: function( deelnemer ) {
 				dx.id = deelnemer.id;
-				suxxes();
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			alert( errorThrown );
+			error( errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putContact = function ( inschrijving, contact ) {
+var putContact = function ( inschrijving, contact, errorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -161,17 +159,15 @@ var putContact = function ( inschrijving, contact ) {
 	    processData: false,
 		data: JSON.stringify( contact ),
 		success: function( returned ) {
-			$jq("#contact-save").addClass("ok");
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			$jq("#contact-save").addClass("nok");
-			$jq("#contact-error").html( jqXHR.responseText );
+			error( errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putAdres = function ( inschrijving, adres ) {
+var putAdres = function ( inschrijving, adres, errorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -181,49 +177,27 @@ var putAdres = function ( inschrijving, adres ) {
 	    processData: false,
 		data: JSON.stringify( adres ),
 		success: function( returned ) {
-			$jq("#adres-save").addClass("ok");
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			$jq("#adres-save").addClass("nok");
-			$jq("#adres-error").html( jqXHR.responseText );
+			error( errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putVakantie = function ( inschrijving, vakantie, callback ) {
+var putVakanties = function ( inschrijving, vakanties, errorElement ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/vakantie",
+		url:"/rs/inschrijvingen/" + inschrijving.id + "/vakanties",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
-		data: JSON.stringify( vakantie ),
+		data: JSON.stringify( vakanties ),
 		success: function( returned ) {
-			callback();
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			$jq("#vakantie-error").html( jqXHR.responseText );
-		}
-	});
-	
-};
-
-var putAlternatief = function ( inschrijving, alternatief ) {
-
-	$jq.ajax( {
-		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/alternatief",
-		dataType: "json",
-		contentType: "application/json;charset=\"utf-8\"",
-	    processData: false,
-		data: JSON.stringify( alternatief ),
-		success: function( returned ) {
-			$jq("#alternatief-save").addClass("ok");
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			$jq("#vakantie-error").html( jqXHR.responseText );
+			error( errorElement, jqXHR.responseText );
 		}
 	});
 	
@@ -242,7 +216,7 @@ var postVraag = function ( inschrijving, vraag ) {
 				vraag.id = vx.id;
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			alert( errorThrown );
+			// alert( errorThrown );
 		}
 	});
 	
@@ -278,4 +252,11 @@ function getParameter(url, key) {
             return sParameterName[1];
         }
     }
+};
+
+function error( element, message ) {
+	
+	$jq("#submit").addClass("btn-danger");
+	element.html( message ).removeClass("hidden").addClass("show");
+	
 };

@@ -32,7 +32,7 @@ public class TestInschrijvingenController extends JTest {
 		
 		InschrijvingX inschrijving
 			= new InschrijvingX();
-		inschrijving.setVakantie( vakantie );
+		inschrijving.getVakanties().add( vakantie.getId() );
 		
 		ResponseEntity<InschrijvingX> response
 			= postJSON( url, inschrijving );

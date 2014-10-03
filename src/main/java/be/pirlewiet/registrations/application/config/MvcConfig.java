@@ -2,14 +2,15 @@ package be.pirlewiet.registrations.application.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import be.pirlewiet.registrations.web.controllers.CodesController;
 import be.pirlewiet.registrations.web.controllers.DeelnemerController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
+import be.pirlewiet.registrations.web.controllers.PageController;
 
 @Configuration
 @EnableWebMvc
@@ -52,6 +53,21 @@ public class MvcConfig {
 			return new DeelnemerController();
 			
 		}
+		
+		@Bean
+		public PageController pageController() {
+			
+			return new PageController();
+			
+		}
+		
+		@Bean
+		public CodesController codesController() {
+			
+			return new CodesController();
+			
+		}
+		
 		
 	}
 	

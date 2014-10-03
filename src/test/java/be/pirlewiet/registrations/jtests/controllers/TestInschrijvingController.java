@@ -19,7 +19,9 @@ import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vraag;
+import be.pirlewiet.registrations.model.Vraag.Type;
 
 public class TestInschrijvingController extends JTest {
 
@@ -140,12 +142,9 @@ public class TestInschrijvingController extends JTest {
 			= this.baseResourceUrl().append("/inschrijvingen/1/vragen").toString();
 		
 		Vraag vraagAntwoord
-			= new Vraag();
-		
-		String vraag = "Watyadoing ?";
+			= new Vraag( Type.Text, Tags.TAG_ACTIVITIES, "Watyadoing ?");
 		String antwoord = "Just hangin'";
 		
-		vraagAntwoord.setVraag( vraag );
 		vraagAntwoord.setAntwoord( antwoord );
 		
 		ResponseEntity<Vraag> response

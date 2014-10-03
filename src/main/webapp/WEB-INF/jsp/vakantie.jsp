@@ -20,13 +20,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">PIRLEWIET</a>
+          <span class="navbar-brand">PIRLEWIET</span>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/index.htm">HOME</a></li>
-            <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
-            <li><a href="organisatie.html">ORGANISATIE</a></li>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="inschrijvingen.html">INSCHRIJVINGEN</a></li>
+            <li class="active"><a href="vakanties.html">VAKANTIES</a></li>
             <li><a href="help.html">HELP</a></li>
             <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
           </ul>
@@ -37,9 +37,9 @@
 	<div class="container">
 		<div class="row centered">
 			<div class="col-lg-12">
-				<h1>Inschrijving</h1>
+				<h1>Vakantie</h1>
 				<p>
-					Maak of wijzig een inschrijving.
+					Maak of wijzig een vakantie.
 				</p>
 			</div>
 		</div><!-- row -->
@@ -48,55 +48,98 @@
 
 	<div class="container">
 	
-			<form class="form-horizontal" role="form">
+		<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vakantie.beginDatum}" var="start"></fmt:formatDate>	
+		<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vakantie.eindDatum}" var="end"></fmt:formatDate>
+	
+		<form class="form-horizontal" role="form">
+	
+		<div class="row mandatory">
 		
-			<h2>Vakantie</h2>
+			<h2>Type</h2>
 			
 			<p>
-				Selecteer de vakantie(s) waarvoor je wil inschrijven.
+				Selecteer het type vakantie.
 			</p>
 			
 			<p>
-				<span id="vakantie-error" class="error text-danger hidden"></span>
+				<span id="type-error" class="error text-danger"></span>
 			</p>
 			
 				<div class="form-group">
-					<label for="contact-naam" class="col-sm-4 control-label">Vakantie</label>
+					<label for="type" class="col-sm-4 control-label">Type</label>
 					<div class="col-sm-6">
-						<c:if test="${empty vakanties}">
-							<span>Er is momenteel geen vakantie waar men voor kan inschrijven</span>
-						</c:if>
-						<c:forEach items="${vakanties}" var="vk">
-							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.beginDatum}" var="start"></fmt:formatDate>	
-							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.eindDatum}" var="end"></fmt:formatDate>
-							<c:set var="contains" value="false" />
-							<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
-								<c:choose>
-									<c:when test="${vakantie eq vk.id}">
-										<c:set var="contains" value="true" />
-									</c:when>
-								</c:choose>
-								</c:forEach>
-								<c:choose>
-								<c:when test="${contains == true }">
-										<div class="checkbox">
-											<label>
-												<input type="checkbox" name="vak" class="vakantie" value="${vk.id}" checked="checked">&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
-											</label>
-										</div>
+						<c:forEach items="${type}" var="type">
+							<c:choose>
+								<c:when test="${vakantie.type == null }">
+									<div class="radio">
+										<label>
+											<input type="radio" name="vak" class="vakantie" value="${vakantie.id}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+										</label>
+									</div>
+								</c:when>
+								<c:when test="${inschrijving.vakantie.id eq vakantie.id}">
+									<div class="checkbox">
+										<label>
+											<input type="radio" name="vak" class="vakantie" value="${vakantie.id}" checked="checked">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+										</label>
+									</div>
 								</c:when>
 								<c:otherwise>
-									<div class="checkbox">
-											<label>
-												<input type="checkbox" name="vak" class="vakantie" value="${vk.id}">&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
-												</label>
+								<div class="checkbox">
+										<label>
+											<input type="radio" name="vak" class="vakantie" value="${vakantie.id}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+											</label>
 									</div>
 								</c:otherwise>
-								</c:choose>
+							</c:choose>
 						</c:forEach>
 					</div>
 				</div>
 				
+				<div class="form-group">
+					<label for="contact-naam" class="col-sm-4 control-label">Alternatief</label>
+					<div class="col-sm-6">
+						<c:if test="${empty vakanties}">
+							<span>Er is momenteel geen vakantie waarvoor men kan inschrijven</span>
+						</c:if>
+						<c:choose>
+							<c:when test="${inschrijving.alternatief == null }">
+								<div class="checkbox">
+									<label>
+										<input type="radio" name="alt" class="alternatief" value="0" checked="checked">&nbsp;Geen alternatief
+									</label>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="checkbox">
+									<label>
+										<input type="radio" name="alt" class="alternatief" value="0">&nbsp;Geen alternatief
+									</label>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<c:forEach items="${vakanties}" var="vakantie">
+							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vakantie.beginDatum}" var="start"></fmt:formatDate>	
+							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vakantie.eindDatum}" var="end"></fmt:formatDate>	
+							<c:choose>
+								<c:when test="${inschrijving.alternatief.id eq vakantie.id}">
+									<div class="checkbox">
+										<label>
+											<input type="radio" name="alt" class="alternatief" value="${vakantie.id}" checked="checked">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})s
+										</label>
+									</div>
+								</c:when>
+								<c:otherwise>
+								<div class="checkbox">
+										<label>
+											<input type="radio" name="alt" class="alternatief" value="${vakantie.id}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+										</label>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</div>
+				</div>
 				<c:if test="${not (inschrijving.status eq 'NIEUW')}">
 					<div class="form-group">
 						<label for="vakantie-save" class="col-sm-4 control-label"></label>
@@ -112,10 +155,6 @@
 			
 			<p>
 				Geef hier de gegevens op van de persoon die Pirlewiet kan contacteren in verband met deze inschrijving.
-			</p>
-			
-			<p>
-				<span id="contact-error" class="error text-danger hidden"></span>
 			</p>
 			
 			<div class="form-group">
@@ -153,11 +192,7 @@
 			<h2>Deelnemer</h2>
 			
 			<p>
-				Geef hier de gegevens op van de deelnemer.
-			</p>
-			
-			<p>
-				<span id="deelnemer-error" class="error text-danger hidden"></span>
+				Geef hier de gegevens op van deelnemer.
 			</p>
 			
 			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].id}"></input>
@@ -220,7 +255,7 @@
 					<label for="deelnemer-geboorte" class="col-sm-4 control-label">Geboortedatum</label>
 					<div class="col-sm-2">
 						<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
-						<input id="deelnemer-geboorte" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
+						<input id="deelnemer-geboorte" type="text" class="form-control" value="${gd}"></input>
 					</div>
 			</div>
 			<div class="form-group">
@@ -424,11 +459,20 @@
 		
 		</form>
 		
+		<br/>
+		<br/>
+	
 	</div><!-- container -->
 	
-	<div id="f" class="centered">
-		<a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-dribbble"></i></a>
-	</div>
+	<!-- FOOTER -->
+	<div id="f">
+		<div class="container">
+			<div class="row centered">
+				<a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-dribbble"></i></a>
+		
+			</div><!-- row -->
+		</div><!-- container -->
+	</div><!-- Footer -->
 	
     <script>
     	var $jq = jQuery.noConflict();
@@ -437,23 +481,52 @@
     	
     	retrieveInschrijving( "${inschrijving.id}" );
     	
-		var saveVakanties = function() {
-			var list
-				= [];
-			$jq( ".vakantie:checked" ).each( function( index, element ) {
-				list.push( element.value );	
-			});
-			putVakanties ( inschrijving, list, $jq("#vakantie-error") );
+		$jq("#contact-save").click( function( event ) {
+			
+			event.preventDefault();
+			
+			var c = new Contact( $jq("#contact-naam").val(), $jq("#contact-telefoon").val(), $jq("#contact-email").val() );
+			
+			putContact ( inschrijving, c );
+			
+    	});
+		
+		$jq("#opmerking-save").click( function( event ) {
+			
+			event.preventDefault();
+			
+			putOpmerking ( inschrijving, $jq("#opmerking-tekst").val() );
+			
+    	});
+		
+		$jq("#vakantie-save").click( function( event ) {
+			
+			event.preventDefault();
+			
+			saveVakantie();
+			
+    	});
+		
+		$jq("#deelnemer-save").click( function( event ) {
+			
+			event.preventDefault();
+			
+    	});
+		
+		var saveVakantie = function() {
+			putVakantie ( inschrijving, new Vakantie( $jq(".vakantie:checked").val() ), saveAlternatief );
+		};
+		
+		var saveAlternatief = function() {
+			putAlternatief( inschrijving, new Vakantie( $jq(".alternatief:checked").val() ) );
 		};
 		
 		var saveContact = function() {
 			var c = new Contact( $jq("#contact-naam").val(), $jq("#contact-telefoon").val(), $jq("#contact-email").val() );
-			putContact ( new Inschrijving("${inschrijving.id}"), c, $jq("#contact-error" ) );
+			putContact ( inschrijving, c );
 		};
 		
 		var saveDeelnemer = function() {
-			
-			var date = $jq("#deelnemer-geboorte").val() != "" ? moment( $jq("#deelnemer-geboorte").val(), "DD/MM/YYYY") : null;
 			
 			var deelnemer
 				= new Deelnemer( 
@@ -461,27 +534,26 @@
 						$jq("#deelnemer-voor").val(),
 						$jq("#deelnemer-familie").val(),
 						$jq(".deelnemer-geslacht:checked").val(),
-						date,
+						moment( $jq("#deelnemer-geboorte").val(), "DD/MM/YYYY"),
 						$jq("#deelnemer-telefoon").val(),
 						$jq("#deelnemer-gsm").val(),
 						$jq("#deelnemer-email").val()
 						);
 			
-			putDeelnemer( new Inschrijving("${inschrijving.id}"), deelnemer, $jq("#deelnemer-error" ) );
+			putDeelnemer( inschrijving, deelnemer );
 			
 			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			putAdres ( inschrijving, a, $jq("#deelnemer-error" ) );
+			putAdres ( inschrijving, a );
 			
 		};
-    	
+		
 		$jq("#submit").click( function( event ) {
 			
 			clearError();
 			
-			saveVakanties();
+			saveVakantie();
 			saveContact();
-			
 			saveDeelnemer();
 			
 		});

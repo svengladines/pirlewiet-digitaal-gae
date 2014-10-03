@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
@@ -16,13 +17,10 @@ import be.pirlewiet.registrations.jtests.TestData;
 @Configuration
 public class PirlewietApplicationConfigForTest {
 	
-	@Configuration
 	@Profile( { ConfigurationProfiles.TEST } )
-
-	// @EnableJpaRepositories(value="be.kuleuven.toledo.extern.infrastructure.repository.iam")
 	public static class DbConfigForTest {
 		
-		@Bean(destroyMethod="shutdown")
+		//@Bean(destroyMethod="shutdown")
 		public EmbeddedDatabase dataSource(){
 			return new EmbeddedDatabaseBuilder()
 				.setType(EmbeddedDatabaseType.HSQL)
@@ -30,7 +28,7 @@ public class PirlewietApplicationConfigForTest {
 				.build();
 		}
 		
-		@Bean
+		//@Bean
 		public HibernateJpaVendorAdapter vendorAdapter(){
 			HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 			vendorAdapter.setDatabase(Database.HSQL);
@@ -42,14 +40,31 @@ public class PirlewietApplicationConfigForTest {
 			return vendorAdapter;
 		}
 		
+		@Bean
+		@Lazy(false)
+		public TestData testData() {
+			
+			return new TestData();
+			
+		}
+		
 	}
 	
-	@Bean
-	@Lazy(false)
-	public TestData testData() {
+	@Configuration
+	@Profile( { ConfigurationProfiles.DEV } ) 
+	public static class DevDataConfig {
 		
-		return new TestData();
+		@Bean
+		@Lazy(false)
+		public DevData devData( LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean ) {
+			
+			return new DevData();
+			
+		}
+		
 		
 	}
+	
+	
 	
 }

@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
-import be.pirlewiet.registrations.model.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
@@ -46,7 +46,7 @@ public class InschrijvingController {
 	public ResponseEntity<InschrijvingX> retrieve( @PathVariable String id ) {
 		
 		InschrijvingX inschrijving
-			= this.secretariaatsMedewerker.inschrijving( Long.valueOf( id ) );
+			= this.secretariaatsMedewerker.guard().inschrijving( Long.valueOf( id ) );
 		
 		if ( inschrijving == null ) {
 			return response( HttpStatus.NOT_FOUND );
@@ -74,21 +74,17 @@ public class InschrijvingController {
 		ResponseEntity<InschrijvingX> retrieve
 			= this.retrieve( id );
 		
-		InschrijvingX retrieved
-			= retrieve.getBody();
-		
-		retrieved.setContactGegevens( contactGegevens );
-		this.secretariaatsMedewerker.pasAan( retrieved );
+		this.secretariaatsMedewerker.guard().updateContact( Long.valueOf( id ), contactGegevens);
 		
 		return response( contactGegevens, HttpStatus.OK );
 		
 	}
 	
-	@RequestMapping( value="/vakantie", method = { RequestMethod.PUT } )
+	@RequestMapping( value="/vakanties", method = { RequestMethod.PUT } )
 	@ResponseBody
-	public ResponseEntity<Vakantie> vakantieUpdate(
+	public ResponseEntity<Long[]> updateVakanties(
 				@PathVariable String id,
-				@RequestBody Vakantie vakantie ) {
+				@RequestBody Long[] vakanties ) {
 		
 		ResponseEntity<InschrijvingX> retrieve
 			= this.retrieve( id );
@@ -96,9 +92,9 @@ public class InschrijvingController {
 		InschrijvingX inschrijving
 			= retrieve.getBody();
 		
-		this.secretariaatsMedewerker.setVakantie( Long.valueOf( id ), vakantie );
+		this.secretariaatsMedewerker.guard().updateVakanties( Long.valueOf( id ), vakanties );
 		
-		return response( inschrijving.getVakantie(), HttpStatus.OK );
+		return response( vakanties, HttpStatus.OK );
 		
 	}
 	
@@ -129,7 +125,8 @@ public class InschrijvingController {
 		InschrijvingX inschrijving
 			= retrieve.getBody();
 		
-		this.secretariaatsMedewerker.addDeelnemer( inschrijving.getId(), deelnemer );
+		// temporarily not available (currently only one deelnemer per inschrijving)
+		// this.secretariaatsMedewerker.addDeelnemer( inschrijving.getId(), deelnemer );
 		
 		return response( deelnemer, HttpStatus.OK );
 		
@@ -144,10 +141,7 @@ public class InschrijvingController {
 		ResponseEntity<InschrijvingX> retrieve
 			= this.retrieve( id );
 		
-		InschrijvingX inschrijving
-			= retrieve.getBody();
-		inschrijving.setAdres( adres );
-		this.secretariaatsMedewerker.pasAan( inschrijving );
+		this.secretariaatsMedewerker.guard().updateAdres( Long.valueOf( id ), adres );
 		
 		return response( adres, HttpStatus.OK );
 		
@@ -166,7 +160,7 @@ public class InschrijvingController {
 			= retrieve.getBody();
 		
 		// SGL| extra read not necessary
-		this.secretariaatsMedewerker.addVraag( inschrijving.getId(), vraagEnAntwoord );
+		this.secretariaatsMedewerker.guard().addVraag( inschrijving.getId(), vraagEnAntwoord );
 		
 		return response( vraagEnAntwoord, HttpStatus.OK );
 		
@@ -184,7 +178,7 @@ public class InschrijvingController {
 		InschrijvingX inschrijving
 			= retrieve.getBody();
 		inschrijving.setOpmerking( opmerking );
-		this.secretariaatsMedewerker.pasAan( inschrijving );
+		this.secretariaatsMedewerker.guard().pasAan( inschrijving );
 		
 		return response( opmerking, HttpStatus.OK );
 		
@@ -202,27 +196,9 @@ public class InschrijvingController {
 		InschrijvingX inschrijving
 			= retrieve.getBody();
 		inschrijving.setStatus( status );
-		this.secretariaatsMedewerker.pasAan( inschrijving );
+		this.secretariaatsMedewerker.guard().pasAan( inschrijving );
 		
 		return response( status, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/alternatief", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Vakantie> alternatiefUpdate(
-				@PathVariable String id,
-				@RequestBody Vakantie alternatief ) {
-		
-		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
-		
-		InschrijvingX inschrijving
-			= retrieve.getBody();
-		
-		this.secretariaatsMedewerker.setAlternatief( Long.valueOf( id ), alternatief );
-		
-		return response( inschrijving.getAlternatief(), HttpStatus.OK );
 		
 	}
 	
@@ -250,14 +226,14 @@ public class InschrijvingController {
 		model.put( "inschrijving", inschrijving );
 		
 		List<Vakantie> vakanties
-			= this.secretariaatsMedewerker.actueleVakanties( );
+			= this.secretariaatsMedewerker.guard().actueleVakanties( );
 		
 		model.put( "vakanties", vakanties );
 		
-		List<Vakantie> alternatieven
-			= this.secretariaatsMedewerker.alternatieven( inschrijving.getVakantie() );
+		// List<Vakantie> alternatieven
+		//	= this.secretariaatsMedewerker.alternatieven( inschrijving.getVakantie() );
 		
-		model.put( "alternatieven", alternatieven );
+		// model.put( "alternatieven", alternatieven );
 
 		return new ModelAndView( "inschrijving", model );
 		

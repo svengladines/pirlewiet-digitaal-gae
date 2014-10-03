@@ -1,10 +1,5 @@
 package be.pirlewiet.registrations.application.config;
 
-import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,24 +8,15 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
-import be.pirlewiet.registrations.model.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.BuitenWipper;
+import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Vragen;
-import be.pirlewiet.registrations.repositories.SecretariaatsMedewerkerRepository;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages="be.pirlewiet.registrations.repositories")
 public class PirlewietApplicationConfig {
 	
 	final static Logger logger
@@ -56,20 +42,26 @@ public class PirlewietApplicationConfig {
 	}
 	
 	@Configuration
+	@Profile({ConfigurationProfiles.PRODUCTION,ConfigurationProfiles.DEV})
+	// @Import( PirlewietAppEngineConfig.class )
+	static class RepositoryConfigForProduction {
+	
+	}
+	
+	@Configuration
 	public static class BeansConfig {
 		
 		@Bean
-		SecretariaatsMedewerker secretariaatsMedewerker( SecretariaatsMedewerkerRepository secretariaatsmedewerkerRepository ) {
+		SecretariaatsMedewerker secretariaatsMedewerker( ) {
 			
-			List<SecretariaatsMedewerker> list
-				= secretariaatsmedewerkerRepository.findAll();
+			return new SecretariaatsMedewerker();
 			
-			if ( list.isEmpty() ) {
-				return new SecretariaatsMedewerker();
-			}
-			else {
-				return list.get( 0 );
-			}
+		}
+		
+		@Bean
+		BuitenWipper buitenWipper() {
+			
+			return new BuitenWipper();
 			
 		}
 		
@@ -79,7 +71,6 @@ public class PirlewietApplicationConfig {
 		}
 		
 	}
-	
 	
 	/*
 	@Configuration
@@ -97,10 +88,10 @@ public class PirlewietApplicationConfig {
 		}
 		
 	}
-	*/
 	
 	@Configuration
 	// @EnableJpaRepositories(value="be.kuleuven.toledo.extern.infrastructure.repository.iam", entityManagerFactoryRef="iamLocalContainerEntityManagerFactoryBean", transactionManagerRef="iamTransactionManager")
+	@Profile(ConfigurationProfiles.TEST)
 	public static class DbConfig {
 	
 		@Bean
@@ -122,28 +113,6 @@ public class PirlewietApplicationConfig {
 		}
 		
 	}
-	
-	@Configuration
-	@Profile( { ConfigurationProfiles.PRODUCTION, ConfigurationProfiles.DEV } )
-	// @EnableJpaRepositories(value="be.kuleuven.toledo.extern.infrastructure.repository.iam", entityManagerFactoryRef="iamLocalContainerEntityManagerFactoryBean", transactionManagerRef="iamTransactionManager")
-	public static class DbConfigForProduction {
-	
-		@Bean
-		public MysqlDataSource dataSource() {
-			MysqlDataSource dataSource = new MysqlDataSource();
-			dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/pirlewiet");
-			dataSource.setUser("root");
-			dataSource.setPassword("root");
-			return dataSource;
-		}
-		
-		@Bean
-		public HibernateJpaVendorAdapter vendorAdapter(){
-			HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-			vendorAdapter.setDatabase(Database.MYSQL);
-			return vendorAdapter;
-		}
-		
-	}
+	*/
 	
 }

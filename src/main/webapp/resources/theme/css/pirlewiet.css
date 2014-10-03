@@ -90,8 +90,8 @@ a:after {
 }
 
 .navbar-inverse {
-	background: #2d2d2d;
-	border-color: #2d2d2d;
+	background: #810009;
+	border-color: #810009;
 }
 
 .navbar-inverse .navbar-nav > .active > a {
@@ -133,7 +133,7 @@ a:after {
    ========================================================================== */
 
 #headerwrap {
-	background: url(../img/pirlewiet-logo-bg.jpg) no-repeat center center;
+	/*background: url(../img/pirlewiet-logo-bg.jpg) no-repeat center center;*/
 	margin-top: -10px;
 	padding-top:20px;
 	text-align:center;
@@ -416,5 +416,4 @@ a:after {
 .nok {
 	background-color: #cc5555;
 }
-
 
