@@ -126,7 +126,7 @@ public class InschrijvingenController {
 		
 
 		Organisatie organisatie
-			= this.buitenWipper.whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
 		
 		// TODO: check organisatie != null
 		

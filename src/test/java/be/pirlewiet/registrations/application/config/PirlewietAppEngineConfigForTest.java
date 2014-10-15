@@ -19,6 +19,7 @@ import be.pirlewiet.registrations.web.util.DevGuard;
 
 import com.google.appengine.tools.development.testing.LocalAppIdentityServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalMailServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.apphosting.api.ApiProxy;
 
@@ -85,7 +86,7 @@ public class PirlewietAppEngineConfigForTest {
 		public LocalServiceTestHelper helper() {
 			
 			LocalServiceTestHelper helper
-				= new LocalServiceTestHelper( new LocalAppIdentityServiceTestConfig(), new LocalDatastoreServiceTestConfig().setApplyAllHighRepJobPolicy() );
+				= new LocalServiceTestHelper( new LocalAppIdentityServiceTestConfig(), new LocalDatastoreServiceTestConfig().setApplyAllHighRepJobPolicy(), new LocalMailServiceTestConfig() );
 			helper.setUp();
 			
 			return helper;

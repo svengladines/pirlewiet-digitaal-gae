@@ -1,4 +1,4 @@
-package be.pirlewiet.registrations.application.config;
+package be.pirlewiet.registrations.application.run;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -104,6 +104,7 @@ public class DevData {
 		ocmw.setId( Ids.OCMW );
 		ocmw.setNaam("OCMW Leuven");
 		ocmw.setCode( "abc123" );
+		ocmw.setEmail( "info@ocmw.be" );
 	
 		ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
 		

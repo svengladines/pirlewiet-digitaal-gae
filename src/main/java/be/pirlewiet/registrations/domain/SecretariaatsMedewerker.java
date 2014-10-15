@@ -24,6 +24,7 @@ import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.DeelnemerRepository;
 import be.pirlewiet.registrations.repositories.InschrijvingVakantieRepository;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
+import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 import be.pirlewiet.registrations.repositories.VraagRepository;
@@ -53,9 +54,11 @@ public class SecretariaatsMedewerker {
 	@Resource
 	protected VakantieRepository vakantieRepository;
 	
-	@Transient
 	@Resource
 	protected VraagRepository vraagRepository;
+	
+	@Resource
+	protected OrganisatieRepository organisatieRepository;
 	
 	@Transient
 	@Resource
@@ -101,21 +104,24 @@ public class SecretariaatsMedewerker {
     	
     	saved = this.addDeelnemer( saved , deelnemer );
     	
-    	/*
     	for ( String key : vragen.getVragen().keySet() ) {
     		
     		List<Vraag> list
     			= vragen.getVragen().get( key );
     		
     		for ( Vraag vraag : list ) {
+    			/*
     			Vraag savedVraag = this.vraagRepository.save( vraag );
     			savedVraag.setId( savedVraag.getId() );
     			this.vraagRepository.save( vraag );
     			saved.getVragen().add( savedVraag );
+    			*/
+    			saved.getVragen().add( vraag );
     		}
     		
     	}
-    	*/
+    	
+    	saved = this.inschrijvingXRepository.saveAndFlush( saved );
     	
     	return saved;
     }
@@ -266,6 +272,42 @@ public class SecretariaatsMedewerker {
     	vraag.setId( this.vraagRepository.saveAndFlush( vraag ).getId() );
     	
     	inschrijving.getVragen().add( vraag );
+    	
+    	this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    	
+    	return inschrijving;
+    	
+    }
+    
+    @Transactional(readOnly=false)
+    public InschrijvingX updateVragenLijst( long inschrijvingID, List<Vraag> vragen ) {
+    	
+    	InschrijvingX inschrijving
+    		= this.inschrijving( inschrijvingID );
+    	
+    	boolean incomplete = false;
+    	
+    	for ( Vraag v : vragen ) {
+    		
+    		if ( isEmpty( v.getAntwoord() ) ) {
+    			throw new RuntimeException("Beantwoord alle vragen uit de vragenlijst. Indien niet van toepassing, vul \"NVT\" in AUB");
+    		}
+    		
+    	}
+    	
+    	for ( Vraag vraag : vragen ) {
+    	
+	    	for ( Vraag v : inschrijving.getVragen() ) {
+	    		
+	    		if ( v.getVraag().equals( vraag.getVraag() ) ) {
+	    			
+	    			v.setAntwoord( vraag.getAntwoord() );
+	    			break;
+	    			
+	    		}
+	    		
+	    	}
+    	}
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
@@ -437,6 +479,20 @@ public class SecretariaatsMedewerker {
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	return inschrijving;
+    	
+    }
+    
+    public Organisatie addOrganisatie( Organisatie organisatie ) {
+    	
+    	Organisatie saved 
+    		= this.organisatieRepository.saveAndFlush( organisatie );
+    	
+    	saved.setId( saved.getKey().getId() );
+    	
+    	saved 
+			= this.organisatieRepository.saveAndFlush( organisatie );
+    	
+    	return saved;
     	
     }
     

@@ -6,10 +6,12 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import be.pirlewiet.registrations.web.controllers.CodeRequestsController;
 import be.pirlewiet.registrations.web.controllers.CodesController;
 import be.pirlewiet.registrations.web.controllers.DeelnemerController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
+import be.pirlewiet.registrations.web.controllers.OrganisatiesController;
 import be.pirlewiet.registrations.web.controllers.PageController;
 
 @Configuration
@@ -66,6 +68,18 @@ public class MvcConfig {
 			
 			return new CodesController();
 			
+		}
+		
+		@Bean
+		public OrganisatiesController organisatiesController() {
+			
+			return new OrganisatiesController();
+			
+		}
+		
+		@Bean
+		public CodeRequestsController codeRequestsController() {
+			return new CodeRequestsController();
 		}
 		
 		

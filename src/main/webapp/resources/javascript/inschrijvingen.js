@@ -35,16 +35,17 @@ var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm,
 	
 };
 
-var Vraag = function ( vraag ) {
+var Vraag = function ( vraag, antwoord ) {
 	
 	this.vraag = vraag;
+	this.antwoord = antwoord;
 	
 };
 
 
 function clearError() {
 	
-	$jq(".error").html( "" );
+	$jq(".error").removeClass("show").addClass("hidden");
 	
 }
 
@@ -130,7 +131,7 @@ var postDeelnemer = function ( inschrijving, dx, callback ) {
 	
 };
 
-var putDeelnemer = function ( inschrijving, dx, errorElement ) {
+var putDeelnemer = function ( inschrijving, dx, errorElement, formErrorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -143,13 +144,13 @@ var putDeelnemer = function ( inschrijving, dx, errorElement ) {
 				dx.id = deelnemer.id;
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( errorElement, jqXHR.responseText );
+			error( formErrorElement, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putContact = function ( inschrijving, contact, errorElement ) {
+var putContact = function ( inschrijving, contact, errorElement, formErrorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -161,13 +162,13 @@ var putContact = function ( inschrijving, contact, errorElement ) {
 		success: function( returned ) {
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( errorElement, jqXHR.responseText );
+			error( formErrorElement, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putAdres = function ( inschrijving, adres, errorElement ) {
+var putAdres = function ( inschrijving, adres, errorElement, formErrorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -179,13 +180,13 @@ var putAdres = function ( inschrijving, adres, errorElement ) {
 		success: function( returned ) {
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( errorElement, jqXHR.responseText );
+			error( formErrorElement, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putVakanties = function ( inschrijving, vakanties, errorElement ) {
+var putVakanties = function ( inschrijving, vakanties, errorElement, formErrorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -197,7 +198,25 @@ var putVakanties = function ( inschrijving, vakanties, errorElement ) {
 		success: function( returned ) {
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( errorElement, jqXHR.responseText );
+			error( formErrorElement, errorElement, jqXHR.responseText );
+		}
+	});
+	
+};
+
+var putVragen = function ( inschrijving, vragen, errorElement, formErrorElement ) {
+
+	$jq.ajax( {
+		type: "put",
+		url:"/rs/inschrijvingen/" + inschrijving.id + "/vragen",
+		dataType: "json",
+		contentType: "application/json;charset=\"utf-8\"",
+	    processData: false,
+		data: JSON.stringify( vakanties ),
+		success: function( returned ) {
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( formErrorElement, errorElement, jqXHR.responseText );
 		}
 	});
 	
@@ -222,7 +241,7 @@ var postVraag = function ( inschrijving, vraag ) {
 	
 };
 
-var putOpmerking = function ( inschrijving, opmerking ) {
+var putOpmerking = function ( inschrijving, opmerking, formErrorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -254,9 +273,10 @@ function getParameter(url, key) {
     }
 };
 
-function error( element, message ) {
+function error( formElement, element, message ) {
 	
 	$jq("#submit").addClass("btn-danger");
 	element.html( message ).removeClass("hidden").addClass("show");
+	formElement.removeClass("hidden").addClass("show");
 	
 };

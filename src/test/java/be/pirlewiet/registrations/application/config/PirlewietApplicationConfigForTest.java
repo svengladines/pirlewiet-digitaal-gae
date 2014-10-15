@@ -12,6 +12,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
+import be.pirlewiet.registrations.application.run.DevData;
 import be.pirlewiet.registrations.jtests.TestData;
 
 @Configuration

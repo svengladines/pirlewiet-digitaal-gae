@@ -8,10 +8,13 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.domain.BuitenWipper;
+import be.pirlewiet.registrations.domain.PostBode;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Vragen;
 
@@ -66,8 +69,22 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
+		PostBode postBode() {
+			
+			return new PostBode();
+			
+		}
+		
+		@Bean
 		public Vragen vragen () {
 			return new Vragen();
+		}
+		
+		@Bean
+		public JavaMailSender javaMailSender () {
+			JavaMailSenderImpl sender
+				= new JavaMailSenderImpl();
+			return sender;
 		}
 		
 	}

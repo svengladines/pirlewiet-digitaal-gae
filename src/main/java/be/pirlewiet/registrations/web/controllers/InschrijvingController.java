@@ -166,6 +166,24 @@ public class InschrijvingController {
 		
 	}
 	
+	@RequestMapping( value="/vragen", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<List<Vraag>> vragenUpdate(
+				@PathVariable String id,
+				@RequestBody List<Vraag> vragen ) {
+		
+		ResponseEntity<InschrijvingX> retrieve
+			= this.retrieve( id );
+		
+		InschrijvingX inschrijving
+			= retrieve.getBody();
+		
+		this.secretariaatsMedewerker.guard().updateVragenLijst( inschrijving.getId(), vragen );
+		
+		return response( vragen, HttpStatus.OK );
+		
+	}
+	
 	@RequestMapping( value="/opmerking", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<String> opmerkingUpdate(
