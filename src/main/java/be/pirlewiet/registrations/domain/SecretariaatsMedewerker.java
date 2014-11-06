@@ -89,6 +89,8 @@ public class SecretariaatsMedewerker {
     	
     	Organisatie organisatie 
     		= this.buitenWipper.whoHasID( inschrijving.getOrganisatie().getId() );
+    	// to detach ...
+    	organisatie.getAdres();
     	
     	inschrijving.setOrganisatie( organisatie );
     	
@@ -373,7 +375,7 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public InschrijvingX updateAdres( long inschrijvingID, Adres adres ) {
+    public InschrijvingX updateInschrijvingsAdres( long inschrijvingID, Adres adres ) {
     	
     	InschrijvingX inschrijving
     		= this.inschrijving( inschrijvingID );
@@ -395,6 +397,32 @@ public class SecretariaatsMedewerker {
 		this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	return inschrijving;
+    	
+    }
+    
+    @Transactional(readOnly=false)
+    public Organisatie updateOrganisatieAdres( long id, Adres adres ) {
+    	
+    	Organisatie organisatie
+    		= this.organisatie( id );
+    	
+    	if ( isEmpty( adres.getGemeente() ) ) {
+    		throw new RuntimeException("Geef de gemeente op");
+    	}
+    	
+    	if ( isEmpty( adres.getStraat() ) ) {
+    		throw new RuntimeException("Geef de straat op");
+    	}
+    	
+    	if ( isEmpty( adres.getNummer() ) ) {
+    		throw new RuntimeException("Geef huis- en eventueel busnummer op");
+    	}
+    	
+    	organisatie.setAdres( adres );
+		
+		this.organisatieRepository.saveAndFlush( organisatie );
+    	
+    	return organisatie;
     	
     }
     
@@ -482,6 +510,7 @@ public class SecretariaatsMedewerker {
     	
     }
     
+    @Transactional( readOnly=false )
     public Organisatie addOrganisatie( Organisatie organisatie ) {
     	
     	Organisatie saved 
@@ -492,6 +521,8 @@ public class SecretariaatsMedewerker {
     	saved 
 			= this.organisatieRepository.saveAndFlush( organisatie );
     	
+    	logger.info( "created organisation with id [{}]", saved.getId() );
+    	
     	return saved;
     	
     }
@@ -499,6 +530,27 @@ public class SecretariaatsMedewerker {
     protected boolean isEmpty( String x ) {
     	
     	return ( x == null ) || ( x.isEmpty() );
+    	
+    }
+    
+    @Transactional(readOnly=true)
+    public Organisatie organisatie( Long id ) {
+    	
+    	Organisatie organsiatie
+    		= this.organisatieRepository.findOneById( id );
+    	
+    	if ( organsiatie != null ) {
+    		logger.info( "found organsiatie with id []", id );
+    	}
+    	
+    	return organsiatie;
+    	
+    	
+    }
+    
+    public boolean isOrganisationOutDated( Organisatie organisation ) {
+    	
+    	return ( organisation.getUpdated() == null );
     	
     }
  

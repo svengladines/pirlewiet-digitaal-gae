@@ -9,24 +9,26 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Persoon;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
-public class BuitenWipper extends Persoon {
+public class BuitenWipper {
+	
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
 	protected OrganisatieRepository organisatieRepository;
-	
-	@Resource
-	protected BuitenWipper buitenWipper;
 	
 	@Resource
 	protected DataGuard dataGuard;
@@ -37,7 +39,10 @@ public class BuitenWipper extends Persoon {
 	@Resource
 	PostBode postBode;
 	
-	protected String fromAddress = "noreply@pirlewiet.be";
+	@Resource
+	CodeMan codeMan;
+	
+	protected String fromAddress = "sven.gladines@gmail.com";
 	
     public BuitenWipper guard() {
     	this.dataGuard.guard();
@@ -45,13 +50,14 @@ public class BuitenWipper extends Persoon {
     }
 	
 	public Organisatie whoHasCode( String code ) {
-		return this.organisatieRepository.findOneByCode( code.replaceAll("\"", "") );
+		return this.organisatieRepository.findOneByCode( code.replaceAll("\"", "").toLowerCase() );
 	}
 	
 	public Organisatie whoHasID( Long id ) {
 		return this.organisatieRepository.findOneById( id );
 	}
 	
+	@Transactional(readOnly=false)
 	public void processCodeRequest( CodeRequest codeRequest ) {
 		
 		String email
@@ -65,7 +71,30 @@ public class BuitenWipper extends Persoon {
 			return;
 		}
 		
-		String code = "xyz123"; // TODO
+		String code
+			= null;
+		
+		if ( organisatie.getCode() != null ) {
+			logger.info( "code exists, code is [{}]", code );
+			code = organisatie.getCode();
+		}
+		
+		while ( code == null ) {
+			code = this.codeMan.generateCode();
+			if ( this.organisatieRepository.findOneByCode( code ) != null ) {
+				// code already taken
+				code = null;
+				continue;
+			}
+			logger.info( "generated code for [{}] : [{}]", organisatie.getNaam(), code );
+			organisatie.setCode( code );
+			organisatie = this.organisatieRepository.saveAndFlush( organisatie );
+			logger.info( "saved code [{}] for [{}]", code, organisatie.getNaam() );
+		}
+		
+		
+		codeRequest.setCode( code );
+		codeRequest.setStatus( CodeRequest.Status.OK );
 		
 		MimeMessage message
 			= formatCodeRequestMessages( organisatie , email, code );
@@ -98,7 +127,7 @@ public class BuitenWipper extends Persoon {
 			Map<String, Object> model = new HashMap<String, Object>();
 					
 			model.put( "organisatie", organisatie );
-			model.put( "code", code );
+			model.put( "code", code.toUpperCase() );
 			
 			StringWriter bodyWriter 
 				= new StringWriter();

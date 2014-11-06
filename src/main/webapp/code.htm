@@ -82,7 +82,7 @@
 					<div class="form-group">
 						<label for="code" class="col-sm-4 control-label">Code</label>
 						<div class="col-sm-2">	
-							<input id="code" type="text" class="form-control" value="" placeholder="ABC123"></input>
+							<input id="code" type="text" class="form-control" value="" placeholder="abc123"></input>
 						</div>
 					</div>
 					<div class="form-group">
@@ -126,7 +126,14 @@
 
     <script>
     
-    var $jq = jQuery.noConflict();
+    	var $jq = jQuery.noConflict();
+    
+	    function error( btn, element, message ) {
+	    	
+	    	btn.addClass("btn-danger");
+	    	element.html( message ).removeClass("hidden").addClass("show");
+	    	
+	    };
 	
 		$jq("#codebtn").click( function ( event ) {
 			
@@ -141,10 +148,12 @@
 	    	    processData: false,
 	    		data: JSON.stringify(code),
 	    		success: function( ) {
-	    			window.document.location = "/rs/inschrijvingen.html";
+	    			window.document.location = "/rs/organisation.html";
 	    		},
 	    		error: function(  jqXHR, textStatus, errorThrown ) {
-	    			window.document.location = "/rs/inschrijvingen.htmlx";
+	    			if( jqXHR.status == 422 ) {
+	    				error( $jq("#codebtn"), $jq("#code-error"), jqXHR.responseText );
+	    			}
 	    		}
 	    	});
 	    	

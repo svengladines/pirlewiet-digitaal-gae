@@ -40,11 +40,11 @@ public class CodesController {
 		// = new HashMap<String,String>();
 		
 		Organisatie organisatie
-			= this.buitenWipper.whoHasCode( code );
+			= this.buitenWipper.guard().whoHasCode( code );
 		
 		if ( organisatie == null ) {
 			logger.warn( "invalid code [{}] presented!", code );
-			return response( "Code niet correct. Probeer opnieuw of vraag de code opnieuw aan", HttpStatus.FORBIDDEN );
+			return response( "Code niet correct. Probeer opnieuw of vraag de code opnieuw aan", HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		
 		Cookie cookie

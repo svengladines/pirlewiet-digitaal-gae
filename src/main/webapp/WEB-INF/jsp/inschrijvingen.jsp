@@ -25,8 +25,8 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/index.htm">HOME</a></li>
-             <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
-            <li><a href="organisatie.html">ORGANISATIE</a></li>
+            <li><a href="organisation.html">ORGANISATIE</a></li>
+            <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
             <li><a href="help.html">HELP</a></li>
             <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
           </ul>

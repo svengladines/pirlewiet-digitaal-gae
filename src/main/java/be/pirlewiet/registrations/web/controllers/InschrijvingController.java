@@ -138,10 +138,9 @@ public class InschrijvingController {
 				@PathVariable String id,
 				@RequestBody Adres adres ) {
 		
-		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
+		this.retrieve( id );
 		
-		this.secretariaatsMedewerker.guard().updateAdres( Long.valueOf( id ), adres );
+		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( Long.valueOf( id ), adres );
 		
 		return response( adres, HttpStatus.OK );
 		

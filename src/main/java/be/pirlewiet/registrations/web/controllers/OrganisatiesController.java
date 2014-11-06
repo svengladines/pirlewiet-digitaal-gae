@@ -21,7 +21,7 @@ import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;
 
 @Controller
-@RequestMapping(value="/organisaties")
+@RequestMapping(value="/organisations")
 public class OrganisatiesController {
 	
 	private final static Logger logger 
@@ -35,7 +35,7 @@ public class OrganisatiesController {
 	public ResponseEntity<Organisatie> post( @RequestBody Organisatie organisatie,  HttpServletResponse response ) {
 		
 		Organisatie added = null;
-		//	= this.secretariaatsMedewerker.guard().addOrganisatie( organisatie );
+		this.secretariaatsMedewerker.guard().addOrganisatie( organisatie );
 		
 		return response( added, HttpStatus.OK );
 			

@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.domain.BuitenWipper;
+import be.pirlewiet.registrations.domain.CodeMan;
+import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PostBode;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Vragen;
@@ -34,13 +36,6 @@ public class PirlewietApplicationConfig {
 		public static PropertySourcesPlaceholderConfigurer propertiesConfig() {
 			return new PropertySourcesPlaceholderConfigurer();
 		}
-		
-	}
-	
-	@Configuration
-	// @ComponentScan(basePackages="be.pirlewiet.registrations")
-	@ImportResource( "classpath:/META-INF/applicationContext.xml" )
-	public static class XmlConfig {
 		
 	}
 	
@@ -69,11 +64,26 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
+		CodeMan codeMan() {
+			
+			return new CodeMan();
+			
+		}
+		
+		@Bean
 		PostBode postBode() {
 			
 			return new PostBode();
 			
 		}
+		
+		@Bean
+		OrganisationManager organisationManager() {
+			
+			return new OrganisationManager();
+			
+		}
+		
 		
 		@Bean
 		public Vragen vragen () {
