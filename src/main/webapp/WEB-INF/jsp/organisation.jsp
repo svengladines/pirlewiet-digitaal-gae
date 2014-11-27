@@ -20,56 +20,86 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">PIRLEWIET</a>
+          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/index.htm">HOME</a></li>
+            <li><a href="/index.htm">START</a></li>
             <li class="active"><a href="organisation.html">ORGANISATIE</a></li>
             <li>
             	<c:choose>
             	<c:when test="${incomplete == false}">
-            		<a href="/rs/inschrijvingen.html" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">INSCHRIJVINGEN</a>
+            		<a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a>
             	</c:when>
             	<c:otherwise>
-            		<a href="#" class="pop" data-toggle="popover" title="Opgelet" data-content="Je kan pas inschrijvingen beheren als je hieronder alle verplichte velden hebt ingevuld." data-placement="bottom" data-trigger="focus" tabindex="0">INSCHRIJVINGEN</a>
+            		<a href="#" class="pop" data-toggle="popover" title="Opgelet" data-content="Je kan pas inschrijvingen beheren als je profiel in orde is." data-placement="bottom" data-trigger="focus" tabindex="0">INSCHRIJVINGEN</a>
             	</c:otherwise>
             	</c:choose>
             </li>
             <li><a href="help.html">HELP</a></li>
-            <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
+            <li><a id="logout" title="Uitloggen" href="#"><i class="fa fa-sign-out"></i></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
-	<div class="container">
-		<div class="row centered">
-			<div class="col-lg-12">
-				<h1>Mijn Organisatie</h1>
-				<p>
-					Beheer hier de gegevens van jouw organisatie.
-				</p>
-			</div>
-		</div><!-- row -->
-	</div><!-- container -->
-
+	<div class="banner">
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1>Mijn Organisatie</h1>
+					<p>
+						Beheer hier het profiel van jouw organisatie.
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
 
 	<div class="container">
 	
-			<form class="form-horizontal" role="form">
-		
-		<div class="row mandatory">
+	<br/>
+	
+	<div class="row">
+	
+		<form class="form-horizontal" role="form">
+			<c:choose>
+			<c:when test="${incomplete == false}">
+				<p class="text-info">Het profiel van jouw organisatie is in orde.</p>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Wijzigingen ?</label>
+					<div class="col-sm-8">
+						<button type="button" id="organisation-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+					</div>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<p class="text-error">Vul het onderstaande formulier in en klik op 'verstuur' om een profiel aan te maken voor jouw organisatie.</p>
+				<p class="text-info">Maakte je al een profiel aan ? Ga dan naar de <a href="/code.htm">inlogpagina</a> om je aan te melden.</p>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Ingevuld ?</label>
+					<div class="col-sm-8">
+						<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+					</div>
+				</div>
+			</c:otherwise>
+			</c:choose>
+			<div class="form-group">
+					<label for="organisation-error" class="col-sm-4 control-label"></label>
+					<div class="col-sm-8">
+						<span id="organisation-ok" class="error text-success hidden">
+							Gegevens werden met succes verwerkt.
+						</span>
+						<span id="organisation-error" class="error text-danger hidden">
+							Het formulier kon niet worden verwerkt. Controleer de gegevens en probeer opnieuw AUB. 
+						</span>
+					</div>
+			</div>
 		
 			<h2>Gegevens</h2>
 			
 			<p>
-				Controleer of de gegevens van je organisatie nog in orde zijn. <br/>
 				Velden met een (*) moet je zeker invullen.
-			</p>
-			
-			<p>
-				<span id="organisation-error" class="error text-danger hidden"></span>
 			</p>
 			
 			<input id="organisation-id" type="hidden" value="${organisation.id}"></input>
@@ -97,7 +127,6 @@
 						<input id="organisation-email" type="tel" class="form-control" value="${organisation.email}"></input>
 					</div>
 			</div>
-			</div>
 			<div class="form-group">
 					<label for="organisation-alternative-email" class="col-sm-4 control-label">Alternatief e-mailadres</label>
 					<div class="col-sm-3">
@@ -122,28 +151,9 @@
 						<input id="adres-nummer" type="tel" class="form-control" value="${organisation.adres.nummer}"></input>
 					</div>
 			</div>
-			
-			
-		<div class="row mandatory">
-			<h2>Verstuur</h2>
-			<p>
-				Controleer de ingevulde gegevens en verstuur het formulier
-			</p>
-			<p>
-					<span id="form-error" class="error text-danger hidden">
-						Er zijn fouten of onvolkomendheden in het formulier. Controleer de gegevens en probeer opnieuw AUB. 
-					</span>
-			</p>
-			
-			<div class="form-group">
-				<label class="col-sm-4 control-label"></label>
-				<div class="col-sm-2">
-					<button type="button" id="submit" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-				</div>
-			</div>
-		</div>
-		
 		</form>
+		
+	</div>
 		
 	</div><!-- container -->
 	
@@ -168,18 +178,23 @@
 						$jq("#organisation-alternative-email").val()
 						);
 			
-			putOrganisation( organisation, $jq("#organisation-error" ),$jq("#form-error" ) );
-			
 			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			putOrganisationAdres ( organisation, a, $jq("#organisation-error" ), $jq("#form-error" ) );
+			if ( organisation.id == 0 ) {
+				postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );
+			}
+			else {
+				putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );	
+			}
 			
 		};
 		
 		    	
-		$jq("#submit").click( function( event ) {
+		$jq("#organisation-save").click( function( event ) {
 			
 			clearError();
+			
+			$jq(this).button('loading');
 			
 			saveOrganisation();
 			

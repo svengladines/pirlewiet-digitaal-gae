@@ -105,7 +105,7 @@ public class TestData {
 		sarahKika1.getVakanties().add ( zomerKikaEen.getId() );
 		sarahKika1.getDeelnemers().add( sarah );
 		sarahKika1.setOrganisatie( ocmw );
-		sarahKika1.setStatus( Status.INGEDIEND );
+		sarahKika1.setStatus( new Status ( Status.Value.SUBMITTED ) );
 		
 		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
 		

@@ -213,7 +213,7 @@ public class TestInschrijvingKika extends JTest {
 		
 		// de medewerker leest alle gegevens nog eens na en vinkt het formulier af
 		Status status
-			= Status.INGEDIEND;
+			= new Status ( Status.Value.SUBMITTED );
 	
 		ResponseEntity<Status> statusResponse
 			= putJSON( url(inschrijving).append("/status").toString(), status );

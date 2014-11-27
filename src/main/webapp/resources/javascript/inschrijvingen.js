@@ -35,19 +35,27 @@ var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm,
 	
 };
 
-var Vraag = function ( vraag, antwoord ) {
+var Vraag = function ( id, vraag, antwoord ) {
 	
+	this.id = id;
 	this.vraag = vraag;
 	this.antwoord = antwoord;
 	
 };
 
+var Status = function ( value, comment, email ) {
+	
+	this.value = value;
+	if ( comment != undefined ) {
+		this.comment = comment;
+	}
+	
+	if ( email != undefined ) {
+		this.emailMe = email;
+	}
+	
+};
 
-function clearError() {
-	
-	$jq(".error").removeClass("show").addClass("hidden");
-	
-}
 
 var viewInschrijving = function( index, inschrijving ) {
 	
@@ -111,131 +119,97 @@ var postInschrijving = function ( rx ) {
 	
 };
 
-var postDeelnemer = function ( inschrijving, dx, callback ) {
+var putDeelnemer = function ( inschrijving, dx, button, errorElement, callback ) {
 
 	$jq.ajax( {
-		type: "post",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/deelnemers",
+		type: "put",
+		url:"/rs/inschrijvingen/" + inschrijving + "/deelnemers/" + dx.id,
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify(dx),
 		success: function( deelnemer ) {
 				dx.id = deelnemer.id;
-				callback( dx );
+				callback( inschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			// alert( errorThrown );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putDeelnemer = function ( inschrijving, dx, errorElement, formErrorElement ) {
+var putContact = function ( inschrijving, contact, button, errorElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/deelnemers/" + dx.id,
-		dataType: "json",
-		contentType: "application/json",
-	    processData: false,
-		data: JSON.stringify(dx),
-		success: function( deelnemer ) {
-				dx.id = deelnemer.id;
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( formErrorElement, errorElement, jqXHR.responseText );
-		}
-	});
-	
-};
-
-var putContact = function ( inschrijving, contact, errorElement, formErrorElement ) {
-
-	$jq.ajax( {
-		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/contact",
+		url:"/rs/inschrijvingen/" + inschrijving + "/contact",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify( contact ),
 		success: function( returned ) {
+			callback( inschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( formErrorElement, errorElement, jqXHR.responseText );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putAdres = function ( inschrijving, adres, errorElement, formErrorElement ) {
+var putAddress = function ( inschrijving, adres, button, errorElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/adres",
+		url:"/rs/inschrijvingen/" + inschrijving + "/adres",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
 		data: JSON.stringify( adres ),
 		success: function( returned ) {
+			callback( inschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( formErrorElement, errorElement, jqXHR.responseText );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putVakanties = function ( inschrijving, vakanties, errorElement, formErrorElement ) {
+var putVakanties = function ( inschrijving, vakanties, button, errorElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/vakanties",
+		url:"/rs/inschrijvingen/" + inschrijving + "/vakanties",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
 		data: JSON.stringify( vakanties ),
 		success: function( returned ) {
+			callback( inschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( formErrorElement, errorElement, jqXHR.responseText );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putVragen = function ( inschrijving, vragen, errorElement, formErrorElement ) {
+var putVragen = function ( inschrijving, vragen, button, errorElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/vragen",
+		url:"/rs/inschrijvingen/" + inschrijving + "/vragen",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
-		data: JSON.stringify( vakanties ),
+		data: JSON.stringify( vragen ),
 		success: function( returned ) {
+			callback( inschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( formErrorElement, errorElement, jqXHR.responseText );
-		}
-	});
-	
-};
-
-var postVraag = function ( inschrijving, vraag ) {
-
-	$jq.ajax( {
-		type: "post",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/vragen",
-		dataType: "json",
-		contentType: "application/json",
-	    processData: false,
-		data: JSON.stringify(vraag),
-		success: function( vx ) {
-				vraag.id = vx.id;
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			// alert( errorThrown );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	
@@ -261,6 +235,25 @@ var putOpmerking = function ( inschrijving, opmerking, formErrorElement ) {
 	
 };
 
+var putStatus = function ( inschrijving, status, button, errorElement, callback ) {
+
+	$jq.ajax( {
+		type: "put",
+		url:"/rs/inschrijvingen/" + inschrijving + "/status",
+		dataType: "json",
+		contentType: "application/json",
+	    processData: false,
+		data: JSON.stringify( status ),
+		success: function( ox ) {
+			window.location.reload();
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( button, errorElement, jqXHR.responseText );
+		}
+	});
+	
+};
+
 function getParameter(url, key) {
     var sURLVariables = url.split('&');
     for (var i = 0; i < sURLVariables.length; i++) 
@@ -271,12 +264,4 @@ function getParameter(url, key) {
             return sParameterName[1];
         }
     }
-};
-
-function error( formElement, element, message ) {
-	
-	$jq("#submit").addClass("btn-danger");
-	element.html( message ).removeClass("hidden").addClass("show");
-	formElement.removeClass("hidden").addClass("show");
-	
 };

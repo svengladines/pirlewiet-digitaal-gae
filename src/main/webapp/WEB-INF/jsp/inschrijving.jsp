@@ -20,35 +20,103 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">PIRLEWIET</a>
+          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/index.htm">HOME</a></li>
+            <li><a href="/index.htm">START</a></li>
+            <li><a href="/rs/organisation.html">ORGANISATIE</a></li>
             <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
-            <li><a href="organisatie.html">ORGANISATIE</a></li>
             <li><a href="help.html">HELP</a></li>
-            <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
+            <li><a id="logout"><i class="fa fa-sign-out"></i></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
-	<div class="container">
-		<div class="row centered">
-			<div class="col-lg-12">
-				<h1>Inschrijving</h1>
-				<p>
-					Maak of wijzig een inschrijving.
-				</p>
-			</div>
-		</div><!-- row -->
-	</div><!-- container -->
-
+	<div class="banner">
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1>Inschrijving</h1>
+					<p>
+						Maak of beheer een inschrijving.
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
 
 	<div class="container">
 	
 			<form class="form-horizontal" role="form">
+			
+			<c:if test="${inschrijving.status.value eq 'DRAFT'}">
+			
+				<p>
+					Vul het onderstaande formulier in en klik op 'verstuur' om een inschrijving aan te vragen. <br/>
+					Veldjes met een (*) zijn verplicht in te vullen.
+				</p>
+			
+			</c:if>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Status</label>
+					<div class="col-sm-4">	
+						<p class="form-control-static text-info"><strong>${inschrijving.status}</strong></p>
+					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">Opmerking</label>
+				<div class="col-sm-6">
+					<p class="form-control-static">${inschrijving.status.comment}</p>
+				</div>
+			</div>
+			
+			<c:choose>
+			<c:when test="${inschrijving.status.value eq 'DRAFT'}">
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Klaar ?</label>
+					<div class="col-sm-2">
+						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label"></label>
+					<div class="col-sm-8">
+						<span id="enrollment-error" class="error text-danger hidden">
+								Er zijn fouten of onvolkomendheden in het formulier. Controleer de gegevens en probeer opnieuw AUB. 
+							</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Bedacht ?</label>
+					<div class="col-sm-2">
+						<button type="button" id="enrollment-delete" class="btn btn-warning" data-vakantie="1"><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Verwijder</button>
+					</div>
+				</div>
+			</c:when>
+			<c:when test="${inschrijving.status.value eq 'CANCELLED'}">
+			</c:when>
+			<c:when test="${inschrijving.status.value eq 'REJECTED'}">
+			</c:when>
+			<c:otherwise>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Wijzigingen ?</label>
+					<div class="col-sm-2">
+						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Inschrijving annuleren ?</label>
+					<div class="col-sm-2">
+						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Annuleer</button>
+					</div>
+				</div>
+			</c:otherwise>
+			</c:choose>
+			
+			<hr/>
 		
 			<h2>Vakantie</h2>
 			
@@ -56,12 +124,8 @@
 				Selecteer de vakantie(s) waarvoor je wil inschrijven.
 			</p>
 			
-			<p>
-				<span id="vakantie-error" class="error text-danger hidden"></span>
-			</p>
-			
 				<div class="form-group">
-					<label for="contact-naam" class="col-sm-4 control-label">Vakantie</label>
+					<label for="contact-naam" class="col-sm-4 control-label">Vakantie (*)</label>
 					<div class="col-sm-6">
 						<c:if test="${empty vakanties}">
 							<span>Er is momenteel geen vakantie waar men voor kan inschrijven</span>
@@ -72,33 +136,20 @@
 							<c:set var="contains" value="false" />
 							<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
 								<c:choose>
-									<c:when test="${vakantie eq vk.id}">
+									<c:when test="${vakantie.id eq vk.id}">
 										<c:set var="contains" value="true" />
 									</c:when>
 								</c:choose>
 								</c:forEach>
-								<c:choose>
-								<c:when test="${contains == true }">
-										<div class="checkbox">
-											<label>
-												<input type="checkbox" name="vak" class="vakantie" value="${vk.id}" checked="checked">&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
-											</label>
-										</div>
-								</c:when>
-								<c:otherwise>
-									<div class="checkbox">
-											<label>
-												<input type="checkbox" name="vak" class="vakantie" value="${vk.id}">&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
-												</label>
-									</div>
-								</c:otherwise>
-								</c:choose>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="vak" class="vakantie" value="${vk.id}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+									</label>
+								</div>
 						</c:forEach>
 					</div>
 				</div>
 				
-		<div class="row mandatory">
-		
 			<h2>Contactgegevens</h2>
 			
 			<p>
@@ -110,28 +161,24 @@
 			</p>
 			
 			<div class="form-group">
-				<label for="contact-naam" class="col-sm-4 control-label">Naam</label>
+				<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
 					<div class="col-sm-3">	
 						<input id="contact-naam" type="text" class="form-control" value="${inschrijving.contactGegevens.naam}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-				<label for="contact-naam" class="col-sm-4 control-label">Telefoon</label>
+				<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
 					<div class="col-sm-2">	
 						<input id="contact-telefoon" type="text" class="form-control" value="${inschrijving.contactGegevens.telefoonNummer}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-				<label for="contact-naam" class="col-sm-4 control-label">E-mail</label>
+				<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
 					<div class="col-sm-3">	
 						<input id="contact-email" type="email" class="form-control" value="${inschrijving.contactGegevens.email}"></input>
 					</div>
 			</div>
 			
-		</div>
-		
-		<div class="row mandatory">
-		
 			<h2>Deelnemer</h2>
 			
 			<p>
@@ -144,19 +191,19 @@
 			
 			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].id}"></input>
 			<div class="form-group">
-				<label for="deelnemer-voor" class="col-sm-4 control-label">Voornaam</label>
+				<label for="deelnemer-voor" class="col-sm-4 control-label">Voornaam (*)</label>
 				<div class="col-sm-3">	
 					<input id="deelnemer-voor" type="text" class="form-control" value="${inschrijving.deelnemers[0].voorNaam}"></input>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="deelnemer-familie" class="col-sm-4 control-label">Familienaam</label>
+				<label for="deelnemer-familie" class="col-sm-4 control-label">Familienaam (*)</label>
 				<div class="col-sm-3">	
 						<input id="deelnemer-familie" type="text" class="form-control" value="${inschrijving.deelnemers[0].familieNaam}"></input>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="deelnemer-geslacht" class="col-sm-4 control-label">Geslacht ${inschrijving.deelnemers[0].geslacht}</label>
+				<label for="deelnemer-geslacht" class="col-sm-4 control-label">Geslacht (*)</label>
 				<div class="col-sm-3">
 					<c:choose>
 					<c:when test="${inschrijving.deelnemers[0].geslacht eq 'V'}">
@@ -199,14 +246,14 @@
 				</div>
 			</div>
 			<div class="form-group">
-					<label for="deelnemer-geboorte" class="col-sm-4 control-label">Geboortedatum</label>
+					<label for="deelnemer-geboorte" class="col-sm-4 control-label">Geboortedatum (*)</label>
 					<div class="col-sm-2">
 						<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
 						<input id="deelnemer-geboorte" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="deelnemer-telefoon" class="col-sm-4 control-label">Telefoonnummer</label>
+					<label for="deelnemer-telefoon" class="col-sm-4 control-label">Telefoonnummer (*)</label>
 					<div class="col-sm-2">
 						<input id="deelnemer-telefoon" type="tel" class="form-control" value="${inschrijving.deelnemers[0].telefoonNummer}"></input>
 					</div>
@@ -218,50 +265,46 @@
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="deelnemer-email" class="col-sm-4 control-label">E-mail</label>
+					<label for="deelnemer-email" class="col-sm-4 control-label">E-mail (*)</label>
 					<div class="col-sm-3">
 						<input id="deelnemer-email" type="tel" class="form-control" value="${inschrijving.deelnemers[0].email}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="adres-straat" class="col-sm-4 control-label">Straat</label>
+					<label for="adres-gemeente" class="col-sm-4 control-label">Gemeente (*)</label>
+					<div class="col-sm-2">
+						<input id="adres-gemeente" type="tel" class="form-control" value="${inschrijving.adres.gemeente}"></input>
+					</div>
+			</div>
+			<div class="form-group">
+					<label for="adres-straat" class="col-sm-4 control-label">Straat (*)</label>
 					<div class="col-sm-3">
 						<input id="adres-straat" type="tel" class="form-control" value="${inschrijving.adres.straat}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer</label>
+					<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer (*)</label>
 					<div class="col-sm-2">
 						<input id="adres-nummer" type="tel" class="form-control" value="${inschrijving.adres.nummer}"></input>
 					</div>
 			</div>
-			<div class="form-group">
-					<label for="adres-straat" class="col-sm-4 control-label">Gemeente</label>
-					<div class="col-sm-2">
-						<input id="adres-gemeente" type="tel" class="form-control" value="${inschrijving.adres.gemeente}"></input>
-					</div>
-			</div>
-			
-		</div>
-		
-		<div class="row optional">
 		
 			<h2>Medische gegevens</h2>
 			
 			<c:forEach items="${inschrijving.vragen}" var="vraag">
 					<c:if test="${vraag.tag eq 'medic'}">
 						<div class="form-group">
-							<label class="col-sm-4 control-label">${vraag.vraag}</label>
+							<label class="col-sm-4 control-label">${vraag.vraag} (*)</label>
 							<c:choose>
 								<c:when test="${vraag.type eq 'YesNo'}">
 									<div class="col-sm-2">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="V">&nbsp;Ja
+												<input type="radio" name="${vraag.id}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
 											</label>
 											&nbsp;&nbsp;&nbsp;
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="M">&nbsp;Neen
+												<input type="radio" name="${vraag.id}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
 											</label>
 										</div>
 									</div>
@@ -273,7 +316,7 @@
 								</c:when>
 								<c:when test="${vraag.type eq 'Area'}">
 									<div class="col-sm-6">
-										<textarea id="opmerking-tekst" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+										<textarea id="${vraag.id}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
 									</div>
 								</c:when>
 							</c:choose>
@@ -281,10 +324,6 @@
 					</c:if>
 			</c:forEach>
 			
-		</div>
-		
-		<div class="row optional">
-		
 			<h2>Foto's</h2>
 			
 			<p>
@@ -294,17 +333,17 @@
 			<c:forEach items="${inschrijving.vragen}" var="vraag">
 					<c:if test="${vraag.tag eq 'fotos'}">
 						<div class="form-group">
-							<label class="col-sm-4 control-label">${vraag.vraag}</label>
+							<label class="col-sm-4 control-label">${vraag.vraag} (*)</label>
 							<c:choose>
 								<c:when test="${vraag.type eq 'YesNo'}">
 									<div class="col-sm-2">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="V" data-q="${vraag.vraag}">&nbsp;Ja
+												<input type="radio" name="${vraag.id}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
 											</label>
 											&nbsp;&nbsp;&nbsp;
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="M" data-q="${vraag.vraag}">&nbsp;Neen
+												<input type="radio" name="${vraag.id}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
 											</label>
 										</div>
 									</div>
@@ -324,10 +363,6 @@
 					</c:if>
 			</c:forEach>
 			
-		</div>
-		
-		<div class="row optional">
-		
 			<h2>Opmerkingen</h2>
 			
 			<p>
@@ -337,52 +372,10 @@
 			<div class="form-group">
 				<label class="col-sm-4 control-label"></label>
 				<div class="col-sm-6">
-					<textarea id="opmerking-tekst" class="form-control" rows="10" cols="64">
-						${inschrijving.opmerking}
-					</textarea>
+					<textarea id="opmerking-tekst" class="form-control" rows="10" cols="64">${inschrijving.opmerking}</textarea>
 				</div>
 			</div>
 			
-			<c:if test="${not (inschrijving.status eq 'NIEUW')}">
-				<div class="form-group">
-					<label class="col-sm-4 control-label"></label>
-					<div class="col-sm-2">
-						<button type="button" id="opmerking-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-					</div>
-				</div>
-			</c:if>
-			
-			
-			
-		</div>
-		
-		<c:choose>
-			<c:when test="${pwt} == true">
-			</c:when>
-			<c:otherwise>
-				<c:if test="${inschrijving.status eq 'NIEUW'}">
-			<div class="row mandatory">
-				<h2>Verstuur</h2>
-				<p>
-					Controleer de ingevulde gegevens en verstuur de inschrijving
-				</p>
-				<p>
-						<span id="form-error" class="error text-danger hidden">
-							Er zijn fouten of onvolkomendheden in het formulier. Controleer de gegevens en probeer opnieuw AUB. 
-						</span>
-				</p>
-				
-				<div class="form-group">
-					<label class="col-sm-4 control-label"></label>
-					<div class="col-sm-2">
-						<button type="button" id="submit" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
-			</div>
-		</c:if>
-			</c:otherwise>
-		</c:choose>
-		
 		</form>
 		
 	</div><!-- container -->
@@ -394,25 +387,24 @@
     <script>
     	var $jq = jQuery.noConflict();
     	
-    	var inschrijving = null;
-    	
-    	retrieveInschrijving( "${inschrijving.id}" );
-    	
-		var saveVakanties = function() {
+		var save = function( id ) {
 			var list
-				= [];
+				= "";
 			$jq( ".vakantie:checked" ).each( function( index, element ) {
-				list.push( new Vraag(  ) );	
+				if ( list.length > 0 ) {
+					list = list.concat(",");
+				}
+				list = list.concat( element.value );	
 			});
-			putVakanties ( inschrijving, list, $jq("#vakantie-error"),$jq("#form-error" ) );
+			putVakanties ( id, list, $jq("#enrollment-save"),$jq("#enrollment-error" ), saveContact );
 		};
 		
-		var saveContact = function() {
+		var saveContact = function( id ) {
 			var c = new Contact( $jq("#contact-naam").val(), $jq("#contact-telefoon").val(), $jq("#contact-email").val() );
-			putContact ( new Inschrijving("${inschrijving.id}"), c, $jq("#contact-error" ),$jq("#form-error" ) );
+			putContact ( id, c, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveDeelnemer );
 		};
 		
-		var saveDeelnemer = function() {
+		var saveDeelnemer = function( id ) {
 			
 			var date = $jq("#deelnemer-geboorte").val() != "" ? moment( $jq("#deelnemer-geboorte").val(), "DD/MM/YYYY") : null;
 			
@@ -428,39 +420,42 @@
 						$jq("#deelnemer-email").val()
 						);
 			
-			putDeelnemer( new Inschrijving("${inschrijving.id}"), deelnemer, $jq("#deelnemer-error" ),$jq("#form-error" ) );
 			
-			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			putAdres ( inschrijving, a, $jq("#deelnemer-error" ), $jq("#form-error" ) );
+			putDeelnemer( id, deelnemer, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveAddress );
 			
 		};
 		
-		var saveVragen = function() {
+		var saveAddress = function( id ) {
+			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
+			putAddress ( id, a, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveVragen );
+		};
+		
+		var saveVragen = function( id ) {
 			var list
 				= [];
 			$jq( "input:checked.q" ).each( function( index, element ) {
 				list.push( new Vraag( element.name, element.attributes["data-q"], element.value ) );
 			});
 			$jq( "input[type='text'].q" ).each( function( index, element ) {
-				list.push( new Vraag( element.name, element.attributes["data-q"], element.value ) );
+				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
 			});
 			$jq( "textarea.q" ).each( function( index, element ) {
-				list.push( new Vraag( element.name, element.attributes["data-q"], element.value ) );
+				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
 			});
-			putVakanties ( inschrijving, list, $jq("#vakantie-error"),$jq("#form-error" ) );
+			putVragen ( id, list, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveStatus );
+		};
+		
+		var saveStatus = function( id ) {
+			var status = new Status ( "SUBMITTED" );
+			putStatus ( id, status, $jq("#enrollment-save" ),$jq("#status-error" ) );
 		};
     	
-		$jq("#submit").click( function( event ) {
+		$jq("#enrollment-save").click( function( event ) {
 			
 			clearError();
 			
-			saveVakanties();
-			saveContact();
-			
-			saveDeelnemer();
-			
-			saveVragen();
+			save( "${inschrijving.id}" );
 			
 		});
     	
