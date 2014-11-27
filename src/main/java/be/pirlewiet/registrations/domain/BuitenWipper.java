@@ -54,7 +54,11 @@ public class BuitenWipper {
 	}
 	
 	public Organisatie whoHasID( Long id ) {
-		return this.organisatieRepository.findOneById( id );
+		Organisatie organisatie
+			= this.organisatieRepository.findOneById( id );
+		// detach the object
+		organisatie.getAdres().hashCode();
+		return organisatie;
 	}
 	
 	@Transactional(readOnly=false)

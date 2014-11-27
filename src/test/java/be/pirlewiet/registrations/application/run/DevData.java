@@ -1,13 +1,21 @@
 package be.pirlewiet.registrations.application.run;
 
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import be.occam.utils.timing.Timing;
+import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Geslacht;
+import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Periode;
+import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.VakantieType;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
@@ -15,9 +23,10 @@ import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 public class DevData {
+	
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
 	
 	public static class Ids {
 		
@@ -87,6 +96,9 @@ public class DevData {
 		sarah.setFamilieNaam( "Simpson" );
 		sarah.setEmail("lisa.simpson@springfield.net");
 		sarah.setGeslacht( Geslacht.V );
+		sarah.setGeboorteDatum( new Date() );
+		sarah.setTelefoonNummer( "x" );
+		
 		
 		// this.persoonRepository.saveAndFlush( sarah );
 		
@@ -94,8 +106,14 @@ public class DevData {
 			= new Organisatie();
 
 		pirlewiet.setId( Ids.PIRLEWIET );
-		pirlewiet.setNaam("Pirlewiet");
+		pirlewiet.setNaam("Pirlewiet VZW");
 		pirlewiet.setCode( "pwt001" );
+		pirlewiet.setEmail( "info@pirlewiet.be" );
+		pirlewiet.setTelefoonNummer( "09020123456" );
+		pirlewiet.setAdres( new Adres() );
+		pirlewiet.getAdres().setGemeente( "Gent" );
+		pirlewiet.getAdres().setStraat( "Sint-X" );
+		pirlewiet.getAdres().setNummer( "61" );
 		pirlewiet = this.organsiatieRepository.saveAndFlush( pirlewiet );
 		
 		Organisatie ocmw
@@ -105,22 +123,39 @@ public class DevData {
 		ocmw.setNaam("OCMW Leuven");
 		ocmw.setCode( "abc123" );
 		ocmw.setEmail( "info@ocmw.be" );
+		ocmw.setTelefoonNummer( "016123456" );
+		ocmw.setAdres( new Adres() );
+		ocmw.getAdres().setGemeente( "Leuven" );
+		ocmw.getAdres().setStraat( "Oude Markt" );
+		ocmw.getAdres().setNummer("1");
 	
 		ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
 		
-		/*
 		InschrijvingX sarahKika1
 			= new InschrijvingX();
 		sarahKika1.setId( Ids.IN_SARAH_KIKA_1 );
-		sarahKika1.setVakantie( zomerKikaEen );
-		sarahKika1.getDeelnemers().add( sarah );
+		sarahKika1.setVks( "" + Ids.Z_KIKA_1 );
 		sarahKika1.setOrganisatie( ocmw );
-		sarahKika1.setStatus( Status.INGEDIEND );
+		sarahKika1.getStatus().setValue( Status.Value.DRAFT );
+		sarahKika1.getContactGegevens().setNaam( "x" );
+		sarahKika1.getContactGegevens().setTelefoonNummer( "x" );
+		sarahKika1.getContactGegevens().setEmail( "sven@x" );
+		sarahKika1.getAdres().setGemeente( "x");
+		sarahKika1.getAdres().setStraat( "x" );
+		sarahKika1.getAdres().setNummer( "x" );
+		
+		sarahKika1 = this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
+		sarahKika1.setId( sarahKika1.getKey().getId() );
+		
+		sarahKika1.getDeelnemers().add( sarah );
 		
 		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
-		*/
 		
+		sarah.setId( sarah.getKey().getId() );
 		
+		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
+		
+		this.logger.info( "sarah's id is [{}]", sarah.getId() );
 		
 	}
 	

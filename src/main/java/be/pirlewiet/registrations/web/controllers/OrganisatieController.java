@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
+import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/organisation"} )
@@ -68,15 +70,15 @@ public class OrganisatieController {
 	@ResponseBody
 	public ResponseEntity<Organisatie> update( @RequestBody Organisatie organisatie, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		Organisatie loaded
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
-	
-		if ( loaded == null ) {
-			return response( HttpStatus.NOT_FOUND );
-		}
+			Organisatie loaded
+				= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
 		
-		return response( this.organisationManager.guard().update( Long.valueOf( pwtid ), organisatie ), HttpStatus.OK );
+			if ( loaded == null ) {
+				return response( HttpStatus.NOT_FOUND );
+			}
 		
+			return response( this.organisationManager.guard().update( Long.valueOf( pwtid ), organisatie ), HttpStatus.OK );
+			
 	}
 	
 	@RequestMapping( value="/adres", method = { RequestMethod.PUT } )
@@ -108,22 +110,33 @@ public class OrganisatieController {
 	}
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ModelAndView view( @CookieValue(required=false, value="pwtid") String pwtid ) {
 		
-		ResponseEntity<Organisatie> entity
-			= this.retrieve( pwtid );
+		Organisatie organisatie
+			= null;
+		
+		if ( pwtid != null ) {
+			
+			ResponseEntity<Organisatie> entity
+				= this.retrieve( pwtid );
+			organisatie = entity.getBody();
+			
+		}
+		
+		if ( organisatie == null ) {
+			organisatie = new Organisatie();
+		}
 		
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		Organisatie organisatie
-			= entity.getBody();
-		
 		model.put( "organisation", organisatie );
-		model.put( "outdated", this.secretariaatsMedewerker.isOrganisationOutDated( organisatie ) );
 		model.put( "incomplete", this.organisationManager.isInComplete( organisatie ) );
 		
-		return new ModelAndView( "organisation", model );
+		String view 
+			= PirlewietUtil.isPirlewiet( organisatie) ? "pirlewiet" : "organisation";
+		
+		return new ModelAndView( view, model );	
 		
 	}
 	

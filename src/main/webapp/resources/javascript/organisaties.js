@@ -17,7 +17,26 @@ var CodeRequest = function ( email ) {
 	this.email = email;
 };
 
-var putOrganisation = function ( organisation, formErrorElement ) {
+var postOrganisation = function ( organisation, button, errorElement, callback, callbackParam ) {
+
+	$jq.ajax( {
+		type: "post",
+		url:"/rs/organisations",
+		dataType: "json",
+		contentType: "application/json",
+	    processData: false,
+		data: JSON.stringify( organisation ),
+		success: function( jqXHR ) {
+			callback( organisation, callbackParam, button, errorElement );
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( button, errorElement );
+		}
+	});
+	
+};
+
+var putOrganisation = function ( organisation, button, errorElement, callback, callbackParam ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -27,16 +46,16 @@ var putOrganisation = function ( organisation, formErrorElement ) {
 	    processData: false,
 		data: JSON.stringify( organisation ),
 		success: function( jqXHR ) {
-			$jq("#organisation-save").addClass("ok");
+			callback( organisation, callbackParam, button, errorElement );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			formErrorElement.html(textStatus);
+			error( button, errorElement );
 		}
 	});
 	
 };
 
-var putOrganisationAdres = function ( organisation, adres, errorElement, formErrorElement ) {
+var putOrganisationAddress = function ( organisation, adres, button, errorElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -46,9 +65,10 @@ var putOrganisationAdres = function ( organisation, adres, errorElement, formErr
 	    processData: false,
 		data: JSON.stringify( adres ),
 		success: function( returned ) {
+			success( button, $jq("#organisation-ok" ) );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( formErrorElement, errorElement, jqXHR.responseText );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	

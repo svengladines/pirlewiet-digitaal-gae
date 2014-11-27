@@ -131,6 +131,21 @@ a:after {
 /* ==========================================================================
    Wrap Sections
    ========================================================================== */
+   
+.banner {
+	background: #878787;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.banner h4 {
+	color: white;
+	font-weight: 700;
+}
+
+.banner p {
+	color: white;
+}
 
 #headerwrap {
 	/*background: url(../img/pirlewiet-logo-bg.jpg) no-repeat center center;*/

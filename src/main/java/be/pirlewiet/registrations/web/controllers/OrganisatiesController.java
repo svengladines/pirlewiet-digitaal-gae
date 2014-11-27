@@ -3,6 +3,7 @@ package be.pirlewiet.registrations.web.controllers;
 import static be.occam.utils.spring.web.Controller.response;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;
@@ -30,14 +32,35 @@ public class OrganisatiesController {
 	@Resource
 	protected SecretariaatsMedewerker secretariaatsMedewerker;
 	
+	@Resource
+	protected OrganisationManager organisationManager;
+	
 	@RequestMapping( method = { RequestMethod.POST} )
 	@ResponseBody
-	public ResponseEntity<Organisatie> post( @RequestBody Organisatie organisatie,  HttpServletResponse response ) {
+	public ResponseEntity<Organisatie> post( @RequestBody Organisatie organisation,  HttpServletResponse response ) {
 		
-		Organisatie added = null;
-		this.secretariaatsMedewerker.guard().addOrganisatie( organisatie );
+		if ( this.organisationManager.guard().isInComplete( organisation ) ) {
+			
+			return response( HttpStatus.UNPROCESSABLE_ENTITY );
+			
+		}
+		else { 
 		
-		return response( added, HttpStatus.OK );
+			Organisatie created
+				= this.secretariaatsMedewerker.guard().addOrganisatie( organisation );
+			
+			Cookie cookie
+				= new Cookie( "pwtid", "" + created.getId() );
+		
+			cookie.setMaxAge( 3600 * 24 * 30 * 12 );
+			
+			cookie.setPath( "/" );
+			
+			response.addCookie( cookie );
+			
+			return response( created, HttpStatus.OK );
+			
+		}
 			
 	}
 	

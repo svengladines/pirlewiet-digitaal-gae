@@ -20,35 +20,37 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">PIRLEWIET</i></a>
+          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</i></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/index.htm">HOME</a></li>
+            <li><a href="/index.htm">START</a></li>
             <li><a href="organisation.html">ORGANISATIE</a></li>
             <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
             <li><a href="help.html">HELP</a></li>
-            <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
+             <li><a id="logout" title="Uitloggen" href="#"><i class="fa fa-sign-out"></i></a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
-
-	<div class="container">
-		<div class="row centered">
-			<div class="col-lg-12">
-				<h1>Inschrijvingen</h1>
-				<p>
-					Beheer je inschrijvingen.
-				</p>
-			</div>
-		</div><!-- row -->
-	</div><!-- container -->
-
+	<div class="banner">
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1>Inschrijvingen</h1>
+					<p>
+						Beheer hier de inschrijvingen van jouw organisatie.
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
 
 	<div class="container">
 	
-		<div class="row mandatory">
+		<div class="row">
+		
+			<br/>
 		
 			<form class="form-horizontal">
 				
@@ -64,7 +66,7 @@
 	
 		<div class="row mandatory">
 		
-			<h2>Actuele inschrijvingen</h2>
+			<h2>Inschrijvingen</h2>
 			
 			<table class="table table-bordered">
 			
@@ -86,12 +88,16 @@
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
 							
 				<tr>
-					<td>${inschrijving.vakantieDetails}</td>
+					<td>
+						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
+							${vakantie.naam}<br/>
+						</c:forEach>
+					</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
 					<td>${inschrijving.status}</td>
-					<td><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
+					<td class="text-center"><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
 				</tr>
 			</c:forEach>
 			

@@ -35,10 +35,10 @@ import org.springframework.web.servlet.ModelAndView;
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
-import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
+import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
@@ -96,7 +96,7 @@ public class InschrijvingenController {
 		
 
 		Organisatie organisatie
-			= this.buitenWipper.whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
 		
 		// TODO: check organisatie != null
 		
@@ -124,24 +124,60 @@ public class InschrijvingenController {
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-
 		Organisatie organisatie
 			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
-		
-		// TODO: check organisatie != null
-		
-		List<InschrijvingX> inschrijvingen 
-			= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
-		
+
 		Map<String,Object> model
 			= new HashMap<String,Object>();
-		
+	
 		model.put( "organisatie", organisatie );
-		model.put( "pwt", PirlewietUtil.isPirlewiet( organisatie ) );
-		model.put( "inschrijvingen", inschrijvingen );
+	
+		if ( PirlewietUtil.isPirlewiet( organisatie ) ) {
+			
+			List<InschrijvingX> inschrijvingen 
+				= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+			
+			List<InschrijvingX> submitted
+				= new ArrayList<InschrijvingX>();
 		
+			List<InschrijvingX> transit
+				= new ArrayList<InschrijvingX>();
+			
+			List<InschrijvingX> accepted
+				= new ArrayList<InschrijvingX>();
+			
+			logger.info( "number of enrollments: [{}]", inschrijvingen.size() );
+			
+			for ( InschrijvingX inschrijving : inschrijvingen ) {
+				
+				switch( inschrijving.getStatus().getValue() ) {
+				case SUBMITTED: 
+					submitted.add( inschrijving );
+					logger.info( "added a submitted inschrijving: [{}]", inschrijving.getId() );
+					break;
+				case TRANSIT:
+					transit.add( inschrijving );
+					break;
+				default:
+					logger.info( "inschrijving with unsupported status: [{}]", inschrijving.getStatus() );
+					break;
+						
+				}
+				
+			}
+		
+			model.put( "submitted", submitted );
+			model.put( "transit", transit );
+		}
+		else {
+			List<InschrijvingX> inschrijvingen 
+				= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+			model.put( "inschrijvingen", inschrijvingen );	
+		}
+		
+	
 		String view
-			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijvingen_pwt" : "inschrijvingen";
+			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijvingen_pirlewiet" : "inschrijvingen";
 		
 		return new ModelAndView( view, model );
 		
@@ -189,7 +225,7 @@ public class InschrijvingenController {
 					columns[ 2 ] = deelnemer.getFamilieNaam();
 					columns[ 3 ] = Timing.date( deelnemer.getGeboorteDatum(), Timing.dateFormat );
 					columns[ 4 ] = deelnemer.getEmail();
-					columns[ 5 ] = inschrijving.getVakantieDetails();
+					// columns[ 5 ] = inschrijving.getVakantieDetails();
 					/*
 					Adres adres
 						= inschrijving.getAdres();

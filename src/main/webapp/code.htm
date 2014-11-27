@@ -27,6 +27,7 @@
     <script src="resources/javascript/jquery-1.11.1.js"></script>
     <script src="resources/theme/js/bootstrap.min.js"></script>
     
+    <script type="text/javascript" src="/resources/javascript/pirlewiet.js"></script>
     <script type="text/javascript" src="/resources/javascript/organisaties.js"></script>
     
   </head>
@@ -46,25 +47,25 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="active"><a href="index.html">HOME</a></li>
-            <li><a href="about.html">HELP</a></li>
-            <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
+            <li class="active"><a href="index.htm">START</a></li>
+            <li><a href="help.htm">HELP</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
-	
-	<div class="container">
-		<div class="row centered">
-			<div class="col-lg-12">
-				<h1>Aanmelden</h1>
-				<p>
-					Geef je code in om je aan te melden of vraag een code aan.
-				</p>
-			</div>
-		</div><!-- row -->
-	</div><!-- container -->
+	<div class="banner">	
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1>Aanmelden</h1>
+					<p>
+						Geef je code in om je aan te melden of vraag een code aan.
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
 
 	<div class="container">
 	
@@ -88,7 +89,7 @@
 					<div class="form-group">
 					<label class="col-sm-4 control-label"></label>
 					<div class="col-sm-2">
-						<button type="button" id="codebtn" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="codebtn" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 					</div>
 				</div>
 				</form>
@@ -100,8 +101,14 @@
 			
 			<p>
 				Nog geen code ontvangen, of vergat je ze ? Geef dan het e-mailadres van je organisatie op en we sturen je een code toe.<br/>
-				Geef bij voorkeur een algemeen adres op, eerder dan een persoonlijk adres.<br/>
-				<span class="info">Is je organisatie nieuw bij Pirlewiet ? Vul dan het <a href="dienst.jsp">formulier</a> voor nieuwe doorverwijzers in.</span>
+			</p>
+			
+			<p>
+				<span id="email-ok" class="error text-success hidden"></span>
+			</p>
+			
+			<p>
+				<span id="email-unknown" class="error text-danger hidden"></span>
 			</p>
 			
 			<p>
@@ -118,26 +125,32 @@
 					<div class="form-group">
 					<label class="col-sm-4 control-label"></label>
 					<div class="col-sm-2">
-						<button type="button" id="emailbtn" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="emailbtn" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 					</div>
 				</div>
 				</form>
 	</div>
+	
+	<div class="container">
+	
+			<h2>Wij zijn een nieuwe doorverwijzer.</h2>
+			
+			<p>
+				Is jouw organisatie nieuw bij Pirlewiet of schreven jullie niemand in in 2014 ? Vul dan het formulier <a href="/rs/organisation.html">'Nieuwe doorverwijzer'</a> in. 
+			</p>
+			
+	</div>
+	
 
     <script>
     
     	var $jq = jQuery.noConflict();
-    
-	    function error( btn, element, message ) {
-	    	
-	    	btn.addClass("btn-danger");
-	    	element.html( message ).removeClass("hidden").addClass("show");
-	    	
-	    };
-	
+    	
 		$jq("#codebtn").click( function ( event ) {
 			
 			event.preventDefault();
+			
+			$jq(this).button('loading');
 			
 			var code = $jq("#code").val();
 	
@@ -163,6 +176,7 @@
     	$jq("#emailbtn").click( function ( event ) {
 			
 			event.preventDefault();
+			$jq(this).button('loading');
 			
 			var email = $jq("#email").val();
 			
@@ -175,10 +189,12 @@
 	    	    processData: false,
 	    		data: JSON.stringify(request),
 	    		success: function( ) {
-	    			window.document.location = "/email.html";
+	    			success( $jq("#emailbtn"), $jq("#email-ok"), "Je code werd opgestuurd naar " + email );
 	    		},
 	    		error: function(  jqXHR, textStatus, errorThrown ) {
-	    			window.document.location = "error.htm";
+	    			if( jqXHR.status == 422 ) {
+	    				error( $jq("#emailbtn"), $jq("#email-unknown"), "Het opgegeven e-mailadres werd niet herkend. Ben je een nieuwe doorverwijzer, vul dat het formulier voor nieuwe doorverwijzers in (zie onder)." );
+	    			}
 	    		}
 	    	});
    	

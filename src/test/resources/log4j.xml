@@ -20,11 +20,15 @@
 		<level value="info" />
 	</logger>
 	
-	<logger name="org.springframework.beans">
+	<logger name="org.datanucleus">
 		<level value="info" />
 	</logger>
 	
 	<logger name="org.hibernate">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.springframework.orm">
 		<level value="info" />
 	</logger>
 
@@ -40,6 +44,10 @@
 		<level value="info" />
 	</logger>
 	
+	<logger name="org.eclipse">
+		<level value="info" />
+	</logger>
+	
 	<logger name="org.springframework.orm.jpa.EntityManagerFactoryUtils">
 		<level value="error" />
 	</logger>
@@ -48,7 +56,7 @@
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
 	</root>
 	

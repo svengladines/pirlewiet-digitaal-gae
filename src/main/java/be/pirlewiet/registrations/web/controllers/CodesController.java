@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,7 +45,7 @@ public class CodesController {
 		
 		if ( organisatie == null ) {
 			logger.warn( "invalid code [{}] presented!", code );
-			return response( "Code niet correct. Probeer opnieuw of vraag de code opnieuw aan", HttpStatus.UNPROCESSABLE_ENTITY );
+			return response( "De opgegeven code werd niet herkend. Probeer opnieuw of vraag je code opnieuw aan.", HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		
 		Cookie cookie
@@ -55,6 +56,33 @@ public class CodesController {
 		cookie.setPath( "/" );
 		
 		response.addCookie( cookie );
+		
+		return response( HttpStatus.OK );
+		
+	}
+	
+	// TODO, move to cookiescontroller or such
+	@RequestMapping(method=RequestMethod.DELETE)
+	@ResponseBody
+	public ResponseEntity<String> delete( @RequestBody String code, @CookieValue(required=false, value="pwtid") String pwtid, HttpServletResponse response )  {
+		
+		if ( pwtid != null ) {
+		
+			Organisatie organisatie
+				= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid) );
+		
+			if ( organisatie != null ) {
+				
+				Cookie cookie
+					= new Cookie( "pwtid", "" + organisatie.getId() );
+			
+				// discard by setting zero age 
+				cookie.setMaxAge( 0 );
+				cookie.setPath( "/" );
+				response.addCookie( cookie );				
+				
+			}
+		}
 		
 		return response( HttpStatus.OK );
 		

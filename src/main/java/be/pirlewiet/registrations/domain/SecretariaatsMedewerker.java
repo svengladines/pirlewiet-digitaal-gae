@@ -1,16 +1,28 @@
 package be.pirlewiet.registrations.domain;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
@@ -68,6 +80,12 @@ public class SecretariaatsMedewerker {
 	BuitenWipper buitenWipper;
 	
 	@Resource
+	PostBode postBode;
+	
+	@Resource
+	JavaMailSender javaMailSender;
+	
+	@Resource
 	DataGuard dataGuard;
 	
     public SecretariaatsMedewerker() {
@@ -85,7 +103,7 @@ public class SecretariaatsMedewerker {
     		return null;
     	}
     	
-    	inschrijving.setStatus( Status.NIEUW );
+    	inschrijving.setStatus( new Status( Status.Value.DRAFT ) );
     	
     	Organisatie organisatie 
     		= this.buitenWipper.whoHasID( inschrijving.getOrganisatie().getId() );
@@ -99,7 +117,7 @@ public class SecretariaatsMedewerker {
 
     	// stupid GAE ... set id manually
     	saved.setId( saved.getKey().getId() );
-    	this.inschrijvingXRepository.saveAndFlush( saved );
+    	saved = this.inschrijvingXRepository.saveAndFlush( saved );
     	
     	Deelnemer deelnemer
 			= new Deelnemer();
@@ -112,18 +130,12 @@ public class SecretariaatsMedewerker {
     			= vragen.getVragen().get( key );
     		
     		for ( Vraag vraag : list ) {
-    			/*
-    			Vraag savedVraag = this.vraagRepository.save( vraag );
-    			savedVraag.setId( savedVraag.getId() );
-    			this.vraagRepository.save( vraag );
-    			saved.getVragen().add( savedVraag );
-    			*/
-    			saved.getVragen().add( vraag );
+    			this.addVraag( inschrijving, vraag );
     		}
     		
     	}
     	
-    	saved = this.inschrijvingXRepository.saveAndFlush( saved );
+    	
     	
     	return saved;
     }
@@ -171,42 +183,29 @@ public class SecretariaatsMedewerker {
     		= this.inschrijvingXRepository.findAll();// = PirlewietUtil.isPirlewiet( organisatie ) ? this.inschrijvingXRepository.findAll() : this.inschrijvingXRepository.findByOrganisatie( organisatie );
     		// SGL|| findByOrganisatie does not work in GAE ... at least not out-of-the-box
     	
+    	logger.info( "total number of enrollments: [{}]", all.size() );
+    	
     	Iterator<InschrijvingX> it
     		= all.iterator();
     	
     	boolean isPirlewiet
     		= PirlewietUtil.isPirlewiet( organisatie );
     	
+    	logger.info( "find enrollments for organisation: [{}]", organisatie.getId() );
+    	
     	while ( it.hasNext() ) {
     		
     		InschrijvingX inschrijving
     			= it.next();
     		
-    		if ( (!isPirlewiet) && ( inschrijving.getOrganisatie().getId() != organisatie.getId() ) ) {
+    		this.detach( inschrijving );
+    		
+    		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getId().equals( organisatie.getId() ) ) ) {
+    			logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getId(), organisatie.getId() );
     			continue;
     		}
     		
-    		// needed to lazily load the collections (need to be initialized to transfer to json)
-    		inschrijving.getDeelnemers().size();
-    		inschrijving.getVragen().size();
-    		
-    		for ( Long vk : inschrijving.getVakanties() ) {
-    			Vakantie vakantie = this.vakantieRepository.findById( vk );
-    			
-    			if ( inschrijving.getVakantieDetails() == null ) {
-    				inschrijving.setVakantieDetails( vakantie.getNaam() );
-    			}
-    			else {
-    				inschrijving.setVakantieDetails( new StringBuilder( inschrijving.getVakantieDetails() ).append( ", " ).append( vakantie.getNaam() ).toString()  );
-    			}
-    			
-    		}
-    		
-    		inschrijving.getDeelnemers().size();
-			inschrijving.getVragen().size();
-			inschrijving.getVakanties().size();
-			// same for GAE for embedded
-			inschrijving.getContactGegevens().hashCode();
+    		logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getId(), organisatie.getId() );
     		
     		inschrijvingen.add( inschrijving );
     		
@@ -224,26 +223,57 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=true)
-    public InschrijvingX inschrijving( Long id ) {
+    public InschrijvingX findInschrijving( Long id ) {
     	
     	InschrijvingX inschrijving
     		= this.inschrijvingXRepository.findOneById( id );
     	
-    	if ( inschrijving != null ) {
-    	
-    		logger.info( "found inschrijving with id []", id );
-	    	// needed to lazily load the lists (can't load them eagerly, unfortunately)
-			inschrijving.getDeelnemers().size();
-			inschrijving.getVragen().size();
-			inschrijving.getVakanties().size();
-			// same for GAE for embedded
-			inschrijving.getContactGegevens().hashCode();
-			logger.info( "found inschrijving with adres hash []", inschrijving.getAdres().hashCode()  );
-			
-    	}
+    	this.detach( inschrijving );
     	
     	return inschrijving;
     	
+    	
+    }
+    
+    protected void detach( InschrijvingX inschrijving ) {
+    	
+    	if ( inschrijving != null ) {
+        	
+	    	// needed to lazily load the lists (can't load them eagerly, unfortunately)
+			inschrijving.getDeelnemers().size();
+			inschrijving.getVragen().size();
+			logger.info( "[{}]; number of holidays [{}]", inschrijving.getId(), inschrijving.getVakanties().size() );
+			// same for GAE for embedded
+			inschrijving.getContactGegevens().hashCode();
+			inschrijving.getVragen().hashCode();
+			inschrijving.getAdres().hashCode();
+			inschrijving.getStatus().hashCode();
+			
+			StringTokenizer tok
+				= new StringTokenizer( inschrijving.getVks().trim(), ",", false );
+			
+			while( tok.hasMoreTokens() ) {
+				
+				String t
+					= tok.nextToken().trim();
+				
+				if ( t.length() == 0 ) {
+					continue;
+				}
+				
+				Vakantie v 
+					= this.vakantieRepository.findById( Long.valueOf( t.trim() ) ); 
+				
+				if ( v != null ) {
+					inschrijving.getVakanties().add ( v );
+				}
+				else {
+					throw new RuntimeException( "no vakantie with id [" + t.trim() + "]" );
+				}
+				
+			}
+			
+    	}
     	
     }
     
@@ -257,51 +287,16 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public  InschrijvingX pasAan( InschrijvingX inschrijving ) {
-    	
-    	this.inschrijvingXRepository.saveAndFlush( inschrijving );
-    	
-    	return inschrijving;
-    	
-    }
-    
-    @Transactional(readOnly=false)
-    public InschrijvingX addVraag( long inschrijvingID, Vraag vraag ) {
-    	
-    	InschrijvingX inschrijving
-    		= this.inschrijving( inschrijvingID );
-    	
-    	vraag.setId( this.vraagRepository.saveAndFlush( vraag ).getId() );
-    	
-    	inschrijving.getVragen().add( vraag );
-    	
-    	this.inschrijvingXRepository.saveAndFlush( inschrijving );
-    	
-    	return inschrijving;
-    	
-    }
-    
-    @Transactional(readOnly=false)
     public InschrijvingX updateVragenLijst( long inschrijvingID, List<Vraag> vragen ) {
     	
     	InschrijvingX inschrijving
-    		= this.inschrijving( inschrijvingID );
-    	
-    	boolean incomplete = false;
-    	
-    	for ( Vraag v : vragen ) {
-    		
-    		if ( isEmpty( v.getAntwoord() ) ) {
-    			throw new RuntimeException("Beantwoord alle vragen uit de vragenlijst. Indien niet van toepassing, vul \"NVT\" in AUB");
-    		}
-    		
-    	}
+    		= this.findInschrijving( inschrijvingID );
     	
     	for ( Vraag vraag : vragen ) {
     	
 	    	for ( Vraag v : inschrijving.getVragen() ) {
 	    		
-	    		if ( v.getVraag().equals( vraag.getVraag() ) ) {
+	    		if ( v.getId() == ( vraag.getId() ) ) {
 	    			
 	    			v.setAntwoord( vraag.getAntwoord() );
 	    			break;
@@ -311,38 +306,39 @@ public class SecretariaatsMedewerker {
 	    	}
     	}
     	
-    	this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    	inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    	
+    	boolean complete
+    		= true;
+    	
+    	for ( Vraag vraag : inschrijving.getVragen() ) {
+			
+			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
+				if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
+					complete = false;
+					break;
+				}
+			}
+			
+		}
+    	
+    	if ( ! complete ) {
+    		throw new RuntimeException("Beantwoord alle vragen in de vragenlijst. Vul eventueel 'Niet van toepassing' (NVT) in." );
+    	}
     	
     	return inschrijving;
     	
     }
     
     @Transactional(readOnly=false)
-    public InschrijvingX updateVakanties( long inschrijvingID, Long[] vakanties ) {
+    public InschrijvingX updateVakanties( long inschrijvingID, String vakanties ) {
     	
     	InschrijvingX inschrijving
-    		= this.inschrijving( inschrijvingID );
+    		= this.findInschrijving( inschrijvingID );
     	
-    	if ( vakanties.length == 0 ) {
-    		throw new RuntimeException( "Selecteer minstens 1 vakantie" );
-    	}
+    	inschrijving.setVks( vakanties.replaceAll("\"", "" ) );
     	
-		inschrijving.getVakanties().clear();
-		
-		for ( Long vk : vakanties ) {
-			
-			Vakantie v
-    			= this.vakantieRepository.findById( vk );
-    	
-			if ( v == null ) {
-				throw new RuntimeException("vakantie not found");
-			}
-			
-			inschrijving.getVakanties().add( vk );
-			
-		}
-    	
-		this.inschrijvingXRepository.saveAndFlush( inschrijving );
+		inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	return inschrijving;
     	
@@ -352,7 +348,7 @@ public class SecretariaatsMedewerker {
     public InschrijvingX updateContact( long inschrijvingID, ContactGegevens contactGegevens ) {
     	
     	InschrijvingX inschrijving
-    		= this.inschrijving( inschrijvingID );
+    		= this.findInschrijving( inschrijvingID );
     	
     	if ( contactGegevens.getNaam().isEmpty() ) {
     		throw new RuntimeException("Geef de naam van de contactpersoon op");
@@ -378,7 +374,7 @@ public class SecretariaatsMedewerker {
     public InschrijvingX updateInschrijvingsAdres( long inschrijvingID, Adres adres ) {
     	
     	InschrijvingX inschrijving
-    		= this.inschrijving( inschrijvingID );
+    		= this.findInschrijving( inschrijvingID );
     	
     	if ( isEmpty( adres.getGemeente() ) ) {
     		throw new RuntimeException("Geef de gemeente op");
@@ -429,8 +425,11 @@ public class SecretariaatsMedewerker {
     @Transactional(readOnly=false)
     public  Deelnemer updateDeelnemer( Long id, Deelnemer deelnemer ) {
     	
+    	InschrijvingX inschrijving
+    		= this.findInschrijving( id );
+    	
     	Deelnemer d
-    		= this.deelnemerRepository.findById( id );
+    		= inschrijving.getDeelnemers().get( 0 );
     	
     	if ( d != null ) {
     		
@@ -453,11 +452,13 @@ public class SecretariaatsMedewerker {
     		
     		d.setVoorNaam( deelnemer.getVoorNaam() );
     		d.setFamilieNaam( deelnemer.getFamilieNaam() );
+    		d.setGeslacht( deelnemer.getGeslacht() );
     		d.setGeboorteDatum( deelnemer.getGeboorteDatum() );
     		d.setEmail( deelnemer.getEmail() );
     		d.setTelefoonNummer( deelnemer.getTelefoonNummer() );
     		d.setMobielNummer( deelnemer.getMobielNummer() );
-    		d = this.deelnemerRepository.saveAndFlush( d );
+    		
+    		this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	}
     	
     	return d;
@@ -486,7 +487,7 @@ public class SecretariaatsMedewerker {
     protected InschrijvingX addDeelnemer( InschrijvingX inschrijving, Deelnemer deelnemer ) {
     	
     	// InschrijvingX inschrijving
-    	// 	= this.inschrijving( inschrijvingID );
+    	// 	= this.findInschrijving( inschrijvingID );
     	
     	long inschrijvingID
     		= inschrijving.getId();
@@ -503,6 +504,22 @@ public class SecretariaatsMedewerker {
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	deelnemer.setId( deelnemer.getKey().getId() );
+    	
+    	this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    	
+    	return inschrijving;
+    	
+    }
+    
+    protected InschrijvingX addVraag( InschrijvingX inschrijving, Vraag vraag ) {
+    	
+    	// ^GAE this.persoonRepository.saveAndFlush( deelnemer );
+    	// this.persoonRepository.saveAndFlush( deelnemer );
+    	
+    	inschrijving.getVragen().add( vraag );
+    	this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    	
+    	vraag.setId( vraag.getKey().getId() );
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
@@ -527,6 +544,35 @@ public class SecretariaatsMedewerker {
     	
     }
     
+    @Transactional(readOnly=false)
+	public void updateStatus( long inschrijvingID, Status status ) {
+	
+		InschrijvingX loaded
+			= this.findInschrijving( inschrijvingID );
+		
+		Status.Value oldStatus
+			= loaded.getStatus().getValue();
+		
+		loaded.getStatus().setValue( status.getValue() );
+		loaded.getStatus().setComment( status.getComment() );
+		this.inschrijvingXRepository.saveAndFlush( loaded );
+
+		if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
+			
+			MimeMessage message
+				= formatUpdateMessage( loaded, oldStatus );
+
+			if ( message != null ) {
+				
+				postBode.deliver( message );
+				logger.info( "email sent" );
+				
+			}
+			
+		}
+			
+	}
+    
     protected boolean isEmpty( String x ) {
     	
     	return ( x == null ) || ( x.isEmpty() );
@@ -548,10 +594,77 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    public boolean isOrganisationOutDated( Organisatie organisation ) {
-    	
-    	return ( organisation.getUpdated() == null );
+    protected MimeMessage formatUpdateMessage( InschrijvingX inschrijving, Status.Value oldStatus ) {
+		
+		MimeMessage message
+			= null;
+		
+		Configuration cfg 
+			= new Configuration();
+	
+		try {
+			
+			InputStream tis
+				= this.getClass().getResourceAsStream( "/templates/pirlewiet/update.tmpl" );
+			
+			Template template 
+				= new Template("code", new InputStreamReader( tis ), cfg );
+			
+			Map<String, Object> model = new HashMap<String, Object>();
+					
+			model.put( "organisatie", inschrijving.getOrganisatie() );
+			model.put( "inschrijving", inschrijving );
+			model.put( "vakanties", vakantieDetails( inschrijving ) );
+			model.put( "old", oldStatus );
+			model.put( "id", Long.toString( inschrijving.getId() ) );
+			
+			StringWriter bodyWriter 
+				= new StringWriter();
+			
+			template.process( model , bodyWriter );
+			
+			bodyWriter.flush();
+				
+			message = this.javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper( message,"utf-8" );
+				
+			helper.setFrom( "sven.gladines@gmail.com" );
+			helper.setTo( "sven.gladines@telenet.be" );
+			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
+			helper.setSubject( "Aanpassing inschrijving" );
+				
+			String text
+				= bodyWriter.toString();
+				
+			logger.info( "email text is [{}]", text );
+				
+			helper.setText(text, true);
+				
+		}
+		catch( Exception e ) {
+			logger.warn( "could not write e-mail", e );
+			throw new RuntimeException( e );
+		}
+		
+		return message;
     	
     }
+    
+    protected String vakantieDetails( InschrijvingX inschrijving ) {
+		
+		StringBuilder b
+			= new StringBuilder();
+		
+		for ( Vakantie v : inschrijving.getVakanties() ) {
+			
+			if ( v != null ) {
+				b.append( b.length() == 0 ? v.getNaam() : new StringBuilder(", ").append( v.getNaam() ));
+			}
+			
+		}
+		
+		return b.toString();
+		
+	} 
  
 }

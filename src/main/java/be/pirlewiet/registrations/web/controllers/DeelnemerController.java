@@ -43,13 +43,14 @@ public class DeelnemerController {
 	@RequestMapping( method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Deelnemer> update(
-			 	@PathVariable String id,
+			 	@PathVariable String inschrijving,
 				@RequestBody Deelnemer deelnemer ) {
 		
-		Deelnemer updated
-			= this.secretariaatsMedewerker.guard().updateDeelnemer( Long.valueOf( id ), deelnemer );
+		// don't use id, GAE keys clash (probably only unique within context, not global)
+		// Deelnemer updated
+		//	= this.secretariaatsMedewerker.guard().updateDeelnemer( Long.valueOf( inschrijving ), deelnemer );
 		
-		return response( updated, HttpStatus.OK );
+		return response( deelnemer, HttpStatus.OK );
 		
 	}
 	
@@ -58,7 +59,7 @@ public class DeelnemerController {
 	public ResponseEntity<String> handleError( Exception e ){
 		
 		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.BAD_REQUEST );
+		return response( "De gegevens van de deelnemer konden niet worden opgeslagen. Probeer AUB opnieuw.", HttpStatus.INTERNAL_SERVER_ERROR );
 		
 	}
 	

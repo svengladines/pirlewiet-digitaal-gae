@@ -30,6 +30,7 @@
     <script type="text/javascript" src="/resources/javascript/underscore-1.4.3.js"></script>
     <script type="text/javascript" src="/resources/javascript/moment.js"></script>
     <script type="text/javascript" src="/resources/javascript/templates.js"></script>
+    <script type="text/javascript" src="/resources/javascript/pirlewiet.js"></script>
 	<script type="text/javascript" src="/resources/javascript/vakanties.js"></script>
 	<script type="text/javascript" src="/resources/javascript/organisaties.js"></script>
 	<script type="text/javascript" src="/resources/javascript/inschrijvingen.js"></script>
