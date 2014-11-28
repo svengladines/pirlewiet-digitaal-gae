@@ -11,25 +11,9 @@
 	
 	<body>
 
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/index.htm">START</a></li>
-            <li><a href="help.html">HELP</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+    <jsp:include page="/WEB-INF/jsp/menu.jsp">
+    	<jsp:param name="active" value="enrollments"/>
+    </jsp:include>
 
 	<div class="banner">
 		<div class="container">
@@ -61,9 +45,7 @@
 			
 	</div><!-- container -->
 	
-	<div id="f" class="centered">
-		<a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-dribbble"></i></a>
-	</div>
+	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 	
     <script>
     	var $jq = jQuery.noConflict();

@@ -11,6 +11,7 @@
 	
 	<body>
 
+<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
     <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
     	<jsp:param name="active" value="enrollments"/>
     </jsp:include>
