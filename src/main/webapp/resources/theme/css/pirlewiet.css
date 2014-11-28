@@ -253,12 +253,17 @@ a:after {
 
 #f i {
 	color: #bdbdbd;
-	font-size: 30px;
-	padding: 20px;
+	font-size: 16px;
+	padding: 10px;
 }
 
 #f i:hover {
 	color: #ff7878;
+}
+
+#f a {
+	color: #bdbdbd;
+	font-size: 12px;
 }
 
 /****** SECTIONS *****/

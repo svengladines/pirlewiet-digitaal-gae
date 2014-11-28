@@ -11,28 +11,9 @@
 	
 	<body>
 
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/index.htm">START</a></li>
-            <li><a href="/rs/organisation.html">ORGANISATIE</a></li>
-            <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
-            <li><a href="help.html">HELP</a></li>
-            <li><a id="logout"><i class="fa fa-sign-out"></i></a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+    <jsp:include page="/WEB-INF/jsp/menu.jsp">
+    	<jsp:param name="active" value="enrollments"/>
+    </jsp:include>
 
 	<div class="banner">
 		<div class="container">
@@ -78,7 +59,7 @@
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Klaar ?</label>
 					<div class="col-sm-2">
-						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 					</div>
 				</div>
 				<div class="form-group">
@@ -92,7 +73,7 @@
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Bedacht ?</label>
 					<div class="col-sm-2">
-						<button type="button" id="enrollment-delete" class="btn btn-warning" data-vakantie="1"><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Verwijder</button>
+						<button type="button" id="enrollment-delete" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Verwijder</button>
 					</div>
 				</div>
 			</c:when>
@@ -104,13 +85,13 @@
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Wijzigingen ?</label>
 					<div class="col-sm-2">
-						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Inschrijving annuleren ?</label>
 					<div class="col-sm-2">
-						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Annuleer</button>
+						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Annuleer</button>
 					</div>
 				</div>
 			</c:otherwise>
@@ -454,6 +435,7 @@
 		$jq("#enrollment-save").click( function( event ) {
 			
 			clearError();
+			$jq(this).button('loading');
 			
 			save( "${inschrijving.id}" );
 			

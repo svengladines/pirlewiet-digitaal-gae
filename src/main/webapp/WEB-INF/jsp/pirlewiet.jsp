@@ -11,7 +11,7 @@
 	
 	<body>
 
-      <jsp:include page="/WEB-INF/jsp/menu.jsp">
+   <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
     	<jsp:param name="active" value="organisation"/>
     </jsp:include>
 
@@ -19,9 +19,9 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1>Mijn Organisatie</h1>
+					<h1>Pirlewiet</h1>
 					<p>
-						Beheer hier het profiel van jouw organisatie.
+						Beheer hier het profiel van Pirlewiet.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -30,43 +30,9 @@
 
 	<div class="container">
 	
-	<br/>
-	
-	<div class="row">
-	
-		<form class="form-horizontal" role="form">
-			<c:choose>
-			<c:when test="${incomplete == false}">
-				<p class="text-info">Het profiel van jouw organisatie is in orde.</p>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Wijzigingen ?</label>
-					<div class="col-sm-8">
-						<button type="button" id="organisation-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<p class="text-error">Vul het onderstaande formulier in en klik op 'verstuur' om een profiel aan te maken voor jouw organisatie.</p>
-				<p class="text-info">Maakte je al een profiel aan ? Ga dan naar de <a href="/code.htm">inlogpagina</a> om je aan te melden.</p>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Ingevuld ?</label>
-					<div class="col-sm-8">
-						<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
-			</c:otherwise>
-			</c:choose>
-			<div class="form-group">
-					<label for="organisation-error" class="col-sm-4 control-label"></label>
-					<div class="col-sm-8">
-						<span id="organisation-ok" class="error text-success hidden">
-							Gegevens werden met succes verwerkt.
-						</span>
-						<span id="organisation-error" class="error text-danger hidden">
-							Het formulier kon niet worden verwerkt. Controleer de gegevens en probeer opnieuw AUB. 
-						</span>
-					</div>
-			</div>
+			<form class="form-horizontal" role="form">
+		
+		<div class="row mandatory">
 		
 			<h2>Gegevens</h2>
 			
@@ -99,6 +65,7 @@
 						<input id="organisation-email" type="tel" class="form-control" value="${organisation.email}"></input>
 					</div>
 			</div>
+			</div>
 			<div class="form-group">
 					<label for="organisation-alternative-email" class="col-sm-4 control-label">Alternatief e-mailadres</label>
 					<div class="col-sm-3">
@@ -123,9 +90,25 @@
 						<input id="adres-nummer" type="tel" class="form-control" value="${organisation.adres.nummer}"></input>
 					</div>
 			</div>
+			<div class="form-group">
+					<label for="organisation-error" class="col-sm-4 control-label"></label>
+					<div class="col-sm-8">
+						<span id="organisation-ok" class="error text-success hidden">
+							Gegevens werden met succes verwerkt. Je kan nu inschrijvingen maken en beheren.
+						</span>
+						<span id="organisation-error" class="error text-danger hidden">
+							Het formulier kon niet worden verwerkt. Controleer de gegevens en probeer opnieuw AUB. 
+						</span>
+					</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label"></label>
+				<div class="col-sm-8">
+					<button type="button" id="organisation-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+				</div>
+			</div>
+			
 		</form>
-		
-	</div>
 		
 	</div><!-- container -->
 	
@@ -163,8 +146,6 @@
 		$jq("#organisation-save").click( function( event ) {
 			
 			clearError();
-			
-			$jq(this).button('loading');
 			
 			saveOrganisation();
 			

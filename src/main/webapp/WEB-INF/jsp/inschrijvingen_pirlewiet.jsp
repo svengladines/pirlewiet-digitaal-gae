@@ -11,7 +11,7 @@
 	
 	<body>
 
-    <jsp:include page="/WEB-INF/jsp/menu.jsp">
+    <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
     	<jsp:param name="active" value="enrollments"/>
     </jsp:include>
     
@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijvingen</h1>
 					<p>
-						Beheer hier de inschrijvingen van jouw organisatie.
+						Beheer de inschrijvingen.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -31,24 +31,17 @@
 	<div class="container">
 	
 		<div class="row">
-		
-			<br/>
-		
-			<form class="form-horizontal">
-				
-				<div class="form-group form-group-lg">
-					<div>
-						<button type="button" id="nieuw" class="btn btn-primary" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
-					</div>
-				</div>
-				
-			</form>
+	
+			<br/>	
+			<p>
+		    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx">Download</a>
+			</p>
 		
 		</div>
 	
 		<div class="row mandatory">
 		
-			<h2>Inschrijvingen</h2>
+			<h2>NIEUW</h2>
 			
 			<table class="table table-bordered">
 			
@@ -64,7 +57,7 @@
 			</thead>
 			
 			
-			<c:forEach items="${inschrijvingen}" var="inschrijving">
+			<c:forEach items="${submitted}" var="inschrijving">
 				
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
@@ -79,7 +72,44 @@
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
 					<td>${inschrijving.status}</td>
-					<td class="text-center"><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
+					<td><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
+				</tr>
+			</c:forEach>
+			
+			</table>
+			
+		</div>	
+		
+		<div class="row mandatory">
+		
+			<h2>IN BEHANDELING</h2>
+			
+			<table class="table table-bordered">
+			
+			<thead>
+				<tr>
+					<th>Vakantie(s)</th>
+					<th>Voornaam</th>
+					<th>Familienaam</th>
+					<th>Geboortedatum</th>
+					<th>Status</th>
+					<th>Beheer</th>
+				</tr>
+			</thead>
+			
+			
+			<c:forEach items="${transit}" var="inschrijving">
+				
+				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
+				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
+							
+				<tr>
+					<td>${inschrijving.vakantieDetails}</td>
+					<td>${inschrijving.deelnemers[0].voorNaam}</td>
+					<td>${inschrijving.deelnemers[0].familieNaam}</td>
+					<td>${gd}</td>
+					<td>${inschrijving.status}</td>
+					<td><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
 				</tr>
 			</c:forEach>
 			
@@ -90,7 +120,7 @@
 	</div><!-- container -->
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
-
+	
     <script>
     	var $jq = jQuery.noConflict();
     	

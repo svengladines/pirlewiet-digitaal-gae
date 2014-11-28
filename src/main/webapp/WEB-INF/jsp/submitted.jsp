@@ -11,17 +11,35 @@
 	
 	<body>
 
-    <jsp:include page="/WEB-INF/jsp/menu.jsp">
-    	<jsp:param name="active" value="enrollments"/>
-    </jsp:include>
-    
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</i></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/index.htm">START</a></li>
+            <li><a href="organisation.html">ORGANISATIE</a></li>
+            <li class="active"><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a></li>
+            <li><a href="help.html">HELP</a></li>
+            <li><a data-toggle="modal" data-target="#myModal" href="#myModal"><i class="fa fa-envelope-o"></i></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
 	<div class="banner">
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
 					<h1>Inschrijvingen</h1>
 					<p>
-						Beheer hier de inschrijvingen van jouw organisatie.
+						Beheer je inschrijvingen.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -48,7 +66,7 @@
 	
 		<div class="row mandatory">
 		
-			<h2>Inschrijvingen</h2>
+			<h2>Actuele inschrijvingen</h2>
 			
 			<table class="table table-bordered">
 			
@@ -70,16 +88,12 @@
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
 							
 				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
+					<td>${inschrijving.vakantieDetails}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
 					<td>${inschrijving.status}</td>
-					<td class="text-center"><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
+					<td><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
 				</tr>
 			</c:forEach>
 			
@@ -89,7 +103,15 @@
 		
 	</div><!-- container -->
 	
-	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
+	<!-- FOOTER -->
+	<div id="f">
+		<div class="container">
+			<div class="row centered">
+				<a href="#"><i class="fa fa-twitter"></i></a><a href="#"><i class="fa fa-facebook"></i></a><a href="#"><i class="fa fa-dribbble"></i></a>
+		
+			</div><!-- row -->
+		</div><!-- container -->
+	</div><!-- Footer -->
 
     <script>
     	var $jq = jQuery.noConflict();
