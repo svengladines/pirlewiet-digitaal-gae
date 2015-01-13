@@ -57,7 +57,7 @@ public class InschrijvingController {
 	public ResponseEntity<InschrijvingX> retrieve( @PathVariable String id ) {
 		
 		InschrijvingX inschrijving
-			= this.secretariaatsMedewerker.guard().findInschrijving( Long.valueOf( id ) );
+			= this.secretariaatsMedewerker.guard().findInschrijving( id );
 		
 		if ( inschrijving == null ) {
 			return response( HttpStatus.NOT_FOUND );
@@ -86,7 +86,7 @@ public class InschrijvingController {
 		
 		this.retrieve( id );
 		
-		this.secretariaatsMedewerker.guard().updateContact( Long.valueOf( id ), contactGegevens);
+		this.secretariaatsMedewerker.guard().updateContact( id, contactGegevens);
 		
 		return response( contactGegevens, HttpStatus.OK );
 		
@@ -99,7 +99,7 @@ public class InschrijvingController {
 				@RequestBody String vakanties ) {
 		
 		InschrijvingX x 
-			= this.secretariaatsMedewerker.guard().updateVakanties( Long.valueOf( id ), vakanties );
+			= this.secretariaatsMedewerker.guard().updateVakanties( id, vakanties );
 		
 		return response( vakanties, HttpStatus.OK );
 		
@@ -147,7 +147,7 @@ public class InschrijvingController {
 		
 		this.retrieve( id );
 		
-		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( Long.valueOf( id ), adres );
+		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( id, adres );
 		
 		return response( adres, HttpStatus.OK );
 		
@@ -165,7 +165,7 @@ public class InschrijvingController {
 		InschrijvingX inschrijving
 			= retrieve.getBody();
 		
-		this.secretariaatsMedewerker.guard().updateVragenLijst( inschrijving.getId(), vragen );
+		this.secretariaatsMedewerker.guard().updateVragenLijst( inschrijving.getUuid(), vragen );
 		
 		return response( vragen, HttpStatus.OK );
 		
@@ -197,7 +197,7 @@ public class InschrijvingController {
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisatie organisatie
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.guard().whoHasID(  pwtid  );
 		
 		ResponseEntity<InschrijvingX> retrieve
 			= this.retrieve( id );
@@ -207,7 +207,7 @@ public class InschrijvingController {
 		
 		if ( PirlewietUtil.isPirlewiet( organisatie ) ) { 
 		
-			this.secretariaatsMedewerker.updateStatus( Long.valueOf( id ), status );
+			this.secretariaatsMedewerker.updateStatus( id, status );
 			
 		}
 		else {
@@ -233,7 +233,7 @@ public class InschrijvingController {
 	public ModelAndView view( @PathVariable String id, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisatie organisatie
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.guard().whoHasID(  pwtid  );
 		
 		ResponseEntity<InschrijvingX> entity
 			= this.retrieve( id );

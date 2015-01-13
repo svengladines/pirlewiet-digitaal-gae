@@ -266,6 +266,11 @@ a:after {
 	font-size: 12px;
 }
 
+#f span {
+	color: #bdbdbd;
+	font-size: 12px;
+}
+
 /****** SECTIONS *****/
 
 .w {

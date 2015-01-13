@@ -3,9 +3,8 @@ package be.pirlewiet.registrations.domain;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -17,9 +16,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
@@ -64,7 +65,7 @@ public class Intaker {
 		// 	send e-mail to secretariaat
 		
 		InschrijvingX loaded
-			= this.secretariaatsMedewerker.findInschrijving( inschrijving.getId() );
+			= this.secretariaatsMedewerker.findInschrijving( inschrijving.getUuid() );
 		
 		if ( Status.Value.SUBMITTED.equals( status.getValue() ) ) {
 			
@@ -88,6 +89,7 @@ public class Intaker {
 		}
 		
 		loaded.getStatus().setValue( status.getValue() );
+		loaded.setInschrijvingsdatum( new Date() );
 		this.inschrijvingXRepository.saveAndFlush( loaded );
 
 		if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
@@ -126,7 +128,7 @@ public class Intaker {
 					
 			model.put( "organisatie", organisation );
 			model.put( "inschrijving", inschrijving );
-			model.put( "id", Long.toString( inschrijving.getId() ) );
+			model.put( "id", inschrijving.getUuid() );
 			// TODO use vakantiedetails for more efficiency ?
 			model.put("vakanties", vakanties( inschrijving ) );
 			
@@ -140,8 +142,8 @@ public class Intaker {
 			message = this.javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message,"utf-8");
 				
-			helper.setFrom( "sven.gladines@gmail.com" );
-			helper.setTo( "sven.gladines@telenet.be" );
+			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+			helper.setTo( "info@pirlewiet.be" );
 			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
 			helper.setSubject( "Nieuwe inschrijving" );
 				
@@ -173,7 +175,7 @@ public class Intaker {
 		try {
 			
 			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/intake.tmpl" );
+				= this.getClass().getResourceAsStream( "/templates/update.tmpl" );
 			
 			Template template 
 				= new Template("code", new InputStreamReader( tis ), cfg );
@@ -195,8 +197,8 @@ public class Intaker {
 			message = this.javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message);
 				
-			helper.setFrom( "sven.gladines@gmail.com" );
-			helper.setTo( "sven.gladines@telenet.be" );
+			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+			helper.setTo( "info@pirlewiet.be" );
 			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
 			helper.setSubject( "Aanvraag code" );
 				
@@ -242,9 +244,12 @@ public class Intaker {
 		for ( Vraag vraag : inschrijving.getVragen() ) {
 			
 			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
-				if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
-					complete = false;
-					break;
+				if ( ! Tags.TAG_MEDIC.equals( vraag.getTag() ) ) { 
+					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
+						logger.info( "question [{}] was not answered", vraag.getVraag() );
+						complete = false;
+						break;
+					}
 				}
 			}
 			

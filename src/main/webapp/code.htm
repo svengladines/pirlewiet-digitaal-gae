@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <!-- <link rel="shortcut icon" href="theme/ico/favicon.png">  -->
+    <link rel="icon" href="resources/images/pirlewiet_icon.png" type="image/png">
 
     <title>Pirlewiet Digitaal</title>
 
@@ -97,10 +97,10 @@
 	
 	<div class="container">
 	
-			<h2>Ik heb geen code.</h2>
+			<h2>Ik vergat mijn code.</h2>
 			
 			<p>
-				Nog geen code ontvangen, of vergat je ze ? Geef dan het e-mailadres van je organisatie op en we sturen je een code toe.<br/>
+				Kreeg je een e-mail met een code, maar vergat je ze ? Geef dan het e-mailadres van je organisatie op en we sturen je de code opnieuw toe.<br/>
 			</p>
 			
 			<p>
@@ -133,12 +133,23 @@
 	
 	<div class="container">
 	
-			<h2>Wij zijn een nieuwe doorverwijzer.</h2>
+			<h2>Ik kreeg geen code.</h2>
 			
 			<p>
 				Is jouw organisatie nieuw bij Pirlewiet of schreven jullie niemand in in 2014 ? Vul dan het formulier <a href="/rs/organisation.html">'Nieuwe doorverwijzer'</a> in. 
 			</p>
 			
+	</div>
+	
+	<div id="f">
+		<div class="container">
+			<p>
+				<span><i class="fa fa-info-circle"></i>Het secretariaat is geopend van dinsdag t.e.m. vrijdag (9u-12u)</span><br/>
+				<a href="https://goo.gl/maps/GrHUf"><i class="fa fa-home"></i>Sint-Salvatorstraat 30, 9000 Gent</a><br/>
+				<span><i class="fa fa-phone"></i>09 269 07 88</span><br/>
+				<a href="mailto:info@pirlewiet.be"><i class="fa fa-envelope"></i>info@pirlewiet.be</a><br/>
+			</p>
+		</div>
 	</div>
 	
 
@@ -161,7 +172,7 @@
 	    	    processData: false,
 	    		data: JSON.stringify(code),
 	    		success: function( ) {
-	    			window.document.location = "/rs/organisation.html";
+	    			window.document.location = "/rs/start.html";
 	    		},
 	    		error: function(  jqXHR, textStatus, errorThrown ) {
 	    			if( jqXHR.status == 422 ) {

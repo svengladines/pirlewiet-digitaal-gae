@@ -4,7 +4,7 @@ var Organisatie = function ( email ) {
 
 var Organisation = function ( id, name, telephone, gsm, email, altEmail ) {
 	
-	this.id = id;
+	this.uuid = id;
 	this.naam = name;
 	this.telefoonNummer = telephone;
 	this.gsmNummer = gsm;

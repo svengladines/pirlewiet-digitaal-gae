@@ -40,12 +40,12 @@
 				<label class="col-sm-4 control-label">Status</label>
 				<div class="col-sm-2">
 					<select id="status" class="form-control">
- 							<option value="SUBMITTED" ${inschrijving.status.value eq 'SUBMITTED' ? 'selected="selected"' : "" }>${inschrijving.status}</option>
- 							<option value="TRANSIT" ${inschrijving.status.value eq 'TRANSIT' ? 'selected="selected"' : "" }>${inschrijving.status}</option>
- 							<option value="WAITINGLIST" ${inschrijving.status.value eq 'WAITINGLIST' ? 'selected="selected"' : "" }>${inschrijving.status}</option>
- 							<option value="ACCEPTED" ${inschrijving.status.value eq 'ACCEPTED' ? 'selected="selected"' : "" }>${inschrijving.status}</option>
- 							<option value="REJECTED" ${inschrijving.status.value eq 'REJECTED' ? 'selected="selected"' : "" }>${inschrijving.status}</option>
- 							<option value="CANCELLED" ${inschrijving.status.value eq 'CANCELLED' ? 'selected="selected"' : "" }>${inschrijving.status}</option>
+ 							<option value="SUBMITTED" ${inschrijving.status.value eq 'SUBMITTED' ? 'selected="selected"' : "" }>Ingediend</option>
+ 							<option value="TRANSIT" ${inschrijving.status.value eq 'TRANSIT' ? 'selected="selected"' : "" }>In behandeling</option>
+ 							<option value="WAITINGLIST" ${inschrijving.status.value eq 'WAITINGLIST' ? 'selected="selected"' : "" }>Wachtlijst</option>
+ 							<option value="ACCEPTED" ${inschrijving.status.value eq 'ACCEPTED' ? 'selected="selected"' : "" }>Aanvaard</option>
+ 							<option value="REJECTED" ${inschrijving.status.value eq 'REJECTED' ? 'selected="selected"' : "" }>Geweigerd</option>
+ 							<option value="CANCELLED" ${inschrijving.status.value eq 'CANCELLED' ? 'selected="selected"' : "" }>Geannuleerd</option>
 					</select>
 				</div>
 			</div>
@@ -107,14 +107,14 @@
 							<c:set var="contains" value="false" />
 							<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
 								<c:choose>
-									<c:when test="${vakantie.id eq vk.id}">
+									<c:when test="${vakantie.uuid eq vk.uuid}">
 										<c:set var="contains" value="true" />
 									</c:when>
 								</c:choose>
 								</c:forEach>
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="vak" class="vakantie" value="${vk.id}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+										<input type="checkbox" name="vak" class="vakantie" value="${vk.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 									</label>
 								</div>
 						</c:forEach>
@@ -130,7 +130,7 @@
 				<span id="deelnemer-error" class="error text-danger hidden"></span>
 			</p>
 			
-			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].id}"></input>
+			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].uuid}"></input>
 			<div class="form-group">
 				<label for="deelnemer-voor" class="col-sm-4 control-label">Voornaam</label>
 				<div class="col-sm-3">	
@@ -152,7 +152,7 @@
 					</c:when>
 					<c:otherwise>
 							<p class="form-control-static">Man</p>
-						</div>
+						
 					</c:otherwise>
 					</c:choose>
 				</div>
@@ -200,6 +200,39 @@
 						<p class="form-control-static">${inschrijving.adres.nummer}</p>
 					</div>
 			</div>
+		</div>
+		
+		<div class="row">
+		
+			<h2>Varia</h2>
+			
+			<c:forEach items="${inschrijving.vragen}" var="vraag">
+					<c:if test="${vraag.tag eq 'various'}">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">${vraag.vraag}</label>
+							<div class="col-sm-8">
+								<c:choose>
+									<c:when test="${vraag.type eq 'YesNo'}">
+										
+											<p class="form-control-static">${vraag.antwoord eq 'Y' ? 'Ja' : 'Nee'}</p>
+	
+									</c:when>
+									<c:when test="${vraag.type eq 'Text'}">
+										<div class="col-sm-8">
+											<p class="form-control-static">${vraag.antwoord}</p>
+										</div>
+									</c:when>
+									<c:when test="${vraag.type eq 'Area'}">
+										<div class="col-sm-8">
+											<p class="form-control-static">${vraag.antwoord}</p>
+										</div>
+									</c:when>
+								</c:choose>
+							</div>
+						</div>
+					</c:if>
+			</c:forEach>
+			
 		</div>
 		
 		<div class="row">
@@ -344,7 +377,7 @@
 		};
 		
 		$jq("#status-confirmBtn").click( function( event ) {
-			saveStatus( "${inschrijving.id}" );
+			saveStatus( "${inschrijving.uuid}" );
 		});
     	
 		$jq("#status").change( function( event ) {

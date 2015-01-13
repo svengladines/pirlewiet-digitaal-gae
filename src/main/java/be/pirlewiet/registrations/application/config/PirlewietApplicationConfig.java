@@ -4,22 +4,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.CodeMan;
+import be.pirlewiet.registrations.domain.Detacher;
 import be.pirlewiet.registrations.domain.Intaker;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PostBode;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
 import be.pirlewiet.registrations.model.Vragen;
 
 @Configuration
@@ -30,6 +30,8 @@ public class PirlewietApplicationConfig {
 		= LoggerFactory.getLogger( PirlewietApplicationConfig.class );
 
 	final static String BASE_PKG = "be.pirlewiet.registrations";
+	
+	public final static String EMAIL_ADDRESS = "pirlewiet.digitaal@gmail.com";
 	
 	static class propertiesConfigurer {
 		
@@ -54,7 +56,7 @@ public class PirlewietApplicationConfig {
 		@Bean
 		SecretariaatsMedewerker secretariaatsMedewerker( ) {
 			
-			return new SecretariaatsMedewerker();
+			return new SecretariaatsMedewerker( "pirlewiet.digitaal@gmail.com" );
 			
 		}
 		
@@ -93,6 +95,13 @@ public class PirlewietApplicationConfig {
 			
 		}
 		
+		@Bean
+		Detacher detacher() {
+			
+			return new Detacher();
+			
+		}
+		
 		
 		@Bean
 		public Vragen vragen () {
@@ -104,6 +113,11 @@ public class PirlewietApplicationConfig {
 			JavaMailSenderImpl sender
 				= new JavaMailSenderImpl();
 			return sender;
+		}
+		
+		@Bean
+		public SetOrganisationsUuidScenario setOrganisationsUuidScenario() {
+			return new SetOrganisationsUuidScenario();
 		}
 		
 	}

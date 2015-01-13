@@ -6,7 +6,7 @@
 package be.pirlewiet.registrations.web.util;
 
 import static be.pirlewiet.registrations.web.util.Tuple.tuple;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -230,115 +230,114 @@ public class ExcelImporter {
 	public void setCellDateFormat(String cellDateFormat) {
 		this.cellDateFormat = cellDateFormat;
 	}
-
-	private List<String[]> getExcelData(Boolean isValid, Workbook workbook, int... columnIndexes) {
-
-		List<String[]> data = new ArrayList<String[]>();
-
-		int nTotalEmpty = 0;
-
-		// check if the given file is a valid excel file
-		if (isValid) {
-
-			Sheet sheet = workbook.getSheetAt(FIRST_SHEET);
-
-			final int nRows = sheet.getLastRowNum() + 1;
-
-			logger.debug("#### get ExcelData - number of rows ---> " + nRows);
-
-			// check if the file has data rows (no header row)
-			if (nRows >= 1) {
-
-				// check if the currentsheet from the workbook has the right
-				// headers or some of the headers given
-				if (columnsOk(sheet, columnIndexes)) {
-
-					// Loop all the rows from the current sheet
-					for (int r = (FIRST_ROW); r <= nRows; r++) {
-
-						logger.debug("row {}...", r);
-
-						Row currentRow = sheet.getRow(r);
-
-						if (currentRow != null) {
-							String[] row = new String[columnIndexes.length];
-
-							int emptyCells = 0;
-
-							// Loop all the columns from the current row
-							for (int c : columnIndexes) {
-
-								String value = null;
-
-								logger.debug("row [{}],cell [{}]...", r, c);
-
-								Cell currentCell = currentRow.getCell(c);
-
-								// if the current cell contains data - get it out
-								if (currentCell != null) {
-
-									value = getCelValue(currentCell);
-
-									logger.debug("[" + r + ":" + c + "]" + value + "\t");
-
-								}
-
-								row[c] = value;
-
-								// if the data was blank
-								if (isEmpty(row[c])) {
-
-									emptyCells++;
-								}
-							}
-
-							// if the row wasn't blank add it to the list
-							if (emptyCells < columnIndexes.length) {
-
-								data.add(row);
-
-								logger.debug("-> Added");
-
-							} else {
-
-								nTotalEmpty++;
-
-								logger.debug("Row " + r + ":  empty");
-
-							}
-
-							logger.debug("\n");
-						} else {
-
-							nTotalEmpty++;
-						}
-
-					}
-				} else {
-
-					throw new RuntimeException("The given column indexes are not consistant with the model");
-				}
-			} else {
-
-				throw new RuntimeException("No data rows found");
-			}
-
-		} else {
-
-			throw new RuntimeException("Not a xls or xlsx file");
+	
+	public List<String[]> getExcelData( MultipartFile file, int startRow, int... columnIndexes) {
+		
+		try {
+			return this.getExcelData( file.getInputStream(), startRow, columnIndexes );
 		}
+		catch( IOException e ) {
+			throw new RuntimeException( e );
+		}
+	}
 
-		logger.debug("-----------------------------------");
-		logger.debug("| valid number of rows found : " + data.size() + "  |");
-		logger.debug("| Total of empty rows : " + nTotalEmpty + "         |");
-		logger.debug("| Total number of rows : " + (data.size() + nTotalEmpty) + "        |");
-		logger.debug("-----------------------------------");
-
-		return data;
+	public List<String[]> getExcelData( InputStream data, int startRow, int... columnIndexes) {
+		
+		List<String[]> rows 
+			= new ArrayList<String[]>();
+		
+		try {
+			
+			Workbook workbook
+				= new XSSFWorkbook( data );
+	
+			Sheet sheet = workbook.getSheetAt(FIRST_SHEET);
+			
+	
+			final int nRows = sheet.getPhysicalNumberOfRows();
+	
+			logger.debug("#### get ExcelData - number of rows ---> " + nRows);
+	
+	
+			// check if the currentsheet from the workbook has the right
+			// headers or some of the headers given
+			if ( ! columnsOk(sheet, columnIndexes) ) {
+				throw new RuntimeException( "excel file sheet does not contain the correct amount of columns" );
+			}
+	
+			// Loop all the rows from the current sheet
+			for (int r = (startRow); r < nRows; r++) {
+		
+				logger.debug("row {}...", r);
+		
+				Row currentRow = sheet.getRow(r);
+	
+				if (currentRow == null) {
+					continue;
+				}
+				String[] row = new String[ max( columnIndexes ) ];
+	
+				int emptyCells = 0;
+	
+				// Loop all the columns from the current row
+				for (int c : columnIndexes) {
+	
+					String value = null;
+	
+					logger.debug("row [{}],cell [{}]...", r, c);
+	
+					Cell currentCell = currentRow.getCell(c);
+	
+					// if the current cell contains data - get it out
+					if (currentCell != null) {
+	
+						value = getCelValue(currentCell);
+	
+						logger.debug("[" + r + ":" + c + "]" + value + "\t");
+	
+					}
+	
+					row[c-1] = value;
+	
+					// if the data was blank
+					if (isEmpty(row[c-1])) {
+	
+						emptyCells++;
+					}
+				}
+	
+				// if the row wasn't blank add it to the list
+				if (emptyCells < columnIndexes.length) {
+	
+					rows.add(row);
+	
+					logger.debug("-> Added");
+	
+				} 
+	
+			}
+		}
+		catch( Exception e ) {
+			throw new RuntimeException( e );
+		}
+				
+		return rows;
 
 	}
 	
 	protected boolean isEmpty( String s ) {
 		return (s == null)  || s.isEmpty();
+	}
+	
+	protected int max( int[] indexes ) {
+		
+		int max = indexes[ 0 ];
+		
+		for ( int x : indexes ) {
+			max = Math.max( x, max );
+		}
+		
+		return max;
+		
 	}
 }

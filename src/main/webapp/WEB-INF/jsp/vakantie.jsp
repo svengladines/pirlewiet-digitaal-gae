@@ -73,21 +73,21 @@
 								<c:when test="${vakantie.type == null }">
 									<div class="radio">
 										<label>
-											<input type="radio" name="vak" class="vakantie" value="${vakantie.id}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+											<input type="radio" name="vak" class="vakantie" value="${vakantie.uuid}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 										</label>
 									</div>
 								</c:when>
-								<c:when test="${inschrijving.vakantie.id eq vakantie.id}">
+								<c:when test="${inschrijving.vakantie.uuid eq vakantie.uuid}">
 									<div class="checkbox">
 										<label>
-											<input type="radio" name="vak" class="vakantie" value="${vakantie.id}" checked="checked">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+											<input type="radio" name="vak" class="vakantie" value="${vakantie.uuid}" checked="checked">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 										</label>
 									</div>
 								</c:when>
 								<c:otherwise>
 								<div class="checkbox">
 										<label>
-											<input type="radio" name="vak" class="vakantie" value="${vakantie.id}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+											<input type="radio" name="vak" class="vakantie" value="${vakantie.uuid}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 											</label>
 									</div>
 								</c:otherwise>
@@ -122,17 +122,17 @@
 							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vakantie.beginDatum}" var="start"></fmt:formatDate>	
 							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vakantie.eindDatum}" var="end"></fmt:formatDate>	
 							<c:choose>
-								<c:when test="${inschrijving.alternatief.id eq vakantie.id}">
+								<c:when test="${inschrijving.alternatief.uuid eq vakantie.uuid}">
 									<div class="checkbox">
 										<label>
-											<input type="radio" name="alt" class="alternatief" value="${vakantie.id}" checked="checked">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})s
+											<input type="radio" name="alt" class="alternatief" value="${vakantie.uuid}" checked="checked">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})s
 										</label>
 									</div>
 								</c:when>
 								<c:otherwise>
 								<div class="checkbox">
 										<label>
-											<input type="radio" name="alt" class="alternatief" value="${vakantie.id}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+											<input type="radio" name="alt" class="alternatief" value="${vakantie.uuid}">&nbsp;${vakantie.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 										</label>
 									</div>
 								</c:otherwise>
@@ -195,7 +195,7 @@
 				Geef hier de gegevens op van deelnemer.
 			</p>
 			
-			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].id}"></input>
+			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].uuid}"></input>
 			<div class="form-group">
 				<label for="deelnemer-voor" class="col-sm-4 control-label">Voornaam</label>
 				<div class="col-sm-3">	
@@ -318,18 +318,18 @@
 									<div class="col-sm-2">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="V">&nbsp;Ja
+												<input type="radio" name="${vraag.uuid}" class="q" value="V">&nbsp;Ja
 											</label>
 											&nbsp;&nbsp;&nbsp;
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="M">&nbsp;Neen
+												<input type="radio" name="${vraag.uuid}" class="q" value="M">&nbsp;Neen
 											</label>
 										</div>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Text'}">
 									<div class="col-sm-3">
-										<input id="${vraag.id}" type="text" class="form-control" value="${vraag.antwoord}"></input>
+										<input id="${vraag.uuid}" type="text" class="form-control" value="${vraag.antwoord}"></input>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Area'}">
@@ -370,23 +370,23 @@
 									<div class="col-sm-2">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="V">&nbsp;Ja
+												<input type="radio" name="${vraag.uuid}" class="q" value="V">&nbsp;Ja
 											</label>
 											&nbsp;&nbsp;&nbsp;
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="M">&nbsp;Neen
+												<input type="radio" name="${vraag.uuid}" class="q" value="M">&nbsp;Neen
 											</label>
 										</div>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Text'}">
 									<div class="col-sm-3">
-										<input id="${vraag.id}" type="text" class="form-control" value="${vraag.antwoord}"></input>
+										<input id="${vraag.uuid}" type="text" class="form-control" value="${vraag.antwoord}"></input>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Area'}">
 									<div class="col-sm-6">
-										<textarea id="${vraag.id}" class="form-control" rows="10" cols="64">${vraag.antwoord}</textarea>
+										<textarea id="${vraag.uuid}" class="form-control" rows="10" cols="64">${vraag.antwoord}</textarea>
 									</div>
 								</c:when>
 							</c:choose>
@@ -479,7 +479,7 @@
     	
     	var inschrijving = null;
     	
-    	retrieveInschrijving( "${inschrijving.id}" );
+    	retrieveInschrijving( "${inschrijving.uuid}" );
     	
 		$jq("#contact-save").click( function( event ) {
 			

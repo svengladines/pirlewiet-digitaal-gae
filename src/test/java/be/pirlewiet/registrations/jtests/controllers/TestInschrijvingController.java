@@ -37,7 +37,7 @@ public class TestInschrijvingController extends JTest {
 			= this.retrieve();
 		
 		assertEquals( "no 200 received", HttpStatus.OK, response.getStatusCode() );
-		assertEquals( "ID not correct", 1L, response.getBody().getId() );
+		assertEquals( "ID not correct", "1", response.getBody().getUuid() );
 		
 	}
 	
@@ -196,7 +196,7 @@ public class TestInschrijvingController extends JTest {
 			= this.baseResourceUrl().append("/inschrijvingen/1/status").toString();
 		
 		Status status
-			= Status.HUISBEZOEK;
+			= new Status( Status.Value.REJECTED );
 		
 		ResponseEntity<Status> response
 			= putJSON( url, status );

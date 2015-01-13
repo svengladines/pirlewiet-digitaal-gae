@@ -15,10 +15,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
+
+import com.google.appengine.api.datastore.KeyFactory;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -42,8 +46,6 @@ public class BuitenWipper {
 	@Resource
 	CodeMan codeMan;
 	
-	protected String fromAddress = "sven.gladines@gmail.com";
-	
     public BuitenWipper guard() {
     	this.dataGuard.guard();
     	return this;
@@ -53,16 +55,32 @@ public class BuitenWipper {
 		return this.organisatieRepository.findOneByCode( code.replaceAll("\"", "").toLowerCase() );
 	}
 	
-	public Organisatie whoHasID( Long id ) {
+	public Organisatie whoHasID( String uuid ) {
+		
 		Organisatie organisatie
-			= this.organisatieRepository.findOneById( id );
-		// detach the object
-		organisatie.getAdres().hashCode();
-		return organisatie;
+			= this.organisatieRepository.findByUuid( uuid );
+		if ( organisatie != null ) {
+			// detach the object
+			organisatie.getAdres().hashCode();
+			return organisatie;
+		}
+		else {
+			logger.info( "no organisation with id [{}]", uuid );
+		}
+		
+		return null;
+		
 	}
 	
 	@Transactional(readOnly=false)
 	public void processCodeRequest( CodeRequest codeRequest ) {
+		
+		this.processCodeRequest( codeRequest, false );
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public void processCodeRequest( CodeRequest codeRequest, boolean sendEmail ) {
 		
 		String email
 			= codeRequest.getEmail();
@@ -71,6 +89,7 @@ public class BuitenWipper {
 			= this.organisatieRepository.findOneByEmail( email );
 		
 		if ( organisatie == null ) {
+			logger.warn( "no organisation with email [{}]", email );
 			codeRequest.setStatus( CodeRequest.Status.REJECTED );
 			return;
 		}
@@ -81,6 +100,10 @@ public class BuitenWipper {
 		if ( organisatie.getCode() != null ) {
 			logger.info( "code exists, code is [{}]", code );
 			code = organisatie.getCode();
+			if ( ( organisatie.getUuid() == null ) || ( organisatie.getUuid().isEmpty() ) ) {
+				organisatie.setUuid( KeyFactory.keyToString( organisatie.getKey() ) );
+				organisatie = this.organisatieRepository.saveAndFlush( organisatie );
+			}
 		}
 		
 		while ( code == null ) {
@@ -100,15 +123,39 @@ public class BuitenWipper {
 		codeRequest.setCode( code );
 		codeRequest.setStatus( CodeRequest.Status.OK );
 		
-		MimeMessage message
-			= formatCodeRequestMessages( organisatie , email, code );
+		if ( sendEmail ) {
 		
-		if ( message != null ) {
+			MimeMessage message
+				= formatCodeRequestMessages( organisatie , email, code );
 			
-			postBode.deliver( message );
-			logger.info( "email sent" );
+			if ( message != null ) {
+				
+				postBode.deliver( message );
+				logger.info( "email sent" );
+				
+			}
 			
 		}
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public String uniqueCode( ) {
+		
+		String code
+			= null;
+		
+		while ( code == null ) {
+			code = this.codeMan.generateCode();
+			if ( this.organisatieRepository.findOneByCode( code ) != null ) {
+				// code already taken
+				code = null;
+				continue;
+			}
+			logger.info( "generated unique code [{}]", code );
+		}
+		
+		return code;
 		
 	}
 	
@@ -143,7 +190,7 @@ public class BuitenWipper {
 			message = this.javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message);
 				
-			helper.setFrom( this.fromAddress );
+			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
 			helper.setTo( email );
 			helper.setSubject( "Aanvraag code" );
 				

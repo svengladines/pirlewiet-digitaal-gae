@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Adres;
+import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
@@ -56,7 +58,7 @@ public class OrganisatieController {
 	public ResponseEntity<Organisatie> retrieve( String id ) {
 		
 		Organisatie organisatie
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( id ) );
+			= this.buitenWipper.guard().whoHasID(  id  );
 		
 		if ( organisatie == null ) {
 			return response( HttpStatus.NOT_FOUND );
@@ -71,13 +73,13 @@ public class OrganisatieController {
 	public ResponseEntity<Organisatie> update( @RequestBody Organisatie organisatie, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 			Organisatie loaded
-				= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
+				= this.buitenWipper.guard().whoHasID(  pwtid  );
 		
 			if ( loaded == null ) {
 				return response( HttpStatus.NOT_FOUND );
 			}
 		
-			return response( this.organisationManager.guard().update( Long.valueOf( pwtid ), organisatie ), HttpStatus.OK );
+			return response( this.organisationManager.guard().update(  pwtid , organisatie ), HttpStatus.OK );
 			
 	}
 	
@@ -85,16 +87,34 @@ public class OrganisatieController {
 	@ResponseBody
 	public ResponseEntity<Adres> adressUpdate(
 				@RequestBody Adres adres,
-				@CookieValue(required=true, value="pwtid") String pwtid) {
+				@CookieValue(required=true, value="pwtid") String pwtid,
+				HttpServletResponse response ) {
 		
-		Organisatie loaded
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
-
+			Organisatie loaded
+				= this.buitenWipper.guard().whoHasID(  pwtid  );
+	
 		if ( loaded == null ) {
-			return response( HttpStatus.NOT_FOUND );
+				return response( HttpStatus.NOT_FOUND );
 		}
 		
-		this.secretariaatsMedewerker.guard().updateOrganisatieAdres( Long.valueOf( loaded.getId() ), adres );
+		if ( ( loaded.getCode() == null ) || loaded.getCode().isEmpty() ) {
+		
+			CodeRequest codeRequest
+				= new CodeRequest();
+			codeRequest.setEmail( loaded.getEmail() );
+			this.buitenWipper.guard().processCodeRequest( codeRequest, false );
+			
+			Cookie cookie
+				= new Cookie( "pwtid", pwtid );
+
+			// discard cookie by setting zero age, they must login first 
+			cookie.setMaxAge( 0 );
+			cookie.setPath( "/" );
+			response.addCookie( cookie );
+			
+		}
+		
+		this.secretariaatsMedewerker.guard().updateOrganisatieAdres( loaded.getUuid(), adres );
 		
 		return response( adres, HttpStatus.OK );
 		
@@ -131,7 +151,7 @@ public class OrganisatieController {
 			= new HashMap<String,Object>();
 		
 		model.put( "organisation", organisatie );
-		model.put( "incomplete", this.organisationManager.isInComplete( organisatie ) );
+		model.put( "incomplete", this.organisationManager.isInComplete( organisatie, true ) );
 		
 		String view 
 			= PirlewietUtil.isPirlewiet( organisatie) ? "pirlewiet" : "organisation";

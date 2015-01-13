@@ -1,7 +1,7 @@
 var Inschrijving = function ( id ) {
 
 	if ( id != null ) {
-		this.id = id;
+		this.uuid = id;
 	}
 	
 };
@@ -14,8 +14,9 @@ var Contact = function ( naam, tel, email ) {
 	
 };
 
-var Adres = function ( gemeente, straat, nummer ) {
+var Adres = function ( zipcode, gemeente, straat, nummer ) {
 	
+	this.zipCode = zipcode;
 	this.gemeente = gemeente;
 	this.straat = straat;
 	this.nummer = nummer;
@@ -24,7 +25,7 @@ var Adres = function ( gemeente, straat, nummer ) {
 
 var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm, email ) {
 	
-	this.id = id;
+	this.uuid = id;
 	this.voorNaam = voor;
 	this.familieNaam = familie;
 	this.geslacht = geslacht;
@@ -37,7 +38,7 @@ var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm,
 
 var Vraag = function ( id, vraag, antwoord ) {
 	
-	this.id = id;
+	this.uuid = id;
 	this.vraag = vraag;
 	this.antwoord = antwoord;
 	
@@ -64,7 +65,7 @@ var viewInschrijving = function( index, inschrijving ) {
 	var html = _.template( contemplate("inschrijving-row"), inschrijving );
 	// var html = "x";
 	
-	$jq("tbody[data-vakantie$='" + vakantie.id + "']" ).append( html );
+	$jq("tbody[data-vakantie$='" + vakantie.uuid + "']" ).append( html );
 	
 };
 
@@ -110,7 +111,7 @@ var postInschrijving = function ( rx ) {
 	    processData: false,
 		data: JSON.stringify(rx),
 		success: function( inschrijving ) {
-				window.location.href = "/rs/inschrijvingen/" + inschrijving.id + ".html";
+				window.location.href = "/rs/inschrijvingen/" + inschrijving.uuid + ".html";
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			// alert( errorThrown );
@@ -123,13 +124,13 @@ var putDeelnemer = function ( inschrijving, dx, button, errorElement, callback )
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/deelnemers/" + dx.id,
+		url:"/rs/inschrijvingen/" + inschrijving + "/deelnemers/" + dx.uuid,
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify(dx),
 		success: function( deelnemer ) {
-				dx.id = deelnemer.id;
+				dx.uuid = deelnemer.uuid;
 				callback( inschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
@@ -219,7 +220,7 @@ var putOpmerking = function ( inschrijving, opmerking, formErrorElement ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.id + "/opmerking",
+		url:"/rs/inschrijvingen/" + inschrijving.uuid + "/opmerking",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,

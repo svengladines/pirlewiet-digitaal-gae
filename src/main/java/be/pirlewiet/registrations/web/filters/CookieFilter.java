@@ -30,7 +30,11 @@ public class CookieFilter implements Filter {
 			HttpServletResponse httpResponse
 				= (HttpServletResponse) response;
 			
-			if ( httpRequest.getRequestURI().equals( "/rs/codes" ) ) {
+			if ( ( httpRequest.getRequestURI().equals( "/rs/codes" ) ) 
+					|| ( httpRequest.getRequestURI().equals( "/rs/coderequests" ) ) 
+					|| ( httpRequest.getRequestURI().equals( "/rs/organisation.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/rs/organisation/adres" ) )
+					|| ( httpRequest.getRequestURI().equals( "/rs/organisations" ) ) ) {
 				chain.doFilter( httpRequest, httpResponse );
 				return;
 			}
@@ -41,10 +45,14 @@ public class CookieFilter implements Filter {
 			boolean present
 				= false;
 			
-			for ( Cookie cookie : cookies ) {
+			if ( cookies != null ){
 				
-				if ( "pwtid".equals( cookie.getName() ) ) {
-					present = true;
+				for ( Cookie cookie : cookies ) {
+					
+					if ( "pwtid".equals( cookie.getName() ) ) {
+						present = true;
+					}
+					
 				}
 				
 			}

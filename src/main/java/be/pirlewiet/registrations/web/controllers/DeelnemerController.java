@@ -34,7 +34,7 @@ public class DeelnemerController {
 	public ResponseEntity<Deelnemer> retrieve( @PathVariable String id ) {
 		
 		Deelnemer deelnemer
-			= this.secretariaatsMedewerker.deelnemer( Long.valueOf( id) );
+			= this.secretariaatsMedewerker.deelnemer( id );
 		
 		return response( deelnemer, HttpStatus.OK );
 		
@@ -48,7 +48,7 @@ public class DeelnemerController {
 		
 		// don't use id, GAE keys clash (probably only unique within context, not global)
 		// Deelnemer updated
-		//	= this.secretariaatsMedewerker.guard().updateDeelnemer( Long.valueOf( inschrijving ), deelnemer );
+		this.secretariaatsMedewerker.guard().updateDeelnemer( inschrijving, deelnemer );
 		
 		return response( deelnemer, HttpStatus.OK );
 		

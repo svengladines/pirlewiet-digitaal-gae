@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -21,15 +20,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
+import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Status.Value;
+import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.model.Vragen;
@@ -42,6 +41,11 @@ import be.pirlewiet.registrations.repositories.VakantieRepository;
 import be.pirlewiet.registrations.repositories.VraagRepository;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.DataGuard;
+
+import com.google.appengine.api.datastore.KeyFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 public class SecretariaatsMedewerker {
 	
@@ -72,12 +76,11 @@ public class SecretariaatsMedewerker {
 	@Resource
 	protected OrganisatieRepository organisatieRepository;
 	
-	@Transient
-	@Resource
-	protected Vragen vragen;
-	
 	@Resource
 	BuitenWipper buitenWipper;
+	
+	@Resource
+	Detacher detacher;
 	
 	@Resource
 	PostBode postBode;
@@ -88,7 +91,10 @@ public class SecretariaatsMedewerker {
 	@Resource
 	DataGuard dataGuard;
 	
-    public SecretariaatsMedewerker() {
+	protected String emailAddress;
+	
+    public SecretariaatsMedewerker( String emailAddress ) {
+    	this.emailAddress = emailAddress;
     }
     
     public SecretariaatsMedewerker guard() {
@@ -99,14 +105,14 @@ public class SecretariaatsMedewerker {
     @Transactional(readOnly=false)
     public InschrijvingX ontvangInschrijving( InschrijvingX inschrijving ) {
     	
-    	if ( inschrijving.getId() != 0 ) {
+    	if ( inschrijving.getUuid() != null ) {
     		return null;
     	}
     	
     	inschrijving.setStatus( new Status( Status.Value.DRAFT ) );
     	
     	Organisatie organisatie 
-    		= this.buitenWipper.whoHasID( inschrijving.getOrganisatie().getId() );
+    		= this.buitenWipper.whoHasID( inschrijving.getOrganisatie().getUuid() );
     	// to detach ...
     	organisatie.getAdres();
     	
@@ -116,13 +122,16 @@ public class SecretariaatsMedewerker {
     		= this.inschrijvingXRepository.saveAndFlush( inschrijving );
 
     	// stupid GAE ... set id manually
-    	saved.setId( saved.getKey().getId() );
+    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
     	saved = this.inschrijvingXRepository.saveAndFlush( saved );
     	
     	Deelnemer deelnemer
 			= new Deelnemer();
     	
     	saved = this.addDeelnemer( saved , deelnemer );
+    	
+    	Vragen vragen
+    		= new Vragen();
     	
     	for ( String key : vragen.getVragen().keySet() ) {
     		
@@ -143,7 +152,7 @@ public class SecretariaatsMedewerker {
     @Transactional(readOnly=false)
     public Vakantie maakVakantie( Vakantie vakantie ) {
     	
-    	if ( vakantie.getId() != 0 ) {
+    	if ( vakantie.getUuid() != null ) {
     		return null;
     	}
     	
@@ -151,7 +160,7 @@ public class SecretariaatsMedewerker {
     		= this.vakantieRepository.saveAndFlush( vakantie );
 
     	// stupid GAE ... set id manually
-    	saved.setId( saved.getKey().getId() );
+    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
     	this.vakantieRepository.saveAndFlush( saved );
     	
     	/*
@@ -172,8 +181,6 @@ public class SecretariaatsMedewerker {
     }
     
     
-    
-    @Transactional(readOnly=true)
     public List<InschrijvingX> actueleInschrijvingen( Organisatie organisatie ) {
     	
     	List<InschrijvingX> inschrijvingen
@@ -191,21 +198,30 @@ public class SecretariaatsMedewerker {
     	boolean isPirlewiet
     		= PirlewietUtil.isPirlewiet( organisatie );
     	
-    	logger.info( "find enrollments for organisation: [{}]", organisatie.getId() );
+    	logger.info( "find enrollments for organisation: [{}]", organisatie.getUuid() );
     	
     	while ( it.hasNext() ) {
     		
     		InschrijvingX inschrijving
     			= it.next();
     		
-    		this.detach( inschrijving );
+    		inschrijving = this.detach( inschrijving.getUuid() );
     		
-    		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getId().equals( organisatie.getId() ) ) ) {
-    			logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getId(), organisatie.getId() );
+    		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getUuid().equals( organisatie.getUuid() ) ) ) {
+    			logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
     			continue;
     		}
     		
-    		logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getId(), organisatie.getId() );
+    		if ( isPirlewiet ) {
+    			
+    			if ( Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
+    				logger.info( "enrollment with status DRAFT not sent to pirlewiet", inschrijving.getUuid() );
+    				continue;
+    			}
+    			
+    		}
+    		
+    		logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
     		
     		inschrijvingen.add( inschrijving );
     		
@@ -223,71 +239,33 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=true)
-    public InschrijvingX findInschrijving( Long id ) {
+    public InschrijvingX findInschrijving( String uuid ) {
     	
-    	InschrijvingX inschrijving
-    		= this.inschrijvingXRepository.findOneById( id );
-    	
-    	this.detach( inschrijving );
+    	InschrijvingX inschrijving 
+    		= this.detach( uuid );
     	
     	return inschrijving;
     	
     	
     }
     
-    protected void detach( InschrijvingX inschrijving ) {
+    protected InschrijvingX detach( String uuid ) {
     	
-    	if ( inschrijving != null ) {
-        	
-	    	// needed to lazily load the lists (can't load them eagerly, unfortunately)
-			inschrijving.getDeelnemers().size();
-			inschrijving.getVragen().size();
-			logger.info( "[{}]; number of holidays [{}]", inschrijving.getId(), inschrijving.getVakanties().size() );
-			// same for GAE for embedded
-			inschrijving.getContactGegevens().hashCode();
-			inschrijving.getVragen().hashCode();
-			inschrijving.getAdres().hashCode();
-			inschrijving.getStatus().hashCode();
-			
-			StringTokenizer tok
-				= new StringTokenizer( inschrijving.getVks().trim(), ",", false );
-			
-			while( tok.hasMoreTokens() ) {
-				
-				String t
-					= tok.nextToken().trim();
-				
-				if ( t.length() == 0 ) {
-					continue;
-				}
-				
-				Vakantie v 
-					= this.vakantieRepository.findById( Long.valueOf( t.trim() ) ); 
-				
-				if ( v != null ) {
-					inschrijving.getVakanties().add ( v );
-				}
-				else {
-					throw new RuntimeException( "no vakantie with id [" + t.trim() + "]" );
-				}
-				
-			}
-			
-    	}
+    	return this.detacher.findAndDetach( uuid );
     	
     }
     
-    public Deelnemer deelnemer( Long id ) {
+    public Deelnemer deelnemer( String id ) {
     	
     	Deelnemer deelnemer
-			= this.deelnemerRepository.findById( id );
+			= this.deelnemerRepository.findByUuid( id );
     	
     	return deelnemer;    	
     	
     }
     
     @Transactional(readOnly=false)
-    public InschrijvingX updateVragenLijst( long inschrijvingID, List<Vraag> vragen ) {
+    public InschrijvingX updateVragenLijst( String inschrijvingID, List<Vraag> vragen ) {
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
@@ -296,7 +274,7 @@ public class SecretariaatsMedewerker {
     	
 	    	for ( Vraag v : inschrijving.getVragen() ) {
 	    		
-	    		if ( v.getId() == ( vraag.getId() ) ) {
+	    		if ( v.getUuid().equals( ( vraag.getUuid() ) ) ) {
 	    			
 	    			v.setAntwoord( vraag.getAntwoord() );
 	    			break;
@@ -314,9 +292,12 @@ public class SecretariaatsMedewerker {
     	for ( Vraag vraag : inschrijving.getVragen() ) {
 			
 			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
-				if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
-					complete = false;
-					break;
+				if ( ! Tags.TAG_MEDIC.equals( vraag.getTag() ) ) { 
+					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
+						logger.info( "question [{}][{}] was not answered", vraag.getUuid(), vraag.getVraag() );
+						complete = false;
+						break;
+					}
 				}
 			}
 			
@@ -331,7 +312,7 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public InschrijvingX updateVakanties( long inschrijvingID, String vakanties ) {
+    public InschrijvingX updateVakanties( String inschrijvingID, String vakanties ) {
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
@@ -345,7 +326,7 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public InschrijvingX updateContact( long inschrijvingID, ContactGegevens contactGegevens ) {
+    public InschrijvingX updateContact( String inschrijvingID, ContactGegevens contactGegevens ) {
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
@@ -371,7 +352,7 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public InschrijvingX updateInschrijvingsAdres( long inschrijvingID, Adres adres ) {
+    public InschrijvingX updateInschrijvingsAdres( String inschrijvingID, Adres adres ) {
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
@@ -397,7 +378,7 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public Organisatie updateOrganisatieAdres( long id, Adres adres ) {
+    public Organisatie updateOrganisatieAdres( String id, Adres adres ) {
     	
     	Organisatie organisatie
     		= this.organisatie( id );
@@ -423,7 +404,7 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public  Deelnemer updateDeelnemer( Long id, Deelnemer deelnemer ) {
+    public  Deelnemer updateDeelnemer( String id, Deelnemer deelnemer ) {
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( id );
@@ -489,8 +470,8 @@ public class SecretariaatsMedewerker {
     	// InschrijvingX inschrijving
     	// 	= this.findInschrijving( inschrijvingID );
     	
-    	long inschrijvingID
-    		= inschrijving.getId();
+    	String inschrijvingID
+    		= inschrijving.getUuid();
     	
     	if ( inschrijving == null ) {
     		throw new RuntimeException( "no inschrijving with id ]" + inschrijvingID + "]");
@@ -503,7 +484,7 @@ public class SecretariaatsMedewerker {
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
-    	deelnemer.setId( deelnemer.getKey().getId() );
+    	deelnemer.setUuid( KeyFactory.keyToString( deelnemer.getKey() ) );
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
@@ -519,7 +500,7 @@ public class SecretariaatsMedewerker {
     	inschrijving.getVragen().add( vraag );
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
-    	vraag.setId( vraag.getKey().getId() );
+    	vraag.setUuid( KeyFactory.keyToString( vraag.getKey() ) );
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
@@ -530,22 +511,37 @@ public class SecretariaatsMedewerker {
     @Transactional( readOnly=false )
     public Organisatie addOrganisatie( Organisatie organisatie ) {
     	
+    	String email
+    		= organisatie.getEmail();
+    	
+    	Organisatie existing
+    		= this.organisatieRepository.findOneByEmail( email );
+    	
+    	if ( existing != null ) {
+    		throw new PirlewietException( String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
+    	}
+    	
+    	String code 
+    		= this.buitenWipper.guard().uniqueCode();
+    	
+    	organisatie.setCode( code );
+    	
     	Organisatie saved 
     		= this.organisatieRepository.saveAndFlush( organisatie );
     	
-    	saved.setId( saved.getKey().getId() );
+    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
     	
     	saved 
-			= this.organisatieRepository.saveAndFlush( organisatie );
+			= this.organisatieRepository.saveAndFlush( saved );
     	
-    	logger.info( "created organisation with id [{}]", saved.getId() );
+    	
     	
     	return saved;
     	
     }
     
     @Transactional(readOnly=false)
-	public void updateStatus( long inschrijvingID, Status status ) {
+	public void updateStatus( String inschrijvingID, Status status ) {
 	
 		InschrijvingX loaded
 			= this.findInschrijving( inschrijvingID );
@@ -573,6 +569,12 @@ public class SecretariaatsMedewerker {
 			
 	}
     
+    public void sendInitialCode( Organisatie organisation ) {
+    	
+    	
+    	
+    }
+    
     protected boolean isEmpty( String x ) {
     	
     	return ( x == null ) || ( x.isEmpty() );
@@ -580,13 +582,13 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=true)
-    public Organisatie organisatie( Long id ) {
+    public Organisatie organisatie( String uuid ) {
     	
     	Organisatie organsiatie
-    		= this.organisatieRepository.findOneById( id );
+    		= this.organisatieRepository.findByUuid( uuid );
     	
     	if ( organsiatie != null ) {
-    		logger.info( "found organsiatie with id []", id );
+    		logger.info( "found organsiatie with id [{}]", uuid );
     	}
     	
     	return organsiatie;
@@ -616,7 +618,7 @@ public class SecretariaatsMedewerker {
 			model.put( "inschrijving", inschrijving );
 			model.put( "vakanties", vakantieDetails( inschrijving ) );
 			model.put( "old", oldStatus );
-			model.put( "id", Long.toString( inschrijving.getId() ) );
+			model.put( "id", inschrijving.getUuid() );
 			
 			StringWriter bodyWriter 
 				= new StringWriter();
@@ -628,10 +630,10 @@ public class SecretariaatsMedewerker {
 			message = this.javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper( message,"utf-8" );
 				
-			helper.setFrom( "sven.gladines@gmail.com" );
-			helper.setTo( "sven.gladines@telenet.be" );
-			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
-			helper.setSubject( "Aanpassing inschrijving" );
+			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+			helper.setTo( inschrijving.getContactGegevens().getEmail() );
+			helper.setReplyTo( "info@pirlewiet.be" );
+			helper.setSubject( "Uw inschrijving bij Pirlewiet" );
 				
 			String text
 				= bodyWriter.toString();
@@ -649,6 +651,59 @@ public class SecretariaatsMedewerker {
 		return message;
     	
     }
+    
+    protected MimeMessage formatReadyToRockMessage( Organisatie organisation ) {
+		
+  		MimeMessage message
+  			= null;
+  		
+  		Configuration cfg 
+  			= new Configuration();
+  	
+  		try {
+  			
+  			InputStream tis
+  				= this.getClass().getResourceAsStream( "/templates/pirlewiet/ready.tmpl" );
+  			
+  			Template template 
+  				= new Template("code", new InputStreamReader( tis ), cfg );
+  			
+  			Map<String, Object> model = new HashMap<String, Object>();
+  					
+  			model.put( "organisation", organisation );
+  			model.put( "from", this.emailAddress );
+  			
+  			StringWriter bodyWriter 
+  				= new StringWriter();
+  			
+  			template.process( model , bodyWriter );
+  			
+  			bodyWriter.flush();
+  				
+  			message = this.javaMailSender.createMimeMessage();
+  			MimeMessageHelper helper = new MimeMessageHelper( message,"utf-8" );
+  				
+  			helper.setFrom( this.emailAddress, "Pirlewiet Digitaal" );
+  			helper.setTo( organisation.getEmail() );
+  			helper.setReplyTo( "info@pirlewiet.be" );
+  			helper.setSubject( "Pirlewiet VZW - digitale inschrijvingen 2015" );
+  				
+  			String text
+  				= bodyWriter.toString();
+  				
+  			logger.info( "email text is [{}]", text );
+  				
+  			helper.setText(text, true);
+  				
+  		}
+  		catch( Exception e ) {
+  			logger.warn( "could not write e-mail", e );
+  			throw new RuntimeException( e );
+  		}
+  		
+  		return message;
+      	
+      }
     
     protected String vakantieDetails( InschrijvingX inschrijving ) {
 		

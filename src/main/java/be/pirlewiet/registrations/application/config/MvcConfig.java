@@ -3,6 +3,8 @@ package be.pirlewiet.registrations.application.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -14,6 +16,7 @@ import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
 import be.pirlewiet.registrations.web.controllers.OrganisatieController;
 import be.pirlewiet.registrations.web.controllers.OrganisatiesController;
 import be.pirlewiet.registrations.web.controllers.PageController;
+import be.pirlewiet.registrations.web.controllers.ScenarioController;
 
 @Configuration
 @EnableWebMvc
@@ -32,6 +35,19 @@ public class MvcConfig {
 		}
 		
 	}
+	
+	/*
+	@Bean
+	MultipartResolver multipartResolver() {
+		
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+		
+		resolver.setMaxInMemorySize( 1024000 );
+		
+		return resolver;
+		
+	}
+	*/
 	
 	@Configuration
 	public static class ControllerConfig {
@@ -88,6 +104,13 @@ public class MvcConfig {
 		@Bean
 		public CodeRequestsController codeRequestsController() {
 			return new CodeRequestsController();
+		}
+		
+		@Bean
+		public ScenarioController scenarioController() {
+			
+			return new ScenarioController();
+			
 		}
 		
 		

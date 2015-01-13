@@ -3,6 +3,8 @@ package be.pirlewiet.registrations.jtests;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Geslacht;
@@ -49,7 +51,6 @@ public class TestData {
 		Vakantie zomerKikaEen
 			= new Vakantie();
 		
-		// zomerKikaEen.setId( Ids.Z_KIKA_1 );
 		zomerKikaEen.setBeginDatum( Timing.date("05/09/2014") );
 		zomerKikaEen.setEindDatum( Timing.date("10/09/2014") );
 		zomerKikaEen.setEindInschrijving( Timing.date("30/08/2014") );
@@ -58,7 +59,9 @@ public class TestData {
 		zomerKikaEen.setNaam( "KIKA 1");
 		zomerKikaEen.setPeriode( Periode.Zomer );
 		
-		this.vakantieRepository.saveAndFlush( zomerKikaEen );
+		zomerKikaEen = this.vakantieRepository.saveAndFlush( zomerKikaEen );
+		zomerKikaEen.setUuid( KeyFactory.keyToString( zomerKikaEen.getKey()  ) );
+		zomerKikaEen = this.vakantieRepository.saveAndFlush( zomerKikaEen );
 		
 		Vakantie zomerKikaTwee
 			= new Vakantie();
@@ -73,6 +76,8 @@ public class TestData {
 		zomerKikaTwee.setPeriode( Periode.Zomer );
 	
 		this.vakantieRepository.saveAndFlush( zomerKikaTwee );
+		zomerKikaTwee.setUuid( KeyFactory.keyToString( zomerKikaTwee.getKey()  ) );
+		zomerKikaTwee = this.vakantieRepository.saveAndFlush( zomerKikaTwee );
 		
 		Deelnemer sarah
 			= new Deelnemer();
@@ -102,7 +107,8 @@ public class TestData {
 		
 		InschrijvingX sarahKika1
 			= new InschrijvingX();
-		sarahKika1.getVakanties().add ( zomerKikaEen.getId() );
+		sarahKika1.setVks( "1" );
+		sarahKika1.getVakanties().add( zomerKikaEen );
 		sarahKika1.getDeelnemers().add( sarah );
 		sarahKika1.setOrganisatie( ocmw );
 		sarahKika1.setStatus( new Status ( Status.Value.SUBMITTED ) );

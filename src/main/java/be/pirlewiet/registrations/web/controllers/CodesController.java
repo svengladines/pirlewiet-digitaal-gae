@@ -49,7 +49,7 @@ public class CodesController {
 		}
 		
 		Cookie cookie
-			= new Cookie( "pwtid", "" + organisatie.getId() );
+			= new Cookie( "pwtid", "" + organisatie.getUuid() );
 		
 		cookie.setMaxAge( 3600 * 24 * 30 * 12 );
 		
@@ -69,12 +69,12 @@ public class CodesController {
 		if ( pwtid != null ) {
 		
 			Organisatie organisatie
-				= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid) );
+				= this.buitenWipper.guard().whoHasID( pwtid );
 		
 			if ( organisatie != null ) {
 				
 				Cookie cookie
-					= new Cookie( "pwtid", "" + organisatie.getId() );
+					= new Cookie( "pwtid", "" + organisatie.getUuid() );
 			
 				// discard by setting zero age 
 				cookie.setMaxAge( 0 );

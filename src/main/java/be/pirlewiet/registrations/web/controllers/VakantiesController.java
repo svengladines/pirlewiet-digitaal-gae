@@ -86,7 +86,7 @@ public class VakantiesController {
 		
 
 		Organisatie organisatie
-			= this.buitenWipper.whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.whoHasID(  pwtid  );
 		
 		// TODO: check organisatie != null
 		
@@ -116,7 +116,7 @@ public class VakantiesController {
 		
 		Organisatie organisatie
 			= new Organisatie();
-		organisatie.setId( Long.valueOf( pwtid ) );
+		organisatie.setUuid( pwtid );
 		
 		return organisatie;
 		

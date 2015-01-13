@@ -93,9 +93,13 @@
 				</div>
 				<div class="form-group">
 					<label class="col-sm-4 control-label">Inschrijving annuleren ?</label>
-					<div class="col-sm-2">
+					<div class="col-sm-8">
 
 						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Annuleer</button>
+						<br/>
+						<p id="cancel-warning" class="hidden">
+							<span class="text-warning">Opgelet: indien u een inschrijving annuleert binnen de 2 weken voor aanvang van het kamp, zal het inschrijvingsgeld niet terugbetaald worden, tenzij u een geldige reden kan voorleggen aan het secretariaat.</span>
+						</p>
 					</div>
 				</div>
 			</c:otherwise>
@@ -121,14 +125,14 @@
 							<c:set var="contains" value="false" />
 							<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
 								<c:choose>
-									<c:when test="${vakantie.id eq vk.id}">
+									<c:when test="${vakantie.uuid eq vk.uuid}">
 										<c:set var="contains" value="true" />
 									</c:when>
 								</c:choose>
 								</c:forEach>
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="vak" class="vakantie" value="${vk.id}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+										<input type="checkbox" name="vak" class="vakantie" value="${vk.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 									</label>
 								</div>
 						</c:forEach>
@@ -174,7 +178,7 @@
 				<span id="deelnemer-error" class="error text-danger hidden"></span>
 			</p>
 			
-			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].id}"></input>
+			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].uuid}"></input>
 			<div class="form-group">
 				<label for="deelnemer-voor" class="col-sm-4 control-label">Voornaam (*)</label>
 				<div class="col-sm-3">	
@@ -256,6 +260,12 @@
 					</div>
 			</div>
 			<div class="form-group">
+					<label for="adres-zipcode" class="col-sm-4 control-label">PostCode (*)</label>
+					<div class="col-sm-2">
+						<input id="adres-zipcode" type="tel" class="form-control" value="${inschrijving.adres.zipCode}"></input>
+					</div>
+			</div>
+			<div class="form-group">
 					<label for="adres-gemeente" class="col-sm-4 control-label">Gemeente (*)</label>
 					<div class="col-sm-2">
 						<input id="adres-gemeente" type="tel" class="form-control" value="${inschrijving.adres.gemeente}"></input>
@@ -273,11 +283,11 @@
 						<input id="adres-nummer" type="tel" class="form-control" value="${inschrijving.adres.nummer}"></input>
 					</div>
 			</div>
-		
-			<h2>Medische gegevens</h2>
+			
+			<h2>Varia</h2>
 			
 			<c:forEach items="${inschrijving.vragen}" var="vraag">
-					<c:if test="${vraag.tag eq 'medic'}">
+					<c:if test="${vraag.tag eq 'various'}">
 						<div class="form-group">
 							<label class="col-sm-4 control-label">${vraag.vraag} (*)</label>
 							<c:choose>
@@ -285,23 +295,58 @@
 									<div class="col-sm-2">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+												<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
 											</label>
 											&nbsp;&nbsp;&nbsp;
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+												<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
 											</label>
 										</div>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Text'}">
 									<div class="col-sm-3">
-										<input id="${vraag.id}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
+										<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Area'}">
 									<div class="col-sm-6">
-										<textarea id="${vraag.id}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+										<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+									</div>
+								</c:when>
+							</c:choose>
+							</div>
+					</c:if>
+			</c:forEach>
+		
+			<h2>Medische gegevens</h2>
+			
+			<c:forEach items="${inschrijving.vragen}" var="vraag">
+					<c:if test="${vraag.tag eq 'medic'}">
+						<div class="form-group">
+							<label class="col-sm-4 control-label">${vraag.vraag}</label>
+							<c:choose>
+								<c:when test="${vraag.type eq 'YesNo'}">
+									<div class="col-sm-2">
+										<div class="checkbox">
+											<label>
+												<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+											</label>
+											&nbsp;&nbsp;&nbsp;
+											<label>
+												<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+											</label>
+										</div>
+									</div>
+								</c:when>
+								<c:when test="${vraag.type eq 'Text'}">
+									<div class="col-sm-3">
+										<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
+									</div>
+								</c:when>
+								<c:when test="${vraag.type eq 'Area'}">
+									<div class="col-sm-6">
+										<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
 									</div>
 								</c:when>
 							</c:choose>
@@ -324,23 +369,23 @@
 									<div class="col-sm-2">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+												<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
 											</label>
 											&nbsp;&nbsp;&nbsp;
 											<label>
-												<input type="radio" name="${vraag.id}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+												<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
 											</label>
 										</div>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Text'}">
 									<div class="col-sm-3">
-										<input id="${vraag.id}" type="text" class="form-control q" value="${vraag.antwoord}" data-q="${vraag.vraag}"></input>
+										<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}" data-q="${vraag.vraag}"></input>
 									</div>
 								</c:when>
 								<c:when test="${vraag.type eq 'Area'}">
 									<div class="col-sm-6">
-										<textarea id="${vraag.id}" class="form-control q" rows="10" cols="64" data-q="${vraag.vraag}">${vraag.antwoord}</textarea>
+										<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64" data-q="${vraag.vraag}">${vraag.antwoord}</textarea>
 									</div>
 								</c:when>
 							</c:choose>
@@ -410,7 +455,7 @@
 		};
 		
 		var saveAddress = function( id ) {
-			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
+			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			putAddress ( id, a, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveVragen );
 		};
 		
@@ -426,12 +471,20 @@
 			$jq( "textarea.q" ).each( function( index, element ) {
 				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
 			});
-			putVragen ( id, list, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveStatus );
+			putVragen ( id, list, $jq("#enrollment-save" ),$jq("#enrollment-error" ), submit );
 		};
 		
-		var saveStatus = function( id ) {
-			var status = new Status ( "SUBMITTED" );
+		var saveStatus = function( id, status ) {
+			var status = new Status ( status );
 			putStatus ( id, status, $jq("#enrollment-save" ),$jq("#status-error" ) );
+		};
+		
+		var submit = function( id ) {
+			saveStatus( id, "SUBMITTED" );
+		};
+		
+		var cancel = function( id ) {
+			saveStatus( id, "CANCELLED" );
 		};
     	
 		$jq("#enrollment-save").click( function( event ) {
@@ -439,7 +492,27 @@
 			clearError();
 			$jq(this).button('loading');
 			
-			save( "${inschrijving.id}" );
+			save( "${inschrijving.uuid}" );
+			
+		});
+		
+		$jq("#enrollment-cancel").click( function( event ) {
+			
+			clearError();
+			$jq(this).button('loading');
+			
+			cancel( "${inschrijving.uuid}" );
+			
+		});
+		
+		$jq("#enrollment-cancel").hover( function( event ) {
+			
+			$jq("#cancel-warning").removeClass("hidden").addClass("show");
+			
+		},
+		function( event ) {
+			
+			$jq("#cancel-warning").removeClass("show").addClass("hidden");
 			
 		});
     	

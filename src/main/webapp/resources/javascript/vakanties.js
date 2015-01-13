@@ -1,11 +1,8 @@
 var Vakantie = function ( id ) {
-	this.id = id;
+	this.uuid = id;
 };
 
 var retrieveVakanties = function( render ) {
-	
-	
-	
 	
 	
 };

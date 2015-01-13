@@ -36,9 +36,12 @@ import be.occam.utils.timing.Timing;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Deelnemer;
+import be.pirlewiet.registrations.model.Geslacht;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Vakantie;
+import be.pirlewiet.registrations.model.Vraag;
+import be.pirlewiet.registrations.model.Vraag.Type;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
@@ -96,7 +99,7 @@ public class InschrijvingenController {
 		
 
 		Organisatie organisatie
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.guard().whoHasID( pwtid  );
 		
 		// TODO: check organisatie != null
 		
@@ -110,7 +113,7 @@ public class InschrijvingenController {
 			= asBytes( mapped );
 	
 		String disp
-			= new StringBuilder("attachment; filename=_").append( "pirliwiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
+			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
 	
 		Map<String,String> headers
 			= new HashMap<String,String>();
@@ -125,7 +128,7 @@ public class InschrijvingenController {
 	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisatie organisatie
-			= this.buitenWipper.guard().whoHasID( Long.valueOf( pwtid ) );
+			= this.buitenWipper.guard().whoHasID( pwtid  );
 
 		Map<String,Object> model
 			= new HashMap<String,Object>();
@@ -143,6 +146,15 @@ public class InschrijvingenController {
 			List<InschrijvingX> transit
 				= new ArrayList<InschrijvingX>();
 			
+			List<InschrijvingX> waiting
+				= new ArrayList<InschrijvingX>();
+			
+			List<InschrijvingX> rejected
+				= new ArrayList<InschrijvingX>();
+			
+			List<InschrijvingX> cancelled
+				= new ArrayList<InschrijvingX>();
+			
 			List<InschrijvingX> accepted
 				= new ArrayList<InschrijvingX>();
 			
@@ -153,10 +165,22 @@ public class InschrijvingenController {
 				switch( inschrijving.getStatus().getValue() ) {
 				case SUBMITTED: 
 					submitted.add( inschrijving );
-					logger.info( "added a submitted inschrijving: [{}]", inschrijving.getId() );
+					logger.info( "added a submitted inschrijving: [{}]", inschrijving.getUuid() );
 					break;
 				case TRANSIT:
 					transit.add( inschrijving );
+					break;
+				case WAITINGLIST:
+					waiting.add( inschrijving );
+					break;
+				case REJECTED:
+					rejected.add( inschrijving );
+					break;
+				case CANCELLED:
+					cancelled.add( inschrijving );
+					break;
+				case ACCEPTED:
+					accepted.add( inschrijving );
 					break;
 				default:
 					logger.info( "inschrijving with unsupported status: [{}]", inschrijving.getStatus() );
@@ -168,6 +192,10 @@ public class InschrijvingenController {
 		
 			model.put( "submitted", submitted );
 			model.put( "transit", transit );
+			model.put( "waiting", waiting );
+			model.put( "rejected", rejected );
+			model.put( "cancelled", cancelled );
+			model.put( "accepted", accepted );
 		}
 		else {
 			List<InschrijvingX> inschrijvingen 
@@ -197,7 +225,7 @@ public class InschrijvingenController {
 		
 		Organisatie organisatie
 			= new Organisatie();
-		organisatie.setId( Long.valueOf( pwtid ) );
+		organisatie.setUuid( pwtid );
 		
 		return organisatie;
 		
@@ -205,35 +233,91 @@ public class InschrijvingenController {
 	
 	protected List<String[]> mapTo( Collection<InschrijvingX> inschrijvingen ) {
 		
+		List<String[]> mapped
+			= new ArrayList<String[]>( inschrijvingen.size() );
+		
 		try {
-			
-			List<String[]> mapped
-				= new ArrayList<String[]>( inschrijvingen.size() );
 			
 			for ( InschrijvingX inschrijving : inschrijvingen ) {
 				
 				try {
+					
+					//INSCHRIJVINGSDATUM	VOORNAAM	NAAM	M/V	GEBOORTEDATUM	ADRES	POSTCODE	GEMEENTE	TEL/GSM	E-MAIL	
+					// NAAM DIENST	CONTACTPERSOON DIENST	ADRES DIENST TEL/GSM DIENST	E-MAIL DIENST
 				
-					String[] columns
-						= new String[ 6 ];
+					List<String> columns
+						= new ArrayList<String>( 16 );
 					
 					Deelnemer deelnemer
 						= inschrijving.getDeelnemers().get( 0 );
 					
-					columns[ 0 ] = Timing.date( inschrijving.getInschrijvingsdatum(), Timing.dateFormat );
-					columns[ 1 ] = deelnemer.getVoorNaam();
-					columns[ 2 ] = deelnemer.getFamilieNaam();
-					columns[ 3 ] = Timing.date( deelnemer.getGeboorteDatum(), Timing.dateFormat );
-					columns[ 4 ] = deelnemer.getEmail();
-					// columns[ 5 ] = inschrijving.getVakantieDetails();
-					/*
-					Adres adres
-						= inschrijving.getAdres();
-					columns[ 6 ] = adres.getStraat();
-					columns[ 7 ] = adres.getNummer();
-					columns[ 8 ] = adres.getGemeente();
-					*/
-					mapped.add( columns );
+					Organisatie organisation
+						= inschrijving.getOrganisatie();
+					
+					columns.add( Timing.date( inschrijving.getInschrijvingsdatum(), Timing.dateFormat ) );
+					columns.add( deelnemer.getVoorNaam() );
+					columns.add( deelnemer.getFamilieNaam() );
+					columns.add( deelnemer.getGeslacht().equals( Geslacht.M ) ? "M" : "V" );
+					columns.add( Timing.date( deelnemer.getGeboorteDatum(), Timing.dateFormat ) );
+					columns.add( new StringBuilder().append( inschrijving.getAdres().getStraat() ).append( " " ).append( inschrijving.getAdres().getNummer() ).toString() );
+					columns.add( inschrijving.getAdres().getZipCode() );
+					columns.add( inschrijving.getAdres().getGemeente() );
+					columns.add( isEmpty( deelnemer.getMobielNummer() ) ? deelnemer.getTelefoonNummer() : deelnemer.getMobielNummer()); 
+					columns.add( deelnemer.getEmail());
+					
+					columns.add( organisation.getNaam());
+					columns.add( inschrijving.getContactGegevens().getNaam());
+					columns.add( new StringBuilder().append( organisation.getAdres().getStraat() ).append( " " ).append( organisation.getAdres().getNummer() ).append( ",").append( organisation.getAdres().getZipCode() ).append( " ").append( organisation.getAdres().getGemeente() ).toString());
+					columns.add( isEmpty( organisation.getGsmNummer() ) ? organisation.getTelefoonNummer() : organisation.getGsmNummer());
+					columns.add( organisation.getEmail());
+					
+					
+					
+					// CONTACT VIA	FACTUUR	
+					
+					// HUISARTS	TEL HUISARTS
+					
+					// SPORT	SPEL	WANDELEN	FIETSEN	ZWEMMEN	ROKEN	AANDACHTSPUNTEN	GENEESMIDDELEN	FOTO'S	NAAM GEZIN	KEUZE VAKANTIE
+					
+					List<Vraag> vragen
+						= inschrijving.getVragen();
+					
+					columns.add( antwoord( vragen.get( 1 ) ) );
+					columns.add( antwoord( vragen.get( 0 ) ) );
+					
+					columns.add( antwoord( vragen.get( 4 ) ) );
+					columns.add( antwoord( vragen.get( 5 ) ) );
+					
+					columns.add( antwoord( vragen.get( 7 ) ) );
+					columns.add( antwoord( vragen.get( 8 ) ) );
+					columns.add( antwoord( vragen.get( 9 ) ) );
+					columns.add( antwoord( vragen.get( 10 ) ) );
+					columns.add( antwoord( vragen.get( 11 ) ) );
+					columns.add( antwoord( vragen.get( 12 ) ) );
+					columns.add( antwoord( vragen.get( 13 ) ) );
+					columns.add( antwoord( vragen.get( 14 ) ) );
+					columns.add( antwoord( vragen.get( 15 ) ) );
+					
+					columns.add( antwoord( vragen.get( 3 ) ) );
+					
+					columns.add( antwoord( vragen.get( 2 ) ) );
+					
+					StringBuilder b
+						= new StringBuilder("");
+					
+					for ( Vakantie v : inschrijving.getVakanties() ) {
+						
+						if ( b.length() > 0 ) {
+							b.append( ",");
+						}
+						
+						b.append( v.getNaam() );
+						
+					}
+					
+					columns.add( b.toString() );
+					
+					mapped.add( columns.toArray( new String[] {} ) );
 				}
 				catch( Exception e ) {
 					logger.warn( "failed to map inschrijving", e );
@@ -241,14 +325,14 @@ public class InschrijvingenController {
 				
 			}
 
-			return mapped;
-			
 		}
 		catch( Exception e ) {
 			
 			logger.warn("Er is een probleem; could not map inschrijving", e );
-			return null;
+			
 		}
+		
+		return mapped;
 		
 	}
 	
@@ -302,6 +386,49 @@ public class InschrijvingenController {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	protected boolean isEmpty( String x ) {
+	    	
+		return ( x == null ) || ( x.isEmpty() );
+	    	
+	}
+	
+	protected String antwoord( Vraag vraag ) {
+		
+		String antwoord 
+			= "";
+		
+		if ( Type.Text.equals( vraag.getType() ) ) {
+			
+			antwoord = isEmpty( vraag.getAntwoord() ) ? "?T" : vraag.getAntwoord().trim();
+			
+		}
+		else if ( Type.YesNo.equals( vraag.getType() ) ) {
+			
+			if ( vraag.getAntwoord().equals( "Y") ) {
+				antwoord = "Ja";
+			}
+			else if ( vraag.getAntwoord().equals( "N") ) {
+				antwoord = "Nee";
+			} 
+			else {
+				antwoord = "?YN";
+			}
+			
+		}
+		else if ( Type.Area.equals( vraag.getType() ) ) {
+			
+			antwoord = isEmpty( vraag.getAntwoord() ) ? "?A" : vraag.getAntwoord().trim();
+			
+		}
+		else {
+			antwoord = vraag.getVraag();
+		}
+		
+		return antwoord;
+		// return vraag.getVraag();
+		
 	}
 	
 }

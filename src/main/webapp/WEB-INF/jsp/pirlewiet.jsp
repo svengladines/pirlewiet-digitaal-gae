@@ -40,7 +40,7 @@
 				Velden met een (*) moet je zeker invullen.
 			</p>
 			
-			<input id="organisation-id" type="hidden" value="${organisation.id}"></input>
+			<input id="organisation-id" type="hidden" value="${organisation.uuid}"></input>
 			<div class="form-group">
 				<label for="organisation-name" class="col-sm-4 control-label">Naam (*)</label>
 				<div class="col-sm-3">	
@@ -133,7 +133,7 @@
 			
 			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			if ( organisation.id == 0 ) {
+			if ( organisation.uuid == 0 ) {
 				postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );
 			}
 			else {

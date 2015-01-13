@@ -28,11 +28,11 @@ public class TestInschrijvingenController extends JTest {
 		
 		Vakantie vakantie
 			= new Vakantie();
-		vakantie.setId( Ids.Z_KIKA_1 );
+		//vakantie.setUuid( Ids.Z_KIKA_1 );
 		
 		InschrijvingX inschrijving
 			= new InschrijvingX();
-		inschrijving.getVakanties().add( vakantie.getId() );
+		inschrijving.getVakanties().add( vakantie );
 		
 		ResponseEntity<InschrijvingX> response
 			= postJSON( url, inschrijving );

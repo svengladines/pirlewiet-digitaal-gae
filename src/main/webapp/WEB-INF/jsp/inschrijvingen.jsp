@@ -79,7 +79,7 @@
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
 					<td>${inschrijving.status}</td>
-					<td class="text-center"><a href="./inschrijvingen/${inschrijving.id}.html"><i class="fa fa-edit"></i></td>
+					<td class="text-center"><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
 				</tr>
 			</c:forEach>
 			
@@ -96,7 +96,7 @@
     	
     	var inschrijving = null;
     	
-    	retrieveInschrijving( "${inschrijving.id}" );
+    	retrieveInschrijving( "${inschrijving.uuid}" );
     	
 		$jq("#nieuw").click( function( event ) {
 			

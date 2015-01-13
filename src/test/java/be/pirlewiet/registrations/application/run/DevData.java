@@ -23,25 +23,12 @@ import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 public class DevData {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
-	
-	public static class Ids {
-		
-		public static Long Z_KIKA_1 = 1L;
-		public static Long Z_KIKA_2 = 2L;
-		public static Long Z_TIKA_1 = 3L;
-		
-		public static Long SARAH= 1L;
-		
-		public static Long IN_SARAH_KIKA_1 = 1L;
-		
-		public static Long PIRLEWIET= 1L;
-		public static Long OCMW= 2L;
-		
-	}
 
 	@Resource
 	VakantieRepository vakantieRepository;
@@ -61,7 +48,7 @@ public class DevData {
 		Vakantie zomerKikaEen
 			= new Vakantie();
 		
-		// zomerKikaEen.setId( Ids.Z_KIKA_1 );
+		// zomerKikaEen.setUuid(  Ids.Z_KIKA_1 );
 		zomerKikaEen.setBeginDatum( Timing.date("05/12/2014") );
 		zomerKikaEen.setEindDatum( Timing.date("10/12/2015") );
 		zomerKikaEen.setEindInschrijving( Timing.date("30/11/2014") );
@@ -71,13 +58,12 @@ public class DevData {
 		zomerKikaEen.setPeriode( Periode.Zomer );
 		
 		zomerKikaEen = this.vakantieRepository.saveAndFlush( zomerKikaEen );
-		zomerKikaEen.setId( zomerKikaEen.getKey().getId() );
+		zomerKikaEen.setUuid(  KeyFactory.keyToString( zomerKikaEen.getKey() ) );
 		this.vakantieRepository.saveAndFlush( zomerKikaEen );
 		
 		Vakantie zomerKikaTwee
 			= new Vakantie();
 	
-		zomerKikaTwee.setId( Ids.Z_KIKA_2 );
 		zomerKikaTwee.setBeginDatum( Timing.date("12/12/2014") );
 		zomerKikaTwee.setEindDatum( Timing.date("18/12/2014") );
 		zomerKikaTwee.setEindInschrijving( Timing.date("30/12/2014") );
@@ -87,11 +73,13 @@ public class DevData {
 		zomerKikaTwee.setPeriode( Periode.Zomer );
 	
 		zomerKikaTwee = this.vakantieRepository.saveAndFlush( zomerKikaTwee );
+		zomerKikaTwee.setUuid(  KeyFactory.keyToString( zomerKikaTwee.getKey() ) );
+		this.vakantieRepository.saveAndFlush( zomerKikaTwee );
 		
 		Deelnemer sarah
 			= new Deelnemer();
 		
-		// sarah.setId( Ids.SARAH );
+		// sarah.setUuid(  Ids.SARAH );
 		sarah.setVoorNaam( "Lisa");
 		sarah.setFamilieNaam( "Simpson" );
 		sarah.setEmail("lisa.simpson@springfield.net");
@@ -105,7 +93,6 @@ public class DevData {
 		Organisatie pirlewiet
 			= new Organisatie();
 
-		pirlewiet.setId( Ids.PIRLEWIET );
 		pirlewiet.setNaam("Pirlewiet VZW");
 		pirlewiet.setCode( "pwt001" );
 		pirlewiet.setEmail( "info@pirlewiet.be" );
@@ -115,11 +102,12 @@ public class DevData {
 		pirlewiet.getAdres().setStraat( "Sint-X" );
 		pirlewiet.getAdres().setNummer( "61" );
 		pirlewiet = this.organsiatieRepository.saveAndFlush( pirlewiet );
+		pirlewiet.setUuid( KeyFactory.keyToString( pirlewiet.getKey() ) );
+		this.organsiatieRepository.saveAndFlush( pirlewiet );
 		
 		Organisatie ocmw
 			= new Organisatie();
 	
-		ocmw.setId( Ids.OCMW );
 		ocmw.setNaam("OCMW Leuven");
 		ocmw.setCode( "abc123" );
 		ocmw.setEmail( "info@ocmw.be" );
@@ -130,32 +118,33 @@ public class DevData {
 		ocmw.getAdres().setNummer("1");
 	
 		ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
+		ocmw.setUuid( KeyFactory.keyToString( ocmw.getKey() ) );
+		this.organsiatieRepository.saveAndFlush( ocmw );
 		
 		InschrijvingX sarahKika1
 			= new InschrijvingX();
-		sarahKika1.setId( Ids.IN_SARAH_KIKA_1 );
-		sarahKika1.setVks( "" + Ids.Z_KIKA_1 );
+		sarahKika1.setVks( zomerKikaEen.getUuid() );
 		sarahKika1.setOrganisatie( ocmw );
-		sarahKika1.getStatus().setValue( Status.Value.DRAFT );
+		sarahKika1.getStatus().setValue( Status.Value.SUBMITTED );
 		sarahKika1.getContactGegevens().setNaam( "x" );
 		sarahKika1.getContactGegevens().setTelefoonNummer( "x" );
 		sarahKika1.getContactGegevens().setEmail( "sven@x" );
 		sarahKika1.getAdres().setGemeente( "x");
 		sarahKika1.getAdres().setStraat( "x" );
 		sarahKika1.getAdres().setNummer( "x" );
-		
+	
 		sarahKika1 = this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
-		sarahKika1.setId( sarahKika1.getKey().getId() );
 		
 		sarahKika1.getDeelnemers().add( sarah );
 		
 		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
 		
-		sarah.setId( sarah.getKey().getId() );
+		sarah.setUuid( KeyFactory.keyToString( sarah.getKey() ) );
+		sarahKika1.setUuid( KeyFactory.keyToString( sarahKika1.getKey() ) );
 		
 		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
 		
-		this.logger.info( "sarah's id is [{}]", sarah.getId() );
+		this.logger.info( "sarah's id is [{}]", sarah.getUuid() );
 		
 	}
 	

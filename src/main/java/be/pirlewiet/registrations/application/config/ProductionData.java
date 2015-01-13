@@ -3,6 +3,8 @@ package be.pirlewiet.registrations.application.config;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.registrations.model.Periode;
 import be.pirlewiet.registrations.model.Vakantie;
@@ -20,21 +22,23 @@ public class ProductionData {
 		Vakantie kikaEen
 			= new Vakantie();
 		
-		kikaEen.setBeginDatum( Timing.date("04/04/2015") );
-		kikaEen.setEindDatum( Timing.date("11/04/2015") );
+		kikaEen.setBeginDatum( Timing.date("06/04/2015") );
+		kikaEen.setEindDatum( Timing.date("10/04/2015") );
 		kikaEen.setEindInschrijving( Timing.date("01/04/2015") );
 		kikaEen.setType( VakantieType.Kika );
 		kikaEen.setJaar( 2015 );
 		kikaEen.setNaam( "KIKA 1 Pasen");
 		kikaEen.setPeriode( Periode.Pasen );
 		
-		this.vakantieRepository.saveAndFlush( kikaEen );
+		kikaEen = this.vakantieRepository.saveAndFlush( kikaEen );
+		kikaEen.setUuid( KeyFactory.keyToString( kikaEen.getKey() ) );
+		kikaEen = this.vakantieRepository.saveAndFlush( kikaEen );
 		
 		Vakantie kikaTwee
 			= new Vakantie();
 	
-		kikaTwee.setBeginDatum( Timing.date("11/04/2015") );
-		kikaTwee.setEindDatum( Timing.date("18/04/2015") );
+		kikaTwee.setBeginDatum( Timing.date("13/04/2015") );
+		kikaTwee.setEindDatum( Timing.date("17/04/2015") );
 		kikaTwee.setEindInschrijving( Timing.date("01/04/2015") );
 		kikaTwee.setType( VakantieType.Kika );
 		kikaTwee.setJaar( 2015 );
@@ -42,7 +46,8 @@ public class ProductionData {
 		kikaTwee.setPeriode( Periode.Pasen );
 	
 		this.vakantieRepository.saveAndFlush( kikaTwee );
-		
+		kikaTwee.setUuid( KeyFactory.keyToString( kikaTwee.getKey() ) );
+		this.vakantieRepository.saveAndFlush( kikaTwee );
 
 		Vakantie gezins
 			= new Vakantie();
@@ -56,6 +61,25 @@ public class ProductionData {
 		gezins.setPeriode( Periode.Pasen );
 	
 		this.vakantieRepository.saveAndFlush( gezins );
+		gezins.setUuid( KeyFactory.keyToString( gezins.getKey() ) );
+		this.vakantieRepository.saveAndFlush( gezins );
+		
+		Vakantie vov
+		= new Vakantie();
+
+		vov.setBeginDatum( Timing.date("18/05/2015") );
+		vov.setEindDatum( Timing.date("22/05/2015") );
+		vov.setEindInschrijving( Timing.date("01/04/2015") );
+		vov.setType( VakantieType.DrieDaagse );
+		vov.setJaar( 2015 );
+		vov.setNaam( "Vakantie Onder Volwassenen");
+		vov.setPeriode( Periode.Pasen );
+
+		this.vakantieRepository.saveAndFlush( vov );
+		
+		this.vakantieRepository.saveAndFlush( vov );
+		vov.setUuid( KeyFactory.keyToString( vov.getKey() ) );
+		this.vakantieRepository.saveAndFlush( vov );
 		
 	}
 	

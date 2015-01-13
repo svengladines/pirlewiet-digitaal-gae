@@ -40,7 +40,7 @@ public class OrganisationManager {
     }
 
     @Transactional(readOnly=false)
-    public Organisatie updateAdres( long id, Adres adres ) {
+    public Organisatie updateAdres( String id, Adres adres ) {
     	
     	Organisatie organisatie
     		= this.organisation( id );
@@ -66,7 +66,7 @@ public class OrganisationManager {
     }
     
     @Transactional( readOnly=false )
-    public Organisatie update( long id, Organisatie organisation ) {
+    public Organisatie update( String id, Organisatie organisation ) {
     	
     	Organisatie loaded 
     		= organisation( id );
@@ -98,13 +98,13 @@ public class OrganisationManager {
     	
     	saved.setAdres( loaded.getAdres() );
     	
-    	logger.info( "updated organisation with id [{}]", saved.getId() );
+    	logger.info( "updated organisation with uiid [{}]", saved.getUuid() );
     	
     	return saved;
     	
     }
     
-    public boolean isInComplete( Organisatie organisation ) {
+    public boolean isInComplete( Organisatie organisation, boolean checkAddress ) {
     	
     	boolean incomplete 
     		= false;
@@ -112,8 +112,8 @@ public class OrganisationManager {
     	incomplete |= isEmpty( organisation.getNaam() ) ;
     	incomplete |= isEmpty( organisation.getTelefoonNummer() ) ;
     	incomplete |= isEmpty( organisation.getEmail() ) ;
-    	if ( organisation.getAdres() != null ) {
-	    	// incomplete |= isEmpty( organisation.getAdres().getZipCode() );
+    	if ( checkAddress && ( organisation.getAdres() != null ) ) {
+	    	incomplete |= isEmpty( organisation.getAdres().getZipCode() );
 	    	incomplete |= isEmpty( organisation.getAdres().getGemeente() );
 	    	incomplete |= isEmpty( organisation.getAdres().getStraat() );
 	    	incomplete |= isEmpty( organisation.getAdres().getNummer() );
@@ -130,10 +130,10 @@ public class OrganisationManager {
     }
     
     @Transactional(readOnly=true)
-    public Organisatie organisation( Long id ) {
+    public Organisatie organisation( String id ) {
     	
     	Organisatie organsiatie
-    		= this.organisatieRepository.findOneById( id );
+    		= this.organisatieRepository.findByUuid( id );
     	
     	if ( organsiatie != null ) {
     		logger.info( "found organsiatie with id []", id );

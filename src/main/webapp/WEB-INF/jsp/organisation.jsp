@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Mijn Organisatie</h1>
 					<p>
-						Beheer hier het profiel van jouw organisatie.
+						Registreer je hier als doorverwijzer en beheer het profiel van jouw organisatie.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -38,29 +38,22 @@
 			<c:choose>
 			<c:when test="${incomplete == false}">
 				<p class="text-info">Het profiel van jouw organisatie is in orde.</p>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Wijzigingen ?</label>
-					<div class="col-sm-8">
-						<button type="button" id="organisation-save" class="btn btn-primary" data-vakantie="1"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
 			</c:when>
 			<c:otherwise>
-				<p class="text-error">Vul het onderstaande formulier in en klik op 'verstuur' om een profiel aan te maken voor jouw organisatie.</p>
-				<p class="text-info">Maakte je al een profiel aan ? Ga dan naar de <a href="/code.htm">inlogpagina</a> om je aan te melden.</p>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Ingevuld ?</label>
-					<div class="col-sm-8">
-						<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
+				<p>
+					<span class="text-danger">Het profiel van je organisatie is niet volledig.</span><br/>
+					Vul onderstaande formulier in en klik op 'Verstuur'.<br/>
+					Velden met een '*' zijn verplicht.
+				</p>
 			</c:otherwise>
 			</c:choose>
 			<div class="form-group">
 					<label for="organisation-error" class="col-sm-4 control-label"></label>
 					<div class="col-sm-8">
 						<span id="organisation-ok" class="error text-success hidden">
-							Gegevens werden met succes verwerkt.
+							Gegevens werden met succes verwerkt. <br/>
+							Als je een nieuwe doorverwijzer bent, werd er een e-mail gestuurd met de inlogcode. <br/>
+							Met deze code kan je inloggen via de <a href="/code.htm">inlogpagina</a>. 
 						</span>
 						<span id="organisation-error" class="error text-danger hidden">
 							Het formulier kon niet worden verwerkt. Controleer de gegevens en probeer opnieuw AUB. 
@@ -74,9 +67,9 @@
 				Velden met een (*) moet je zeker invullen.
 			</p>
 			
-			<input id="organisation-id" type="hidden" value="${organisation.id}"></input>
+			<input id="organisation-id" type="hidden" value="${organisation.uuid}"></input>
 			<div class="form-group">
-				<label for="organisation-name" class="col-sm-4 control-label">Naam (*)</label>
+				<label for="organisation-name" class="col-sm-4 control-label">Naam organisatie (*)</label>
 				<div class="col-sm-3">	
 					<input id="organisation-name" type="text" class="form-control" value="${organisation.naam}"></input>
 				</div>
@@ -96,13 +89,19 @@
 			<div class="form-group">
 					<label for="organisation-email" class="col-sm-4 control-label">E-mail (*)</label>
 					<div class="col-sm-3">
-						<input id="organisation-email" type="tel" class="form-control" value="${organisation.email}"></input>
+						<input id="organisation-email" type="email" class="form-control" value="${organisation.email}" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="organisation-alternative-email" class="col-sm-4 control-label">Alternatief e-mailadres</label>
 					<div class="col-sm-3">
-						<input id="organisation-alternative-email" type="tel" class="form-control" value="${organisation.alternativeEmail}"></input>
+						<input id="organisation-alternative-email" type="email" class="form-control" value="${organisation.alternativeEmail}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"></input>
+					</div>
+			</div>
+			<div class="form-group">
+					<label for="adres-zipcode" class="col-sm-4 control-label">Postcode (*)</label>
+					<div class="col-sm-2">
+						<input id="adres-zipcode" type="tel" class="form-control" value="${organisation.adres.zipCode}"></input>
 					</div>
 			</div>
 			<div class="form-group">
@@ -123,6 +122,13 @@
 						<input id="adres-nummer" type="tel" class="form-control" value="${organisation.adres.nummer}"></input>
 					</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label"></label>
+				<div class="col-sm-8">
+					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+				</div>
+			</div>
+			
 		</form>
 		
 	</div>
@@ -148,9 +154,9 @@
 						$jq("#organisation-alternative-email").val()
 						);
 			
-			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
+			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			if ( organisation.id == 0 ) {
+			if ( organisation.uuid == 0 ) {
 				postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );
 			}
 			else {
