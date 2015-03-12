@@ -40,6 +40,8 @@ public class CodesController {
 		// Map<String, String> headers
 		// = new HashMap<String,String>();
 		
+		logger.info( "code [{}] presented", code );
+		
 		Organisatie organisatie
 			= this.buitenWipper.guard().whoHasCode( code );
 		

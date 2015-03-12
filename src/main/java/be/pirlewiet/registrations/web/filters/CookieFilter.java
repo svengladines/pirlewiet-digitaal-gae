@@ -30,7 +30,8 @@ public class CookieFilter implements Filter {
 			HttpServletResponse httpResponse
 				= (HttpServletResponse) response;
 			
-			if ( ( httpRequest.getRequestURI().equals( "/rs/codes" ) ) 
+			if ( ( httpRequest.getRequestURI().equals( "/rs/codes" ) )
+					|| ( httpRequest.getRequestURI().equals( "/rs/ping" ) )
 					|| ( httpRequest.getRequestURI().equals( "/rs/coderequests" ) ) 
 					|| ( httpRequest.getRequestURI().equals( "/rs/organisation.html" ) )
 					|| ( httpRequest.getRequestURI().equals( "/rs/organisation/adres" ) )

@@ -5,12 +5,15 @@ import static be.occam.utils.spring.web.Controller.response;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
+import net.sf.cglib.core.CollectionUtils;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,6 +43,7 @@ import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Geslacht;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
+import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.model.Vraag.Type;
@@ -95,7 +100,7 @@ public class InschrijvingenController {
 	}
 	
 	@RequestMapping( value="/download", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
-	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) Status.Value status ) {
 		
 
 		Organisatie organisatie
@@ -107,7 +112,7 @@ public class InschrijvingenController {
 			= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
 		
 		List<String[]> mapped
-			= mapTo( inschrijvingen );
+			= mapTo( inschrijvingen, status );
 
 		byte[] result 
 			= asBytes( mapped );
@@ -231,7 +236,7 @@ public class InschrijvingenController {
 		
 	}
 	
-	protected List<String[]> mapTo( Collection<InschrijvingX> inschrijvingen ) {
+	protected List<String[]> mapTo( Collection<InschrijvingX> inschrijvingen, Status.Value status ) {
 		
 		List<String[]> mapped
 			= new ArrayList<String[]>( inschrijvingen.size() );
@@ -241,6 +246,12 @@ public class InschrijvingenController {
 			for ( InschrijvingX inschrijving : inschrijvingen ) {
 				
 				try {
+					
+					if ( status != null ) {
+						if ( ! status.equals( inschrijving.getStatus().getValue() ) ) {
+							continue;
+						}
+					}
 					
 					//INSCHRIJVINGSDATUM	VOORNAAM	NAAM	M/V	GEBOORTEDATUM	ADRES	POSTCODE	GEMEENTE	TEL/GSM	E-MAIL	
 					// NAAM DIENST	CONTACTPERSOON DIENST	ADRES DIENST TEL/GSM DIENST	E-MAIL DIENST
@@ -401,25 +412,28 @@ public class InschrijvingenController {
 		
 		if ( Type.Text.equals( vraag.getType() ) ) {
 			
-			antwoord = isEmpty( vraag.getAntwoord() ) ? "?T" : vraag.getAntwoord().trim();
+			antwoord = isEmpty( vraag.getAntwoord() ) ? "?" : vraag.getAntwoord().trim();
 			
 		}
 		else if ( Type.YesNo.equals( vraag.getType() ) ) {
 			
-			if ( vraag.getAntwoord().equals( "Y") ) {
+			if ( isEmpty( vraag.getAntwoord() ) ) {
+				antwoord = "?";
+			}
+			else if ( vraag.getAntwoord().equals( "Y") ) {
 				antwoord = "Ja";
 			}
 			else if ( vraag.getAntwoord().equals( "N") ) {
 				antwoord = "Nee";
 			} 
 			else {
-				antwoord = "?YN";
+				antwoord = "?";
 			}
 			
 		}
 		else if ( Type.Area.equals( vraag.getType() ) ) {
 			
-			antwoord = isEmpty( vraag.getAntwoord() ) ? "?A" : vraag.getAntwoord().trim();
+			antwoord = isEmpty( vraag.getAntwoord() ) ? "?" : vraag.getAntwoord().trim();
 			
 		}
 		else {

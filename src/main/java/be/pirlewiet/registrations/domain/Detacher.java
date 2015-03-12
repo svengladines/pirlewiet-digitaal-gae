@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
@@ -17,7 +18,7 @@ public class Detacher {
 	protected InschrijvingXRepository inschrijvingXRepository;
 	
 	@Resource
-	protected VakantieRepository vakantieRepository;
+	protected ConfiguredVakantieRepository configuredVakantieRepository;
 	
 	@Transactional(readOnly=false)
 	public InschrijvingX findAndDetach( String uuid ) {
@@ -51,7 +52,7 @@ public class Detacher {
 					}
 					
 					Vakantie v 
-						= this.vakantieRepository.findByUuid( t.trim() ); 
+						= this.configuredVakantieRepository.findByUuid( t.trim() ); 
 			
 					if ( v != null ) {
 						inschrijving.getVakanties().add ( v );

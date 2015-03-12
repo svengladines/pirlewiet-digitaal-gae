@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="resources/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="/resources/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
 
     <title>Pirlewiet Digitaal</title>
 
@@ -56,8 +56,7 @@
 				<div class="col-lg-12">
 					<h1>Welkom</h1>
 					<p>
-						Via deze pagina kan je als doorverwijzer deelnemers inschrijving voor de kampen en vakanties van Pirlewiet.<br/>
-						Kijk op de <a href="/help.htm">HELP</a>-pagina voor uitgebreide informatie over de procedure en voorwaarden.<br/>
+						Via deze webtoepassing kan je als doorverwijzer deelnemers inschrijven voor de vakanties van Pirlewiet.<br/>
 					</p>
 				</div>
 			</div><!-- row -->
@@ -66,6 +65,13 @@
 
 	<div class="container w">
 	
+		<div class="row centered">
+	
+			<br/>
+			<p class="text-success">Een overzicht van onze vakanties vind je <a href="http://www.pirlewiet.be/onze-vakanties/">hier</a></p>
+
+		</div>
+		
 		<div class="row centered">
 	
 			<h1>Voorjaar 2015</h1>
@@ -85,25 +91,29 @@
 		
 		<div class="row centered">
 		
-				<h3>
-					Nog even geduld, er wordt de laatste hand gelegd aan de webtoepassing...
-				</h3>
-				<br/>
-		
-				<!-- 
-				<p>
-					Wil je een nieuwe inschrijving starten, of wil je je bestaande inschrijvingen bekijken of beheren, klik dan op de knop hieronder, van zodra die groen is geworden.
+		<!-- 
+				<p class="alert-info">
+					Beste bezoeker, onze webtoepassing ondergaat momenteel een mysterieuze kinderziekte. <br/> 
+					Onze vrijwilligers proberen zo snel mogelijk een oplossing te vinden. <br/>
+					We plaatsen hier een bericht als het terug in orde is.<br/>
+					Dankjewel voor je begrip en geduld! <br/>  
 				</p>
-				<div>
-					<button type="button" disabled="disabled" id="goon" class="btn btn-default" data-vakantie="1"><i class="fa fa-star"></i>&nbsp;&nbsp;Ga verder</button>
-				</div>
+		 -->
+		 		<p class="alert-info">
+					Beste bezoeker, sporadisch blijft de overstap naar het digitale tijdperk nog wat problemen met zich meebrengen. <br/>
+					Indien je problemen ondervindt, stuur je best een korte e-mail naar <code>pirlewiet.digitaal@gmail.com</code>, zo zijn onze technische vrijwilligers rechtstreeks op de hoogte en kunnen ze snel uitvissen wat er schort.<br/> 
+					Dankjewel voor je begrip en geduld! <br/>  
+				</p>
 				
+				<div>
+					<button type="button" disabled="disabled" id="goon" class="btn btn-default" data-vakantie="1"><span id="goontext">Even Geduld...</span></button>
+				</div>
 				<br/>
 				
 				<p id="whyslow">
 					<small><strong>Waarom je even moet wachten:</strong> we maken momenteel gebruik van een gratis webdienst die af en toe 'in slaap valt' en we eerst even wakker moeten schudden. Op deze manier besparen we geld dat we aan de vakanties en de deelnemers kunnen spenderen! Je geduld wordt beloond dus :o)</small> 
 				</p>
-				 -->
+				
 		</div><!-- row -->
 		
 	</div><!-- container -->
@@ -129,12 +139,13 @@
     		window.document.location = "/rs/start.html";
     	});
 
+    	
    		$jq.ajax( {
    			type: "get",
-   			url:"/rs/start.html",
-   			dataType: "html",
+   			url:"/rs/ping",
    			success: function( ix ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-success");
+   				$jq("#goontext").html("Ga verder");
    				$jq("#whyslow").addClass("hidden");
    			},
    			error: function(  jqXHR, textStatus, errorThrown ) {

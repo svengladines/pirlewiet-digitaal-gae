@@ -55,6 +55,7 @@ public class BuitenWipper {
 		return this.organisatieRepository.findOneByCode( code.replaceAll("\"", "").toLowerCase() );
 	}
 	
+	@Transactional(readOnly=true)
 	public Organisatie whoHasID( String uuid ) {
 		
 		Organisatie organisatie

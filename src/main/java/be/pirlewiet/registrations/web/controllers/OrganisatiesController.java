@@ -6,9 +6,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -21,8 +23,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,12 +35,15 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
+import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.ExcelImporter;
 
 @Controller
@@ -199,6 +206,33 @@ public class OrganisatiesController {
 			throw new RuntimeException( e );
 			
 		}
+	}
+	
+	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
+	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		Organisatie organisatie
+			= this.buitenWipper.guard().whoHasID( pwtid  );
+		
+		if ( ( organisatie == null ) || ( ! PirlewietUtil.isPirlewiet( organisatie ) ) ) {
+			
+			throw new RuntimeException( "Enkel Pirlewiet mag dit!" );
+			
+		}
+
+		Map<String,Object> model
+			= new HashMap<String,Object>();
+	
+		List<Organisatie> organisations 
+			= this.organisationManager.all( );
+			
+		model.put( "organisations", organisations );
+
+		String view
+			= "organisations_pirlewiet";
+		
+		return new ModelAndView( view, model );
+		
 	}
 		
 	@ExceptionHandler( PirlewietException.class)

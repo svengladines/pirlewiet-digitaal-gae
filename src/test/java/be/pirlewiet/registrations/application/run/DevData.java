@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import be.occam.utils.timing.Timing;
+import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Geslacht;
@@ -31,7 +32,7 @@ public class DevData {
 		= LoggerFactory.getLogger( this.getClass() );
 
 	@Resource
-	VakantieRepository vakantieRepository;
+	ConfiguredVakantieRepository configuredVakantieRepository;
 	
 	@Resource
 	PersoonRepository persoonRepository;
@@ -44,37 +45,6 @@ public class DevData {
 	
 	@PostConstruct
 	public void injectData() {
-		
-		Vakantie zomerKikaEen
-			= new Vakantie();
-		
-		// zomerKikaEen.setUuid(  Ids.Z_KIKA_1 );
-		zomerKikaEen.setBeginDatum( Timing.date("05/12/2014") );
-		zomerKikaEen.setEindDatum( Timing.date("10/12/2015") );
-		zomerKikaEen.setEindInschrijving( Timing.date("30/11/2014") );
-		zomerKikaEen.setType( VakantieType.Kika );
-		zomerKikaEen.setJaar( 2014 );
-		zomerKikaEen.setNaam( "KIKA 1");
-		zomerKikaEen.setPeriode( Periode.Zomer );
-		
-		zomerKikaEen = this.vakantieRepository.saveAndFlush( zomerKikaEen );
-		zomerKikaEen.setUuid(  KeyFactory.keyToString( zomerKikaEen.getKey() ) );
-		this.vakantieRepository.saveAndFlush( zomerKikaEen );
-		
-		Vakantie zomerKikaTwee
-			= new Vakantie();
-	
-		zomerKikaTwee.setBeginDatum( Timing.date("12/12/2014") );
-		zomerKikaTwee.setEindDatum( Timing.date("18/12/2014") );
-		zomerKikaTwee.setEindInschrijving( Timing.date("30/12/2014") );
-		zomerKikaTwee.setType( VakantieType.Kika );
-		zomerKikaTwee.setJaar( 2014 );
-		zomerKikaTwee.setNaam( "KIKA 2");
-		zomerKikaTwee.setPeriode( Periode.Zomer );
-	
-		zomerKikaTwee = this.vakantieRepository.saveAndFlush( zomerKikaTwee );
-		zomerKikaTwee.setUuid(  KeyFactory.keyToString( zomerKikaTwee.getKey() ) );
-		this.vakantieRepository.saveAndFlush( zomerKikaTwee );
 		
 		Deelnemer sarah
 			= new Deelnemer();
@@ -123,7 +93,7 @@ public class DevData {
 		
 		InschrijvingX sarahKika1
 			= new InschrijvingX();
-		sarahKika1.setVks( zomerKikaEen.getUuid() );
+		sarahKika1.setVks( this.configuredVakantieRepository.findAll().get( 0 ).getUuid() );
 		sarahKika1.setOrganisatie( ocmw );
 		sarahKika1.getStatus().setValue( Status.Value.SUBMITTED );
 		sarahKika1.getContactGegevens().setNaam( "x" );

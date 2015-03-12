@@ -6,6 +6,6 @@ import be.pirlewiet.registrations.web.util.DataGuard;
 
 public abstract class Scenario {
 	
-	public abstract void execute();
+	public abstract void execute( String... parameters );
 	
 }

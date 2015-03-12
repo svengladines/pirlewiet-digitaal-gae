@@ -1,5 +1,11 @@
 package be.pirlewiet.registrations.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.persistence.Transient;
 
@@ -11,12 +17,31 @@ import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
+import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.DataGuard;
 
 public class OrganisationManager {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
+	
+	protected final Comparator<Organisatie> lastUpdatedFirst
+		= new Comparator<Organisatie>() {
+
+			@Override
+			public int compare(Organisatie o1, Organisatie o2) {
+				if ( o1.getUpdated() == null ) {
+					return 1;
+				}
+				else if ( o2.getUpdated() == null ) {
+					return -1;
+				}
+				else {
+					return o1.getUpdated().after( o2.getUpdated() ) ? -1 : 1;
+				}
+			}
+		
+		};
 	
 	@Resource
 	protected OrganisatieRepository organisatieRepository;
@@ -58,6 +83,7 @@ public class OrganisationManager {
     	}
     	
     	organisatie.setAdres( adres );
+    	organisatie.setUpdated( new Date() );
 		
 		this.organisatieRepository.saveAndFlush( organisatie );
     	
@@ -92,6 +118,7 @@ public class OrganisationManager {
     	loaded.setNaam( organisation.getNaam() );
     	loaded.setEmail( organisation.getEmail() );
     	loaded.setAlternativeEmail( organisation.getAlternativeEmail() );
+    	loaded.setUpdated( new Date() );
     	
     	Organisatie saved
     		= this.organisatieRepository.saveAndFlush( loaded );
@@ -140,6 +167,30 @@ public class OrganisationManager {
     	}
     	
     	return organsiatie;
+    	
+    }
+    
+    @Transactional(readOnly=true)
+    public List<Organisatie> all( ) {
+    	
+    	List<Organisatie> all
+    		= this.organisatieRepository.findAll();
+    	
+    	List<Organisatie> filtered
+			= new ArrayList<Organisatie>();
+    	
+    	for ( Organisatie organisation : all ) {
+    		organisation.getAdres().hashCode();
+    		
+    		if ( ! PirlewietUtil.isPirlewiet( organisation ) ) {
+    			filtered.add( organisation );
+    		}
+    	}
+    	
+    	
+    	Collections.sort( filtered , this.lastUpdatedFirst );
+    	
+    	return filtered;
     	
     	
     }

@@ -5,39 +5,38 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import be.pirlewiet.registrations.domain.OrganisationManager;
+import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class SendInitialCodeScenario extends Scenario {
+public class ReadyToRockScenario extends Scenario {
 	
 	@Resource
 	OrganisatieRepository organisatieRepository;
 	
 	@Resource
+	SecretariaatsMedewerker secretariaatsMedewerker;
+	
+	@Resource
 	DataGuard dataGuard;
 	
-	public SendInitialCodeScenario guard() {
+	public ReadyToRockScenario guard() {
     	this.dataGuard.guard();
     	return this;
     }
 
 	@Override
-	public void execute() {
+	public void execute( String... parameters ) {
 		
 		List<Organisatie> organisations
 			= this.organisatieRepository.findAll();
 		
 		for ( Organisatie organisation : organisations ) {
 			
-			if ( ( organisation.getUuid() == null ) || ( organisation.getUuid().isEmpty() ) ) {
-				
-				organisation.setUuid( KeyFactory.keyToString( organisation.getKey() ) );
-				this.organisatieRepository.saveAndFlush( organisation );
-				
-			}
+			this.secretariaatsMedewerker.sendInitialCode( organisation );
 			
 		}
 		

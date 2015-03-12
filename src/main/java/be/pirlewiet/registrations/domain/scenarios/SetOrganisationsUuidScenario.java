@@ -25,7 +25,7 @@ public class SetOrganisationsUuidScenario extends Scenario {
     }
 
 	@Override
-	public void execute() {
+	public void execute( String... parameters ) {
 		
 		List<Organisatie> organisations
 			= this.organisatieRepository.findAll();

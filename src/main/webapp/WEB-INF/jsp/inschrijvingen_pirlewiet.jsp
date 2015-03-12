@@ -30,24 +30,20 @@
 
 	<div class="container">
 	
-		<div class="row">
-	
-			<br/>	
-			<p>
-		    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld...">Download</a>
-			</p>
-		
-		</div>
-	
 		<div class="row mandatory">
 		
 			<h2>NIEUW</h2>
+			
+			<p>
+		    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download?status=SUBMITTED" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld...">Download</a>
+			</p>
 			
 			<table class="table table-bordered">
 			
 			<thead>
 				<tr>
 					<th>Vakantie(s)</th>
+					<th>Ingediend</th>
 					<th>Voornaam</th>
 					<th>Familienaam</th>
 					<th>Geboortedatum</th>
@@ -68,6 +64,7 @@
 							${vakantie.naam}<br/>
 						</c:forEach>
 					</td>
+					<td>${date}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
@@ -89,6 +86,7 @@
 			<thead>
 				<tr>
 					<th>Vakantie(s)</th>
+					<th>Ingediend</th>
 					<th>Voornaam</th>
 					<th>Familienaam</th>
 					<th>Geboortedatum</th>
@@ -109,6 +107,7 @@
 							${vakantie.naam}<br/>
 						</c:forEach>
 					</td>
+					<td>${date}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
@@ -130,6 +129,7 @@
 			<thead>
 				<tr>
 					<th>Vakantie(s)</th>
+					<th>Ingediend</th>
 					<th>Voornaam</th>
 					<th>Familienaam</th>
 					<th>Geboortedatum</th>
@@ -150,6 +150,7 @@
 							${vakantie.naam}<br/>
 						</c:forEach>
 					</td>
+					<td>${date}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
@@ -171,6 +172,7 @@
 			<thead>
 				<tr>
 					<th>Vakantie(s)</th>
+					<th>Ingediend</th>
 					<th>Voornaam</th>
 					<th>Familienaam</th>
 					<th>Geboortedatum</th>
@@ -191,6 +193,7 @@
 							${vakantie.naam}<br/>
 						</c:forEach>
 					</td>
+					<td>${date}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
@@ -212,6 +215,7 @@
 			<thead>
 				<tr>
 					<th>Vakantie(s)</th>
+					<th>Ingediend</th>
 					<th>Voornaam</th>
 					<th>Familienaam</th>
 					<th>Geboortedatum</th>
@@ -232,6 +236,7 @@
 							${vakantie.naam}<br/>
 						</c:forEach>
 					</td>
+					<td>${date}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
@@ -253,6 +258,7 @@
 			<thead>
 				<tr>
 					<th>Vakantie(s)</th>
+					<th>Ingediend</th>
 					<th>Voornaam</th>
 					<th>Familienaam</th>
 					<th>Geboortedatum</th>
@@ -273,6 +279,7 @@
 							${vakantie.naam}<br/>
 						</c:forEach>
 					</td>
+					<td>${date}</td>
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>

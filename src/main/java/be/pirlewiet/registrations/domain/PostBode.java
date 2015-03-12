@@ -31,7 +31,6 @@ public class PostBode {
 		}
 		catch( Exception e ) {
 			logger.error( "could not send email", e );
-			throw new RuntimeException( e );
 		}
 		
 	}

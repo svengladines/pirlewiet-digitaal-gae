@@ -246,7 +246,22 @@ var putStatus = function ( inschrijving, status, button, errorElement, callback 
 	    processData: false,
 		data: JSON.stringify( status ),
 		success: function( ox ) {
-			window.location.reload();
+			success( button, errorElement );
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( button, errorElement, jqXHR.responseText );
+		}
+	});
+	
+};
+
+var deleteInschrijving = function ( inschrijving, button, errorElement, callback ) {
+
+	$jq.ajax( {
+		type: "delete",
+		url:"/rs/inschrijvingen/" + inschrijving,
+		success: function( ox ) {
+			window.location.href = "/rs/inschrijvingen.html";
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			error( button, errorElement, jqXHR.responseText );

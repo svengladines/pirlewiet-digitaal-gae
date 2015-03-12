@@ -30,7 +30,7 @@ var postOrganisation = function ( organisation, button, errorElement, callback, 
 			callback( organisation, callbackParam, button, errorElement );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement );
+			error( button, errorElement, jqXHR.responseText );
 		}
 	});
 	

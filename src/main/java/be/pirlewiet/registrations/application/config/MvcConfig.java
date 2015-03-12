@@ -16,6 +16,7 @@ import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
 import be.pirlewiet.registrations.web.controllers.OrganisatieController;
 import be.pirlewiet.registrations.web.controllers.OrganisatiesController;
 import be.pirlewiet.registrations.web.controllers.PageController;
+import be.pirlewiet.registrations.web.controllers.PingController;
 import be.pirlewiet.registrations.web.controllers.ScenarioController;
 
 @Configuration
@@ -110,6 +111,13 @@ public class MvcConfig {
 		public ScenarioController scenarioController() {
 			
 			return new ScenarioController();
+			
+		}
+		
+		@Bean
+		public PingController pingController() {
+			
+			return new PingController();
 			
 		}
 		

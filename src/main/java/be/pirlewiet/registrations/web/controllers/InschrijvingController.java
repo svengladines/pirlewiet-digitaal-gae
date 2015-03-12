@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.Intaker;
+import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
@@ -37,7 +38,7 @@ import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
-@RequestMapping( {"/inschrijvingen/{id}"} )
+@RequestMapping( {"/inschrijvingen/{uuid}"} )
 public class InschrijvingController {
 	
 	protected Logger logger 
@@ -54,10 +55,10 @@ public class InschrijvingController {
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
 	@ResponseBody
-	public ResponseEntity<InschrijvingX> retrieve( @PathVariable String id ) {
+	public ResponseEntity<InschrijvingX> retrieve( @PathVariable String uuid ) {
 		
 		InschrijvingX inschrijving
-			= this.secretariaatsMedewerker.guard().findInschrijving( id );
+			= this.secretariaatsMedewerker.guard().findInschrijving( uuid );
 		
 		if ( inschrijving == null ) {
 			return response( HttpStatus.NOT_FOUND );
@@ -78,15 +79,24 @@ public class InschrijvingController {
 		
 	}
 	
+	@RequestMapping( method = { RequestMethod.DELETE } )
+	public ResponseEntity<InschrijvingX> delete( @PathVariable String uuid ) {
+		
+		this.secretariaatsMedewerker.guard().deleteEnrollment( uuid );
+		
+		return response( HttpStatus.OK );
+		
+	}
+	
 	@RequestMapping( value="/contact", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<ContactGegevens> contactUpdate(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody ContactGegevens contactGegevens ) {
 		
-		this.retrieve( id );
+		this.retrieve( uuid );
 		
-		this.secretariaatsMedewerker.guard().updateContact( id, contactGegevens);
+		this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
 		
 		return response( contactGegevens, HttpStatus.OK );
 		
@@ -95,11 +105,11 @@ public class InschrijvingController {
 	@RequestMapping( value="/vakanties", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<String> updateVakanties(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody String vakanties ) {
 		
 		InschrijvingX x 
-			= this.secretariaatsMedewerker.guard().updateVakanties( id, vakanties );
+			= this.secretariaatsMedewerker.guard().updateVakanties( uuid, vakanties );
 		
 		return response( vakanties, HttpStatus.OK );
 		
@@ -108,10 +118,10 @@ public class InschrijvingController {
 	@RequestMapping( value="/deelnemers", method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
 	@ResponseBody
 	public ResponseEntity<List<Deelnemer>> deelnemersRetrieve(
-				@PathVariable String id  ) {
+				@PathVariable String uuid  ) {
 		
 		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
+			= this.retrieve( uuid );
 		
 		InschrijvingX inschrijving
 			= retrieve.getBody();
@@ -123,11 +133,11 @@ public class InschrijvingController {
 	@RequestMapping( value="/deelnemers", method = { RequestMethod.POST } )
 	@ResponseBody
 	public ResponseEntity<Deelnemer> deelnemersAdd(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody Deelnemer deelnemer ) {
 		
 		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
+			= this.retrieve( uuid );
 		
 		InschrijvingX inschrijving
 			= retrieve.getBody();
@@ -142,12 +152,12 @@ public class InschrijvingController {
 	@RequestMapping( value="/adres", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Adres> adressUpdate(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody Adres adres ) {
 		
-		this.retrieve( id );
+		this.retrieve( uuid );
 		
-		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( id, adres );
+		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( uuid, adres );
 		
 		return response( adres, HttpStatus.OK );
 		
@@ -156,11 +166,11 @@ public class InschrijvingController {
 	@RequestMapping( value="/vragen", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<List<Vraag>> vragenUpdate(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody List<Vraag> vragen ) {
 		
 		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
+			= this.retrieve( uuid );
 		
 		InschrijvingX inschrijving
 			= retrieve.getBody();
@@ -174,11 +184,11 @@ public class InschrijvingController {
 	@RequestMapping( value="/opmerking", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<String> opmerkingUpdate(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody String opmerking ) {
 		
 		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
+			= this.retrieve( uuid );
 		
 		InschrijvingX inschrijving
 			= retrieve.getBody();
@@ -192,7 +202,7 @@ public class InschrijvingController {
 	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Status> statusUpdate(
-				@PathVariable String id,
+				@PathVariable String uuid,
 				@RequestBody Status status,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
@@ -200,14 +210,14 @@ public class InschrijvingController {
 			= this.buitenWipper.guard().whoHasID(  pwtid  );
 		
 		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( id );
+			= this.retrieve( uuid );
 		
 		InschrijvingX inschrijving
 			= retrieve.getBody();
 		
 		if ( PirlewietUtil.isPirlewiet( organisatie ) ) { 
 		
-			this.secretariaatsMedewerker.updateStatus( id, status );
+			this.secretariaatsMedewerker.updateStatus( uuid, status );
 			
 		}
 		else {
@@ -225,18 +235,27 @@ public class InschrijvingController {
 	public ResponseEntity<String> handleError( Exception e ){
 		
 		logger.warn( "failure while handling request", e );
+		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
+		
+	}
+	
+	@ExceptionHandler( PirlewietException.class)
+	@ResponseBody
+	public ResponseEntity<String> handleFailure( PirlewietException e ){
+		
+		logger.warn( "failure while handling request", e );
 		return response( e.getMessage(), HttpStatus.BAD_REQUEST );
 		
 	}
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @PathVariable String id, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ModelAndView view( @PathVariable String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisatie organisatie
 			= this.buitenWipper.guard().whoHasID(  pwtid  );
 		
 		ResponseEntity<InschrijvingX> entity
-			= this.retrieve( id );
+			= this.retrieve( uuid );
 		
 		Map<String,Object> model
 			= new HashMap<String,Object>();

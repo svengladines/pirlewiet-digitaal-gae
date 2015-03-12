@@ -73,6 +73,12 @@
 					</div>
 			</div>
 			<div class="form-group">
+					<label for="adres-zipcode" class="col-sm-4 control-label">Postcode (*)</label>
+					<div class="col-sm-2">
+						<input id="adres-zipcode" type="tel" class="form-control" value="${organisation.adres.zipCode}"></input>
+					</div>
+			</div>
+			<div class="form-group">
 					<label for="adres-straat" class="col-sm-4 control-label">Gemeente (*)</label>
 					<div class="col-sm-2">
 						<input id="adres-gemeente" type="tel" class="form-control" value="${organisation.adres.gemeente}"></input>
@@ -131,7 +137,7 @@
 						$jq("#organisation-alternative-email").val()
 						);
 			
-			var a = new Adres( $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
+			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
 			if ( organisation.uuid == 0 ) {
 				postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );

@@ -27,85 +27,33 @@
 			</div><!-- row -->
 		</div><!-- container -->
 	</div>
+	
+	<form class="form-horizontal" role="form">		
 
 	<div class="container">
 	
-			<form class="form-horizontal" role="form">
-			
-			<c:if test="${inschrijving.status.value eq 'DRAFT'}">
-			
-				<p>
-					Vul het onderstaande formulier in en klik op 'verstuur' om een inschrijving aan te vragen. <br/>
+			<p class="text-info">
 					Veldjes met een (*) zijn verplicht in te vullen.
-				</p>
-			
-			</c:if>
+			</p>
+	
+			<h2>Status</h2>
+			<p>
+				De status van je inschrijving.
+			</p>
 			
 			<div class="form-group">
 				<label class="col-sm-4 control-label">Status</label>
 					<div class="col-sm-4">	
 						<p class="form-control-static text-info"><strong>${inschrijving.status}</strong></p>
+						<input id="status" type="hidden" value="${inschrijving.status.value}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-4 control-label">Opmerking</label>
-				<div class="col-sm-6">
-					<p class="form-control-static">${inschrijving.status.comment}</p>
+				<label class="col-sm-4 control-label">Opmerking bij laatste wijziging</label>
+				<div class="col-sm-4">
+					<p>${inschrijving.status.comment}</p>
 				</div>
 			</div>
-			
-			<c:choose>
-			<c:when test="${inschrijving.status.value eq 'DRAFT'}">
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Klaar ?</label>
-					<div class="col-sm-2">
-
-						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label"></label>
-					<div class="col-sm-8">
-						<span id="enrollment-error" class="error text-danger hidden">
-								Er zijn fouten of onvolkomendheden in het formulier. Controleer de gegevens en probeer opnieuw AUB. 
-							</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Bedacht ?</label>
-					<div class="col-sm-2">
-
-						<button type="button" id="enrollment-delete" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Verwijder</button>
-					</div>
-				</div>
-			</c:when>
-			<c:when test="${inschrijving.status.value eq 'CANCELLED'}">
-			</c:when>
-			<c:when test="${inschrijving.status.value eq 'REJECTED'}">
-			</c:when>
-			<c:otherwise>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Wijzigingen ?</label>
-					<div class="col-sm-2">
-
-						<button type="button" id="enrollment-save" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">Inschrijving annuleren ?</label>
-					<div class="col-sm-8">
-
-						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Annuleer</button>
-						<br/>
-						<p id="cancel-warning" class="hidden">
-							<span class="text-warning">Opgelet: indien u een inschrijving annuleert binnen de 2 weken voor aanvang van het kamp, zal het inschrijvingsgeld niet terugbetaald worden, tenzij u een geldige reden kan voorleggen aan het secretariaat.</span>
-						</p>
-					</div>
-				</div>
-			</c:otherwise>
-			</c:choose>
-			
-			<hr/>
 		
 			<h2>Vakantie</h2>
 			
@@ -139,14 +87,10 @@
 					</div>
 				</div>
 				
-			<h2>Contactgegevens</h2>
+			<h2>Contactgegevens doorverwijzer</h2>
 			
 			<p>
-				Geef hier de gegevens op van de persoon die Pirlewiet kan contacteren in verband met deze inschrijving.
-			</p>
-			
-			<p>
-				<span id="contact-error" class="error text-danger hidden"></span>
+				Geef hier de gegevens op van de persoon die Pirlewiet eventueel kan contacteren i.v.m deze inschrijving.
 			</p>
 			
 			<div class="form-group">
@@ -172,10 +116,6 @@
 			
 			<p>
 				Geef hier de gegevens op van de deelnemer.
-			</p>
-			
-			<p>
-				<span id="deelnemer-error" class="error text-danger hidden"></span>
 			</p>
 			
 			<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].uuid}"></input>
@@ -406,9 +346,75 @@
 				</div>
 			</div>
 			
-		</form>
-		
 	</div><!-- container -->
+	
+	<div class="lg">
+	
+		<div class="container">
+	
+			<c:choose>
+			<c:when test="${inschrijving.status.value eq 'DRAFT'}">
+			
+				<h2>Indienen</h2>
+				<p>
+					Controleer de gegevens in het formulier en klik op 'Verstuur' om in te dienen.
+				</p>
+				<div class="form-group">
+					<label class="col-sm-4 control-label">
+					</label>
+					<div class="col-sm-6">
+						<span id="x-status" class="status"></span>
+					</div>
+				</div>
+				<div id="create-confirm" class="form-group">
+					<label class="col-sm-4 control-label">
+					</label>
+					<div class="col-sm-4">
+						<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="enrollment-delete" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Annuleer</button>
+					</div>
+				</div>
+					</div>
+				</div>
+							
+			</c:when>
+			<c:otherwise>
+				
+						<h2>Gewijzigd ?</h2>
+						
+							<div id="status-comment" class="form-group" class="form-group">
+								<label class="col-sm-4 control-label">Opmerking bij wijzigingen<br/>
+								<span class="text-info">Deze commentaar mag maximaal 500 karakters bevatten.</span>
+								</label>
+								
+								
+								<div class="col-sm-6">
+									<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
+								</div>
+							</div>
+							
+							<input type="hidden" name="vak" class="q-email" value="true"/>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">
+								</label>
+								<div class="col-sm-6">
+									<span id="x-status" class="status"></span>
+								</div>
+							</div>
+							<div id="status-confirm" class="form-group">
+								<label class="col-sm-4 control-label">
+								</label>
+								<div class="col-sm-2 bg-info">
+									<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+								</div>
+							</div>
+							
+			</c:otherwise>
+			</c:choose>
+			</div>
+	</div>
+	
+	</form>
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 	
@@ -424,17 +430,17 @@
 				}
 				list = list.concat( element.value );	
 			});
-			putVakanties ( id, list, $jq("#enrollment-save"),$jq("#enrollment-error" ), saveContact );
+			putVakanties ( id, list, $jq("#enrollment-save"),$jq("#x-status" ), saveContact );
 		};
 		
 		var saveContact = function( id ) {
 			var c = new Contact( $jq("#contact-naam").val(), $jq("#contact-telefoon").val(), $jq("#contact-email").val() );
-			putContact ( id, c, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveDeelnemer );
+			putContact ( id, c, $jq("#enrollment-save" ),$jq("#x-status" ), saveDeelnemer );
 		};
 		
 		var saveDeelnemer = function( id ) {
 			
-			var date = $jq("#deelnemer-geboorte").val() != "" ? moment( $jq("#deelnemer-geboorte").val(), "DD/MM/YYYY") : null;
+			var date = $jq("#deelnemer-geboorte").val() != "" ? moment.utc( $jq("#deelnemer-geboorte").val(), "DD/MM/YYYY") : null;
 			
 			var deelnemer
 				= new Deelnemer( 
@@ -450,13 +456,13 @@
 			
 			
 			
-			putDeelnemer( id, deelnemer, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveAddress );
+			putDeelnemer( id, deelnemer, $jq("#enrollment-save" ),$jq("#x-status" ), saveAddress );
 			
 		};
 		
 		var saveAddress = function( id ) {
 			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
-			putAddress ( id, a, $jq("#enrollment-save" ),$jq("#enrollment-error" ), saveVragen );
+			putAddress ( id, a, $jq("#enrollment-save" ),$jq("#x-status" ), saveVragen );
 		};
 		
 		var saveVragen = function( id ) {
@@ -471,26 +477,23 @@
 			$jq( "textarea.q" ).each( function( index, element ) {
 				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
 			});
-			putVragen ( id, list, $jq("#enrollment-save" ),$jq("#enrollment-error" ), submit );
+			putVragen ( id, list, $jq("#enrollment-save" ),$jq("#x-status" ), saveStatus );
 		};
 		
-		var saveStatus = function( id, status ) {
-			var status = new Status ( status );
-			putStatus ( id, status, $jq("#enrollment-save" ),$jq("#status-error" ) );
-		};
-		
-		var submit = function( id ) {
-			saveStatus( id, "SUBMITTED" );
+		var saveStatus = function( id ) {
+			var comment = $jq("#status-comment-text").val();
+			var status = new Status ( "AUTO", comment ,true );
+			putStatus ( id, status, $jq("#enrollment-save" ),$jq("#x-status" ) );
 		};
 		
 		var cancel = function( id ) {
-			saveStatus( id, "CANCELLED" );
+			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
 		};
     	
 		$jq("#enrollment-save").click( function( event ) {
 			
-			clearError();
-			$jq(this).button('loading');
+			clearStatus();
+			$jq(this).button('Even geduld...');
 			
 			save( "${inschrijving.uuid}" );
 			
@@ -498,7 +501,7 @@
 		
 		$jq("#enrollment-cancel").click( function( event ) {
 			
-			clearError();
+			clearStatus();
 			$jq(this).button('loading');
 			
 			cancel( "${inschrijving.uuid}" );
@@ -509,10 +512,17 @@
 			
 			$jq("#cancel-warning").removeClass("hidden").addClass("show");
 			
-		},
-		function( event ) {
+		}, function( event ) {
 			
 			$jq("#cancel-warning").removeClass("show").addClass("hidden");
+			
+		});
+		
+		$jq("#enrollment-delete").click( function( event ) {
+			
+			$jq(this).button('loading');
+			
+			deleteInschrijving( "${inschrijving.uuid}", $jq("#enrollment-delete" ),$jq("#status-error" )  );
 			
 		});
     	

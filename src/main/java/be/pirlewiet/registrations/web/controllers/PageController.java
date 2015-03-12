@@ -52,7 +52,7 @@ public class PageController {
 			= this.buitenWipper.guard().whoHasID(  pwtID  );	
 		
 		if ( organisatie == null ) {
-			mav.setView( new RedirectView("code.htm") );
+			mav.setView( new RedirectView("/code.htm") );
 			return mav;
 		}
 		

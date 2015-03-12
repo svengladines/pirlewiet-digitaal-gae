@@ -19,6 +19,8 @@ import be.pirlewiet.registrations.domain.Intaker;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PostBode;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.scenarios.ReadyToRockOneScenario;
+import be.pirlewiet.registrations.domain.scenarios.ReadyToRockScenario;
 import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
 import be.pirlewiet.registrations.model.Vragen;
 
@@ -56,7 +58,7 @@ public class PirlewietApplicationConfig {
 		@Bean
 		SecretariaatsMedewerker secretariaatsMedewerker( ) {
 			
-			return new SecretariaatsMedewerker( "pirlewiet.digitaal@gmail.com" );
+			return new SecretariaatsMedewerker(  );
 			
 		}
 		
@@ -120,6 +122,20 @@ public class PirlewietApplicationConfig {
 			return new SetOrganisationsUuidScenario();
 		}
 		
+		@Bean
+		public ReadyToRockScenario readyToRockScenario() {
+			return new ReadyToRockScenario();
+		}
+		
+		@Bean
+		public ReadyToRockOneScenario readyToRockOneScenario() {
+			return new ReadyToRockOneScenario();
+		}
+		
+		@Bean
+		ConfiguredVakantieRepository configuredVakantieRepository() {
+			return new ConfiguredVakantieRepository();
+		}
 	}
 	
 	/*

@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,6 +22,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
@@ -33,11 +36,9 @@ import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.DeelnemerRepository;
-import be.pirlewiet.registrations.repositories.InschrijvingVakantieRepository;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
-import be.pirlewiet.registrations.repositories.VakantieRepository;
 import be.pirlewiet.registrations.repositories.VraagRepository;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.DataGuard;
@@ -52,11 +53,18 @@ public class SecretariaatsMedewerker {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
-	protected InschrijvingXRepository inschrijvingXRepository;
+	protected final Comparator<Vakantie> vacationNameComparator
+		= new Comparator<Vakantie>() {
+
+			@Override
+			public int compare(Vakantie o1, Vakantie o2) {
+				return o1.getNaam().compareTo( o2.getNaam() );
+			}
+		
+		};
 	
 	@Resource
-	protected InschrijvingVakantieRepository inschrijvingVakantieRepository;
+	protected InschrijvingXRepository inschrijvingXRepository;
 	
 	@Transient
 	@Resource
@@ -68,7 +76,7 @@ public class SecretariaatsMedewerker {
 	
 	@Transient
 	@Resource
-	protected VakantieRepository vakantieRepository;
+	protected ConfiguredVakantieRepository configuredVakantieRepository;
 	
 	@Resource
 	protected VraagRepository vraagRepository;
@@ -91,10 +99,7 @@ public class SecretariaatsMedewerker {
 	@Resource
 	DataGuard dataGuard;
 	
-	protected String emailAddress;
-	
-    public SecretariaatsMedewerker( String emailAddress ) {
-    	this.emailAddress = emailAddress;
+    public SecretariaatsMedewerker( ) {
     }
     
     public SecretariaatsMedewerker guard() {
@@ -117,6 +122,14 @@ public class SecretariaatsMedewerker {
     	organisatie.getAdres();
     	
     	inschrijving.setOrganisatie( organisatie );
+    	inschrijving.getContactGegevens().setEmail( organisatie.getEmail() );
+    	
+    	if ( ! this.isEmpty( organisatie.getTelefoonNummer() ) ) {
+    		inschrijving.getContactGegevens().setTelefoonNummer( organisatie.getTelefoonNummer() );
+    	}
+    	else if ( ! this.isEmpty( organisatie.getGsmNummer() ) ) {
+    		inschrijving.getContactGegevens().setTelefoonNummer( organisatie.getGsmNummer() );
+    	}
     	
     	InschrijvingX saved
     		= this.inschrijvingXRepository.saveAndFlush( inschrijving );
@@ -157,11 +170,11 @@ public class SecretariaatsMedewerker {
     	}
     	
     	Vakantie saved
-    		= this.vakantieRepository.saveAndFlush( vakantie );
+    		= this.configuredVakantieRepository.saveAndFlush( vakantie );
 
     	// stupid GAE ... set id manually
     	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
-    	this.vakantieRepository.saveAndFlush( saved );
+    	this.configuredVakantieRepository.saveAndFlush( saved );
     	
     	/*
     	for ( String key : vragen.getVragen().keySet() ) {
@@ -249,6 +262,34 @@ public class SecretariaatsMedewerker {
     	
     }
     
+    @Transactional(readOnly=false)
+    public InschrijvingX deleteEnrollment( String uuid ) {
+    	
+    	InschrijvingX inschrijving 
+			= this.findInschrijving( uuid );
+    	
+    	if ( inschrijving != null ) {
+    		
+    		if ( Status.Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
+    			
+    			inschrijving.setDeelnemers( null );
+    			this.inschrijvingXRepository.delete( inschrijving );
+    			
+    		}
+    		else {
+    			throw new PirlewietException( "Je kan een inschrijving enkel verwijderen als die nog niet ingediend is." );
+    		}
+    		
+    	}
+    	else {
+    		throw new PirlewietException( "Inschrijving bestaat niet (meer)." );
+    	}
+    	
+    	return inschrijving;
+    	
+    	
+    }
+    
     protected InschrijvingX detach( String uuid ) {
     	
     	return this.detacher.findAndDetach( uuid );
@@ -304,7 +345,7 @@ public class SecretariaatsMedewerker {
 		}
     	
     	if ( ! complete ) {
-    		throw new RuntimeException("Beantwoord alle vragen in de vragenlijst. Vul eventueel 'Niet van toepassing' (NVT) in." );
+    		throw new RuntimeException("Beantwoord alle vragen met een (*). Vul eventueel 'Niet van toepassing' (NVT) in." );
     	}
     	
     	return inschrijving;
@@ -313,6 +354,10 @@ public class SecretariaatsMedewerker {
     
     @Transactional(readOnly=false)
     public InschrijvingX updateVakanties( String inschrijvingID, String vakanties ) {
+    	
+    	if ( isEmpty( vakanties ) ) {
+    		throw new PirlewietException("Selecteer minstens 1 vakantie");
+    	}
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
@@ -415,20 +460,20 @@ public class SecretariaatsMedewerker {
     	if ( d != null ) {
     		
     		if ( isEmpty(  deelnemer.getVoorNaam() ) ) {
-    			throw new RuntimeException("Geef de voornaam van de deelnemer op");
+    			throw new PirlewietException("Geef de voornaam van de deelnemer op");
     		}
     		if ( isEmpty( deelnemer.getFamilieNaam() ) ) {
-    			throw new RuntimeException("Geef de familienaam van de deelnemer op");
+    			throw new PirlewietException("Geef de familienaam van de deelnemer op");
     		}
     		
     		if ( deelnemer.getGeslacht() == null ) {
-    			throw new RuntimeException("Geef het geslacht van de deelnemer op");
+    			throw new PirlewietException("Geef het geslacht van de deelnemer op");
     		}
     		if ( deelnemer.getGeboorteDatum() == null ) {
-    			throw new RuntimeException("Geef de geboortedatum van de deelnemer op");
+    			throw new PirlewietException("Geef de geboortedatum van de deelnemer op");
     		}
     		if ( isEmpty( deelnemer.getTelefoonNummer() ) && isEmpty( deelnemer.getMobielNummer() ) ) {
-    			throw new RuntimeException("Geef een telefoonnummer of GSM-nummer van de deelnemer op");
+    			throw new PirlewietException("Geef een telefoonnummer of GSM-nummer van de deelnemer op");
     		}
     		
     		d.setVoorNaam( deelnemer.getVoorNaam() );
@@ -450,16 +495,26 @@ public class SecretariaatsMedewerker {
     public List<Vakantie> actueleVakanties( ) {
     	
     	List<Vakantie> all
-    		= this.vakantieRepository.findAll();
+    		= this.configuredVakantieRepository.findAll();
     	
     	List<Vakantie> vakanties
     		= new ArrayList<Vakantie>( all.size() );
     	
     	for ( Vakantie v : all ) {
     		if ( v.getEindInschrijving().after( new Date() ) ) {
-    			vakanties.add( v );
+    			if ( ( v.getBeginInschrijving() != null ) && ( v.getBeginInschrijving().before( new Date() ) ) ) {
+    				vakanties.add( v );
+    			}
+    			else {
+    				logger.info( "vakantie [{}] niet actueel, inschrijvingen nog niet begonnen", v.getUuid() );
+    			}
     		}
+    		else {
+				logger.info( "vakantie [{}] niet actueel, inschrijvingen reeds beeindigd", v.getUuid() );
+			}
     	}
+    	
+    	Collections.sort( vakanties, this.vacationNameComparator );
     	
     	return vakanties;
     	
@@ -571,13 +626,21 @@ public class SecretariaatsMedewerker {
     
     public void sendInitialCode( Organisatie organisation ) {
     	
-    	
+    	MimeMessage message
+			= formatReadyToRockMessage( organisation );
+
+		if ( message != null ) {
+			
+			postBode.deliver( message );
+			logger.info( "email sent" );
+			
+		}
     	
     }
     
     protected boolean isEmpty( String x ) {
     	
-    	return ( x == null ) || ( x.isEmpty() );
+    	return ( x == null ) || ( x.trim().isEmpty() );
     	
     }
     
@@ -617,7 +680,8 @@ public class SecretariaatsMedewerker {
 			model.put( "organisatie", inschrijving.getOrganisatie() );
 			model.put( "inschrijving", inschrijving );
 			model.put( "vakanties", vakantieDetails( inschrijving ) );
-			model.put( "old", oldStatus );
+			Status old = new Status( oldStatus );
+			model.put( "old", old );
 			model.put( "id", inschrijving.getUuid() );
 			
 			StringWriter bodyWriter 
@@ -671,7 +735,7 @@ public class SecretariaatsMedewerker {
   			Map<String, Object> model = new HashMap<String, Object>();
   					
   			model.put( "organisation", organisation );
-  			model.put( "from", this.emailAddress );
+  			model.put( "from", PirlewietApplicationConfig.EMAIL_ADDRESS );
   			
   			StringWriter bodyWriter 
   				= new StringWriter();
@@ -683,7 +747,7 @@ public class SecretariaatsMedewerker {
   			message = this.javaMailSender.createMimeMessage();
   			MimeMessageHelper helper = new MimeMessageHelper( message,"utf-8" );
   				
-  			helper.setFrom( this.emailAddress, "Pirlewiet Digitaal" );
+  			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS, "Pirlewiet Digitaal" );
   			helper.setTo( organisation.getEmail() );
   			helper.setReplyTo( "info@pirlewiet.be" );
   			helper.setSubject( "Pirlewiet VZW - digitale inschrijvingen 2015" );

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 
+import org.hibernate.ejb.criteria.predicate.IsEmptyPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,6 +24,7 @@ import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
+import be.pirlewiet.registrations.model.Status.Value;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
@@ -60,14 +62,12 @@ public class Intaker {
 	@Transactional(readOnly=false)
 	public void update( InschrijvingX inschrijving, Status status ) {
 	
-		// if status = SUBMITTED
-		// then
-		// 	send e-mail to secretariaat
+		// if new then send intake email to pirlewiet, otherwise send update email
 		
 		InschrijvingX loaded
 			= this.secretariaatsMedewerker.findInschrijving( inschrijving.getUuid() );
 		
-		if ( Status.Value.SUBMITTED.equals( status.getValue() ) ) {
+		if ( Status.Value.AUTO.equals( status.getValue() ) && ( Status.Value.DRAFT.equals( loaded.getStatus().getValue() ) ) ) {
 			
 			if ( ! isComplete( loaded ) ) {
 				return;
@@ -75,6 +75,12 @@ public class Intaker {
 			
 			Organisatie organisation
 				= inschrijving.getOrganisatie();
+			
+			loaded.setInschrijvingsdatum( new Date() );
+			loaded.getStatus().setValue( Value.SUBMITTED );
+			loaded.getStatus().setComment( "/" );
+			
+			this.inschrijvingXRepository.saveAndFlush( loaded );
 		
 			MimeMessage message
 				= formatIntakeMessage( loaded, organisation );
@@ -82,28 +88,26 @@ public class Intaker {
 			if ( message != null ) {
 				
 				postBode.deliver( message );
-				logger.info( "email sent" );
 				
 			}
 			
 		}
-		
-		loaded.getStatus().setValue( status.getValue() );
-		loaded.setInschrijvingsdatum( new Date() );
-		this.inschrijvingXRepository.saveAndFlush( loaded );
-
-		if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
+		else {
 			
-			MimeMessage message
-				= formatUpdateMessage( loaded );
+			loaded.getStatus().setComment( status.getComment() );
 
-			if ( message != null ) {
+			if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
 				
-				postBode.deliver( message );
-				logger.info( "email sent" );
+				MimeMessage message
+					= formatUpdateMessage( loaded );
+	
+				if ( message != null ) {
+					
+					postBode.deliver( message );
+					
+				}
 				
 			}
-			
 		}
 			
 	}
