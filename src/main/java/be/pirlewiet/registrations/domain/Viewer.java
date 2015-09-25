@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
-import be.occam.utils.spring.web.Rest;
+import be.occam.utils.spring.web.Client;
 
 public class Viewer {
 	
@@ -22,7 +22,7 @@ public class Viewer {
 		headers.put("Cookie", new StringBuilder("pwtid= ").append( as ).toString() );
 		
 		ResponseEntity<String> getResponse 
-			= Rest.getHTML( url, headers );
+			= Client.getHTML( url, headers );
 		
 		return getResponse.getBody();
 		

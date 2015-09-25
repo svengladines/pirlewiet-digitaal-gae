@@ -20,6 +20,7 @@ import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -46,17 +47,31 @@ public class BuitenWipper {
 	@Resource
 	CodeMan codeMan;
 	
+	@Resource
+	Organisatie pDiddy;
+	
     public BuitenWipper guard() {
     	this.dataGuard.guard();
     	return this;
     }
 	
 	public Organisatie whoHasCode( String code ) {
-		return this.organisatieRepository.findOneByCode( code.replaceAll("\"", "").toLowerCase() );
+		
+		code = code.replaceAll("\"", "").toLowerCase();
+		
+		if ( PirlewietUtil.PDIDDY_CODE.equals( code ) ) {
+			return pDiddy;
+		}
+		
+		return this.organisatieRepository.findOneByCode( code );
 	}
 	
 	@Transactional(readOnly=true)
 	public Organisatie whoHasID( String uuid ) {
+		
+		if ( PirlewietUtil.PDIDDY_ID.equals( uuid ) ) {
+			return pDiddy;
+		}
 		
 		Organisatie organisatie
 			= this.organisatieRepository.findByUuid( uuid );

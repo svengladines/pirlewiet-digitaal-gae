@@ -26,7 +26,9 @@ import be.pirlewiet.registrations.domain.Viewer;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockOneScenario;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockScenario;
 import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
+import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Vragen;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Configuration
 @EnableTransactionManagement
@@ -139,6 +141,19 @@ public class PirlewietApplicationConfig {
 			JavaMailSenderImpl sender
 				= new JavaMailSenderImpl();
 			return sender;
+		}
+		
+		@Bean
+		public Organisatie pDiddy() {
+			
+			Organisatie pDiddy
+				= new Organisatie();
+			
+			pDiddy.setEmail( PirlewietUtil.PDIDDY_EMAIL );
+			pDiddy.setUuid( PirlewietUtil.PDIDDY_ID );
+			pDiddy.setCode( PirlewietUtil.PDIDDY_CODE );
+			
+			return pDiddy;
 		}
 		
 		@Bean

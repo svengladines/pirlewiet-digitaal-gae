@@ -46,8 +46,8 @@ import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.Reducer;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.ExcelImporter;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Controller
 @RequestMapping(value="/organisations")
@@ -234,13 +234,13 @@ public class OrganisationsController {
 			view = "organisations_pirlewiet";
 			
 		}
-		else {
+		else if ( PirlewietUtil.isPD( actor ) ) {
 			
 			for ( Organisatie organisation : organisations ) {
 				this.reducer.reduce( organisation );
 			}
 			
-			view = "organisations";
+			view = "organisations_public";
 			
 		}
 		
@@ -248,8 +248,6 @@ public class OrganisationsController {
 		
 		model.put( "organisations", organisations );
 
-		
-		
 		return new ModelAndView( view, model );
 		
 	}

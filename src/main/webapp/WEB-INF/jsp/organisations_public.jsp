@@ -11,7 +11,7 @@
 	
 	<body>
 
-    <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
+    <jsp:include page="/WEB-INF/jsp/menu_public.jsp">
     	<jsp:param name="active" value="organisations"/>
     </jsp:include>
     

@@ -3,8 +3,6 @@ package be.pirlewiet.registrations.application.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.datetime.DateFormatter;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -15,6 +13,7 @@ import be.pirlewiet.registrations.web.controllers.InschrijvingController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
 import be.pirlewiet.registrations.web.controllers.OrganisatieController;
 import be.pirlewiet.registrations.web.controllers.OrganisationsController;
+import be.pirlewiet.registrations.web.controllers.PDController;
 import be.pirlewiet.registrations.web.controllers.PageController;
 import be.pirlewiet.registrations.web.controllers.PingController;
 import be.pirlewiet.registrations.web.controllers.ScenarioController;
@@ -118,6 +117,13 @@ public class MvcConfig {
 		public PingController pingController() {
 			
 			return new PingController();
+			
+		}
+		
+		@Bean
+		public PDController pdController() {
+			
+			return new PDController();
 			
 		}
 		
