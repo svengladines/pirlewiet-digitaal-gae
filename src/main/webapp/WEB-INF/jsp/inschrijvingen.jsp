@@ -38,7 +38,7 @@
 				
 				<div class="form-group form-group-lg">
 					<div>
-						<button type="button" id="nieuw" class="btn btn-primary" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+						<button type="button" id="nieuw" class="btn btn-primary btn-lg" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
 					</div>
 				</div>
 				
@@ -50,7 +50,7 @@
 		
 			<h2>Inschrijvingen</h2>
 			
-			<table class="table table-bordered">
+			<table class="table table-bordered table-striped">
 			
 			<thead>
 				<tr>

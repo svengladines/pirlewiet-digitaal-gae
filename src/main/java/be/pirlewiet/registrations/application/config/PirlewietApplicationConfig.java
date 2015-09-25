@@ -15,10 +15,14 @@ import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.CodeMan;
 import be.pirlewiet.registrations.domain.Detacher;
+import be.pirlewiet.registrations.domain.HeadQuarters;
 import be.pirlewiet.registrations.domain.Intaker;
+import be.pirlewiet.registrations.domain.Mapper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PostBode;
+import be.pirlewiet.registrations.domain.Reducer;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.Viewer;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockOneScenario;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockScenario;
 import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
@@ -104,6 +108,26 @@ public class PirlewietApplicationConfig {
 			
 		}
 		
+		@Bean
+		Mapper mapper() {
+			
+			return new Mapper();
+			
+		}
+		
+		@Bean
+		Viewer viewer() {
+			
+			return new Viewer();
+			
+		}
+		
+		@Bean
+		Reducer reducer() {
+			
+			return new Reducer();
+			
+		}
 		
 		@Bean
 		public Vragen vragen () {
@@ -136,6 +160,19 @@ public class PirlewietApplicationConfig {
 		ConfiguredVakantieRepository configuredVakantieRepository() {
 			return new ConfiguredVakantieRepository();
 		}
+	}
+	
+	@Configuration
+	@Profile({ConfigurationProfiles.PRODUCTION})
+	static class ConfigForProduction {
+	
+		@Bean
+		public HeadQuarters secretariaat( ) {
+			
+			return new HeadQuarters( "info@pirlewiet.be" );
+			
+		}
+		
 	}
 	
 	/*

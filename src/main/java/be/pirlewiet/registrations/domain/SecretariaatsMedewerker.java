@@ -221,7 +221,7 @@ public class SecretariaatsMedewerker {
     		inschrijving = this.detach( inschrijving.getUuid() );
     		
     		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getUuid().equals( organisatie.getUuid() ) ) ) {
-    			logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
+    			// logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
     			continue;
     		}
     		
@@ -234,7 +234,7 @@ public class SecretariaatsMedewerker {
     			
     		}
     		
-    		logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
+    		// logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
     		
     		inschrijvingen.add( inschrijving );
     		
@@ -244,6 +244,37 @@ public class SecretariaatsMedewerker {
     			inschrijvingen.add( inschrijving );
     		} 
     		**/
+    		
+    	}
+    	
+    	return inschrijvingen;
+    	
+    }
+    
+  public List<InschrijvingX> drafts( ) {
+    	
+    	List<InschrijvingX> inschrijvingen
+    		= new ArrayList<InschrijvingX>( );
+    	
+    	List<InschrijvingX> all
+    		= this.inschrijvingXRepository.findAll();// = PirlewietUtil.isPirlewiet( organisatie ) ? this.inschrijvingXRepository.findAll() : this.inschrijvingXRepository.findByOrganisatie( organisatie );
+    		// SGL|| findByOrganisatie does not work in GAE ... at least not out-of-the-box
+    	
+    	logger.info( "total number of enrollments: [{}]", all.size() );
+    	
+    	Iterator<InschrijvingX> it
+    		= all.iterator();
+    	
+    	while ( it.hasNext() ) {
+    		
+    		InschrijvingX inschrijving
+    			= it.next();
+    		
+    		inschrijving = this.detach( inschrijving.getUuid() );
+    		
+    		if ( Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
+    			inschrijvingen.add( inschrijving );	
+    		}
     		
     	}
     	
@@ -506,11 +537,11 @@ public class SecretariaatsMedewerker {
     				vakanties.add( v );
     			}
     			else {
-    				logger.info( "vakantie [{}] niet actueel, inschrijvingen nog niet begonnen", v.getUuid() );
+    				logger.debug( "vakantie [{}] niet actueel, inschrijvingen nog niet begonnen", v.getUuid() );
     			}
     		}
     		else {
-				logger.info( "vakantie [{}] niet actueel, inschrijvingen reeds beeindigd", v.getUuid() );
+				logger.debug( "vakantie [{}] niet actueel, inschrijvingen reeds beeindigd", v.getUuid() );
 			}
     	}
     	

@@ -36,23 +36,13 @@
 					Veldjes met een (*) zijn verplicht in te vullen.
 			</p>
 	
-			<h2>Status</h2>
-			<p>
-				De status van je inschrijving.
-			</p>
-			
-			<div class="form-group">
-				<label class="col-sm-4 control-label">Status</label>
-					<div class="col-sm-4">	
-						<p class="form-control-static text-info"><strong>${inschrijving.status}</strong></p>
-						<input id="status" type="hidden" value="${inschrijving.status.value}"></input>
-					</div>
+			<div class="alert alert-info" role="alert">
+				<h2>Status = <strong>${inschrijving.status}</strong></h2>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-4 control-label">Opmerking bij laatste wijziging</label>
-				<div class="col-sm-4">
-					<p>${inschrijving.status.comment}</p>
-				</div>
+			
+			<label class="col-sm-4 control-label">Opmerking bij laatste wijziging</label>
+			<div class="col-sm-4">
+				<p>${inschrijving.status.comment}</p>
 			</div>
 		
 			<h2>Vakantie</h2>
@@ -258,41 +248,6 @@
 							</div>
 					</c:if>
 			</c:forEach>
-		
-			<h2>Medische gegevens</h2>
-			
-			<c:forEach items="${inschrijving.vragen}" var="vraag">
-					<c:if test="${vraag.tag eq 'medic'}">
-						<div class="form-group">
-							<label class="col-sm-4 control-label">${vraag.vraag}</label>
-							<c:choose>
-								<c:when test="${vraag.type eq 'YesNo'}">
-									<div class="col-sm-2">
-										<div class="checkbox">
-											<label>
-												<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
-											</label>
-											&nbsp;&nbsp;&nbsp;
-											<label>
-												<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
-											</label>
-										</div>
-									</div>
-								</c:when>
-								<c:when test="${vraag.type eq 'Text'}">
-									<div class="col-sm-3">
-										<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
-									</div>
-								</c:when>
-								<c:when test="${vraag.type eq 'Area'}">
-									<div class="col-sm-6">
-										<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
-									</div>
-								</c:when>
-							</c:choose>
-							</div>
-					</c:if>
-			</c:forEach>
 			
 			<h2>Foto's</h2>
 			
@@ -333,18 +288,10 @@
 					</c:if>
 			</c:forEach>
 			
-			<h2>Opmerkingen</h2>
-			
+			<h2>Medische fiche</h2>
 			<p>
-				Indien gewenst, kan je hier nog opmerkingen rond deze inschrijving kwijt.
+				Als de inschrijving aanvaard wordt, moet je zeker nog de <a href="medical.html">medische fiche</a> invullen voor de deelnemer mee op vakantie kan.
 			</p>
-			
-			<div class="form-group">
-				<label class="col-sm-4 control-label"></label>
-				<div class="col-sm-6">
-					<textarea id="opmerking-tekst" class="form-control" rows="10" cols="64">${inschrijving.opmerking}</textarea>
-				</div>
-			</div>
 			
 	</div><!-- container -->
 	
@@ -357,8 +304,40 @@
 			
 				<h2>Indienen</h2>
 				<p>
-					Controleer de gegevens in het formulier en klik op 'Verstuur' om in te dienen.
+					Controleer de gegevens in het formulier en klik op 'Verstuur' om de inschrijving in te dienen.<br/>
 				</p>
+			</c:when>
+			<c:otherwise>
+				
+				<h2>Gewijzigd ?</h2>
+				<p>
+					Klik op 'Verstuur' om de wijzigingen door te sturen.
+				</p>
+			</c:otherwise>
+			</c:choose>
+			
+			<div class="form-group">
+					<label class="col-sm-4 control-label">
+					</label>
+					<div class="col-sm-6">
+						<span id="x-status" class="status"></span>
+					</div>
+				</div>
+							
+				<div id="status-comment" class="form-group" class="form-group">
+					<label class="col-sm-4 control-label">Opmerking<br/>
+					<span class="text-info">Deze opmerking is bestemd voor de secretariaatsmedewerkers die de inschrijving zullen behandelen.</span><br/>
+					<span class="">Indien je een inschrijving wijzigde, licht dan hier kort toe wat er veranderd is.</span><br/>
+					<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
+					</label>
+					
+					
+					<div class="col-sm-6">
+						<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
+					</div>
+				</div>
+							
+				<input type="hidden" name="vak" class="q-email" value="true"/>
 				<div class="form-group">
 					<label class="col-sm-4 control-label">
 					</label>
@@ -371,46 +350,10 @@
 					</label>
 					<div class="col-sm-4">
 						<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-						<button type="button" id="enrollment-delete" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Annuleer</button>
+						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Annuleer</button>
 					</div>
 				</div>
-					</div>
-				</div>
 							
-			</c:when>
-			<c:otherwise>
-				
-						<h2>Gewijzigd ?</h2>
-						
-							<div id="status-comment" class="form-group" class="form-group">
-								<label class="col-sm-4 control-label">Opmerking bij wijzigingen<br/>
-								<span class="text-info">Deze commentaar mag maximaal 500 karakters bevatten.</span>
-								</label>
-								
-								
-								<div class="col-sm-6">
-									<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
-								</div>
-							</div>
-							
-							<input type="hidden" name="vak" class="q-email" value="true"/>
-							<div class="form-group">
-								<label class="col-sm-4 control-label">
-								</label>
-								<div class="col-sm-6">
-									<span id="x-status" class="status"></span>
-								</div>
-							</div>
-							<div id="status-confirm" class="form-group">
-								<label class="col-sm-4 control-label">
-								</label>
-								<div class="col-sm-2 bg-info">
-									<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-								</div>
-							</div>
-							
-			</c:otherwise>
-			</c:choose>
 			</div>
 	</div>
 	
@@ -501,31 +444,10 @@
 		
 		$jq("#enrollment-cancel").click( function( event ) {
 			
-			clearStatus();
-			$jq(this).button('loading');
-			
-			cancel( "${inschrijving.uuid}" );
+			window.location.reload();
 			
 		});
 		
-		$jq("#enrollment-cancel").hover( function( event ) {
-			
-			$jq("#cancel-warning").removeClass("hidden").addClass("show");
-			
-		}, function( event ) {
-			
-			$jq("#cancel-warning").removeClass("show").addClass("hidden");
-			
-		});
-		
-		$jq("#enrollment-delete").click( function( event ) {
-			
-			$jq(this).button('loading');
-			
-			deleteInschrijving( "${inschrijving.uuid}", $jq("#enrollment-delete" ),$jq("#status-error" )  );
-			
-		});
-    	
     </script>
   </body>
 </html>

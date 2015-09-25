@@ -46,16 +46,16 @@ public class DevData {
 	@PostConstruct
 	public void injectData() {
 		
-		Deelnemer sarah
+		Deelnemer lisa
 			= new Deelnemer();
 		
 		// sarah.setUuid(  Ids.SARAH );
-		sarah.setVoorNaam( "Lisa");
-		sarah.setFamilieNaam( "Simpson" );
-		sarah.setEmail("lisa.simpson@springfield.net");
-		sarah.setGeslacht( Geslacht.V );
-		sarah.setGeboorteDatum( new Date() );
-		sarah.setTelefoonNummer( "x" );
+		lisa.setVoorNaam( "Lisa");
+		lisa.setFamilieNaam( "Simpson" );
+		lisa.setEmail("lisa.simpson@springfield.net");
+		lisa.setGeslacht( Geslacht.V );
+		lisa.setGeboorteDatum( new Date() );
+		lisa.setTelefoonNummer( "x" );
 		
 		
 		// this.persoonRepository.saveAndFlush( sarah );
@@ -65,10 +65,11 @@ public class DevData {
 
 		pirlewiet.setNaam("Pirlewiet VZW");
 		pirlewiet.setCode( "pwt001" );
-		pirlewiet.setEmail( "info@pirlewiet.be" );
+		pirlewiet.setEmail( "secretariaat@pirlewiet.be" );
 		pirlewiet.setTelefoonNummer( "09020123456" );
 		pirlewiet.setAdres( new Adres() );
 		pirlewiet.getAdres().setGemeente( "Gent" );
+		pirlewiet.getAdres().setZipCode( "6000" );
 		pirlewiet.getAdres().setStraat( "Sint-X" );
 		pirlewiet.getAdres().setNummer( "61" );
 		pirlewiet = this.organsiatieRepository.saveAndFlush( pirlewiet );
@@ -85,36 +86,39 @@ public class DevData {
 		ocmw.setAdres( new Adres() );
 		ocmw.getAdres().setGemeente( "Leuven" );
 		ocmw.getAdres().setStraat( "Oude Markt" );
+		ocmw.getAdres().setZipCode( "3000" );
 		ocmw.getAdres().setNummer("1");
 	
 		ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
 		ocmw.setUuid( KeyFactory.keyToString( ocmw.getKey() ) );
 		this.organsiatieRepository.saveAndFlush( ocmw );
 		
-		InschrijvingX sarahKika1
+		InschrijvingX lisaSimpson
 			= new InschrijvingX();
-		sarahKika1.setVks( this.configuredVakantieRepository.findAll().get( 0 ).getUuid() );
-		sarahKika1.setOrganisatie( ocmw );
-		sarahKika1.getStatus().setValue( Status.Value.SUBMITTED );
-		sarahKika1.getContactGegevens().setNaam( "x" );
-		sarahKika1.getContactGegevens().setTelefoonNummer( "x" );
-		sarahKika1.getContactGegevens().setEmail( "sven@x" );
-		sarahKika1.getAdres().setGemeente( "x");
-		sarahKika1.getAdres().setStraat( "x" );
-		sarahKika1.getAdres().setNummer( "x" );
+		lisaSimpson.setVks( this.configuredVakantieRepository.findAll().get( 0 ).getUuid() );
+		lisaSimpson.setOrganisatie( ocmw );
+		lisaSimpson.getStatus().setValue( Status.Value.DRAFT );
+		lisaSimpson.getContactGegevens().setNaam( "x" );
+		lisaSimpson.getContactGegevens().setTelefoonNummer( "x" );
+		lisaSimpson.getContactGegevens().setEmail( "sven@x" );
+		lisaSimpson.getAdres().setGemeente( "x");
+		lisaSimpson.getAdres().setZipCode( "6000");
+		lisaSimpson.getAdres().setStraat( "x" );
+		lisaSimpson.getAdres().setNummer( "x" );
+		
 	
-		sarahKika1 = this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
+		lisaSimpson = this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
 		
-		sarahKika1.getDeelnemers().add( sarah );
+		lisaSimpson.getDeelnemers().add( lisa );
 		
-		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
+		this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
 		
-		sarah.setUuid( KeyFactory.keyToString( sarah.getKey() ) );
-		sarahKika1.setUuid( KeyFactory.keyToString( sarahKika1.getKey() ) );
+		lisa.setUuid( KeyFactory.keyToString( lisa.getKey() ) );
+		lisaSimpson.setUuid( KeyFactory.keyToString( lisaSimpson.getKey() ) );
 		
-		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
+		this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
 		
-		this.logger.info( "sarah's id is [{}]", sarah.getUuid() );
+		this.logger.info( "lisa id is [{}]", lisa.getUuid() );
 		
 	}
 	

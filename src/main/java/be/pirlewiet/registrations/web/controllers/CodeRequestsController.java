@@ -41,7 +41,8 @@ public class CodeRequestsController {
 		// Map<String, String> headers
 		// = new HashMap<String,String>();
 		
-		this.buitenWipper.guard().processCodeRequest( codeRequest );
+		logger.info("code request for email [{}]", codeRequest.getEmail() );
+		this.buitenWipper.guard().processCodeRequest( codeRequest, true );
 		
 		if ( CodeRequest.Status.REJECTED.equals( codeRequest.getStatus() ) ) {
 			logger.warn( "email [{}] not found in db", codeRequest.getEmail() );

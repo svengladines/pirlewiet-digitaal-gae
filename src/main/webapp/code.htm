@@ -25,7 +25,7 @@
     <![endif]-->
     
     <script src="resources/javascript/jquery-1.11.1.js"></script>
-    <script src="resources/theme/js/bootstrap.min.js"></script>
+    <script src="resources/theme/js/bootstrap.js"></script>
     
     <script type="text/javascript" src="/resources/javascript/pirlewiet.js"></script>
     <script type="text/javascript" src="/resources/javascript/organisaties.js"></script>
@@ -60,7 +60,7 @@
 				<div class="col-lg-12">
 					<h1>Aanmelden</h1>
 					<p>
-						Geef de inlogcode in om je aan te melden. <br/>
+						Elke doorverwijzende organisatie heeft een code om zich aan te melden. <br/>
 					</p>
 				</div>
 			</div><!-- row -->
@@ -69,28 +69,33 @@
 
 	<div class="container">
 	
-			<div id="codediv">
+	
+			<div class="row">
 			
-				<br/>
-				<br/>
-				<br/>
+			<br/>
+	
+			<div id="codediv" class="col-md-6 bg-success">
+			
+				<h3>Ik heb een code.</h3>
+			
+				<p>
+					Geef de code in en klik op 'Aanmelden'.
+				</p>
+				
+				<div class="row">
 	
 				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label for="code" class="col-sm-4 control-label">Code</label>
-						<div class="col-sm-2">	
-							<input id="code" type="text" class="form-control" value="" placeholder="abc123"></input>
+					<div class="form-group col-md-6">
+						<label for="code" class="control-label">Code</label>
+						<div class="">	
+							<input id="code" type="text" class="col-md-4 form-control" value="" placeholder="abc123"></input>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-4 control-label"></label>
-						<div class="col-sm-4">
-							<button type="button" id="codebtn" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<label class="control-label"></label>
+						<div class="">
+							<button id="codebtn" type="button" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Aanmelden</button>
 							<br/>
-							<p>
-								<br/>
-								Heb je geen code ? Klik dan <a class="loginhelp" href="#">hier</a>.
-							</p>
 							<br/>
 							<p id="code-error" class="error text-danger hidden">
 								De opgegeven code was niet geldig.<br/>
@@ -99,14 +104,27 @@
 						</div>
 					</div>
 				</form>
-				
+				</div>
 				
 		</div>
-		<div id="codehelp" class="well hidden">
-					<strong>Heb je geen code of lukt inloggen niet met de code die je ingaf ?</strong>
-					<br/>
-					Geef dan het e-mailadres van je organisatie op en klik op 'verstuur'.<br/><br/>
-					<form class="form-horizontal" role="form">
+		<div id="nocodediv" class="col-md-6 bg-warning">
+					
+				<h3>Ik heb geen code.</h3>
+			
+					<p>
+						Als je organisatie bij ons geregistreerd is als doorverwijzer, kan je de code laten opsturen naar het e-mailadres dat bij registratie werd opgegeven. 
+					</p>
+					
+					<p>
+						Weet je niet zeker of je organisatie al werd geregistreerd of weet je het e-mailadres niet (meer), bekijk dan onze <a href="www.pirlewiet.be/svekke/doorverwijzers.html">lijst van doorverwijzers</a>. 
+					</p>
+					
+					<p>
+						 Vond je het e-mailadres van je organisatie in de lijst ? <br/>
+						 Geef dan hieronder het e-mailadres in, en druk op 'Zend code'.
+					</p>
+					
+								<form class="form-horizontal" role="form">
 						<div class="form-group">
 							<label for="email" class="col-sm-4 control-label">E-mailadres</label>
 							<div class="col-sm-3">	
@@ -116,7 +134,7 @@
 						<div class="form-group">
 						<label class="col-sm-4 control-label"></label>
 						<div class="col-sm-6">
-							<button type="button" id="emailbtn" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+							<button type="button" id="emailbtn" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Zend code</button>
 							<p id="emailunknown" class="hidden">
 								Er werd geen organisatie gevonden met het opgegeven e-mailadres. <br/>
 									Registreer je organisatie bij Pirlewiet Digitaal via formulier <a href="/rs/organisation.html">'Nieuwe doorverwijzer'</a>. 
@@ -136,7 +154,14 @@
 					</div>
 					</form>
 					
-			</div>
+				<p>
+						 Vond je je organisatie <strong>niet</strong> terug in de lijst ? <br/>
+						 Vul dan het <a href="">registratieformulier voor doorverwijzers</a> in. <br/>
+						 Eenmaal geregistreerd, krijg je een code toegestuurd.
+				</p>
+				
+		</div>
+		</div>
 	</div>
 	
 	<div id="f">

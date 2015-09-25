@@ -2,9 +2,6 @@ package be.pirlewiet.registrations.web.controllers;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +36,10 @@ public class CodesController {
 		
 		// Map<String, String> headers
 		// = new HashMap<String,String>();
+		
+		if ( code != null ) {
+			code = code.trim();
+		}
 		
 		logger.info( "code [{}] presented", code );
 		

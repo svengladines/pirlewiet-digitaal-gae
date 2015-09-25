@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Organisaties</h1>
 					<p>
-						Overzicht van de geregistreerde organisaties. De laatst aangepaste staan bovenaan.
+						Overzicht van de geregistreerde organisaties.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -42,10 +42,6 @@
 					<th><a href="/rs/organisations.html?order=street">Adres</a></th>
 					<th><a href="/rs/organisations.html?order=city">Gemeente</a></th>
 					<th>E-mail</th>
-					<th>Telefoon</th>
-					<th>GSM</th>
-					<th>E-mail</th>
-					<th>Code</th>
 				</tr>
 			</thead>
 			
@@ -56,11 +52,8 @@
 				<tr>
 					<td class="nowrap">${organisation.naam}</td>
 					<td>${organisation.adres.straat} ${organisation.adres.nummer}</td>
-					<td>${organisation.adres.zipCode} ${organisation.adres.gemeente}</td>
-					<td>${organisation.telefoonNummer}</td>
-					<td>${organisation.gsmNummer}</td>
+					<td>${organisation.adres.gemeente}</td>
 					<td>${organisation.email}</td>
-					<td>${organisation.code}</td>
 				</tr>
 			</c:forEach>
 			

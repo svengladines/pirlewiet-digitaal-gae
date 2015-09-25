@@ -20,17 +20,20 @@ public class PostBode {
 	@Resource
 	JavaMailSender javaMailSender;
 	
-	public void deliver( MimeMessage mimeMessage ) {
+	public boolean deliver( MimeMessage mimeMessage ) {
 		try {
 			
 			Properties props = new Properties();
-			// this.javaMailSender.send( mimeMessage ); // SGL| doesn't seem to work ... tries SMTP
+			// SGL| doesn't seem to work ... tries SMTP
+			// this.javaMailSender.send( mimeMessage ); 
 			Transport.send( mimeMessage );
 			logger.info( "sent email to {}", (Object) mimeMessage.getRecipients(  RecipientType.TO ) );
+			return true;
 			
 		}
 		catch( Exception e ) {
 			logger.error( "could not send email", e );
+			return false;
 		}
 		
 	}

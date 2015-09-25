@@ -34,6 +34,6 @@
 	<script type="text/javascript" src="/resources/javascript/vakanties.js"></script>
 	<script type="text/javascript" src="/resources/javascript/organisaties.js"></script>
 	<script type="text/javascript" src="/resources/javascript/inschrijvingen.js"></script>
-	<script type="text/javascript" src="/resources/theme/js/bootstrap.min.js"></script>	
+	<script type="text/javascript" src="/resources/theme/js/bootstrap.js"></script>	
 
 </head>

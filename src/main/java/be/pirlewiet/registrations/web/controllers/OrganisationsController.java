@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,18 +43,18 @@ import org.springframework.web.servlet.ModelAndView;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PirlewietException;
+import be.pirlewiet.registrations.domain.Reducer;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
-import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.ExcelImporter;
 
 @Controller
 @RequestMapping(value="/organisations")
-public class OrganisatiesController {
+public class OrganisationsController {
 	
 	private final Logger logger 
-		= LoggerFactory.getLogger( OrganisatiesController.class );
+		= LoggerFactory.getLogger( OrganisationsController.class );
 	
 	@Resource
 	protected SecretariaatsMedewerker secretariaatsMedewerker;
@@ -61,6 +64,9 @@ public class OrganisatiesController {
 	
 	@Resource
 	BuitenWipper buitenWipper;
+	
+	@Resource
+	Reducer reducer;
 	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
@@ -209,27 +215,40 @@ public class OrganisatiesController {
 	}
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) String order ) {
 		
-		Organisatie organisatie
+		Organisatie actor
 			= this.buitenWipper.guard().whoHasID( pwtid  );
 		
-		if ( ( organisatie == null ) || ( ! PirlewietUtil.isPirlewiet( organisatie ) ) ) {
-			
-			throw new RuntimeException( "Enkel Pirlewiet mag dit!" );
-			
-		}
-
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 	
 		List<Organisatie> organisations 
 			= this.organisationManager.all( );
+		
+		String view
+			= null;
+		
+		if ( PirlewietUtil.isPirlewiet( actor) ) {
 			
+			view = "organisations_pirlewiet";
+			
+		}
+		else {
+			
+			for ( Organisatie organisation : organisations ) {
+				this.reducer.reduce( organisation );
+			}
+			
+			view = "organisations";
+			
+		}
+		
+		Collections.sort( organisations, this.comparator( order != null ? order : "name" ) );
+		
 		model.put( "organisations", organisations );
 
-		String view
-			= "organisations_pirlewiet";
+		
 		
 		return new ModelAndView( view, model );
 		
@@ -438,6 +457,32 @@ public class OrganisatiesController {
 		}
 		
 		return bos.toByteArray();
+	}
+	
+	protected final Comparator<Organisatie> comparator( final String param ) {
+		
+		switch( param ) {
+		
+		case "city": 
+				return new Comparator<Organisatie>() {
+					@Override
+					public int compare(Organisatie o1, Organisatie o2) {
+						return o1.getAdres().getGemeente().compareTo( o2.getAdres().getGemeente() );
+					} };
+		case "street": 
+			return new Comparator<Organisatie>() {
+				@Override
+				public int compare(Organisatie o1, Organisatie o2) {
+					return o1.getAdres().getStraat().compareTo( o2.getAdres().getStraat() );
+				} };
+		default:
+			return new Comparator<Organisatie>() {
+				@Override
+				public int compare(Organisatie o1, Organisatie o2) {
+					return o1.getNaam().compareTo( o2.getNaam() );
+				} };	
+		}
+		
 	}
 		
 }

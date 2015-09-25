@@ -343,19 +343,6 @@
 					</c:if>
 			</c:forEach>
 			
-			<h2>Opmerkingen</h2>
-			
-			<p>
-				Indien gewenst, kan je hier nog opmerkingen rond deze inschrijving kwijt.
-			</p>
-			
-			<div class="form-group">
-				<label class="col-sm-4 control-label"></label>
-				<div class="col-sm-6">
-					<textarea id="opmerking-tekst" class="form-control" rows="10" cols="64">${inschrijving.opmerking}</textarea>
-				</div>
-			</div>
-			
 	</div><!-- container -->
 			
 	<div class="lg">

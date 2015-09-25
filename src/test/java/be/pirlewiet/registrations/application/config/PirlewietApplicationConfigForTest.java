@@ -13,6 +13,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.application.run.DevData;
+import be.pirlewiet.registrations.domain.HeadQuarters;
 import be.pirlewiet.registrations.jtests.TestData;
 
 @Configuration
@@ -53,13 +54,20 @@ public class PirlewietApplicationConfigForTest {
 	
 	@Configuration
 	@Profile( { ConfigurationProfiles.DEV } ) 
-	public static class DevDataConfig {
+	public static class ConfigForDevelopment {
 		
 		@Bean
 		@Lazy(false)
 		public DevData devData( LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean ) {
 			
 			return new DevData();
+			
+		}
+		
+		@Bean
+		public HeadQuarters secretariaat( ) {
+			
+			return new HeadQuarters( "sven.gladines@gmail.com" );
 			
 		}
 		

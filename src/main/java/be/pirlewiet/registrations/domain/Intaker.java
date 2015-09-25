@@ -3,16 +3,18 @@ package be.pirlewiet.registrations.domain;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 
-import org.hibernate.ejb.criteria.predicate.IsEmptyPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +23,20 @@ import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Status.Value;
 import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
-import be.pirlewiet.registrations.model.Status.Value;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+/*
+ * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
+ * 
+ */
 public class Intaker {
 
 	protected final Logger logger
@@ -49,10 +55,16 @@ public class Intaker {
 	protected InschrijvingXRepository inschrijvingXRepository;
 	
 	@Resource
+	protected HeadQuarters headQuarters;
+	
+	@Resource
 	JavaMailSender javaMailSender;
 	
 	@Resource
 	DataGuard dataGuard;
+	
+	@Resource
+	Mapper mapper;
 	
 	public Intaker guard() {
 	    	this.dataGuard.guard();
@@ -78,7 +90,12 @@ public class Intaker {
 			
 			loaded.setInschrijvingsdatum( new Date() );
 			loaded.getStatus().setValue( Value.SUBMITTED );
-			loaded.getStatus().setComment( "/" );
+			if ( isEmpty( status.getComment() ) ) {
+				loaded.getStatus().setComment( "Geen commentaar gegeven" );
+			}
+			else {
+				loaded.getStatus().setComment( status.getComment() );
+			}
 			
 			this.inschrijvingXRepository.saveAndFlush( loaded );
 		
@@ -143,11 +160,12 @@ public class Intaker {
 			
 			bodyWriter.flush();
 				
-			message = this.javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message,"utf-8");
+			message = this.javaMailSender.createMimeMessage( );
+			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
+			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( "info@pirlewiet.be" );
+			helper.setTo( headQuarters.getEmail() );
 			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
 			helper.setSubject( "Nieuwe inschrijving" );
 				
@@ -157,10 +175,27 @@ public class Intaker {
 			logger.info( "email text is [{}]", text );
 				
 			helper.setText(text, true);
+			
+			List<String[]> strings
+				= this.mapper.asStrings( Arrays.asList( inschrijving ), null );
+			
+			if ( strings != null ) {
+				
+				byte[] bytes
+					= this.mapper.asBytes( strings );
+				
+				ByteArrayResource bis
+					= new ByteArrayResource( bytes );
+				
+				helper.addAttachment( 
+						new StringBuilder( inschrijving.getUuid() ).append( ".xlsx" ).toString(),
+						bis,
+						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			}
 				
 		}
 		catch( Exception e ) {
-			logger.warn( "could not write e-mail", e );
+			logger.warn( "could not create e-mail", e );
 			throw new RuntimeException( e );
 		}
 		
@@ -202,7 +237,7 @@ public class Intaker {
 			MimeMessageHelper helper = new MimeMessageHelper(message);
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( "info@pirlewiet.be" );
+			helper.setTo( headQuarters.getEmail() );
 			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
 			helper.setSubject( "Aanvraag code" );
 				
@@ -261,6 +296,12 @@ public class Intaker {
 		
 		return complete;
 	}
+	
+	 protected boolean isEmpty( String x ) {
+	    	
+		 return ( x == null ) || ( x.trim().isEmpty() );
+	    	
+	 }
 
 }
  

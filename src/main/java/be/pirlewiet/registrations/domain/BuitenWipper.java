@@ -99,8 +99,8 @@ public class BuitenWipper {
 			= null;
 		
 		if ( organisatie.getCode() != null ) {
-			logger.info( "code exists, code is [{}]", code );
 			code = organisatie.getCode();
+			logger.info( "code exists, code is [{}]", code );
 			if ( ( organisatie.getUuid() == null ) || ( organisatie.getUuid().isEmpty() ) ) {
 				organisatie.setUuid( KeyFactory.keyToString( organisatie.getKey() ) );
 				organisatie = this.organisatieRepository.saveAndFlush( organisatie );
@@ -132,7 +132,7 @@ public class BuitenWipper {
 			if ( message != null ) {
 				
 				postBode.deliver( message );
-				logger.info( "email sent" );
+				logger.info( "code request email sent to [{}]", email );
 				
 			}
 			

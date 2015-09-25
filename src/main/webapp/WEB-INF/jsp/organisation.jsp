@@ -37,14 +37,17 @@
 		<form class="form-horizontal" role="form">
 			<c:choose>
 			<c:when test="${incomplete == false}">
-				<p class="text-info">Het profiel van jouw organisatie is in orde.</p>
+				<div class="alert alert-success" role="alert">
+					<strong>Het profiel van jouw organisatie is in orde.</strong>
+				</div>
 			</c:when>
 			<c:otherwise>
+			<div class="alert alert-danger" role="alert">
 				<p>
-					<span class="text-danger">Het profiel van je organisatie is niet volledig.</span><br/>
-					Vul onderstaande formulier in en klik op 'Verstuur'.<br/>
-					Velden met een '*' zijn verplicht.
+					<strong>Het profiel van je organisatie is niet volledig.</strong><br/>
+					Je moet het profiel in orde brengen voordat je inschrijvingen kan aanmaken of beheren.
 				</p>
+			</div>
 			</c:otherwise>
 			</c:choose>
 			<div class="form-group">
