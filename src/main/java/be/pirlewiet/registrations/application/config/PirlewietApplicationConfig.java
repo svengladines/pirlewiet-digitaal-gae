@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import be.occam.utils.ftp.FTPClient;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.CodeMan;
@@ -154,6 +155,11 @@ public class PirlewietApplicationConfig {
 			pDiddy.setCode( PirlewietUtil.PDIDDY_CODE );
 			
 			return pDiddy;
+		}
+		
+		@Bean
+		public FTPClient ftpClient() {
+			return new FTPClient( "94.198.164.46", "pirlewietbe", "d;giTaal.15");
 		}
 		
 		@Bean

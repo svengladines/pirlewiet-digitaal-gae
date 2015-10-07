@@ -3,7 +3,7 @@
   <application>pirlewiet-digitaal</application>
   <version>1</version>
   <threadsafe>true</threadsafe>
-  	<system-properties>
-  		<property name="spring.profiles.active" value="production" />
-	</system-properties>
+  <system-properties>
+  	<property name="spring.profiles.active" value="production" />
+  </system-properties>
 </appengine-web-app>

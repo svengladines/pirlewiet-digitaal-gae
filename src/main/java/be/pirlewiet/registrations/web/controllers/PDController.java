@@ -1,6 +1,7 @@
 package be.pirlewiet.registrations.web.controllers;
 
-import static be.occam.utils.spring.web.Controller.*;
+import static be.occam.utils.spring.web.Controller.response;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.condition.ProducesRequestCondition;
 import org.springframework.web.servlet.view.RedirectView;
 
+import be.occam.utils.ftp.FTPClient;
 import be.occam.utils.spring.web.Client;
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
@@ -39,6 +40,9 @@ public class PDController {
 	@Resource
 	protected Organisatie pDiddy;
 	
+	@Resource
+	protected FTPClient ftpClient;
+	
 	@RequestMapping(method=RequestMethod.GET, produces={ MediaType.TEXT_HTML_VALUE } ) 
 	@ResponseBody
 	public ResponseEntity<String> view( @PathVariable String page, @CookieValue( required = true, value="pwtid" ) String pwtID )  {
@@ -59,7 +63,14 @@ public class PDController {
 		else if ( "organisations".equals( page ) ) {
 			
 			try {
-				html = Client.getHTML( "http://localhost:8068/rs/organisations.html", PirlewietUtil.as( pDiddy ) ).getBody();
+				html = Client.getHTML( "http://pirlewiet-digitaal.appspot.com/rs/organisations.html", PirlewietUtil.as( pDiddy ) ).getBody();
+				logger.info( "html: {}", html );
+				
+				logger.info( "sending html to FTP server...", html );
+				boolean ok 
+					= ftpClient.putTextFile("httpdocs/digitaal", "organisations.html", html );
+				logger.info( "FTP put [{}]", ok ? "succeeded" : "failed" );
+				
 			}
 			catch ( Exception e ) {
 				logger.error( "could not get organisations as PD", e );

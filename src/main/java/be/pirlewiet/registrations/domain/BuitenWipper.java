@@ -186,7 +186,7 @@ public class BuitenWipper {
 		try {
 			
 			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/code-request.tmpl" );
+				= this.getClass().getResourceAsStream( "/templates/to-organisation/code-request.tmpl" );
 			
 			Template template 
 				= new Template("code", new InputStreamReader( tis ), cfg );
