@@ -83,7 +83,7 @@ public class OrganisationsController {
 		else { 
 		
 			Organisatie created
-				= this.secretariaatsMedewerker.guard().addOrganisatie( organisation );
+				= this.organisationManager.guard().create( organisation );
 			
 			Cookie cookie
 				= new Cookie( "pwtid", created.getUuid() );
@@ -130,7 +130,7 @@ public class OrganisationsController {
 					
 						logger.info( "mapped organisation [{}], email [{}]", organisatie.getNaam(), organisatie.getEmail() );
 					
-						organisations.add( this.secretariaatsMedewerker.guard().addOrganisatie( organisatie ) );
+						organisations.add( this.organisationManager.guard().create( organisatie ) );
 					}
 				}
 				catch( PirlewietException e ) {
@@ -190,7 +190,7 @@ public class OrganisationsController {
 					
 						logger.info( "mapped organisation [{}], email [{}]", organisatie.getNaam(), organisatie.getEmail() );
 					
-						organisations.add( this.secretariaatsMedewerker.guard().addOrganisatie( organisatie ) );
+						organisations.add( this.organisationManager.guard().create( organisatie ) );
 					}
 				}
 				catch( PirlewietException e ) {

@@ -38,4 +38,16 @@ public class PostBode {
 		
 	}
 	
+	public MimeMessage message( ) {
+		
+		try {
+			return this.javaMailSender.createMimeMessage();
+		}
+		catch( Exception e ) {
+			logger.error( "could not create mime message", e );
+			throw new RuntimeException( e );
+		}
+		
+	}
+	
 }

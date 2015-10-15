@@ -73,7 +73,8 @@ public class DevData {
 		pirlewiet.getAdres().setStraat( "Sint-X" );
 		pirlewiet.getAdres().setNummer( "61" );
 		pirlewiet = this.organsiatieRepository.saveAndFlush( pirlewiet );
-		pirlewiet.setUuid( KeyFactory.keyToString( pirlewiet.getKey() ) );
+		pirlewiet.setUuid( "pwt-uuid" );
+		// pirlewiet.setUuid( KeyFactory.keyToString( pirlewiet.getKey() ) );
 		this.organsiatieRepository.saveAndFlush( pirlewiet );
 		
 		Organisatie ocmw

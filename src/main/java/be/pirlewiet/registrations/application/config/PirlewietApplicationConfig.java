@@ -190,7 +190,8 @@ public class PirlewietApplicationConfig {
 		@Bean
 		public HeadQuarters secretariaat( ) {
 			
-			return new HeadQuarters( "info@pirlewiet.be" );
+			// return new HeadQuarters( "info@pirlewiet.be" );
+			return new HeadQuarters( "sven.gladines@gmail.com" );
 			
 		}
 		

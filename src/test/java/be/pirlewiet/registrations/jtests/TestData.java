@@ -95,6 +95,7 @@ public class TestData {
 
 		pirlewiet.setNaam("Pirlewiet");
 		pirlewiet.setCode( "pwt001" );
+		pirlewiet.setUuid( "pwt-uuid");
 		pirlewiet = this.organsiatieRepository.saveAndFlush( pirlewiet );
 		
 		Organisatie ocmw

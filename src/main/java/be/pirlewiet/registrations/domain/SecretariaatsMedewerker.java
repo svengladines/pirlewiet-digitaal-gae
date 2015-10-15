@@ -454,32 +454,6 @@ public class SecretariaatsMedewerker {
     }
     
     @Transactional(readOnly=false)
-    public Organisatie updateOrganisatieAdres( String id, Adres adres ) {
-    	
-    	Organisatie organisatie
-    		= this.organisatie( id );
-    	
-    	if ( isEmpty( adres.getGemeente() ) ) {
-    		throw new RuntimeException("Geef de gemeente op");
-    	}
-    	
-    	if ( isEmpty( adres.getStraat() ) ) {
-    		throw new RuntimeException("Geef de straat op");
-    	}
-    	
-    	if ( isEmpty( adres.getNummer() ) ) {
-    		throw new RuntimeException("Geef huis- en eventueel busnummer op");
-    	}
-    	
-    	organisatie.setAdres( adres );
-		
-		this.organisatieRepository.saveAndFlush( organisatie );
-    	
-    	return organisatie;
-    	
-    }
-    
-    @Transactional(readOnly=false)
     public  Deelnemer updateDeelnemer( String id, Deelnemer deelnemer ) {
     	
     	InschrijvingX inschrijving
@@ -594,37 +568,7 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    @Transactional( readOnly=false )
-    public Organisatie addOrganisatie( Organisatie organisatie ) {
-    	
-    	String email
-    		= organisatie.getEmail();
-    	
-    	Organisatie existing
-    		= this.organisatieRepository.findOneByEmail( email );
-    	
-    	if ( existing != null ) {
-    		throw new PirlewietException( String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
-    	}
-    	
-    	String code 
-    		= this.buitenWipper.guard().uniqueCode();
-    	
-    	organisatie.setCode( code );
-    	
-    	Organisatie saved 
-    		= this.organisatieRepository.saveAndFlush( organisatie );
-    	
-    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
-    	
-    	saved 
-			= this.organisatieRepository.saveAndFlush( saved );
-    	
-    	
-    	
-    	return saved;
-    	
-    }
+   
     
     @Transactional(readOnly=false)
 	public void updateStatus( String inschrijvingID, Status status ) {

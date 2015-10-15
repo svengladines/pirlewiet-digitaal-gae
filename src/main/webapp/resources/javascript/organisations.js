@@ -2,14 +2,13 @@ var Organisatie = function ( email ) {
 	this.email = email;
 };
 
-var Organisation = function ( id, name, telephone, gsm, email, altEmail ) {
+var Organisation = function ( id, name, telephone, gsm, email ) {
 	
 	this.uuid = id;
 	this.naam = name;
 	this.telefoonNummer = telephone;
 	this.gsmNummer = gsm;
 	this.email = email;
-	this.alternativeEmail = altEmail;
 	
 };
 
@@ -21,7 +20,7 @@ var postOrganisation = function ( organisation, button, errorElement, callback, 
 
 	$jq.ajax( {
 		type: "post",
-		url:"/rs/organisations",
+		url:"http://localhost:8068/rs/organisations",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
@@ -40,7 +39,7 @@ var putOrganisation = function ( organisation, button, errorElement, callback, c
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/organisation",
+		url:"https://pirlewiet-digitaal.appspot.com/rs/organisation",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
@@ -59,7 +58,7 @@ var putOrganisationAddress = function ( organisation, adres, button, errorElemen
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/organisation/adres",
+		url:"https://pirlewiet-digitaal.appspot.com/rs/organisation/adres",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,

@@ -1,26 +1,45 @@
 package be.pirlewiet.registrations.domain;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.Adres;
+import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.DataGuard;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
 public class OrganisationManager {
+	
+	@Resource
+	HeadQuarters headQuarters;
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
@@ -56,6 +75,9 @@ public class OrganisationManager {
 	@Resource
 	DataGuard dataGuard;
 	
+	@Resource
+	PostBode postBode;
+	
     public OrganisationManager() {
     }
     
@@ -63,12 +85,47 @@ public class OrganisationManager {
     	this.dataGuard.guard();
     	return this;
     }
+    
+    @Transactional( readOnly=false )
+    public Organisatie create( Organisatie organisation ) {
+    	
+    	String email
+    		= organisation.getEmail();
+    	
+    	Organisatie existing
+    		= this.organisatieRepository.findOneByEmail( email );
+    	
+    	if ( existing != null ) {
+    		throw new PirlewietException( String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
+    	}
+    	
+    	String code 
+    		= this.buitenWipper.guard().uniqueCode();
+    	
+    	organisation.setCode( code );
+    	
+    	Organisatie saved 
+    		= this.organisatieRepository.saveAndFlush( organisation );
+    	
+    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+    	
+    	saved 
+			= this.organisatieRepository.saveAndFlush( saved );
+    	
+    	logger.info( "created organiation with uuid [{}]", saved.getUuid() );
+    	
+    	return saved;
+    	
+    }
 
     @Transactional(readOnly=false)
     public Organisatie updateAdres( String id, Adres adres ) {
     	
     	Organisatie organisatie
     		= this.organisation( id );
+    	
+    	boolean newOrganisation
+    		= ( organisatie.getAdres().getGemeente() == null );
     	
     	if ( isEmpty( adres.getGemeente() ) ) {
     		throw new RuntimeException("Geef de gemeente op");
@@ -85,8 +142,13 @@ public class OrganisationManager {
     	organisatie.setAdres( adres );
     	organisatie.setUpdated( new Date() );
 		
-		this.organisatieRepository.saveAndFlush( organisatie );
-    	
+		organisatie = this.organisatieRepository.saveAndFlush( organisatie );
+		
+		if ( newOrganisation ) {
+			this.sendCreatedEmailToOrganisation( organisatie );
+			this.sendCreatedEmailToPirlewiet( organisatie );
+		}
+		
     	return organisatie;
     	
     }
@@ -199,6 +261,88 @@ public class OrganisationManager {
     	
     	return ( organisation.getUpdated() == null );
     	
+    }
+    
+    protected boolean sendCreatedEmailToOrganisation( Organisatie organisation ) {
+    	
+		MimeMessage message
+			= formatCreatedMessage( organisation, "/templates/to-organisation/organisation-created.tmpl", organisation.getEmail() );
+
+		if ( message != null ) {
+			
+			return postBode.deliver( message );
+			
+		}
+		
+		return false;
+	
+    }
+    
+ protected boolean sendCreatedEmailToPirlewiet( Organisatie organisation ) {
+    	
+		MimeMessage message
+			= formatCreatedMessage( organisation, "/templates/to-pirlewiet/organisation-created.tmpl",this.headQuarters.getEmail()  );
+
+		if ( message != null ) {
+			
+			return postBode.deliver( message );
+			
+		}
+		
+		return false;
+	
+    }
+
+    protected MimeMessage formatCreatedMessage( Organisatie organisation, String templateLocation, String to ) {
+
+		MimeMessage message
+			= null;
+
+		Configuration cfg 
+			= new Configuration();
+	
+		try {
+	
+			InputStream tis
+				= this.getClass().getResourceAsStream( templateLocation );
+	
+			Template template 
+				= new Template("code", new InputStreamReader( tis ), cfg );
+	
+			Map<String, Object> model = new HashMap<String, Object>();
+			
+			model.put( "organisation", organisation );
+			
+			StringWriter bodyWriter 
+				= new StringWriter();
+			
+			template.process( model , bodyWriter );
+			
+			bodyWriter.flush();
+				
+			message = this.postBode.message();
+			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
+			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
+		
+			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+			helper.setTo( to );
+			helper.setReplyTo( headQuarters.getEmail() );
+			helper.setSubject( "Pirlewiet: registratie als doorverwijzer" );
+		
+			String text
+				= bodyWriter.toString();
+			
+			logger.info( "email text is [{}]", text );
+				
+			helper.setText(text, true);
+	
+		} catch( Exception e ) {
+			logger.warn( "could not create e-mail", e );
+			throw new RuntimeException( e );
+		}
+
+		return message;
+
     }
     
 }

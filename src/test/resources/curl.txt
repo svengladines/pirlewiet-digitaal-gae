@@ -1,0 +1,3 @@
+curl -XPOST 'http://localhost:8068/rs/organisations' -v  -H 'Content-Type: application/json' -d'{"naam":"VZW Svekke","telefoonNummer":"016322823","gsmNummer":"","email":"sven.gladines@telenet.be"}'
+
+curl -XPUT 'http://localhost:8068/rs/organisation/adres' -v  -H 'Content-Type: application/json' -H 'Cookie: pwtid=pwt-uuid' -d'{"zipCode":"3370","gemeente":"Neervelp","straat":"Vertrijksestraat","nummer":"33"}'

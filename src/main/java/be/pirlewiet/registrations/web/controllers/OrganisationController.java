@@ -41,7 +41,7 @@ import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/organisation"} )
-public class OrganisatieController {
+public class OrganisationController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
@@ -90,8 +90,8 @@ public class OrganisatieController {
 				@CookieValue(required=true, value="pwtid") String pwtid,
 				HttpServletResponse response ) {
 		
-			Organisatie loaded
-				= this.buitenWipper.guard().whoHasID(  pwtid  );
+		Organisatie loaded
+			= this.buitenWipper.guard().whoHasID(  pwtid  );
 	
 		if ( loaded == null ) {
 				return response( HttpStatus.NOT_FOUND );
@@ -114,7 +114,7 @@ public class OrganisatieController {
 			
 		}
 		
-		this.secretariaatsMedewerker.guard().updateOrganisatieAdres( loaded.getUuid(), adres );
+		this.organisationManager.guard().updateAdres( loaded.getUuid(), adres );
 		
 		return response( adres, HttpStatus.OK );
 		

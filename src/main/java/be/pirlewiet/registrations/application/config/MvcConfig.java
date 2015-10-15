@@ -11,7 +11,7 @@ import be.pirlewiet.registrations.web.controllers.CodesController;
 import be.pirlewiet.registrations.web.controllers.DeelnemerController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingController;
 import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
-import be.pirlewiet.registrations.web.controllers.OrganisatieController;
+import be.pirlewiet.registrations.web.controllers.OrganisationController;
 import be.pirlewiet.registrations.web.controllers.OrganisationsController;
 import be.pirlewiet.registrations.web.controllers.PDController;
 import be.pirlewiet.registrations.web.controllers.PageController;
@@ -95,9 +95,9 @@ public class MvcConfig {
 		}
 		
 		@Bean
-		public OrganisatieController organisatieController() {
+		public OrganisationController organisatieController() {
 			
-			return new OrganisatieController();
+			return new OrganisationController();
 			
 		}
 		
