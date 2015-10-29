@@ -3,14 +3,12 @@ package be.pirlewiet.registrations.jtests;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.registrations.model.Deelnemer;
-import be.pirlewiet.registrations.model.Geslacht;
+import be.pirlewiet.registrations.model.Gender;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Periode;
+import be.pirlewiet.registrations.model.Period;
 import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.VakantieType;
@@ -18,6 +16,8 @@ import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
+
+import com.google.appengine.api.datastore.KeyFactory;
 
 public class TestData {
 	
@@ -57,7 +57,7 @@ public class TestData {
 		zomerKikaEen.setType( VakantieType.Kika );
 		zomerKikaEen.setJaar( 2014 );
 		zomerKikaEen.setNaam( "KIKA 1");
-		zomerKikaEen.setPeriode( Periode.Zomer );
+		zomerKikaEen.setPeriode( Period.Summer );
 		
 		zomerKikaEen = this.vakantieRepository.saveAndFlush( zomerKikaEen );
 		zomerKikaEen.setUuid( KeyFactory.keyToString( zomerKikaEen.getKey()  ) );
@@ -73,7 +73,7 @@ public class TestData {
 		zomerKikaTwee.setType( VakantieType.Kika );
 		zomerKikaTwee.setJaar( 2014 );
 		zomerKikaTwee.setNaam( "KIKA 2");
-		zomerKikaTwee.setPeriode( Periode.Zomer );
+		zomerKikaTwee.setPeriode( Period.Summer );
 	
 		this.vakantieRepository.saveAndFlush( zomerKikaTwee );
 		zomerKikaTwee.setUuid( KeyFactory.keyToString( zomerKikaTwee.getKey()  ) );
@@ -86,7 +86,7 @@ public class TestData {
 		sarah.setVoorNaam( "Lisa");
 		sarah.setFamilieNaam( "Simpson" );
 		sarah.setEmail("lisa.simpson@springfield.net");
-		sarah.setGeslacht( Geslacht.V );
+		sarah.setGeslacht( Gender.F );
 		
 		this.persoonRepository.saveAndFlush( sarah );
 		

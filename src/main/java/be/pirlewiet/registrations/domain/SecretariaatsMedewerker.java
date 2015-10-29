@@ -40,8 +40,8 @@ import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VraagRepository;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.DataGuard;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -125,10 +125,10 @@ public class SecretariaatsMedewerker {
     	inschrijving.getContactGegevens().setEmail( organisatie.getEmail() );
     	
     	if ( ! this.isEmpty( organisatie.getTelefoonNummer() ) ) {
-    		inschrijving.getContactGegevens().setTelefoonNummer( organisatie.getTelefoonNummer() );
+    		inschrijving.getContactGegevens().setPhone( organisatie.getTelefoonNummer() );
     	}
     	else if ( ! this.isEmpty( organisatie.getGsmNummer() ) ) {
-    		inschrijving.getContactGegevens().setTelefoonNummer( organisatie.getGsmNummer() );
+    		inschrijving.getContactGegevens().setPhone( organisatie.getGsmNummer() );
     	}
     	
     	InschrijvingX saved
@@ -359,21 +359,7 @@ public class SecretariaatsMedewerker {
     	inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	boolean complete
-    		= true;
-    	
-    	for ( Vraag vraag : inschrijving.getVragen() ) {
-			
-			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
-				if ( ! Tags.TAG_MEDIC.equals( vraag.getTag() ) ) { 
-					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
-						logger.info( "question [{}][{}] was not answered", vraag.getUuid(), vraag.getVraag() );
-						complete = false;
-						break;
-					}
-				}
-			}
-			
-		}
+    		= this.areAllMandatoryQuestionsAnswered( inschrijving );
     	
     	if ( ! complete ) {
     		throw new RuntimeException("Beantwoord alle vragen met een (*). Vul eventueel 'Niet van toepassing' (NVT) in." );
@@ -407,11 +393,11 @@ public class SecretariaatsMedewerker {
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
     	
-    	if ( contactGegevens.getNaam().isEmpty() ) {
+    	if ( contactGegevens.getName().isEmpty() ) {
     		throw new RuntimeException("Geef de naam van de contactpersoon op");
     	}
     	
-    	if ( contactGegevens.getTelefoonNummer().isEmpty() ) {
+    	if ( contactGegevens.getPhone().isEmpty() ) {
     		throw new RuntimeException("Geef de GSM-nummer of een telefoonnummer van de contactpersoon op");
     	}
     	
@@ -419,7 +405,12 @@ public class SecretariaatsMedewerker {
     		throw new RuntimeException("Geef het e-mailadres van de contactpersoon op");
     	}
     	
-    	inschrijving.setContactGegevens( contactGegevens );
+    	ContactGegevens contact
+    		= inschrijving.getContactGegevens( );
+    	
+    	contact.setName( contactGegevens.getName() );
+    	contact.setPhone( contactGegevens.getPhone() );
+    	contact.setEmail( contactGegevens.getEmail() );
 		
 		this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
@@ -760,5 +751,28 @@ public class SecretariaatsMedewerker {
 		return b.toString();
 		
 	} 
+    
+    public boolean areAllMandatoryQuestionsAnswered( InschrijvingX enrollment ) {
+    	
+    	boolean complete
+			= true;
+	
+		for ( Vraag vraag : enrollment.getVragen() ) {
+			
+			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
+				// MEDIC & INTERNAL are not mandatory
+				if ( ! ( Tags.TAG_MEDIC.equals( vraag.getTag() ) || ( Tags.TAG_INTERNAL.equals( vraag.getTag() ) ) ) ) { 
+					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
+						logger.info( "mandatory question [{}][{}] was not answered", vraag.getUuid(), vraag.getVraag() );
+						complete = false;
+						break;
+					}
+				}
+			}
+			
+		}
+	
+		return complete;
+    }
  
 }

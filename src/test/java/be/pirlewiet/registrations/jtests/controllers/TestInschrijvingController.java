@@ -51,10 +51,9 @@ public class TestInschrijvingController extends JTest {
 			= new ContactGegevens();
 		
 		String naam = "Homer Simpson";
-		contactGegevens.setNaam( naam );
+		contactGegevens.setName( naam );
 		contactGegevens.setEmail( "homer.simpson@springfield.net");
-		contactGegevens.setGsmNummer( "0499221100" );
-		contactGegevens.setTelefoonNummer( "016322800" );
+		contactGegevens.setPhone( "0499221100" );
 		
 		ResponseEntity<ContactGegevens> response
 			= putJSON( url, contactGegevens );
@@ -67,7 +66,7 @@ public class TestInschrijvingController extends JTest {
 		ContactGegevens retrieved
 			= retrieveResponse.getBody().getContactGegevens();
 		assertNotNull( "no contactgegevens", retrieved );
-		assertEquals( "naam not correct", naam, retrieved.getNaam() );
+		assertEquals( "naam not correct", naam, retrieved.getName() );
 		
 	}
 	

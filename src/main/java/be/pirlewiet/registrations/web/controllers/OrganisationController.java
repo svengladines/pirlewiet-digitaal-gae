@@ -3,7 +3,6 @@ package be.pirlewiet.registrations.web.controllers;
 import static be.occam.utils.spring.web.Controller.response;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,14 +28,7 @@ import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.CodeRequest;
-import be.pirlewiet.registrations.model.ContactGegevens;
-import be.pirlewiet.registrations.model.Deelnemer;
-import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Status;
-import be.pirlewiet.registrations.model.Vakantie;
-import be.pirlewiet.registrations.model.Vraag;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/organisation"} )
@@ -154,7 +145,7 @@ public class OrganisationController {
 		model.put( "incomplete", this.organisationManager.isInComplete( organisatie, true ) );
 		
 		String view 
-			= PirlewietUtil.isPirlewiet( organisatie) ? "pirlewiet" : "organisation";
+			= be.pirlewiet.registrations.web.util.PirlewietUtil.isPirlewiet( organisatie) ? "pirlewiet" : "organisation";
 		
 		return new ModelAndView( view, model );	
 		

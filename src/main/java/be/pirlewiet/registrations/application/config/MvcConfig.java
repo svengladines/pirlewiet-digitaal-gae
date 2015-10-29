@@ -9,8 +9,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import be.pirlewiet.registrations.web.controllers.CodeRequestsController;
 import be.pirlewiet.registrations.web.controllers.CodesController;
 import be.pirlewiet.registrations.web.controllers.DeelnemerController;
-import be.pirlewiet.registrations.web.controllers.InschrijvingController;
-import be.pirlewiet.registrations.web.controllers.InschrijvingenController;
+import be.pirlewiet.registrations.web.controllers.EnrollmentController;
+import be.pirlewiet.registrations.web.controllers.EnrollmentsController;
 import be.pirlewiet.registrations.web.controllers.OrganisationController;
 import be.pirlewiet.registrations.web.controllers.OrganisationsController;
 import be.pirlewiet.registrations.web.controllers.PDController;
@@ -53,16 +53,16 @@ public class MvcConfig {
 	public static class ControllerConfig {
 		
 		@Bean
-		public InschrijvingenController inschrijvingenController() {
+		public EnrollmentsController inschrijvingenController() {
 			
-			return new InschrijvingenController();
+			return new EnrollmentsController();
 			
 		}
 		
 		@Bean
-		public InschrijvingController inschrijvingController() {
+		public EnrollmentController inschrijvingController() {
 			
-			return new InschrijvingController();
+			return new EnrollmentController();
 			
 		}
 		

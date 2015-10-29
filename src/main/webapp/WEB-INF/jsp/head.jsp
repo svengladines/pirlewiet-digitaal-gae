@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/bootstrap.css" rel="stylesheet">
-    <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/font-awesome.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/pirlewiet.css" rel="stylesheet">
@@ -32,8 +32,8 @@
     <script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/templates.js"></script>
     <script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/pirlewiet.js"></script>
 	<script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/vakanties.js"></script>
-	<script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/organisaties.js"></script>
-	<script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/inschrijvingen.js"></script>
-	<script type="text/javascript" src="http://www.pirlewiet.be/resources/theme/js/bootstrap.js"></script>	
+	<script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/organisations.js"></script>
+	<script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/javascript/enrollments.js"></script>
+	<script type="text/javascript" src="http://www.pirlewiet.be/digitaal/resources/theme/js/bootstrap.js"></script>	
 
 </head>

@@ -33,6 +33,17 @@ public class Mapper {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
+	
+	
+	public byte[] map( Collection<InschrijvingX> inschrijvingen, Status.Value status ) {
+		
+		List<String[]> asStrings
+			= this.asStrings( inschrijvingen , status );
+		
+		return this.asBytes( asStrings );
+		
+	}
+	
 	public List<String[]> asStrings( Collection<InschrijvingX> inschrijvingen, Status.Value status ) {
 		
 		List<String[]> mapped
@@ -90,9 +101,9 @@ public class Mapper {
 						= inschrijving.getContactGegevens();
 					
 					if ( contact != null ) {
-						columns.add( inschrijving.getContactGegevens().getNaam());
+						columns.add( inschrijving.getContactGegevens().getName() );
 						columns.add( new StringBuilder().append( organisation.getAdres().getStraat() ).append( " " ).append( organisation.getAdres().getNummer() ).append( ",").append( organisation.getAdres().getZipCode() ).append( " ").append( organisation.getAdres().getGemeente() ).toString());
-						columns.add( isEmpty( contact.getGsmNummer() ) ? contact.getTelefoonNummer() : contact.getGsmNummer());
+						columns.add( contact.getPhone() );
 						columns.add( contact.getEmail());
 					}
 					

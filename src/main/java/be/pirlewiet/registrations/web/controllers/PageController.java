@@ -1,15 +1,9 @@
 package be.pirlewiet.registrations.web.controllers;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,9 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
-import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
 
 @Controller
 @RequestMapping(value="/{page}.html")

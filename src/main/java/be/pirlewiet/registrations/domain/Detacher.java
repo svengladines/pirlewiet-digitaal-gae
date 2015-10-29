@@ -32,7 +32,7 @@ public class Detacher {
 			inschrijving.getDeelnemers().size();
 			inschrijving.getVragen().size();
 			// same for GAE for embedded
-			inschrijving.getContactGegevens().hashCode();
+			String contactName = inschrijving.getContactGegevens().getName();
 			inschrijving.getVragen().hashCode();
 			inschrijving.getAdres().hashCode();
 			inschrijving.getStatus().hashCode();

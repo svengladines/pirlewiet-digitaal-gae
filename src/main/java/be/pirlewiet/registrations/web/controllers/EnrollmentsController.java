@@ -33,11 +33,11 @@ import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/inschrijvingen"} )
-public class InschrijvingenController {
+public class EnrollmentsController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );

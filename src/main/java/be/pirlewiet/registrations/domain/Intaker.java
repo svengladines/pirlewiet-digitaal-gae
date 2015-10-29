@@ -98,15 +98,10 @@ public class Intaker {
 			}
 			
 			this.inschrijvingXRepository.saveAndFlush( loaded );
-		
-			MimeMessage message
-				= formatIntakeMessage( loaded, organisation );
 
-			if ( message != null ) {
-				
-				postBode.deliver( message );
-				
-			}
+			// send e-mails 
+			this.sendSubmittedEmailToPirlewiet(inschrijving, organisation);
+			this.sendSubmittedEmailToOrganisation( inschrijving, organisation);
 			
 		}
 		else {
@@ -129,7 +124,107 @@ public class Intaker {
 			
 	}
 	
-	protected MimeMessage formatIntakeMessage( InschrijvingX inschrijving, Organisatie organisation ) {
+	 protected boolean sendSubmittedEmailToOrganisation( InschrijvingX enrollment, Organisatie organisation ) {
+	    	
+			MimeMessage message
+				= formatIntakeMessageToOrganisation( enrollment, organisation );
+
+			if ( message != null ) {
+				
+				return postBode.deliver( message );
+				
+			}
+			
+		return false;
+		
+	}
+	 
+	 protected boolean sendSubmittedEmailToPirlewiet( InschrijvingX enrollment, Organisatie organisation ) {
+	    	
+		MimeMessage message
+			= formatIntakeMessageToPirlewiet( enrollment, organisation );
+		
+		if ( message != null ) {
+			
+			return postBode.deliver( message );
+			
+		}
+			
+		return false;
+		
+	}
+	 
+	protected MimeMessage formatIntakeMessageToOrganisation( InschrijvingX enrollment, Organisatie organisation ) {
+			
+		String templateString
+			= "/templates/to-organisation/organisation-created.tmpl";
+		
+		String to
+			= enrollment.getContactGegevens().getEmail();
+		
+		MimeMessage message
+			= null;
+			
+		Configuration cfg 
+			= new Configuration();
+		
+		try {
+			
+			InputStream tis
+				= this.getClass().getResourceAsStream( templateString );
+			
+			Template template 
+				= new Template("code", new InputStreamReader( tis ), cfg );
+			
+			Map<String, Object> model = new HashMap<String, Object>();
+					
+			model.put( "organisatie", organisation );
+			model.put( "inschrijving", enrollment );
+			model.put( "id", enrollment.getUuid() );
+			// TODO use vakantiedetails for more efficiency ?
+			model.put("vakanties", vakanties( enrollment ) );
+			
+			StringWriter bodyWriter 
+				= new StringWriter();
+			
+			template.process( model , bodyWriter );
+			
+			bodyWriter.flush();
+				
+			message = this.javaMailSender.createMimeMessage( );
+			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
+			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_NO, "utf-8");
+				
+			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+			helper.setTo( to );
+			helper.setReplyTo( enrollment.getContactGegevens().getEmail() );
+			helper.setSubject( new StringBuilder( "Inschrijving ontvangen: " ).append( enrollment.getDeelnemers().get(0).getVoorNaam() ).append( " " ).append( enrollment.getDeelnemers().get( 0 ).getFamilieNaam() ).toString() );
+				
+			String text
+				= bodyWriter.toString();
+				
+			logger.info( "email text is [{}]", text );
+				
+			helper.setText(text, true);
+			
+		}
+		catch( Exception e ) {
+			logger.warn( "could not create e-mail", e );
+			throw new RuntimeException( e );
+		}
+		
+		return message;
+    	
+    }
+	 
+	
+	protected MimeMessage formatIntakeMessageToPirlewiet( InschrijvingX inschrijving, Organisatie organisation ) {
+		
+		String templateString
+			 = "/templates/to-pirlewiet/organisation-created.tmpl";
+		
+		String to
+			= this.headQuarters.getEmail();
 		
 		MimeMessage message
 			= null;
@@ -140,7 +235,7 @@ public class Intaker {
 		try {
 			
 			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/intake.tmpl" );
+				= this.getClass().getResourceAsStream( templateString );
 			
 			Template template 
 				= new Template("code", new InputStreamReader( tis ), cfg );
@@ -165,7 +260,7 @@ public class Intaker {
 			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( headQuarters.getEmail() );
+			helper.setTo( to );
 			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
 			helper.setSubject( "Nieuwe inschrijving" );
 				
@@ -178,7 +273,7 @@ public class Intaker {
 			
 			List<String[]> strings
 				= this.mapper.asStrings( Arrays.asList( inschrijving ), null );
-			
+				
 			if ( strings != null ) {
 				
 				byte[] bytes

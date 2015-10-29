@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -18,18 +17,16 @@ import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.Adres;
-import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
 import be.pirlewiet.registrations.web.util.DataGuard;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
 

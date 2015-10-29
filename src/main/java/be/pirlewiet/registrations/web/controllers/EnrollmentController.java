@@ -35,11 +35,11 @@ import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
-import be.pirlewiet.registrations.utils.PirlewietUtil;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/inschrijvingen/{uuid}"} )
-public class InschrijvingController {
+public class EnrollmentController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
@@ -64,7 +64,8 @@ public class InschrijvingController {
 			return response( HttpStatus.NOT_FOUND );
 		}
 		
-		logger.info( "number of vakanties: [{}]", inschrijving.getVakanties().size() );
+		logger.debug( "[{}]; retrieved by secretary", inschrijving.getUuid() );
+		logger.debug( "[{}]; contact is [{}]", inschrijving.getUuid(), inschrijving.getContactGegevens().getName() );
 
 		return response( inschrijving, HttpStatus.OK );
 		
@@ -88,6 +89,19 @@ public class InschrijvingController {
 		
 	}
 	
+	@RequestMapping( value="/vakanties", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<String> updateVakanties(
+				@PathVariable String uuid,
+				@RequestBody String vakanties ) {
+		
+		InschrijvingX x 
+			= this.secretariaatsMedewerker.guard().updateVakanties( uuid, vakanties );
+		
+		return response( vakanties, HttpStatus.OK );
+		
+	}
+	
 	@RequestMapping( value="/contact", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<ContactGegevens> contactUpdate(
@@ -99,19 +113,6 @@ public class InschrijvingController {
 		this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
 		
 		return response( contactGegevens, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/vakanties", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<String> updateVakanties(
-				@PathVariable String uuid,
-				@RequestBody String vakanties ) {
-		
-		InschrijvingX x 
-			= this.secretariaatsMedewerker.guard().updateVakanties( uuid, vakanties );
-		
-		return response( vakanties, HttpStatus.OK );
 		
 	}
 	
@@ -269,6 +270,7 @@ public class InschrijvingController {
 			= this.secretariaatsMedewerker.guard().actueleVakanties( );
 		
 		model.put( "vakanties", vakanties );
+		model.put( "areAllMandatoryQuestionsAnswered", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving) );
 		
 		String view
 			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";

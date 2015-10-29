@@ -8,21 +8,16 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.occam.utils.timing.Timing;
 import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Deelnemer;
-import be.pirlewiet.registrations.model.Geslacht;
+import be.pirlewiet.registrations.model.Gender;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Periode;
 import be.pirlewiet.registrations.model.Status;
-import be.pirlewiet.registrations.model.Vakantie;
-import be.pirlewiet.registrations.model.VakantieType;
 import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
-import be.pirlewiet.registrations.repositories.VakantieRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -53,7 +48,7 @@ public class DevData {
 		lisa.setVoorNaam( "Lisa");
 		lisa.setFamilieNaam( "Simpson" );
 		lisa.setEmail("lisa.simpson@springfield.net");
-		lisa.setGeslacht( Geslacht.V );
+		lisa.setGeslacht( Gender.F );
 		lisa.setGeboorteDatum( new Date() );
 		lisa.setTelefoonNummer( "x" );
 		
@@ -99,8 +94,8 @@ public class DevData {
 		lisaSimpson.setVks( this.configuredVakantieRepository.findAll().get( 0 ).getUuid() );
 		lisaSimpson.setOrganisatie( ocmw );
 		lisaSimpson.getStatus().setValue( Status.Value.DRAFT );
-		lisaSimpson.getContactGegevens().setNaam( "x" );
-		lisaSimpson.getContactGegevens().setTelefoonNummer( "x" );
+		lisaSimpson.getContactGegevens().setName( "x" );
+		lisaSimpson.getContactGegevens().setPhone( "x" );
 		lisaSimpson.getContactGegevens().setEmail( "sven@x" );
 		lisaSimpson.getAdres().setGemeente( "x");
 		lisaSimpson.getAdres().setZipCode( "6000");
