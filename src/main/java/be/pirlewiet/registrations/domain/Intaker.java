@@ -27,7 +27,7 @@ import be.pirlewiet.registrations.model.Status.Value;
 import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
-import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
+import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
 import freemarker.template.Configuration;
@@ -52,7 +52,7 @@ public class Intaker {
 	protected SecretariaatsMedewerker secretariaatsMedewerker;
 	
 	@Resource
-	protected InschrijvingXRepository inschrijvingXRepository;
+	protected EnrollmentRepository inschrijvingXRepository;
 	
 	@Resource
 	protected HeadQuarters headQuarters;

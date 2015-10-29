@@ -91,7 +91,15 @@
 						Deelnemer(s)
 					</div>
 					<div class="col-sm-8">
-						<a href="javascript:show('div-participant-empty');">Deelnemer toevoegen</a>
+						<c:choose>
+							<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
+								<a href="javascript:show('div-participant-${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
+							</c:when>
+							<c:otherwise>
+								<a href="javascript:show('div-participant-${inschrijving.uuid}');" class="done">${inschrijving.deelnemers[0].voorNaam}&nbsp;${inschrijving.deelnemers[0].familieNaam}</a><br/>
+							</c:otherwise>
+						</c:choose>
+						<!-- <a href="javascript:show('div-participant-new');" class="todo">Deelnemer toevoegen</a>  -->
 					</div>
 				</div>
 				<div class="row">
@@ -220,7 +228,7 @@
 				</form>
 			</div>
 			
-			<div id="div-participant-empty" class="panel hidden">
+			<div id="div-participant-${inschrijving.uuid}" class="panel hidden">
 				
 				<h2>Deelnemer</h2>
 				

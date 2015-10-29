@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Vakantie;
-import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
+import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
 
 public class Detacher {
 	
 	@Resource
-	protected InschrijvingXRepository inschrijvingXRepository;
+	protected EnrollmentRepository inschrijvingXRepository;
 	
 	@Resource
 	protected ConfiguredVakantieRepository configuredVakantieRepository;

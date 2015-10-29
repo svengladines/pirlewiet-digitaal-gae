@@ -12,7 +12,7 @@ import be.pirlewiet.registrations.model.Period;
 import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.VakantieType;
-import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
+import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
@@ -40,7 +40,7 @@ public class TestData {
 	PersoonRepository persoonRepository;
 	
 	@Resource
-	InschrijvingXRepository inschrijvingXRepository;
+	EnrollmentRepository inschrijvingXRepository;
 	
 	@Resource
 	OrganisatieRepository organsiatieRepository;

@@ -182,24 +182,6 @@ public class EnrollmentController {
 		
 	}
 	
-	@RequestMapping( value="/opmerking", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<String> opmerkingUpdate(
-				@PathVariable String uuid,
-				@RequestBody String opmerking ) {
-		
-		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( uuid );
-		
-		InschrijvingX inschrijving
-			= retrieve.getBody();
-		inschrijving.setOpmerking( opmerking );
-		// this.secretariaatsMedewerker.guard().pasAan( inschrijving );
-		
-		return response( opmerking, HttpStatus.OK );
-		
-	}
-	
 	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Status> statusUpdate(
@@ -271,6 +253,11 @@ public class EnrollmentController {
 		
 		model.put( "vakanties", vakanties );
 		model.put( "areAllMandatoryQuestionsAnswered", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving) );
+		
+		List<InschrijvingX> related
+			= this.secretariaatsMedewerker.guard().findRelated( inschrijving );
+		
+		model.put( "related", related );
 		
 		String view
 			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";

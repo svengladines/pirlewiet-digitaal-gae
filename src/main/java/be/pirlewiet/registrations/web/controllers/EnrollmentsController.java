@@ -78,7 +78,7 @@ public class EnrollmentsController {
 		inschrijving.setOrganisatie( organisatie );
 		
 		InschrijvingX aangemaakt
-			= this.secretariaatsMedewerker.guard().ontvangInschrijving( inschrijving );
+			= this.secretariaatsMedewerker.guard().createEnrollment( inschrijving );
 		
 		if ( aangemaakt == null ) {
 			throw new RuntimeException("create failed");

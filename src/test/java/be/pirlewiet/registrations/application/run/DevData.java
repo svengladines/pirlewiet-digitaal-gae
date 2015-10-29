@@ -15,7 +15,7 @@ import be.pirlewiet.registrations.model.Gender;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
-import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
+import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 
@@ -33,7 +33,7 @@ public class DevData {
 	PersoonRepository persoonRepository;
 	
 	@Resource
-	InschrijvingXRepository inschrijvingXRepository;
+	EnrollmentRepository inschrijvingXRepository;
 	
 	@Resource
 	OrganisatieRepository organsiatieRepository;

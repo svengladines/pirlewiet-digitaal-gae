@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -36,7 +37,7 @@ import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.DeelnemerRepository;
-import be.pirlewiet.registrations.repositories.InschrijvingXRepository;
+import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VraagRepository;
@@ -64,7 +65,7 @@ public class SecretariaatsMedewerker {
 		};
 	
 	@Resource
-	protected InschrijvingXRepository inschrijvingXRepository;
+	protected EnrollmentRepository inschrijvingXRepository;
 	
 	@Transient
 	@Resource
@@ -108,7 +109,7 @@ public class SecretariaatsMedewerker {
     }
 
     @Transactional(readOnly=false)
-    public InschrijvingX ontvangInschrijving( InschrijvingX inschrijving ) {
+    public InschrijvingX createEnrollment( InschrijvingX inschrijving ) {
     	
     	if ( inschrijving.getUuid() != null ) {
     		return null;
@@ -130,6 +131,8 @@ public class SecretariaatsMedewerker {
     	else if ( ! this.isEmpty( organisatie.getGsmNummer() ) ) {
     		inschrijving.getContactGegevens().setPhone( organisatie.getGsmNummer() );
     	}
+    	
+    	inschrijving.setReference( UUID.randomUUID().toString() );
     	
     	InschrijvingX saved
     		= this.inschrijvingXRepository.saveAndFlush( inschrijving );
@@ -773,6 +776,32 @@ public class SecretariaatsMedewerker {
 		}
 	
 		return complete;
+    }
+    
+    public List<InschrijvingX> findRelated( InschrijvingX enrollment ){
+    	
+    	String reference
+    		= enrollment.getReference();
+    	
+    	String uuid
+    		= enrollment.getUuid();
+    	
+    	List<InschrijvingX> found
+    		= this.inschrijvingXRepository.findByReference( reference );
+    	
+    	List<InschrijvingX> related
+    		= new ArrayList<InschrijvingX>( found.size() - 1 );
+    	
+    	for ( InschrijvingX f : found ) {
+    		
+    		if ( ! uuid.equals( f.getUuid() ) ) {
+    			related.add( f );
+    		}
+    		
+    	}
+    	
+    	return related;
+    	
     }
  
 }
