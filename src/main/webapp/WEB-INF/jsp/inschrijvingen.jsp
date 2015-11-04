@@ -102,7 +102,7 @@
 			
 			event.preventDefault();
 			
-			postInschrijving( new Inschrijving() );
+			postEnrollment( new Inschrijving() );
 			
     	});
 		

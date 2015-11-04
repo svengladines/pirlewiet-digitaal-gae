@@ -101,7 +101,7 @@ var retrieveInschrijvingen = function ( ) {
 	
 };
 
-var postInschrijving = function ( rx ) {
+var postInschrijving = function ( rx, reference ) {
 
 	$jq.ajax( {
 		type: "post",
@@ -111,7 +111,12 @@ var postInschrijving = function ( rx ) {
 	    processData: false,
 		data: JSON.stringify(rx),
 		success: function( inschrijving ) {
+			if ( reference == null ) {
 				window.location.href = "/rs/inschrijvingen/" + inschrijving.uuid + ".html";
+			}
+			else {
+				window.location.href = "/rs/inschrijvingen/" + inschrijving.reference + ".html";
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			// alert( errorThrown );

@@ -2,6 +2,7 @@ package be.pirlewiet.registrations.web.controllers;
 
 import static be.occam.utils.spring.web.Controller.response;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,18 @@ public class EnrollmentController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
+	
+	protected final Comparator<InschrijvingX> firstName
+			= new Comparator<InschrijvingX>() {
+
+			@Override
+			public int compare(InschrijvingX o1, InschrijvingX o2) {
+				return o1.getDeelnemers().get(0).getVoorNaam().compareTo(  o1.getDeelnemers().get(0).getVoorNaam() );
+			}
+			
+			
+		
+		};
 	
 	@Resource
 	SecretariaatsMedewerker secretariaatsMedewerker;
@@ -256,6 +269,8 @@ public class EnrollmentController {
 		
 		List<InschrijvingX> related
 			= this.secretariaatsMedewerker.guard().findRelated( inschrijving );
+		// related to itself...
+		related.add( inschrijving );
 		
 		model.put( "related", related );
 		

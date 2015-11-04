@@ -115,27 +115,94 @@ public class SecretariaatsMedewerker {
     		return null;
     	}
     	
+    	InschrijvingX saved
+    		= null;
+    	
     	inschrijving.setStatus( new Status( Status.Value.DRAFT ) );
     	
     	Organisatie organisatie 
-    		= this.buitenWipper.whoHasID( inschrijving.getOrganisatie().getUuid() );
+			= this.buitenWipper.whoHasID( inschrijving.getOrganisatie().getUuid() );
     	// to detach ...
     	organisatie.getAdres();
-    	
     	inschrijving.setOrganisatie( organisatie );
-    	inschrijving.getContactGegevens().setEmail( organisatie.getEmail() );
     	
-    	if ( ! this.isEmpty( organisatie.getTelefoonNummer() ) ) {
-    		inschrijving.getContactGegevens().setPhone( organisatie.getTelefoonNummer() );
+    	if ( inschrijving.getReference() != null ) {
+    		
+    		InschrijvingX cloneFrom 
+    			= this.findInschrijving( inschrijving.getReference() );
+    		
+    		if ( cloneFrom != null ) {
+    			this.cloneEnrollment( cloneFrom, inschrijving );
+    			return inschrijving;
+    		}
+    		else {
+    			logger.warn( "could not clone, reference [{}] not found", inschrijving.getReference() );
+    			throw new RuntimeException("clone failed"); 
+    		}
+    		
     	}
-    	else if ( ! this.isEmpty( organisatie.getGsmNummer() ) ) {
-    		inschrijving.getContactGegevens().setPhone( organisatie.getGsmNummer() );
+    	else {
+    		
+	    	
+	    	inschrijving.getContactGegevens().setEmail( organisatie.getEmail() );
+	    	
+	    	if ( ! this.isEmpty( organisatie.getTelefoonNummer() ) ) {
+	    		inschrijving.getContactGegevens().setPhone( organisatie.getTelefoonNummer() );
+	    	}
+	    	else if ( ! this.isEmpty( organisatie.getGsmNummer() ) ) {
+	    		inschrijving.getContactGegevens().setPhone( organisatie.getGsmNummer() );
+	    	}
+	    	
+    		Deelnemer deelnemer
+				= new Deelnemer();
+    	
+    		this.addDeelnemer( saved , deelnemer );
+    	
+    		Vragen vragen
+    			= new Vragen();
+    	
+	    	for ( String key : vragen.getVragen().keySet() ) {
+	    		
+	    		List<Vraag> list
+	    			= vragen.getVragen().get( key );
+	    		
+	    		for ( Vraag vraag : list ) {
+	    			this.addVraag( inschrijving, vraag );
+	    		}
+	    		
+	    	}	
     	}
     	
-    	inschrijving.setReference( UUID.randomUUID().toString() );
+	    	
+	    saved = this.inschrijvingXRepository.saveAndFlush( inschrijving );
+	
+	    // stupid GAE ... set id manually
+	    saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+	    saved = this.inschrijvingXRepository.saveAndFlush( saved );
+    	
+    	return saved;
+    }
+    
+    protected void cloneEnrollment( InschrijvingX cloneFrom, InschrijvingX cloneTo ) {
+    	
+    	cloneTo.setReference( cloneFrom.getUuid() );
+    	
+    	// copy contact
+    	cloneTo.getContactGegevens().setName( cloneFrom.getContactGegevens().getName() );
+    	cloneTo.getContactGegevens().setEmail( cloneFrom.getContactGegevens().getEmail() );
+    	cloneTo.getContactGegevens().setPhone( cloneFrom.getContactGegevens().getPhone() );
+    	
+    	// copy address
+    	Adres fromAddress 
+    		= cloneFrom.getAdres();
+    	
+    	cloneTo.getAdres().setGemeente( fromAddress.getGemeente() );
+    	cloneTo.getAdres().setZipCode( fromAddress.getZipCode() );
+    	cloneTo.getAdres().setStraat( fromAddress.getStraat() );
+    	cloneTo.getAdres().setNummer( fromAddress.getNummer() );
     	
     	InschrijvingX saved
-    		= this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    		= this.inschrijvingXRepository.saveAndFlush( cloneTo );
 
     	// stupid GAE ... set id manually
     	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
@@ -143,6 +210,9 @@ public class SecretariaatsMedewerker {
     	
     	Deelnemer deelnemer
 			= new Deelnemer();
+    	
+    	deelnemer.setVoorNaam( "Deelnemer" );
+    	deelnemer.setFamilieNaam( "X" );
     	
     	saved = this.addDeelnemer( saved , deelnemer );
     	
@@ -155,14 +225,11 @@ public class SecretariaatsMedewerker {
     			= vragen.getVragen().get( key );
     		
     		for ( Vraag vraag : list ) {
-    			this.addVraag( inschrijving, vraag );
+    			this.addVraag( cloneTo, vraag );
     		}
     		
     	}
     	
-    	
-    	
-    	return saved;
     }
     
     @Transactional(readOnly=false)
@@ -780,17 +847,14 @@ public class SecretariaatsMedewerker {
     
     public List<InschrijvingX> findRelated( InschrijvingX enrollment ){
     	
-    	String reference
-    		= enrollment.getReference();
-    	
     	String uuid
     		= enrollment.getUuid();
     	
     	List<InschrijvingX> found
-    		= this.inschrijvingXRepository.findByReference( reference );
+    		= this.inschrijvingXRepository.findByReference( uuid );
     	
     	List<InschrijvingX> related
-    		= new ArrayList<InschrijvingX>( found.size() - 1 );
+    		= new ArrayList<InschrijvingX>( Math.max( 0, found.size() - 1 ) );
     	
     	for ( InschrijvingX f : found ) {
     		

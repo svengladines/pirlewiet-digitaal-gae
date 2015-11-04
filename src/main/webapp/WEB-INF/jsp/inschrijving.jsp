@@ -44,7 +44,7 @@
 					</c:when>
 					<c:otherwise>
 						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							<a href="javascript:show('div-vakantie');" class="done">${vakantie.naam}</a><br/>
+							<span class="done">${vakantie.naam}</span>&nbsp;<a href="javascript:show('div-vakantie');" class="edit">(wijzigen)</a><br/>
 						</c:forEach>
 					</c:otherwise>
 					</c:choose>
@@ -61,7 +61,7 @@
 							<a href="javascript:show('div-contact');" class="todo">Contactpersoon ingeven</a>
 						</c:when>
 						<c:otherwise>
-							<a href="javascript:show('div-contact');" class="done">${inschrijving.contactGegevens.name}</a><br/>
+							<span class="done">${inschrijving.contactGegevens.name}</span>&nbsp;<a href="javascript:show('div-contact');" class="edit">(wijzigen)</a><br/>
 						</c:otherwise>
 						</c:choose>
 					</div>
@@ -76,7 +76,7 @@
 							<a href="javascript:show('div-various');" class="todo">Antwoorden ingeven</a>
 						</c:when>
 						<c:otherwise>
-							<a href="javascript:show('div-various');" class="done">Antwoorden aanpassen</a><br/>
+							<span class="done">Ingevuld</span>&nbsp;<a href="javascript:show('div-various');" class="edit">(wijzigen)</a><br/>
 						</c:otherwise>
 						</c:choose>
 					</div>
@@ -96,7 +96,10 @@
 								<a href="javascript:show('div-participant-${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
 							</c:when>
 							<c:otherwise>
-								<a href="javascript:show('div-participant-${inschrijving.uuid}');" class="done">${inschrijving.deelnemers[0].voorNaam}&nbsp;${inschrijving.deelnemers[0].familieNaam}</a><br/>
+								<c:forEach items="${related}" var="enrollment">
+									<span class="done">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;<a href="javascript:show('div-participant-${enrollment.uuid}');" class="edit">(wijzigen)</a><br/>
+								</c:forEach>
+								<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
 							</c:otherwise>
 						</c:choose>
 						<!-- <a href="javascript:show('div-participant-new');" class="todo">Deelnemer toevoegen</a>  -->
@@ -228,7 +231,9 @@
 				</form>
 			</div>
 			
-			<div id="div-participant-${inschrijving.uuid}" class="panel hidden">
+			<c:forEach items="${related}" var="enrollment">
+			
+				<div id="div-participant-${enrollment.uuid}" class="panel hidden">
 				
 				<h2>Deelnemer</h2>
 				
@@ -238,56 +243,56 @@
 				
 				<form class="form-horizontal">
 				
-					<input id="deelnemer-id" type="hidden" value="${inschrijving.deelnemers[0].uuid}"></input>
+					<input id="deelnemer-id-${enrollment.uuid}" type="hidden" value="${enrollment.deelnemers[0].uuid}"></input>
 					<div class="form-group">
-						<label for="deelnemer-voor" class="col-sm-4 control-label">Voornaam (*)</label>
+						<label for="deelnemer-voor-${enrollment.uuid}" class="col-sm-4 control-label">Voornaam (*)</label>
 						<div class="col-sm-3">	
-							<input id="deelnemer-voor" type="text" class="form-control" value="${inschrijving.deelnemers[0].voorNaam}"></input>
+							<input id="deelnemer-voor-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].voorNaam}"></input>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="deelnemer-familie" class="col-sm-4 control-label">Familienaam (*)</label>
+						<label for="deelnemer-familie-${enrollment.uuid}" class="col-sm-4 control-label">Familienaam (*)</label>
 						<div class="col-sm-3">	
-								<input id="deelnemer-familie" type="text" class="form-control" value="${inschrijving.deelnemers[0].familieNaam}"></input>
+								<input id="deelnemer-familie-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].familieNaam}"></input>
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="deelnemer-geslacht" class="col-sm-4 control-label">Geslacht (*)</label>
+						<label for="deelnemer-geslacht-${enrollment.uuid}" class="col-sm-4 control-label">Geslacht (*)</label>
 						<div class="col-sm-3">
 							<c:choose>
-							<c:when test="${inschrijving.deelnemers[0].geslacht eq 'F'}">
+							<c:when test="${enrollment.deelnemers[0].geslacht eq 'F'}">
 								<div class="checkbox">
 									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht" value="V" checked="checked">&nbsp;Vrouw
+										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F" checked="checked">&nbsp;Vrouw
 									</label>
 								</div>
 								<div class="checkbox">
 									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht" value="M">&nbsp;Man
+										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
 									</label>
 								</div>
 							</c:when>
-							<c:when test="${inschrijving.deelnemers[0].geslacht eq 'M'}">
+							<c:when test="${enrollment.deelnemers[0].geslacht eq 'M'}">
 								<div class="checkbox">
 									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht" value="V">&nbsp;Vrouw
+										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
 									</label>
 								</div>
 								<div class="checkbox">
 									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht" value="M" checked="checked">&nbsp;Man
+										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M" checked="checked">&nbsp;Man
 									</label>
 								</div>
 							</c:when>
 							<c:otherwise>
 							<div class="checkbox">
 									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht" value="V">&nbsp;Vrouw
+										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
 									</label>
 								</div>
 								<div class="checkbox">
 									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht" value="M">&nbsp;Man
+										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
 									</label>
 								</div>
 							</c:otherwise>
@@ -295,65 +300,67 @@
 						</div>
 					</div>
 				<div class="form-group">
-						<label for="deelnemer-geboorte" class="col-sm-4 control-label">Geboortedatum (*)</label>
+						<label for="participant-geboorte-${enrollment.uuid}" class="col-sm-4 control-label">Geboortedatum (*)</label>
 						<div class="col-sm-2">
-							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
-							<input id="deelnemer-geboorte" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
+							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
+							<input id="participant-geboorte-${enrollment.uuid}" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="deelnemer-telefoon" class="col-sm-4 control-label">Telefoonnummer (*)</label>
+						<label for="participant-telefoon-${enrollment.uuid}" class="col-sm-4 control-label">Telefoonnummer (*)</label>
 						<div class="col-sm-2">
-							<input id="deelnemer-telefoon" type="tel" class="form-control" value="${inschrijving.deelnemers[0].telefoonNummer}"></input>
+							<input id="participant-telefoon-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].telefoonNummer}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="deelnemer-gsm" class="col-sm-4 control-label">GSM-nummer</label>
+						<label for="participant-gsm-${enrollment.uuid}" class="col-sm-4 control-label">GSM-nummer</label>
 						<div class="col-sm-2">
-							<input id="deelnemer-gsm" type="tel" class="form-control" value="${inschrijving.deelnemers[0].mobielNummer}"></input>
+							<input id="participant-gsm-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].mobielNummer}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="deelnemer-email" class="col-sm-4 control-label">E-mail (*)</label>
+						<label for="deelnemer-email-${enrollment.uuid}" class="col-sm-4 control-label">E-mail</label>
 						<div class="col-sm-3">
-							<input id="deelnemer-email" type="tel" class="form-control" value="${inschrijving.deelnemers[0].email}"></input>
+							<input id="deelnemer-email-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].email}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="adres-zipcode" class="col-sm-4 control-label">PostCode (*)</label>
+						<label for="adres-zipcode-${enrollment.uuid}" class="col-sm-4 control-label">PostCode (*)</label>
 						<div class="col-sm-2">
-							<input id="adres-zipcode" type="tel" class="form-control" value="${inschrijving.adres.zipCode}"></input>
+							<input id="adres-zipcode-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.zipCode}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="adres-gemeente" class="col-sm-4 control-label">Gemeente (*)</label>
+						<label for="adres-gemeente-${enrollment.uuid}" class="col-sm-4 control-label">Gemeente (*)</label>
 						<div class="col-sm-2">
-							<input id="adres-gemeente" type="tel" class="form-control" value="${inschrijving.adres.gemeente}"></input>
+							<input id="adres-gemeente-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.gemeente}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="adres-straat" class="col-sm-4 control-label">Straat (*)</label>
+						<label for="adres-straat-${enrollment.uuid}" class="col-sm-4 control-label">Straat (*)</label>
 						<div class="col-sm-3">
-							<input id="adres-straat" type="tel" class="form-control" value="${inschrijving.adres.straat}"></input>
+							<input id="adres-straat-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.straat}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-						<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer (*)</label>
+						<label for="adres-nummer-${enrollment.uuid}" class="col-sm-4 control-label">Huisnummer (*)</label>
 						<div class="col-sm-2">
-							<input id="adres-nummer" type="tel" class="form-control" value="${inschrijving.adres.nummer}"></input>
+							<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.nummer}"></input>
 						</div>
 				</div>
 				<div class="form-group">
-					<label for="participant-save" class="col-sm-4 control-label"></label>
+					<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
 					<div class="col-sm-4">
-						<button type="button" id="participant-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-						<span id ="participant-status"></span>
+						<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+						<span id ="participant-status-${enrollment.uuid}"></span>
 					</div>
 				</div>
 				
 				</form>
 			
 			</div>
+			
+			</c:forEach>
 
 				
 			
@@ -446,31 +453,62 @@
 			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ) );
 		};
 		
-		var saveDeelnemer = function( id ) {
+		var saveParticipant = function( id ) {
 			
-			var date = $jq("#deelnemer-geboorte").val() != "" ? moment.utc( $jq("#deelnemer-geboorte").val(), "DD/MM/YYYY") : null;
+			var date = $jq("#participant-geboorte-" + id).val() != "" ? moment.utc( $jq("#participant-geboorte-" + id).val(), "DD/MM/YYYY") : null;
 			
 			var deelnemer
 				= new Deelnemer( 
-						$jq("#deelnemer-id").val(),
-						$jq("#deelnemer-voor").val(),
-						$jq("#deelnemer-familie").val(),
-						$jq(".deelnemer-geslacht:checked").val(),
+						$jq("#deelnemer-id-"+id).val(),
+						$jq("#deelnemer-voor-"+id).val(),
+						$jq("#deelnemer-familie-"+id).val(),
+						$jq(".deelnemer-geslacht-"+id+":checked").val(),
 						date,
-						$jq("#deelnemer-telefoon").val(),
-						$jq("#deelnemer-gsm").val(),
-						$jq("#deelnemer-email").val()
+						$jq("#participant-telefoon-"+id).val(),
+						$jq("#participant-gsm-"+id).val(),
+						$jq("#deelnemer-email-"+id).val()
 						);
 			
 			
 			
-			putDeelnemer( id, deelnemer, $jq("#enrollment-save" ),$jq("#x-status" ), saveAddress );
+			putDeelnemer( id, deelnemer, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ), saveParticipantAddress );
 			
 		};
 		
-		var saveAddress = function( id ) {
-			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
-			putAddress ( id, a, $jq("#enrollment-save" ),$jq("#x-status" ), saveVragen );
+		var addParticipant = function( reference ) {
+			
+			var enrollment =
+				new Inschrijving( reference );
+			
+			postEnrollment( enrollment, reference );
+			
+		};
+		
+		var saveParticipant = function( id ) {
+			
+			var date = $jq("#participant-geboorte-" + id).val() != "" ? moment.utc( $jq("#participant-geboorte-" + id).val(), "DD/MM/YYYY") : null;
+			
+			var deelnemer
+				= new Deelnemer( 
+						$jq("#deelnemer-id-"+id).val(),
+						$jq("#deelnemer-voor-"+id).val(),
+						$jq("#deelnemer-familie-"+id).val(),
+						$jq(".deelnemer-geslacht-"+id+":checked").val(),
+						date,
+						$jq("#participant-telefoon-"+id).val(),
+						$jq("#participant-gsm-"+id).val(),
+						$jq("#deelnemer-email-"+id).val()
+						);
+			
+			
+			
+			putDeelnemer( id, deelnemer, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ), saveParticipantAddress );
+			
+		};
+		
+		var saveParticipantAddress = function( id ) {
+			var a = new Adres( $jq("#adres-zipcode-"+id).val(), $jq("#adres-gemeente-"+id).val(), $jq("#adres-straat-"+id).val(), $jq("#adres-nummer-"+id).val() );
+			putAddress ( id, a, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ) );
 		};
 		
 		var saveVragen = function( id ) {
@@ -531,6 +569,16 @@
 			$jq(this).button('Even geduld...');
 			
 			saveVragen( "${inschrijving.uuid}" );
+			
+		});
+		
+
+		$jq(".participant-save").click( function( event ) {
+			
+			clearStatus();
+			$jq(this).button('Even geduld...');
+			
+			saveParticipant( $jq(this).attr("data-uuid") );
 			
 		});
 		
