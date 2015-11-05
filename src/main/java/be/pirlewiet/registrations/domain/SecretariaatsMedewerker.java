@@ -126,6 +126,12 @@ public class SecretariaatsMedewerker {
     	organisatie.getAdres();
     	inschrijving.setOrganisatie( organisatie );
     	
+    	saved = this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    		
+ 	    // stupid GAE ... set id manually
+ 	    saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+ 	    inschrijving = this.inschrijvingXRepository.saveAndFlush( saved );
+    	
     	if ( inschrijving.getReference() != null ) {
     		
     		InschrijvingX cloneFrom 
@@ -156,7 +162,7 @@ public class SecretariaatsMedewerker {
     		Deelnemer deelnemer
 				= new Deelnemer();
     	
-    		this.addDeelnemer( saved , deelnemer );
+    		this.addDeelnemer( inschrijving , deelnemer );
     	
     		Vragen vragen
     			= new Vragen();
@@ -172,13 +178,6 @@ public class SecretariaatsMedewerker {
 	    		
 	    	}	
     	}
-    	
-	    	
-	    saved = this.inschrijvingXRepository.saveAndFlush( inschrijving );
-	
-	    // stupid GAE ... set id manually
-	    saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
-	    saved = this.inschrijvingXRepository.saveAndFlush( saved );
     	
     	return saved;
     }
@@ -292,6 +291,10 @@ public class SecretariaatsMedewerker {
     		
     		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getUuid().equals( organisatie.getUuid() ) ) ) {
     			// logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
+    			continue;
+    		}
+    		
+    		if ( inschrijving.getReference() != null ) {
     			continue;
     		}
     		
@@ -587,19 +590,6 @@ public class SecretariaatsMedewerker {
     }
     
     protected InschrijvingX addDeelnemer( InschrijvingX inschrijving, Deelnemer deelnemer ) {
-    	
-    	// InschrijvingX inschrijving
-    	// 	= this.findInschrijving( inschrijvingID );
-    	
-    	String inschrijvingID
-    		= inschrijving.getUuid();
-    	
-    	if ( inschrijving == null ) {
-    		throw new RuntimeException( "no inschrijving with id ]" + inschrijvingID + "]");
-    	}
-    	
-    	// ^GAE this.persoonRepository.saveAndFlush( deelnemer );
-    	// this.persoonRepository.saveAndFlush( deelnemer );
     	
     	inschrijving.getDeelnemers().add( deelnemer );
     	

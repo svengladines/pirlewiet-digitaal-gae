@@ -35,6 +35,15 @@
 			<div class="container alert alert-info">
 				<div class="row">
 					<div class="col-sm-4">
+						Status
+					</div>
+					<div class="col-sm-8">
+						<strong>Concept</strong>
+					</div>
+				</div>
+				<br/>
+				<div class="row">
+					<div class="col-sm-4">
 						Vakantie(s)
 					</div>
 					<div class="col-sm-8">
@@ -97,7 +106,7 @@
 							</c:when>
 							<c:otherwise>
 								<c:forEach items="${related}" var="enrollment">
-									<span class="done">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;<a href="javascript:show('div-participant-${enrollment.uuid}');" class="edit">(wijzigen)</a><br/>
+									<span class="done">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="javascript:show('div-participant-${enrollment.uuid}');" class="edit">wijzigen</a>)&nbsp;(<a href="javascript:deleteParticipant('${enrollment.uuid}');" class="edit">verwijderen</a>)<span id="participant-delete-status-${enrollment.uuid}"></span><br/>
 								</c:forEach>
 								<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
 							</c:otherwise>
@@ -106,28 +115,36 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-12">
-						<br/>
-					</div>
-				</div>
-				<div class="row">
 					<div class="col-sm-4">
-						Status
+						
 					</div>
 					<div class="col-sm-8">
-						<strong>Concept</strong>
+						<br/>
+						<c:choose>
+							<c:when test="${isComplete!=true}">
+								<button type="button" id="submit-show" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+							</c:when>
+							<c:otherwise>
+								<span class="text-warning">Je inschrijving is nog niet volledig</span>
+							</c:otherwise>
+						</c:choose>
 					</div>
 				</div>
 							
 			</div>
 			
 						
-			<div id="div-vakantie" class="panel hidden">
-				<h2>Vakantie(s)</h2>
-				<p>
-					Selecteer de vakantie(s) waarvoor je wil inschrijven.
-				</p>
-				<div>
+			<div id="div-vakantie" class="container panel hidden">
+				<div class="row">
+					<div class="col-sm-12">
+						<h2>Vakantie(s)</h2>
+						<p>
+							Selecteer de vakantie(s) waarvoor je wil inschrijven.
+						</p>
+					</div>
+				</div>
+				<div class="row">
+				<div class="col-sm-12">
 					<c:if test="${empty vakanties}">
 						<p class="text=info">Er is momenteel geen vakantie waar men voor kan inschrijven</p>
 					</c:if>
@@ -149,9 +166,10 @@
 							</div>
 					</c:forEach>
 				</div>
-				<div class="">
+				<div class="col-sm-12">
 					<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
 					<span id ="vakantie-status"></span>
+				</div>
 				</div>
 			</div>	
 			<div id="div-contact" class="panel hidden">
@@ -240,6 +258,14 @@
 				<p>
 					Geef hier de gegevens op van de deelnemer.
 				</p>
+				
+				<c:if test="${inschrijving.uuid != enrollment.uuid}">
+				
+					<p class="alert alert-warning">
+						Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
+					</p>
+				
+				</c:if>
 				
 				<form class="form-horizontal">
 				
@@ -383,13 +409,9 @@
 			</c:otherwise>
 			</c:choose>
 			
-			<div>
-					<label class="col-sm-4 control-label">
-					</label>
-					<div class="col-sm-6">
-						<span id="x-status" class="status"></span>
-					</div>
-			</div>
+			<form class="form-horizontal">
+			
+			<input type="hidden" name="vak" class="q-email" value="true"/>
 							
 			<div id="status-comment" class="form-group" class="form-group">
 					<label class="col-sm-4 control-label">Opmerking<br/>
@@ -398,33 +420,30 @@
 					<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
 					</label>
 					
-					
-					<div class="col-sm-6">
+					<div class="col-sm-8">
 						<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
 					</div>
 			</div>
 							
-				<input type="hidden" name="vak" class="q-email" value="true"/>
-				<div class="form-group">
-					<label class="col-sm-4 control-label">
-					</label>
-					<div class="col-sm-6">
-						<span id="x-status" class="status"></span>
-					</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">
+				</label>
+				<div class="col-sm-6">
+					<span id="x-status" class="status"></span>
 				</div>
-				<div id="create-confirm" class="form-group">
-					<label class="col-sm-4 control-label">
-					</label>
-					<div class="col-sm-4">
-						<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-						<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Annuleer</button>
-					</div>
+			</div>
+			<div id="create-confirm" class="form-group">
+				<label class="col-sm-4 control-label">
+				</label>
+				<div class="col-sm-4">
+					<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+					<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Annuleer</button>
 				</div>
-							
+			</div>
+			</form>	
 		</div>
-	</form>
 	
-	</div>
+	</div><!-- container -->
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 	
@@ -503,6 +522,12 @@
 			
 			
 			putDeelnemer( id, deelnemer, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ), saveParticipantAddress );
+			
+		};
+		
+		var deleteParticipant = function( id ) {
+			
+			deleteEnrollment( id, $jq("#x-"+id ),$jq("#participant-delete-status-"+id ) );
 			
 		};
 		
@@ -587,6 +612,14 @@
 			window.location.reload();
 			
 		});
+		
+		$jq("#submit-show").click( function( event ) {
+			
+			show('div-submit');	
+			
+		});
+		
+		
 		
     </script>
   </body>

@@ -13,7 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/bootstrap.css" rel="stylesheet">
-    <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/font-awesome.css" rel="stylesheet">
+    <link href="/resources/theme/css/font-awesome.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/pirlewiet.css" rel="stylesheet">

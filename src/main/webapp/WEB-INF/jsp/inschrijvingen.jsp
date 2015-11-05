@@ -28,7 +28,7 @@
 		</div><!-- container -->
 	</div>
 
-	<div class="container">
+	<div class="container content">
 	
 		<div class="row">
 		
