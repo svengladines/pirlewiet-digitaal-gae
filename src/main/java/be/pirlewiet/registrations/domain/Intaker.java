@@ -85,33 +85,27 @@ public class Intaker {
 				return;
 			}
 			
-			Organisatie organisation
-				= inschrijving.getOrganisatie();
-			
-			loaded.setInschrijvingsdatum( new Date() );
-			loaded.getStatus().setValue( Value.SUBMITTED );
-			if ( isEmpty( status.getComment() ) ) {
-				loaded.getStatus().setComment( "Geen commentaar gegeven" );
-			}
-			else {
-				loaded.getStatus().setComment( status.getComment() );
-			}
-			
-			this.inschrijvingXRepository.saveAndFlush( loaded );
-
-			// send e-mails 
-			this.sendSubmittedEmailToPirlewiet(inschrijving, organisation);
-			this.sendSubmittedEmailToOrganisation( inschrijving, organisation);
+			takeIn( loaded, status );
 			
 		}
 		else {
 			
 			loaded.getStatus().setComment( status.getComment() );
+			
+			List<InschrijvingX> related
+				= this.inschrijvingXRepository.findByReference( loaded.getUuid() );
+			
+			for ( InschrijvingX r : related ) {
+				
+				r.getStatus().setValue( Value.SUBMITTED );
+				this.inschrijvingXRepository.saveAndFlush( r );
+				
+			}
 
 			if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
 				
 				MimeMessage message
-					= formatUpdateMessage( loaded );
+					= formatUpdateMessage( loaded, related );
 	
 				if ( message != null ) {
 					
@@ -124,10 +118,50 @@ public class Intaker {
 			
 	}
 	
-	 protected boolean sendSubmittedEmailToOrganisation( InschrijvingX enrollment, Organisatie organisation ) {
+	protected InschrijvingX takeIn( InschrijvingX enrollment, Status status ) {
+		
+		enrollment.getStatus().setValue( Value.SUBMITTED );
+		
+		if ( isEmpty( status.getComment() ) ) {
+			enrollment.getStatus().setComment( "Geen commentaar gegeven" );
+		}
+		else {
+			enrollment.getStatus().setComment( status.getComment() );
+		}
+		
+		this.inschrijvingXRepository.saveAndFlush( enrollment );
+		
+		if ( enrollment.getReference() != null ) {
+			// only intake for 'head' enrollments
+			return null;
+		}
+		
+		// also update related enrollments
+		List<InschrijvingX> related
+			= this.inschrijvingXRepository.findByReference( enrollment.getUuid() );
+		
+		for ( InschrijvingX r : related ) {
+			
+			r.getStatus().setValue( Value.SUBMITTED );
+			this.inschrijvingXRepository.saveAndFlush( r );
+			
+		}
+		
+		// send e-mails
+		Organisatie organisation
+			= enrollment.getOrganisatie();
+		
+		this.sendSubmittedEmailToPirlewiet( enrollment, related, organisation );
+		this.sendSubmittedEmailToOrganisation( enrollment, related, organisation);
+		
+		return enrollment;
+			
+	}
+	
+	 protected boolean sendSubmittedEmailToOrganisation( InschrijvingX enrollment, List<InschrijvingX> related, Organisatie organisation ) {
 	    	
 			MimeMessage message
-				= formatIntakeMessageToOrganisation( enrollment, organisation );
+				= formatIntakeMessageToOrganisation( enrollment, related, organisation );
 
 			if ( message != null ) {
 				
@@ -139,10 +173,10 @@ public class Intaker {
 		
 	}
 	 
-	 protected boolean sendSubmittedEmailToPirlewiet( InschrijvingX enrollment, Organisatie organisation ) {
+	 protected boolean sendSubmittedEmailToPirlewiet( InschrijvingX enrollment, List<InschrijvingX> related, Organisatie organisation ) {
 	    	
 		MimeMessage message
-			= formatIntakeMessageToPirlewiet( enrollment, organisation );
+			= formatIntakeMessageToPirlewiet( enrollment, related, organisation );
 		
 		if ( message != null ) {
 			
@@ -154,10 +188,10 @@ public class Intaker {
 		
 	}
 	 
-	protected MimeMessage formatIntakeMessageToOrganisation( InschrijvingX enrollment, Organisatie organisation ) {
+	protected MimeMessage formatIntakeMessageToOrganisation( InschrijvingX enrollment, List<InschrijvingX> related, Organisatie organisation ) {
 			
 		String templateString
-			= "/templates/to-organisation/organisation-created.tmpl";
+			= "/templates/to-organisation/enrollment-takenin.tmpl";
 		
 		String to
 			= enrollment.getContactGegevens().getEmail();
@@ -178,9 +212,10 @@ public class Intaker {
 			
 			Map<String, Object> model = new HashMap<String, Object>();
 					
-			model.put( "organisatie", organisation );
-			model.put( "inschrijving", enrollment );
+			model.put( "organisation", organisation );
+			model.put( "enrollment", enrollment );
 			model.put( "id", enrollment.getUuid() );
+			model.put( "related", related );
 			// TODO use vakantiedetails for more efficiency ?
 			model.put("vakanties", vakanties( enrollment ) );
 			
@@ -218,10 +253,10 @@ public class Intaker {
     }
 	 
 	
-	protected MimeMessage formatIntakeMessageToPirlewiet( InschrijvingX inschrijving, Organisatie organisation ) {
+	protected MimeMessage formatIntakeMessageToPirlewiet( InschrijvingX inschrijving, List<InschrijvingX> related, Organisatie organisation ) {
 		
 		String templateString
-			 = "/templates/to-pirlewiet/organisation-created.tmpl";
+			 = "/templates/to-pirlewiet/enrollment-takenin.tmpl";
 		
 		String to
 			= this.headQuarters.getEmail();
@@ -242,9 +277,10 @@ public class Intaker {
 			
 			Map<String, Object> model = new HashMap<String, Object>();
 					
-			model.put( "organisatie", organisation );
-			model.put( "inschrijving", inschrijving );
+			model.put( "organisation", organisation );
+			model.put( "enrollment", inschrijving );
 			model.put( "id", inschrijving.getUuid() );
+			model.put( "related", related );
 			// TODO use vakantiedetails for more efficiency ?
 			model.put("vakanties", vakanties( inschrijving ) );
 			
@@ -298,7 +334,7 @@ public class Intaker {
     	
     }
 	
-	protected MimeMessage formatUpdateMessage( InschrijvingX inschrijving ) {
+	protected MimeMessage formatUpdateMessage( InschrijvingX inschrijving, List<InschrijvingX> related ) {
 		
 		MimeMessage message
 			= null;
@@ -309,7 +345,7 @@ public class Intaker {
 		try {
 			
 			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/update.tmpl" );
+				= this.getClass().getResourceAsStream( "/templates/to-pirlewiet/enrollment-updated.tmpl" );
 			
 			Template template 
 				= new Template("code", new InputStreamReader( tis ), cfg );
@@ -318,6 +354,7 @@ public class Intaker {
 					
 			model.put( "organisatie", inschrijving.getOrganisatie() );
 			model.put( "inschrijving", inschrijving );
+			model.put( "related", related );
 			// TODO use vakantiedetails for more efficiency ?
 			model.put("vakanties", vakanties( inschrijving ) );
 			
@@ -379,10 +416,12 @@ public class Intaker {
 			
 			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
 				if ( ! Tags.TAG_MEDIC.equals( vraag.getTag() ) ) { 
-					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
-						logger.info( "question [{}] was not answered", vraag.getVraag() );
-						complete = false;
-						break;
+					if ( ! Tags.TAG_INTERNAL.equals( vraag.getTag() ) ) {
+						if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
+							logger.info( "question [{}] was not answered", vraag.getVraag() );
+							complete = false;
+							break;
+						}
 					}
 				}
 			}

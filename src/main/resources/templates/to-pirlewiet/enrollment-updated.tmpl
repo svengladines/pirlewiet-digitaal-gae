@@ -13,9 +13,16 @@ Het secretariaat van Pirlewiet wijzigde de status van onderstaande inschrijving 
 			<th scope="row">Vakantie(s)</th>
 			<td>${vakanties}</td>
 		</tr>
+		
 		<tr>
-			<th scope="row">Deelnemer</th>
-			<td>${inschrijving.deelnemers[0].voorNaam} ${inschrijving.deelnemers[0].familieNaam}</td>
+			<th scope="row">Deelnemer(s)</th>
+			<td>
+				<ul>
+					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam}</li>
+					<#list ${related} as r>
+					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam}</li>
+				</ul>
+			</td>
 		</tr>
 	</table>
 </p>

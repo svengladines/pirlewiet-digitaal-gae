@@ -19,7 +19,14 @@ Details van de inschrijving vind je hieronder en in bijlage als Excelbestand<br/
 		</tr>
 		<tr>
 			<th scope="row">Deelnemer(s)</th>
-			<td>${inschrijving.deelnemers[0].voorNaam} ${inschrijving.deelnemers[0].familieNaam}</td>
+			<td>
+				<ul>
+					<li>${enrollment.deelnemers[0].voorNaam} ${enrollment.deelnemers[0].familieNaam}</li>
+					<#list related as r>
+					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam}</li>
+					</#list>
+				</ul>
+			</td>
 		</tr>
 	</table>
 </p>

@@ -374,6 +374,16 @@
 							<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.nummer}"></input>
 						</div>
 				</div>
+				<div id="status-comment" class="form-group">
+					<label class="col-sm-4 control-label">Opmerking<br/>
+					<span class="text-info">Deze opmerking is bestemd voor de secretariaatsmedewerkers die de inschrijving zullen behandelen.</span><br/>
+					<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
+					</label>
+					
+					<div class="col-sm-8">
+						<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
+					</div>
+			</div>
 				<div class="form-group">
 					<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
 					<div class="col-sm-4">
@@ -412,18 +422,6 @@
 			<form class="form-horizontal">
 			
 			<input type="hidden" name="vak" class="q-email" value="true"/>
-							
-			<div id="status-comment" class="form-group" class="form-group">
-					<label class="col-sm-4 control-label">Opmerking<br/>
-					<span class="text-info">Deze opmerking is bestemd voor de secretariaatsmedewerkers die de inschrijving zullen behandelen.</span><br/>
-					<span class="">Indien je een inschrijving wijzigde, licht dan hier kort toe wat er veranderd is.</span><br/>
-					<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
-					</label>
-					
-					<div class="col-sm-8">
-						<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
-					</div>
-			</div>
 							
 			<div class="form-group">
 				<label class="col-sm-4 control-label">
@@ -566,7 +564,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			save( "${inschrijving.uuid}" );
+			saveStatus( "${inschrijving.uuid}" );
 			
 		});
 		
