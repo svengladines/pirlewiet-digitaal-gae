@@ -121,8 +121,6 @@ public class EnrollmentController {
 				@PathVariable String uuid,
 				@RequestBody ContactGegevens contactGegevens ) {
 		
-		this.retrieve( uuid );
-		
 		this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
 		
 		return response( contactGegevens, HttpStatus.OK );

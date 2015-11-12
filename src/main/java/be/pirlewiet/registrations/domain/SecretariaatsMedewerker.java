@@ -355,7 +355,7 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    @Transactional(readOnly=true)
+    // @Transactional(readOnly=true)
     public InschrijvingX findInschrijving( String uuid ) {
     	
     	InschrijvingX inschrijving 
@@ -485,7 +485,7 @@ public class SecretariaatsMedewerker {
     	contact.setPhone( contactGegevens.getPhone() );
     	contact.setEmail( contactGegevens.getEmail() );
 		
-		this.inschrijvingXRepository.saveAndFlush( inschrijving );
+		inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	return inschrijving;
     	
