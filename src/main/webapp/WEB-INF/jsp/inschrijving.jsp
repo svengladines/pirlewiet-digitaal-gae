@@ -10,6 +10,8 @@
 	<jsp:include page="/WEB-INF/jsp/head.jsp"/>
 	
 	<body>
+	
+	<fmt:bundle basename="pirlewiet-messages">
 
     <jsp:include page="/WEB-INF/jsp/menu.jsp">
     	<jsp:param name="active" value="enrollments"/>
@@ -38,7 +40,7 @@
 						Status
 					</div>
 					<div class="col-sm-8">
-						<strong>Concept</strong>
+						<strong><fmt:message key="enrollment.status.${inschrijving.status.value}"/></strong>
 					</div>
 				</div>
 				<br/>
@@ -108,7 +110,9 @@
 								<c:forEach items="${related}" var="enrollment">
 									<span class="done">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="javascript:show('div-participant-${enrollment.uuid}');" class="edit">wijzigen</a>)&nbsp;(<a href="javascript:deleteParticipant('${enrollment.uuid}');" class="edit">verwijderen</a>)<span id="participant-delete-status-${enrollment.uuid}"></span><br/>
 								</c:forEach>
-								<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
+								<c:if test="${enrollment.status.value =='DRAFT'}">
+									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
+								</c:if>
 							</c:otherwise>
 						</c:choose>
 						<!-- <a href="javascript:show('div-participant-new');" class="todo">Deelnemer toevoegen</a>  -->
@@ -116,17 +120,25 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-4">
-						
 					</div>
 					<div class="col-sm-8">
 						<br/>
 						<c:choose>
-							<c:when test="${isComplete!=true}">
-								<button type="button" id="submit-show" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-							</c:when>
-							<c:otherwise>
-								<span class="text-warning">Je inschrijving is nog niet volledig</span>
-							</c:otherwise>
+						<c:when test="${enrollment.status.value =='DRAFT'}">
+							<c:choose>
+								<c:when test="${isComplete==true}">
+									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+								</c:when>
+								<c:otherwise>
+									<span class="text-warning">Je inschrijving is nog niet volledig</span>
+									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+								</c:otherwise>
+							</c:choose>
+						</c:when>
+						<c:otherwise>
+								<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Annuleer</button>
+						</c:otherwise>
 						</c:choose>
 					</div>
 				</div>
@@ -376,7 +388,6 @@
 				</div>
 				<div id="status-comment" class="form-group">
 					<label class="col-sm-4 control-label">Opmerking<br/>
-					<span class="text-info">Deze opmerking is bestemd voor de secretariaatsmedewerkers die de inschrijving zullen behandelen.</span><br/>
 					<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
 					</label>
 					
@@ -400,47 +411,6 @@
 
 				
 			
-		<div id="div-submit" class="panel hidden">
-	
-			<c:choose>
-			<c:when test="${inschrijving.status.value eq 'DRAFT'}">
-			
-				<h2>Indienen</h2>
-				<p>
-					Controleer de gegevens in het formulier en klik op 'Verstuur' om de inschrijving in te dienen.<br/>
-				</p>
-			</c:when>
-			<c:otherwise>
-				
-				<h2>Gewijzigd ?</h2>
-				<p>
-					Klik op 'Verstuur' om de wijzigingen door te sturen.
-				</p>
-			</c:otherwise>
-			</c:choose>
-			
-			<form class="form-horizontal">
-			
-			<input type="hidden" name="vak" class="q-email" value="true"/>
-							
-			<div class="form-group">
-				<label class="col-sm-4 control-label">
-				</label>
-				<div class="col-sm-6">
-					<span id="x-status" class="status"></span>
-				</div>
-			</div>
-			<div id="create-confirm" class="form-group">
-				<label class="col-sm-4 control-label">
-				</label>
-				<div class="col-sm-4">
-					<button type="button" id="enrollment-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					<button type="button" id="enrollment-cancel" class="btn btn-warning" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Annuleer</button>
-				</div>
-			</div>
-			</form>	
-		</div>
-	
 	</div><!-- container -->
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
@@ -559,15 +529,6 @@
 			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
 		};
     	
-		$jq("#enrollment-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveStatus( "${inschrijving.uuid}" );
-			
-		});
-		
 		$jq("#vakantie-save").click( function( event ) {
 			
 			clearStatus();
@@ -605,9 +566,21 @@
 			
 		});
 		
-		$jq("#enrollment-cancel").click( function( event ) {
+		$jq("#enrollment-save").click( function( event ) {
 			
-			window.location.reload();
+			clearStatus();
+			$jq(this).button('Even geduld...');
+			
+			saveStatus( "${inschrijving.uuid}" );
+			
+		});
+		
+		$jq("#enrollment-cancel").click( function( event ) {
+
+			clearStatus();
+			$jq(this).button('Even geduld...');
+			
+			cancel( "${inschrijving.uuid}" );
 			
 		});
 		
@@ -620,5 +593,6 @@
 		
 		
     </script>
+  </fmt:bundle>
   </body>
 </html>

@@ -22,8 +22,9 @@ Via deze e-mail bevestigen we graag dat we je aanvraag tot inschrijving goed ont
 			<td>
 				<ul>
 					<li>${enrollment.deelnemers[0].voorNaam} ${enrollment.deelnemers[0].familieNaam}</li>
-					<#list ${related} as r>
+					<#list related as r>
 					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam}</li>
+					</#list>
 				</ul>
 			</td>
 		</tr>
