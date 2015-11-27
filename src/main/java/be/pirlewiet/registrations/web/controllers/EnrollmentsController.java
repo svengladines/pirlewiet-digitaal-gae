@@ -5,6 +5,7 @@ import static be.occam.utils.spring.web.Controller.response;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -133,74 +134,35 @@ public class EnrollmentsController {
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 	
-		model.put( "organisatie", organisatie );
+		model.put( "organisation", organisatie );
 	
 		if ( PirlewietUtil.isPirlewiet( organisatie ) ) {
 			
 			List<InschrijvingX> inschrijvingen 
 				= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
-			
-			List<InschrijvingX> submitted
-				= new ArrayList<InschrijvingX>();
 		
-			List<InschrijvingX> transit
-				= new ArrayList<InschrijvingX>();
-			
-			List<InschrijvingX> waiting
-				= new ArrayList<InschrijvingX>();
-			
-			List<InschrijvingX> rejected
-				= new ArrayList<InschrijvingX>();
-			
-			List<InschrijvingX> cancelled
-				= new ArrayList<InschrijvingX>();
-			
-			List<InschrijvingX> accepted
-				= new ArrayList<InschrijvingX>();
-			
-			logger.info( "number of enrollments: [{}]", inschrijvingen.size() );
-			
-			for ( InschrijvingX inschrijving : inschrijvingen ) {
-				
-				switch( inschrijving.getStatus().getValue() ) {
-				case SUBMITTED: 
-					submitted.add( inschrijving );
-					logger.info( "added a submitted inschrijving: [{}]", inschrijving.getUuid() );
-					break;
-				case TRANSIT:
-					transit.add( inschrijving );
-					break;
-				case WAITINGLIST:
-					waiting.add( inschrijving );
-					break;
-				case REJECTED:
-					rejected.add( inschrijving );
-					break;
-				case CANCELLED:
-					cancelled.add( inschrijving );
-					break;
-				case ACCEPTED:
-					accepted.add( inschrijving );
-					break;
-				default:
-					logger.info( "inschrijving with unsupported status: [{}]", inschrijving.getStatus() );
-					break;
-						
-				}
-				
-			}
-		
-			model.put( "submitted", submitted );
-			model.put( "transit", transit );
-			model.put( "waiting", waiting );
-			model.put( "rejected", rejected );
-			model.put( "cancelled", cancelled );
-			model.put( "accepted", accepted );
 		}
 		else {
 			List<InschrijvingX> inschrijvingen 
 				= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
-			model.put( "inschrijvingen", inschrijvingen );	
+			
+			List<InschrijvingX> enrollments
+				= new LinkedList<InschrijvingX>();
+			
+			for ( InschrijvingX enrollment : inschrijvingen ) {
+				
+				enrollments.add( enrollment );
+				
+				List<InschrijvingX> related
+					= this.secretariaatsMedewerker.guard().findRelated( enrollment );
+				
+				if ( related != null ) {
+					enrollments.addAll( related );
+				}
+				
+			}
+			
+			model.put( "enrollments", enrollments );	
 		}
 		
 	

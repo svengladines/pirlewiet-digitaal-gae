@@ -50,38 +50,44 @@
 		
 			<h2>Inschrijvingen</h2>
 			
-			<table class="table table-bordered table-striped">
-			
-			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
-			</thead>
-			
-			
-			<c:forEach items="${inschrijvingen}" var="inschrijving">
+			<c:forEach items="${enrollments}" var="enrollment">
 				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
+				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.inschrijvingsdatum}" var="date"></fmt:formatDate>
+				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
+				
+				<c:if test="${enrollment.reference == null}">
+					<table class="table table-bordered table-striped">
+			
+					<thead>
+					</thead>
+					<tbody>
+			
+					<tr>
+						<th scope="row">Vakantie(s)</th>
+						<td colspan="4">
+							<c:forEach items="${enrollment.vakanties}" var="vakantie">
+								${vakantie.naam}<br/>
+							</c:forEach>
+					</tr>
+					<tr>
+						<th scope="row">Contactpersoon</th>
+						<td colspan="4">
+							${inschrijving.contactGegevens.name}
+						</td>
+						<td class="text-center"><a href="./inschrijvingen/${enrollment.uuid}.html"><i class="fa fa-edit"></i></td>
+					</tr>
+				</c:if>
 							
 				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
+					
+					<th scope="row">Deelnemer</th>
+					<td>${enrollment.deelnemers[0].voorNaam}</td>
+					<td>${enrollment.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
-					<td class="text-center"><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
+					<td>${enrollment.status}</td>
 				</tr>
 			</c:forEach>
+				</tbody>
 			
 			</table>
 			

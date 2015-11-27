@@ -104,6 +104,7 @@ public class Intaker {
 
 			if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
 				
+				/*
 				MimeMessage message
 					= formatUpdateMessage( loaded, related );
 	
@@ -112,6 +113,7 @@ public class Intaker {
 					postBode.deliver( message );
 					
 				}
+				*/
 				
 			}
 		}
@@ -327,62 +329,6 @@ public class Intaker {
 		}
 		catch( Exception e ) {
 			logger.warn( "could not create e-mail", e );
-			throw new RuntimeException( e );
-		}
-		
-		return message;
-    	
-    }
-	
-	protected MimeMessage formatUpdateMessage( InschrijvingX inschrijving, List<InschrijvingX> related ) {
-		
-		MimeMessage message
-			= null;
-		
-		Configuration cfg 
-			= new Configuration();
-	
-		try {
-			
-			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/to-pirlewiet/enrollment-updated.tmpl" );
-			
-			Template template 
-				= new Template("code", new InputStreamReader( tis ), cfg );
-			
-			Map<String, Object> model = new HashMap<String, Object>();
-					
-			model.put( "organisatie", inschrijving.getOrganisatie() );
-			model.put( "inschrijving", inschrijving );
-			model.put( "related", related );
-			// TODO use vakantiedetails for more efficiency ?
-			model.put("vakanties", vakanties( inschrijving ) );
-			
-			StringWriter bodyWriter 
-				= new StringWriter();
-			
-			template.process( model , bodyWriter );
-			
-			bodyWriter.flush();
-				
-			message = this.javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message);
-				
-			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( headQuarters.getEmail() );
-			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
-			helper.setSubject( "Aanvraag code" );
-				
-			String text
-				= bodyWriter.toString();
-				
-			logger.info( "email text is [{}]", text );
-				
-			helper.setText(text, true);
-				
-		}
-		catch( Exception e ) {
-			logger.warn( "could not write e-mail", e );
 			throw new RuntimeException( e );
 		}
 		

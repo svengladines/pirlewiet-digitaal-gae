@@ -110,7 +110,7 @@
 								<c:forEach items="${related}" var="enrollment">
 									<span class="done">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="javascript:show('div-participant-${enrollment.uuid}');" class="edit">wijzigen</a>)&nbsp;(<a href="javascript:deleteParticipant('${enrollment.uuid}');" class="edit">verwijderen</a>)<span id="participant-delete-status-${enrollment.uuid}"></span><br/>
 								</c:forEach>
-								<c:if test="${enrollment.status.value =='DRAFT'}">
+								<c:if test="${inschrijving.status.value =='DRAFT'}">
 									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
 								</c:if>
 							</c:otherwise>
