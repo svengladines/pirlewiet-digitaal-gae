@@ -170,7 +170,7 @@
   						<i class="fa fa-question fa-stack-1x"></i>
   						
 						</span>
-						Vond je je organisatie in de lijst, maar herkende je het e-mail adres niet, of is het niet meer geldig ? Contacteer dan ons secretariaat.
+						Vond je je organisatie in de lijst, maar herkende je het e-mailadres niet, of is het niet meer actief ? Contacteer dan ons secretariaat.
 					</p>
 					
 					<p>
@@ -268,7 +268,7 @@
 	    		},
 	    		error: function(  jqXHR, textStatus, errorThrown ) {
 	    			if( jqXHR.status == 422 ) {
-	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Een e-mail met de inlogcode werd opgestuurd naar " + email );
+	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Het opgegeven e-mailadres '" + email + "' is niet gekend. <br/>Controleer het adres en probeer opnieuw." );
 	    			}
 	    			else {
 	    				
