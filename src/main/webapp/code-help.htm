@@ -61,9 +61,9 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1>Aanmelden</h1>
+					<h1>Hulp met aanmelden</h1>
 					<p>
-						Elke geregistreerde organisatie kan zich aanmelden met een unieke code. <br/>
+						 Heb je geen code, of vergat je ze ? Of is jouw organisatie nog niet geregistreerd als doorverwijzer ? Volg de stappen hieronder!
 					</p>
 				</div>
 			</div><!-- row -->
@@ -75,42 +75,75 @@
 			<br/>
 	
 			<div class="row">
-			<div id="codediv" class="col-md-12">
+		
+			<div id="nocodediv" class="col-md-12">
 			
-				<h3><i class="fa fa-check fa-3"></i>&nbsp; Aanmelden</h3>
-			
-				<p>
-					Geef de code in en klik op 'Aanmelden'. <br/>
-				</p>
-				
-				<form class="form-horizontal" role="form">
-				
-					<div class="form-group">
-						<label for="contact-naam" class="col-sm-0 control-label"></label>
-							<div class="col-sm-2">	
-								<input id="code" type="text" class="col-md-4 form-control" value="" placeholder="abc123"></input>
-							</div>
-					</div>
+					<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-list fa-stack-1x"></i>
+  						
+						</span>
+						Bekijk onze <a href="http://www.pirlewiet.be/digitaal/organisations.html">lijst van geregistreerde doorverwijzers</a> en zoek je organisatie.
+					</p>
 					
-					<div class="form-group">
-						<label for="contact-naam" class="col-sm-0 control-label"></label>
-						<div class="col-sm-10">
-							<button id="codebtn" type="button" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Aanmelden</button>
-							<p id="code-error" class="error text-danger hidden">
-								De opgegeven code was niet geldig. Probeer AUB opnieuw.<br/>
-								Als je problemen blijft ondervinden, is de code waarschijnlijk niet correct. 
+					<p>
+					<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-envelope fa-stack-1x"></i>
+  						
+						</span>
+						Geef het corresponderende e-mail adres in en druk op 'Zend code'. Even later krijg je je code toegezonden op het ingegeven e-mailadres.
+					</p>
+					
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<label for="email" class="col-sm-2 control-label">E-mailadres</label>
+							<div class="col-sm-3">	
+								<input id="email" type="text" class="form-control" value="" placeholder="info@mijndienst.be"></input>
+							</div>
+						</div>
+						<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-6">
+							<button type="button" id="emailbtn" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Zend code</button>
+							<p>
+								<span id="email-ok" class="error text-success hidden"></span>
+							</p>
+							
+							<p>
+								<span id="email-unknown" class="error text-danger hidden">
+									Het e-mailadres werd niet herkend. Controleer of je het juiste e-mailadres ingaf. <br/>
+								</span>
+							</p>
+							
+							<p>
+								<span id="email-error" class="error text-danger hidden"></span>
 							</p>
 						</div>
-						
 					</div>
-				
-				</form>
-				
-				<a href="code-help.htm"> Geen code of vergat je ze ?</a>
-			</div>
-			</div>
-			<br/>
-			<br/>
+					</form>
+					
+					<p>
+						<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-question fa-stack-1x"></i>
+  						
+						</span>
+						Vond je je organisatie in de lijst, maar herkende je het e-mailadres niet, of is het niet meer actief ? Contacteer dan ons secretariaat.
+					</p>
+					
+					<p>
+						<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-question fa-stack-1x"></i>
+  						
+						</span>
+						Vond je je organisatie niet terug in de lijst ? Vul dan het <a href="register.htm">registratieformulier voor doorverwijzers</a> in.
+					</p>
+					
+		</div>
+		</div>
+		<br/>
 	</div>
 	
 	<div id="f">
@@ -169,6 +202,40 @@
 	    	
 		});
 		
+		$jq(".loginhelp").click( function ( event ) {
+			$jq("#codehelp").removeClass("hidden").addClass("show");
+		});
+	    	
+	    	
+    	$jq("#emailbtn").click( function ( event ) {
+			
+			event.preventDefault();
+			$jq(this).button('loading');
+			
+			var email = $jq("#email").val();
+			
+			var request = new CodeRequest( email );
+	
+	    	$jq.ajax( {
+	    		type: "post",
+	    		url:"/rs/coderequests",
+	    		contentType: "application/json",
+	    	    processData: false,
+	    		data: JSON.stringify(request),
+	    		success: function( ) {
+	    			success( $jq("#emailbtn"), $jq("#email-ok"), "Een e-mail met de inlogcode werd opgestuurd naar " + email );
+	    		},
+	    		error: function(  jqXHR, textStatus, errorThrown ) {
+	    			if( jqXHR.status == 422 ) {
+	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Het opgegeven e-mailadres '" + email + "' is niet gekend. <br/>Controleer het adres en probeer opnieuw." );
+	    			}
+	    			else {
+	    				
+	    			}
+	    		}
+	    	});
+   	
+   		});
     		
     </script>
   </body>

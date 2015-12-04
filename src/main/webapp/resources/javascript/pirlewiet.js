@@ -23,7 +23,7 @@ function success( button, element, message ) {
 		element.html( message )	;
 	}
 	else {
-		element.html( "De wijzigingen werden met success doorgestuurd. <br/><a id=\"refresh\" href=\"javascript:window.location.reload()\">Ververs</a> deze pagina om je wijzigingen te bekijken." );
+		element.html( "Je aanvraag werd met succes behandeld." );
 	}
 	
 	element.removeClass("text-danger");

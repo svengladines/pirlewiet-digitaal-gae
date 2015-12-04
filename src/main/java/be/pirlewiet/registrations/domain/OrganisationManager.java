@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.occam.utils.ftp.FTPClient;
+import be.occam.utils.spring.web.Client;
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Organisatie;
@@ -37,6 +39,12 @@ public class OrganisationManager {
 	
 	@Resource
 	HeadQuarters headQuarters;
+	
+	@Resource
+	FTPClient ftpClient;
+	
+	@Resource
+	protected Organisatie pDiddy;
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
@@ -142,8 +150,16 @@ public class OrganisationManager {
 		organisatie = this.organisatieRepository.saveAndFlush( organisatie );
 		
 		if ( newOrganisation ) {
-			this.sendCreatedEmailToOrganisation( organisatie );
-			this.sendCreatedEmailToPirlewiet( organisatie );
+			
+			boolean published = publishNewList();
+			
+			if ( published ) {
+				this.sendCreatedEmailToOrganisation( organisatie );
+				this.sendCreatedEmailToPirlewiet( organisatie );
+			}
+			else {
+				throw new PirlewietException( "Registratie van organisatie is mislukt. Probeer AUB opnieuw. Bij aanhoudende problemen, contacteer ons secretariaat.");
+			}
 		}
 		
     	return organisatie;
@@ -340,6 +356,29 @@ public class OrganisationManager {
 
 		return message;
 
+    }
+    
+    protected boolean publishNewList() {
+    	
+    	try {
+			String html 
+				= Client.getHTML( "http://pirlewiet-digitaal.appspot.com/rs/organisations.html", PirlewietUtil.as( pDiddy ) ).getBody();
+			
+			logger.info( "html: {}", html );
+			
+			logger.info( "sending html to FTP server...", html );
+			boolean ok 
+				= ftpClient.putTextFile("httpdocs/digitaal", "organisations.html", html );
+			logger.info( "FTP put [{}]", ok ? "succeeded" : "failed" );
+			
+			return ok;
+			
+		}
+		catch ( Exception e ) {
+			logger.error( "could publish organisations-list ", e );
+			return false;
+		}
+    	
     }
     
 }
