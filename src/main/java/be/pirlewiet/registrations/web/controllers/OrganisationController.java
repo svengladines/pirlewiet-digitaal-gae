@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
+import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.CodeRequest;
@@ -108,6 +109,15 @@ public class OrganisationController {
 		this.organisationManager.guard().updateAdres( loaded.getUuid(), adres );
 		
 		return response( adres, HttpStatus.OK );
+		
+	}
+	
+	@ExceptionHandler( PirlewietException.class)
+	@ResponseBody
+	public ResponseEntity<String> handleFailure( PirlewietException e ){
+		
+		logger.warn( "failure while handling request", e );
+		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
 		
 	}
 	

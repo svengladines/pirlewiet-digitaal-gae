@@ -30,9 +30,9 @@
     
     <script src="http://www.pirlewiet.be/digitaal/resources/javascript/jquery-1.11.1.js"></script>
     <script src="http://www.pirlewiet.be/digitaal/resources/theme/js/bootstrap.js"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/pirlewiet.js"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/enrollments.js"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/organisations.js"></script>
+    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/pirlewiet.js?v=${timestamp}"></script>
+    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/enrollments.js?v=${timestamp}"></script>
+    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/organisations.js?v=${timestamp}"></script>
     
   </head>
 	
@@ -77,19 +77,6 @@
 	<div class="row">
 	
 		<form class="form-horizontal" role="form">
-			<div class="form-group">
-					<label for="organisation-error" class="col-sm-4 control-label"></label>
-					<div class="col-sm-8">
-						<span id="organisation-ok" class="error text-success hidden">
-							Gegevens werden met succes verwerkt. <br/>
-							Als je een nieuwe doorverwijzer bent, werd er een e-mail gestuurd met de inlogcode. <br/>
-							Met deze code kan je inloggen via de <a href="/code.htm">inlogpagina</a>. 
-						</span>
-						<span id="organisation-error" class="error text-danger hidden">
-							Het formulier kon niet worden verwerkt. Controleer de gegevens en probeer opnieuw AUB. 
-						</span>
-					</div>
-			</div>
 		
 			<h2>Registratieformulier</h2>
 			
@@ -102,7 +89,7 @@
 			<div class="form-group">
 				<label for="organisation-name" class="col-sm-4 control-label">Naam organisatie (*)</label>
 				<div class="col-sm-3">	
-					<input id="organisation-name" type="text" class="form-control"></input>
+					<input name="pd-organisation-name" id="organisation-name" type="text" class="form-control"></input>
 				</div>
 			</div>
 			<div class="form-group">
@@ -152,6 +139,8 @@
 				<div class="col-sm-8">
 					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 				</div>
+				<span id="organisation-status" class="error text-success hidden">
+				</span>
 			</div>
 			
 		</form>
@@ -189,7 +178,7 @@
 			
 			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );
+			postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), putOrganisationAddress, a );
 			
 		};
 		

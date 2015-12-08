@@ -181,7 +181,7 @@ public class TestInschrijvingController extends JTest {
 			= this.retrieve();
 		
 		String retrieved
-			= retrieveResponse.getBody().getOpmerking();
+			= retrieveResponse.getBody().getReference();
 		
 		assertEquals( "opmerking not correct", opmerking, retrieved );
 	
