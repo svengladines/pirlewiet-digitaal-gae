@@ -126,6 +126,9 @@ public class SecretariaatsMedewerker {
     	organisatie.getAdres();
     	inschrijving.setOrganisatie( organisatie );
     	
+    	// TODO, remove hardcoded year!
+    	inschrijving.setYear( 2016 );
+    	
     	saved = this.inschrijvingXRepository.saveAndFlush( inschrijving );
     		
  	    // stupid GAE ... set id manually
@@ -268,8 +271,9 @@ public class SecretariaatsMedewerker {
     	List<InschrijvingX> inschrijvingen
     		= new ArrayList<InschrijvingX>( );
     	
+    	// TODO, remove hardcoded year!
     	List<InschrijvingX> all
-    		= this.inschrijvingXRepository.findAll();// = PirlewietUtil.isPirlewiet( organisatie ) ? this.inschrijvingXRepository.findAll() : this.inschrijvingXRepository.findByOrganisatie( organisatie );
+    		= this.inschrijvingXRepository.findByYear( 2016 );// = PirlewietUtil.isPirlewiet( organisatie ) ? this.inschrijvingXRepository.findAll() : this.inschrijvingXRepository.findByOrganisatie( organisatie );
     		// SGL|| findByOrganisatie does not work in GAE ... at least not out-of-the-box
     	
     	logger.info( "total number of enrollments: [{}]", all.size() );
@@ -285,38 +289,44 @@ public class SecretariaatsMedewerker {
     	while ( it.hasNext() ) {
     		
     		InschrijvingX inschrijving
-    			= it.next();
+				= it.next();
     		
-    		inschrijving = this.detach( inschrijving.getUuid() );
-    		
-    		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getUuid().equals( organisatie.getUuid() ) ) ) {
-    			// logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
-    			continue;
+    		try {
+	    		
+	    		inschrijving = this.detach( inschrijving.getUuid() );
+	    		
+	    		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getUuid().equals( organisatie.getUuid() ) ) ) {
+	    			// logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
+	    			continue;
+	    		}
+	    		
+	    		if ( inschrijving.getReference() != null ) {
+	    			continue;
+	    		}
+	    		
+	    		if ( isPirlewiet ) {
+	    			
+	    			if ( Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
+	    				logger.info( "enrollment with status DRAFT not sent to pirlewiet", inschrijving.getUuid() );
+	    				continue;
+	    			}
+	    			
+	    		}
+	    		
+	    		// logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
+	    		
+	    		inschrijvingen.add( inschrijving );
+	    		
+	    		/**
+	    		// enkel toevoegen als de vakantie nog niet voorbij is
+	    		if ( inschrijving.getVakantie().getEindDatum().after( new Date() ) ) {
+	    			inschrijvingen.add( inschrijving );
+	    		} 
+	    		**/
     		}
-    		
-    		if ( inschrijving.getReference() != null ) {
-    			continue;
+    		catch( Exception e ) {
+    			logger.warn( String.format( "could not process enrollment [%s]", inschrijving.getUuid() ), e );
     		}
-    		
-    		if ( isPirlewiet ) {
-    			
-    			if ( Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
-    				logger.info( "enrollment with status DRAFT not sent to pirlewiet", inschrijving.getUuid() );
-    				continue;
-    			}
-    			
-    		}
-    		
-    		// logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
-    		
-    		inschrijvingen.add( inschrijving );
-    		
-    		/**
-    		// enkel toevoegen als de vakantie nog niet voorbij is
-    		if ( inschrijving.getVakantie().getEindDatum().after( new Date() ) ) {
-    			inschrijvingen.add( inschrijving );
-    		} 
-    		**/
     		
     	}
     	

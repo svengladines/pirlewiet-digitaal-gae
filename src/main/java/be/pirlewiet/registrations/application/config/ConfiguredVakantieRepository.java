@@ -25,64 +25,64 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 		Vakantie kikaEenPasen
 			= new Vakantie();
 
-		kikaEenPasen.setBeginDatum( Timing.date("06/04/2016") );
-		kikaEenPasen.setEindDatum( Timing.date("10/04/2016") );
-		kikaEenPasen.setBeginInschrijving( Timing.date("15/01/2016") );
-		kikaEenPasen.setEindInschrijving( Timing.date("01/04/2016") );
+		kikaEenPasen.setBeginDatum( Timing.date("29/03/2016") );
+		kikaEenPasen.setEindDatum( Timing.date("02/04/2016") );
+		kikaEenPasen.setBeginInschrijving( Timing.date("12/12/2015") );
+		kikaEenPasen.setEindInschrijving( Timing.date("15/03/2016") );
 		kikaEenPasen.setType( VakantieType.Kika );
 		kikaEenPasen.setJaar( 2016 );
-		kikaEenPasen.setNaam( "Pasen KIKA 1");
+		kikaEenPasen.setNaam( "KIKA 1 Pasen");
 		kikaEenPasen.setPeriode( Period.Spring );
 		
-		kikaEenPasen.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgL6CgwkM" );
+		kikaEenPasen.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgNuYmwoM" );
 		this.bootcamps.put( kikaEenPasen.getUuid(), kikaEenPasen );
 		
 		Vakantie kikaTweePasen
 			= new Vakantie();
 
-		kikaTweePasen.setBeginDatum( Timing.date("13/04/2016") );
-		kikaTweePasen.setEindDatum( Timing.date("17/04/2016") );
-		kikaTweePasen.setBeginInschrijving( Timing.date("15/01/2016") );
-		kikaTweePasen.setEindInschrijving( Timing.date("01/04/2016") );
+		kikaTweePasen.setBeginDatum( Timing.date("04/04/2016") );
+		kikaTweePasen.setEindDatum( Timing.date("08/04/2016") );
+		kikaTweePasen.setBeginInschrijving( Timing.date("12/12/2015") );
+		kikaTweePasen.setEindInschrijving( Timing.date("15/03/2016") );
 		kikaTweePasen.setType( VakantieType.Kika );
 		kikaTweePasen.setJaar( 2016 );
-		kikaTweePasen.setNaam( "Pasen KIKA 2");
+		kikaTweePasen.setNaam( "KIKA 2 Pasen");
 		kikaTweePasen.setPeriode( Period.Spring );
 	
-		kikaTweePasen.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgIKvgwoM" );
+		kikaTweePasen.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgKD9iQoM" );
 		this.bootcamps.put( kikaTweePasen.getUuid(), kikaTweePasen );
 		
-		
-		
-		Vakantie gezinsPasen
+		Vakantie gezinsVoorjaar
 			= new Vakantie();
 
-		gezinsPasen.setBeginDatum( Timing.date("14/04/2016") );
-		gezinsPasen.setEindDatum( Timing.date("18/04/2016") );
-		gezinsPasen.setBeginInschrijving( Timing.date("15/01/2016") );
-		gezinsPasen.setEindInschrijving( Timing.date("01/04/2016") );
-		gezinsPasen.setType( VakantieType.Gezin );
-		gezinsPasen.setJaar( 2016 );
-		gezinsPasen.setNaam( "Pasen Gezins");
-		gezinsPasen.setPeriode( Period.Spring );
-		gezinsPasen.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgMK4kgoM" );
+		gezinsVoorjaar.setBeginDatum( Timing.date("29/03/2016") );
+		gezinsVoorjaar.setEindDatum( Timing.date("02/04/2016") );
+		gezinsVoorjaar.setBeginInschrijving( Timing.date("12/12/2015") );
+		gezinsVoorjaar.setEindInschrijving( Timing.date("15/03/2016") );
+		gezinsVoorjaar.setType( VakantieType.Gezin );
+		gezinsVoorjaar.setJaar( 2016 );
+		gezinsVoorjaar.setNaam( "Gezinsvakantie Pasen");
+		gezinsVoorjaar.setPeriode( Period.Spring );
+		gezinsVoorjaar.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgPn-kwoM" );
 	
-		this.bootcamps.put( gezinsPasen.getUuid(), gezinsPasen );
+		this.bootcamps.put( gezinsVoorjaar.getUuid(), gezinsVoorjaar );
 
-		Vakantie vov1
+		Vakantie vovVoorjaar
 			= new Vakantie();
 	
-		vov1.setBeginDatum( Timing.date("18/05/2016") );
-		vov1.setEindDatum( Timing.date("22/05/2016") );
-		vov1.setBeginInschrijving( Timing.date("15/01/2016") );
-		vov1.setEindInschrijving( Timing.date("01/05/2016") );
-		vov1.setType( VakantieType.Vov );
-		vov1.setJaar( 2016 );
-		vov1.setNaam( "Voorjaar VOV 1");
-		vov1.setPeriode( Period.Spring );
+		vovVoorjaar.setBeginDatum( Timing.date("23/05/2016") );
+		vovVoorjaar.setEindDatum( Timing.date("27/05/2016") );
+		vovVoorjaar.setBeginInschrijving( Timing.date("12/12/2015") );
+		vovVoorjaar.setEindInschrijving( Timing.date("01/05/2016") );
+		vovVoorjaar.setType( VakantieType.DrieDaagse );
+		vovVoorjaar.setJaar( 2016 );
+		vovVoorjaar.setNaam( "Vakantie Onder Volwassenen");
+		vovVoorjaar.setPeriode( Period.Spring );
 	
-		vov1.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgJ23kQkM" );
-		this.bootcamps.put( vov1.getUuid(), vov1 );
+		vovVoorjaar.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgP21mAoM" );
+		this.bootcamps.put( vovVoorjaar.getUuid(), vovVoorjaar );
+
+		/*
 		
 		Vakantie kikaEen
 			= new Vakantie();
@@ -208,6 +208,7 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 		gezins1.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgO_nhgoM" );
 		
 		this.bootcamps.put( gezins1.getUuid(), gezins1  );
+		*/
 		
 	}
 
