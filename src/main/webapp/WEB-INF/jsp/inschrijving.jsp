@@ -23,7 +23,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijving</h1>
 					<p>
-						Maak of beheer een inschrijving.
+						Beheer een inschrijving.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -32,98 +32,18 @@
 	
 	<div class="container">
 	
-			<br/>
+		<br/>
+		<div class="row alert alert-info">
 			
-			<div class="container alert alert-info">
-				<div class="row">
-					<div class="col-sm-4">
-						Status
-					</div>
-					<div class="col-sm-8">
-						<strong><fmt:message key="enrollment.status.${inschrijving.status.value}"/></strong>
-					</div>
-				</div>
-				<br/>
-				<div class="row">
-					<div class="col-sm-4">
-						Vakantie(s)
-					</div>
-					<div class="col-sm-8">
-					<c:choose>
-					<c:when test="${empty inschrijving.vakanties}">
-						<a href="javascript:show('div-vakantie');" class="todo">Vakantie selecteren</a>
-					</c:when>
-					<c:otherwise>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							<span class="done">${vakantie.naam}</span>&nbsp;<a href="javascript:show('div-vakantie');" class="edit">(wijzigen)</a><br/>
-						</c:forEach>
-					</c:otherwise>
-					</c:choose>
-					
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-4">
-						Contactpersoon bij doorverwijzer
-					</div>
-					<div class="col-sm-8">
-					<c:choose>
-						<c:when test="${inschrijving.contactGegevens.name == null}">
-							<a href="javascript:show('div-contact');" class="todo">Contactpersoon ingeven</a>
-						</c:when>
-						<c:otherwise>
-							<span class="done">${inschrijving.contactGegevens.name}</span>&nbsp;<a href="javascript:show('div-contact');" class="edit">(wijzigen)</a><br/>
-						</c:otherwise>
-						</c:choose>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-4">
-						Vragenlijst
-					</div>
-					<div class="col-sm-8">
-					<c:choose>
-						<c:when test="${not areAllMandatoryQuestionsAnswered}">
-							<a href="javascript:show('div-various');" class="todo">Antwoorden ingeven</a>
-						</c:when>
-						<c:otherwise>
-							<span class="done">Ingevuld</span>&nbsp;<a href="javascript:show('div-various');" class="edit">(wijzigen)</a><br/>
-						</c:otherwise>
-						</c:choose>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-						<br/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-4">
-						Deelnemer(s)
-					</div>
-					<div class="col-sm-8">
-						<c:choose>
-							<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
-								<a href="javascript:show('div-participant-${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
-							</c:when>
-							<c:otherwise>
-								<c:forEach items="${related}" var="enrollment">
-									<span class="done">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="javascript:show('div-participant-${enrollment.uuid}');" class="edit">wijzigen</a>)&nbsp;(<a href="javascript:deleteParticipant('${enrollment.uuid}');" class="edit">verwijderen</a>)<span id="participant-delete-status-${enrollment.uuid}"></span><br/>
-								</c:forEach>
-								<c:if test="${inschrijving.status.value =='DRAFT'}">
-									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
-								</c:if>
-							</c:otherwise>
-						</c:choose>
-						<!-- <a href="javascript:show('div-participant-new');" class="todo">Deelnemer toevoegen</a>  -->
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-4">
-					</div>
-					<div class="col-sm-8">
-						<br/>
-						<c:choose>
+			<div class="col-sm-2">
+				Status
+			</div>
+			<div class="col-sm-6">
+				<strong><fmt:message key="enrollment.status.${inschrijving.status.value}"/></strong>
+			</div>
+			
+			<div class="col-sm-4">
+				<c:choose>
 						<c:when test="${enrollment.status.value =='DRAFT'}">
 							<c:choose>
 								<c:when test="${isComplete==true}">
@@ -137,12 +57,74 @@
 							</c:choose>
 						</c:when>
 						<c:otherwise>
-								<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Annuleer</button>
+								<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
 						</c:otherwise>
-						</c:choose>
-					</div>
-				</div>
-							
+						</c:choose>			
+			</div>
+					
+		</div>
+				<div class="row">
+					<c:choose>
+						<c:when test="${empty inschrijving.vakanties}">
+							<div class="col-sm-3 alert alert-warning">
+								<strong>Vakantie(s)</strong><br/>
+								<a href="javascript:show('div-vakantie');" class="todo">Vakantie selecteren</a>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<div class="col-sm-3 alert alert-success">
+							<strong>Vakantie(s)</strong><br/>
+							<c:forEach items="${inschrijving.vakanties}" var="vakantie">
+								<span>${vakantie.naam}</span>&nbsp;<br/>
+							</c:forEach>
+							</div>
+						</c:otherwise>
+					</c:choose>
+					<c:choose>
+						<c:when test="${inschrijving.contactGegevens.name == null}">
+							<div class="col-sm-3 alert alert-warning">
+								<strong>Contactpersoon</strong><br/>
+								<a href="javascript:show('div-contact');" class="todo">Contactpersoon ingeven</a>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<div class="col-sm-3 alert alert-success">
+							<strong>Contactpersoon</strong><br/>
+							<span>${inschrijving.contactGegevens.name}</span>
+							</div>
+						</c:otherwise>
+					</c:choose>
+					<c:choose>
+						<c:when test="${not areAllMandatoryQuestionsAnswered}">
+							<div class="col-sm-3 alert alert-warning">
+								<strong>Vragenlijst</strong><br/>
+								<span class="todo">Niet (volledig) ingevuld </span>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<div class="col-sm-3 alert alert-success">
+							<strong>Vragenlijst</strong><br/>
+							<span>Ingevuld</span>&nbsp;
+							</div>
+						</c:otherwise>
+					</c:choose>
+					<c:choose>
+						<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
+							<div class="col-sm-3 alert alert-warning">
+								<strong>Deelnemer(s)</strong><br/>
+								<span class="todo">Nog geen deelnemers toegevoegd</span>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<div class="col-sm-3 alert alert-success">
+							<strong>Deelnemer(s)</strong><br/>
+							<c:forEach items="${related}" var="enrollment">
+									<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span><br/>
+							</c:forEach>
+							</div>
+						</c:otherwise>
+					</c:choose>					
+				
 			</div>
 			
 						
