@@ -128,120 +128,140 @@
 			</div>
 			
 						
-			<div id="div-vakantie" class="container panel hidden">
-				<div class="row">
-					<div class="col-sm-12">
-						<h2>Vakantie(s)</h2>
-						<p>
-							Selecteer de vakantie(s) waarvoor je wil inschrijven.
-						</p>
+						<div >
+      
+			<div id="div-vakantie" class="class="modal fade panel hidden" tabindex="-1" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">			
+							<h2>Vakantie(s)</h2>
+							<p>
+								Selecteer de vakantie(s) waarvoor je wil inschrijven.
+							</p>
+						</div>
+						<div class="modal-body">
+							<c:if test="${empty vakanties}">
+								<p class="text=info">Er is momenteel geen vakantie waar men voor kan inschrijven</p>
+							</c:if>
+							<c:forEach items="${vakanties}" var="vk">
+								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.beginDatum}" var="start"></fmt:formatDate>	
+								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.eindDatum}" var="end"></fmt:formatDate>
+								<c:set var="contains" value="false" />
+								<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
+									<c:choose>
+										<c:when test="${vakantie.uuid eq vk.uuid}">
+											<c:set var="contains" value="true" />
+										</c:when>
+									</c:choose>
+									</c:forEach>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="vak" class="vakantie" value="${vk.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+										</label>
+									</div>
+							</c:forEach>
+						</div>
+						<div class="modal-footer">
+							<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<span id ="vakantie-status"></span>
+						</div>
+					</div>
+				</div>	
+			</div>
+		
+			<div id="modal-contact" class="class="modal fade panel hidden" tabindex="-1" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">	
+							<h2>Contactgegevens doorverwijzer</h2>
+							
+							<p>
+								Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze inschrijving.
+							</p>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal">
+							<div class="form-group">
+								<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
+									<div class="col-sm-3">	
+										<input id="contact-name" type="text" class="form-control" value="${inschrijving.contactGegevens.name}"></input>
+									</div>
+							</div>
+							<div class="form-group">
+								<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
+									<div class="col-sm-2">	
+										<input id="contact-phone" type="text" class="form-control" value="${inschrijving.contactGegevens.phone}"></input>
+									</div>
+							</div>
+							<div class="form-group">
+								<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
+									<div class="col-sm-3">	
+										<input id="contact-email" type="email" class="form-control" value="${inschrijving.contactGegevens.email}"></input>
+									</div>
+							</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<div class="form-group">
+								<button type="button" id="contact-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<span id ="contact-status"></span>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="row">
-				<div class="col-sm-12">
-					<c:if test="${empty vakanties}">
-						<p class="text=info">Er is momenteel geen vakantie waar men voor kan inschrijven</p>
-					</c:if>
-					<c:forEach items="${vakanties}" var="vk">
-						<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.beginDatum}" var="start"></fmt:formatDate>	
-						<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.eindDatum}" var="end"></fmt:formatDate>
-						<c:set var="contains" value="false" />
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
-							<c:choose>
-								<c:when test="${vakantie.uuid eq vk.uuid}">
-									<c:set var="contains" value="true" />
-								</c:when>
-							</c:choose>
-							</c:forEach>
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="vak" class="vakantie" value="${vk.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
-								</label>
-							</div>
-					</c:forEach>
-				</div>
-				<div class="col-sm-12">
-					<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-					<span id ="vakantie-status"></span>
-				</div>
-				</div>
-			</div>	
-			<div id="div-contact" class="panel hidden">
-				<h2>Contactgegevens doorverwijzer</h2>
-				
-				<p>
-					Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze inschrijving.
-				</p>
-				
-				<form class="form-horizontal">
-				<div class="form-group">
-					<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
-						<div class="col-sm-3">	
-							<input id="contact-name" type="text" class="form-control" value="${inschrijving.contactGegevens.name}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-					<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
-						<div class="col-sm-2">	
-							<input id="contact-phone" type="text" class="form-control" value="${inschrijving.contactGegevens.phone}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-					<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
-						<div class="col-sm-3">	
-							<input id="contact-email" type="email" class="form-control" value="${inschrijving.contactGegevens.email}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-					<button type="button" id="contact-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-					<span id ="contact-status"></span>
-				</div>
-				</form>
 			</div>
+					
+			<div id="modal-contact" class="class="modal fade panel hidden" tabindex="-1" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
 			
-			<div id="div-various" class="panel hidden">
-			
-				<h2>Vragenlijst</h2>
-				
-				<form class="form-horizontal">
-				<c:forEach items="${inschrijving.vragen}" var="vraag">
-						<c:if test="${vraag.tag eq 'various' or vraag.tag eq 'fotos'}">
-							<div class="form-group">
-								<label class="col-sm-4 control-label">${vraag.vraag} (*)</label>
-								<c:choose>
-									<c:when test="${vraag.type eq 'YesNo'}">
-										<div class="col-sm-2">
-											<div class="checkbox">
-												<label>
-													<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
-												</label>
-												&nbsp;&nbsp;&nbsp;
-												<label>
-													<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
-												</label>
-											</div>
+							<h2>Vragenlijst</h2>
+						</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+						<c:forEach items="${inschrijving.vragen}" var="vraag">
+								<c:if test="${vraag.tag eq 'various' or vraag.tag eq 'fotos'}">
+									<div class="form-group">
+										<label class="col-sm-4 control-label">${vraag.vraag} (*)</label>
+										<c:choose>
+											<c:when test="${vraag.type eq 'YesNo'}">
+												<div class="col-sm-2">
+													<div class="checkbox">
+														<label>
+															<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+														</label>
+														&nbsp;&nbsp;&nbsp;
+														<label>
+															<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+														</label>
+													</div>
+												</div>
+											</c:when>
+											<c:when test="${vraag.type eq 'Text'}">
+												<div class="col-sm-3">
+													<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
+												</div>
+											</c:when>
+											<c:when test="${vraag.type eq 'Area'}">
+												<div class="col-sm-6">
+													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+												</div>
+											</c:when>
+										</c:choose>
 										</div>
-									</c:when>
-									<c:when test="${vraag.type eq 'Text'}">
-										<div class="col-sm-3">
-											<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
-										</div>
-									</c:when>
-									<c:when test="${vraag.type eq 'Area'}">
-										<div class="col-sm-6">
-											<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
-										</div>
-									</c:when>
-								</c:choose>
-								</div>
-						</c:if>
-				</c:forEach>
-				<div class="form-group">
-					<button type="button" id="q-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-					<span id ="q-status"></span>
-				</div>
-				</form>
+								</c:if>
+						</c:forEach>
+							</form>
+					</div>
+					<div class="modal-footer">
+						<div class="form-group">
+							<button type="button" id="q-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<span id ="q-status"></span>
+						</div>
+					</div>
 			</div>
+		</div>
 			
 			<c:forEach items="${related}" var="enrollment">
 			
