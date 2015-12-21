@@ -44,7 +44,7 @@
 			
 			<div class="col-sm-4">
 				<c:choose>
-						<c:when test="${enrollment.status.value =='DRAFT'}">
+						<c:when test="${inschrijving.status.value =='DRAFT'}">
 							<c:choose>
 								<c:when test="${isComplete==true}">
 									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
@@ -66,71 +66,73 @@
 				<div class="row">
 					<c:choose>
 						<c:when test="${empty inschrijving.vakanties}">
-							<div class="col-sm-3 alert alert-warning">
+							<div class="col-sm-12 alert alert-warning">
 								<strong>Vakantie(s)</strong><br/>
-								<a href="javascript:show('div-vakantie');" class="todo">Vakantie selecteren</a>
+								<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div class="col-sm-3 alert alert-success">
+							<div class="col-sm-12 alert alert-success">
 							<strong>Vakantie(s)</strong><br/>
 							<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-								<span>${vakantie.naam}</span>&nbsp;<br/>
+								<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
 							</c:forEach>
 							</div>
 						</c:otherwise>
 					</c:choose>
 					<c:choose>
 						<c:when test="${inschrijving.contactGegevens.name == null}">
-							<div class="col-sm-3 alert alert-warning">
+							<div class="col-sm-12 alert alert-warning">
 								<strong>Contactpersoon</strong><br/>
-								<a href="javascript:show('div-contact');" class="todo">Contactpersoon ingeven</a>
+								<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div class="col-sm-3 alert alert-success">
+							<div class="col-sm-12 alert alert-success">
 							<strong>Contactpersoon</strong><br/>
-							<span>${inschrijving.contactGegevens.name}</span>
+							<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
 							</div>
 						</c:otherwise>
 					</c:choose>
 					<c:choose>
 						<c:when test="${not areAllMandatoryQuestionsAnswered}">
-							<div class="col-sm-3 alert alert-warning">
+							<div class="col-sm-12 alert alert-warning">
 								<strong>Vragenlijst</strong><br/>
-								<span class="todo">Niet (volledig) ingevuld </span>
+								<span class="">Niet (volledig) ingevuld </span><br/>
+								<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">Vragenlijst invullen</a>
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div class="col-sm-3 alert alert-success">
-							<strong>Vragenlijst</strong><br/>
-							<span>Ingevuld</span>&nbsp;
+							<div class="col-sm-12 alert alert-success">
+								<strong>Vragenlijst</strong><br/>
+								<span>Ingevuld</span>&nbsp;(<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">wijzigen</a>)
 							</div>
 						</c:otherwise>
 					</c:choose>
 					<c:choose>
 						<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
-							<div class="col-sm-3 alert alert-warning">
+							<div class="col-sm-12 alert alert-warning">
 								<strong>Deelnemer(s)</strong><br/>
-								<span class="todo">Nog geen deelnemers toegevoegd</span>
+								<span class="">Nog geen deelnemers toegevoegd</span><br/>
+								<a href="#modal-participant-${inschrijving.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${inschrijving.uuid}">Deelnemer toevoegen</a>
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div class="col-sm-3 alert alert-success">
+							<div class="col-sm-12 alert alert-success">
 							<strong>Deelnemer(s)</strong><br/>
 							<c:forEach items="${related}" var="enrollment">
-									<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span><br/>
-							</c:forEach>
+									<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)<br/>
+							</c:forEach><br/>
+							<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
 							</div>
 						</c:otherwise>
 					</c:choose>					
 				
 			</div>
-			
 						
-						<div >
+		<div>
       
-			<div id="div-vakantie" class="class="modal fade panel hidden" tabindex="-1" role="dialog">
+			<div id="modal-vakantie" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">			
@@ -162,6 +164,7 @@
 							</c:forEach>
 						</div>
 						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
 							<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
 							<span id ="vakantie-status"></span>
 						</div>
@@ -169,7 +172,7 @@
 				</div>	
 			</div>
 		
-			<div id="modal-contact" class="class="modal fade panel hidden" tabindex="-1" role="dialog">
+			<div id="modal-contact" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">	
@@ -203,6 +206,7 @@
 						</div>
 						<div class="modal-footer">
 							<div class="form-group">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
 								<button type="button" id="contact-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
 								<span id ="contact-status"></span>
 							</div>
@@ -211,7 +215,7 @@
 				</div>
 			</div>
 					
-			<div id="modal-contact" class="class="modal fade panel hidden" tabindex="-1" role="dialog">
+			<div id="modal-questions" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -223,10 +227,10 @@
 						<c:forEach items="${inschrijving.vragen}" var="vraag">
 								<c:if test="${vraag.tag eq 'various' or vraag.tag eq 'fotos'}">
 									<div class="form-group">
-										<label class="col-sm-4 control-label">${vraag.vraag} (*)</label>
+										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
 										<c:choose>
 											<c:when test="${vraag.type eq 'YesNo'}">
-												<div class="col-sm-2">
+												<div class="col-sm-6">
 													<div class="checkbox">
 														<label>
 															<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
@@ -256,160 +260,167 @@
 					</div>
 					<div class="modal-footer">
 						<div class="form-group">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
 							<button type="button" id="q-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
 							<span id ="q-status"></span>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+		
+		<c:forEach items="${related}" var="enrollment">
+		
+			<div id="modal-participant-${enrollment.uuid}" class="modal fade" tabindex="-1" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+			
+							<h2>Deelnemer</h2>
+						</div>
+					<div class="modal-body">
+			
+						<c:if test="${inschrijving.uuid != enrollment.uuid}">
+						
+							<p class="alert alert-warning">
+								Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
+							</p>
+						
+						</c:if>
+				
+						<form class="form-horizontal">
+						
+							<input id="deelnemer-id-${enrollment.uuid}" type="hidden" value="${enrollment.deelnemers[0].uuid}"></input>
+							<div class="form-group">
+								<label for="deelnemer-voor-${enrollment.uuid}" class="col-sm-4 control-label">Voornaam (*)</label>
+								<div class="col-sm-3">	
+									<input id="deelnemer-voor-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].voorNaam}"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="deelnemer-familie-${enrollment.uuid}" class="col-sm-4 control-label">Familienaam (*)</label>
+								<div class="col-sm-3">	
+										<input id="deelnemer-familie-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].familieNaam}"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="deelnemer-geslacht-${enrollment.uuid}" class="col-sm-4 control-label">Geslacht (*)</label>
+								<div class="col-sm-3">
+									<c:choose>
+									<c:when test="${enrollment.deelnemers[0].geslacht eq 'F'}">
+										<div class="checkbox">
+											<label>
+												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F" checked="checked">&nbsp;Vrouw
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
+											</label>
+										</div>
+									</c:when>
+									<c:when test="${enrollment.deelnemers[0].geslacht eq 'M'}">
+										<div class="checkbox">
+											<label>
+												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M" checked="checked">&nbsp;Man
+											</label>
+										</div>
+									</c:when>
+									<c:otherwise>
+									<div class="checkbox">
+											<label>
+												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
+											</label>
+										</div>
+									</c:otherwise>
+									</c:choose>
+								</div>
+							</div>
+						<div class="form-group">
+								<label for="participant-geboorte-${enrollment.uuid}" class="col-sm-4 control-label">Geboortedatum (*)</label>
+								<div class="col-sm-2">
+									<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
+									<input id="participant-geboorte-${enrollment.uuid}" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="participant-telefoon-${enrollment.uuid}" class="col-sm-4 control-label">Telefoonnummer (*)</label>
+								<div class="col-sm-2">
+									<input id="participant-telefoon-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].telefoonNummer}"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="participant-gsm-${enrollment.uuid}" class="col-sm-4 control-label">GSM-nummer</label>
+								<div class="col-sm-2">
+									<input id="participant-gsm-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].mobielNummer}"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="deelnemer-email-${enrollment.uuid}" class="col-sm-4 control-label">E-mail</label>
+								<div class="col-sm-3">
+									<input id="deelnemer-email-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].email}"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="adres-zipcode-${enrollment.uuid}" class="col-sm-4 control-label">PostCode (*)</label>
+								<div class="col-sm-2">
+									<input id="adres-zipcode-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.zipCode}"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="adres-gemeente-${enrollment.uuid}" class="col-sm-4 control-label">Gemeente (*)</label>
+								<div class="col-sm-2">
+									<input id="adres-gemeente-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.gemeente}"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="adres-straat-${enrollment.uuid}" class="col-sm-4 control-label">Straat (*)</label>
+								<div class="col-sm-3">
+									<input id="adres-straat-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.straat}"></input>
+								</div>
+						</div>
+						<div class="form-group">
+								<label for="adres-nummer-${enrollment.uuid}" class="col-sm-4 control-label">Huisnummer (*)</label>
+								<div class="col-sm-2">
+									<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.nummer}"></input>
+								</div>
+						</div>
+						<div id="status-comment" class="form-group">
+							<label class="col-sm-4 control-label">Opmerking<br/>
+							<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
+							</label>
+							
+							<div class="col-sm-8">
+								<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
+							</div>
+					</div>
+						<div class="form-group">
+							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+								<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<span id ="participant-status-${enrollment.uuid}"></span>
+							</div>
+						</div>
+						
+						</form>
+			
+				</div>
+			</div>
 			</div>
 		</div>
 			
-			<c:forEach items="${related}" var="enrollment">
-			
-				<div id="div-participant-${enrollment.uuid}" class="panel hidden">
-				
-				<h2>Deelnemer</h2>
-				
-				<p>
-					Geef hier de gegevens op van de deelnemer.
-				</p>
-				
-				<c:if test="${inschrijving.uuid != enrollment.uuid}">
-				
-					<p class="alert alert-warning">
-						Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
-					</p>
-				
-				</c:if>
-				
-				<form class="form-horizontal">
-				
-					<input id="deelnemer-id-${enrollment.uuid}" type="hidden" value="${enrollment.deelnemers[0].uuid}"></input>
-					<div class="form-group">
-						<label for="deelnemer-voor-${enrollment.uuid}" class="col-sm-4 control-label">Voornaam (*)</label>
-						<div class="col-sm-3">	
-							<input id="deelnemer-voor-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].voorNaam}"></input>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="deelnemer-familie-${enrollment.uuid}" class="col-sm-4 control-label">Familienaam (*)</label>
-						<div class="col-sm-3">	
-								<input id="deelnemer-familie-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].familieNaam}"></input>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="deelnemer-geslacht-${enrollment.uuid}" class="col-sm-4 control-label">Geslacht (*)</label>
-						<div class="col-sm-3">
-							<c:choose>
-							<c:when test="${enrollment.deelnemers[0].geslacht eq 'F'}">
-								<div class="checkbox">
-									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F" checked="checked">&nbsp;Vrouw
-									</label>
-								</div>
-								<div class="checkbox">
-									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
-									</label>
-								</div>
-							</c:when>
-							<c:when test="${enrollment.deelnemers[0].geslacht eq 'M'}">
-								<div class="checkbox">
-									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
-									</label>
-								</div>
-								<div class="checkbox">
-									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M" checked="checked">&nbsp;Man
-									</label>
-								</div>
-							</c:when>
-							<c:otherwise>
-							<div class="checkbox">
-									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
-									</label>
-								</div>
-								<div class="checkbox">
-									<label>
-										<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
-									</label>
-								</div>
-							</c:otherwise>
-							</c:choose>
-						</div>
-					</div>
-				<div class="form-group">
-						<label for="participant-geboorte-${enrollment.uuid}" class="col-sm-4 control-label">Geboortedatum (*)</label>
-						<div class="col-sm-2">
-							<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
-							<input id="participant-geboorte-${enrollment.uuid}" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="participant-telefoon-${enrollment.uuid}" class="col-sm-4 control-label">Telefoonnummer (*)</label>
-						<div class="col-sm-2">
-							<input id="participant-telefoon-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].telefoonNummer}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="participant-gsm-${enrollment.uuid}" class="col-sm-4 control-label">GSM-nummer</label>
-						<div class="col-sm-2">
-							<input id="participant-gsm-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].mobielNummer}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="deelnemer-email-${enrollment.uuid}" class="col-sm-4 control-label">E-mail</label>
-						<div class="col-sm-3">
-							<input id="deelnemer-email-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].email}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="adres-zipcode-${enrollment.uuid}" class="col-sm-4 control-label">PostCode (*)</label>
-						<div class="col-sm-2">
-							<input id="adres-zipcode-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.zipCode}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="adres-gemeente-${enrollment.uuid}" class="col-sm-4 control-label">Gemeente (*)</label>
-						<div class="col-sm-2">
-							<input id="adres-gemeente-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.gemeente}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="adres-straat-${enrollment.uuid}" class="col-sm-4 control-label">Straat (*)</label>
-						<div class="col-sm-3">
-							<input id="adres-straat-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.straat}"></input>
-						</div>
-				</div>
-				<div class="form-group">
-						<label for="adres-nummer-${enrollment.uuid}" class="col-sm-4 control-label">Huisnummer (*)</label>
-						<div class="col-sm-2">
-							<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.nummer}"></input>
-						</div>
-				</div>
-				<div id="status-comment" class="form-group">
-					<label class="col-sm-4 control-label">Opmerking<br/>
-					<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
-					</label>
-					
-					<div class="col-sm-8">
-						<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
-					</div>
-			</div>
-				<div class="form-group">
-					<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
-					<div class="col-sm-4">
-						<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-						<span id ="participant-status-${enrollment.uuid}"></span>
-					</div>
-				</div>
-				
-				</form>
-			
-			</div>
-			
-			</c:forEach>
+		</c:forEach>
 
 				
 			

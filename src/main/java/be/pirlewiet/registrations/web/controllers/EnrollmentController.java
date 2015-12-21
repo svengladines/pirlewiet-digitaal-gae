@@ -78,7 +78,7 @@ public class EnrollmentController {
 		}
 		
 		logger.debug( "[{}]; retrieved by secretary", inschrijving.getUuid() );
-		logger.debug( "[{}]; contact is [{}]", inschrijving.getUuid(), inschrijving.getContactGegevens().getName() );
+		//logger.debug( "[{}]; contact is [{}]", inschrijving.getUuid(), inschrijving.getContactGegevens().getName() );
 
 		return response( inschrijving, HttpStatus.OK );
 		
@@ -270,6 +270,7 @@ public class EnrollmentController {
 		// related to itself...
 		related.add( inschrijving );
 		
+		logger.info( "[{}], related enrollments (including self): [{}]", organisatie.getCode(), related.size() );
 		model.put( "related", related );
 		
 		String view

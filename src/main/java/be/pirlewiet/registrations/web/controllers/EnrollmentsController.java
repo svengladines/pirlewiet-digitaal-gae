@@ -78,12 +78,16 @@ public class EnrollmentsController {
 		
 		inschrijving.setOrganisatie( organisatie );
 		
+		logger.info( "[{}]; request to create enrollment, provided reference [{}]", organisatie.getCode(), inschrijving.getReference() );
+		
 		InschrijvingX aangemaakt
 			= this.secretariaatsMedewerker.guard().createEnrollment( inschrijving );
 		
 		if ( aangemaakt == null ) {
 			throw new RuntimeException("create failed");
 		}
+		
+		logger.info( "created enrollment with id [{}], reference [{}]", aangemaakt.getUuid(), aangemaakt.getReference() );
 		
 		return response( aangemaakt, HttpStatus.CREATED );
 			

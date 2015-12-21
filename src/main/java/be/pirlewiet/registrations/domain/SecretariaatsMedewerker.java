@@ -213,9 +213,6 @@ public class SecretariaatsMedewerker {
     	Deelnemer deelnemer
 			= new Deelnemer();
     	
-    	deelnemer.setVoorNaam( "Deelnemer" );
-    	deelnemer.setFamilieNaam( "X" );
-    	
     	saved = this.addDeelnemer( saved , deelnemer );
     	
     	Vragen vragen
