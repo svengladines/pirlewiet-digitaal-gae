@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijvingen</h1>
 					<p>
-						Beheer hier de inschrijvingen van jouw organisatie.
+						Beheer hier de inschrijvingen van jouw organisatie (vanaf 15 januari).
 					</p>
 				</div>
 			</div><!-- row -->
@@ -34,6 +34,7 @@
 		
 			<br/>
 		
+		<!-- 
 			<form class="form-horizontal">
 				
 				<div class="form-group form-group-lg">
@@ -43,7 +44,7 @@
 				</div>
 				
 			</form>
-		
+		 -->
 		</div>
 	
 		<div class="row mandatory">

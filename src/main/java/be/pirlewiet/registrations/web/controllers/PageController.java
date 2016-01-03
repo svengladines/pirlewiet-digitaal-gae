@@ -54,7 +54,8 @@ public class PageController {
 				mav.setView( new RedirectView("/rs/organisation.html") );
 			}
 			else {
-				mav.setView( new RedirectView("/rs/inschrijvingen.html") );
+				mav.setView( new RedirectView("/rs/organisation.html") );
+				// mav.setView( new RedirectView("/rs/inschrijvingen.html") );
 			}
 		
 		}

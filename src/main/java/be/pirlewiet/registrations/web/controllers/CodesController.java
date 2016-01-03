@@ -38,7 +38,7 @@ public class CodesController {
 		// = new HashMap<String,String>();
 		
 		if ( code != null ) {
-			code = code.trim();
+			code = code.replaceAll(" ", "");
 		}
 		
 		logger.info( "code [{}] presented", code );
