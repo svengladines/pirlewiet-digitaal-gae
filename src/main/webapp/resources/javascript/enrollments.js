@@ -1,15 +1,15 @@
-var Inschrijving = function ( id ) {
+var Inschrijving = function ( reference ) {
 
-	if ( id != null ) {
-		this.uuid = id;
+	if ( reference != null ) {
+		this.reference = reference;
 	}
 	
 };
 
 var Contact = function ( naam, tel, email ) {
 	
-	this.naam = naam;
-	this.telefoonNummer = tel;
+	this.name = naam;
+	this.phone = tel;
 	this.email = email;
 	
 };
@@ -101,7 +101,7 @@ var retrieveInschrijvingen = function ( ) {
 	
 };
 
-var postInschrijving = function ( rx, reference ) {
+var postEnrollment = function ( rx, reference, callback ) {
 
 	$jq.ajax( {
 		type: "post",
@@ -111,12 +111,17 @@ var postInschrijving = function ( rx, reference ) {
 	    processData: false,
 		data: JSON.stringify(rx),
 		success: function( inschrijving ) {
-			if ( reference == null ) {
-				window.location.href = "/rs/inschrijvingen/" + inschrijving.uuid + ".html";
-			}
-			else {
-				window.location.href = "/rs/inschrijvingen/" + inschrijving.reference + ".html";
-			}
+				if ( reference == null ) {
+					window.location.href = "/rs/inschrijvingen/" + inschrijving.uuid + ".html";
+				}
+				else {
+					if ( callback ) {
+						callback( inschrijving.uuid, inschrijving.deelnemers[0].uuid );
+					}
+					else {
+						window.location.href = "/rs/inschrijvingen/" + reference + ".html";
+					}
+				}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			// alert( errorThrown );
@@ -125,27 +130,31 @@ var postInschrijving = function ( rx, reference ) {
 	
 };
 
-var putDeelnemer = function ( inschrijving, dx, button, errorElement, callback ) {
+var putDeelnemer = function ( inschrijving, dx, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/deelnemers/" + dx.uuid,
+		url:"/rs/inschrijvingen/" + inschrijving + "/participant",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify(dx),
 		success: function( deelnemer ) {
-				dx.uuid = deelnemer.uuid;
-				callback( inschrijving );
+				if ( callback ) {
+					callback( inschrijving );
+				}
+				else {
+					success( button, statusElement, "Opgeslagen" );
+				}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putContact = function ( inschrijving, contact, button, errorElement, callback ) {
+var putContact = function ( inschrijving, contact, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -155,16 +164,21 @@ var putContact = function ( inschrijving, contact, button, errorElement, callbac
 	    processData: false,
 		data: JSON.stringify( contact ),
 		success: function( returned ) {
-			callback( inschrijving );
+			if ( callback ) {
+				callback( inschrijving );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putAddress = function ( inschrijving, adres, button, errorElement, callback ) {
+var putAddress = function ( inschrijving, adres, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -174,16 +188,21 @@ var putAddress = function ( inschrijving, adres, button, errorElement, callback 
 	    processData: false,
 		data: JSON.stringify( adres ),
 		success: function( returned ) {
-			callback( inschrijving );
+			if ( callback ) {
+				callback( inschrijving );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putVakanties = function ( inschrijving, vakanties, button, errorElement, callback ) {
+var putVakanties = function ( inschrijving, vakanties, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -193,16 +212,21 @@ var putVakanties = function ( inschrijving, vakanties, button, errorElement, cal
 	    processData: false,
 		data: JSON.stringify( vakanties ),
 		success: function( returned ) {
-			callback( inschrijving );
+			if ( callback ) {
+				callback( inschrijving );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putVragen = function ( inschrijving, vragen, button, errorElement, callback ) {
+var putVragen = function ( inschrijving, vragen, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -212,16 +236,21 @@ var putVragen = function ( inschrijving, vragen, button, errorElement, callback 
 	    processData: false,
 		data: JSON.stringify( vragen ),
 		success: function( returned ) {
-			callback( inschrijving );
+			if ( callback ) {
+				callback( inschrijving );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var putOpmerking = function ( inschrijving, opmerking, formErrorElement ) {
+var putOpmerking = function ( inschrijving, opmerking, formstatusElement ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -241,7 +270,7 @@ var putOpmerking = function ( inschrijving, opmerking, formErrorElement ) {
 	
 };
 
-var putStatus = function ( inschrijving, status, button, errorElement, callback ) {
+var putStatus = function ( inschrijving, status, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
@@ -251,25 +280,30 @@ var putStatus = function ( inschrijving, status, button, errorElement, callback 
 	    processData: false,
 		data: JSON.stringify( status ),
 		success: function( ox ) {
-			success( button, errorElement );
+			success( button, statusElement );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	
 };
 
-var deleteInschrijving = function ( inschrijving, button, errorElement, callback ) {
+var deleteEnrollment = function ( inschrijving, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "delete",
 		url:"/rs/inschrijvingen/" + inschrijving,
 		success: function( ox ) {
-			window.location.href = "/rs/inschrijvingen.html";
+			if ( callback ) {
+				callback( inschrijving );
+			}
+			else {
+				success( button, statusElement, "Verwijderd" );
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
-			error( button, errorElement, jqXHR.responseText );
+			error( button, statusElement, jqXHR.responseText );
 		}
 	});
 	

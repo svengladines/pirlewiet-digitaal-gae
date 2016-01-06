@@ -34,7 +34,6 @@
 		
 			<br/>
 		
-		<!-- 
 			<form class="form-horizontal">
 				
 				<div class="form-group form-group-lg">
@@ -44,7 +43,6 @@
 				</div>
 				
 			</form>
-		 -->
 		</div>
 	
 		<div class="row mandatory">

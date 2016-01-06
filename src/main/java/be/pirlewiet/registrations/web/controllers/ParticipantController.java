@@ -23,7 +23,7 @@ import be.pirlewiet.registrations.model.Deelnemer;
 
 @Controller
 @RequestMapping( {"/inschrijvingen/{inschrijving}/deelnemers/{id}"} )
-public class DeelnemerController {
+public class ParticipantController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
@@ -41,21 +41,6 @@ public class DeelnemerController {
 		return response( deelnemer, HttpStatus.OK );
 		
 	}
-	
-	@RequestMapping( method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Deelnemer> update(
-			 	@PathVariable String inschrijving,
-				@RequestBody Deelnemer deelnemer ) {
-		
-		// don't use id, GAE keys clash (probably only unique within context, not global)
-		// Deelnemer updated
-		this.secretariaatsMedewerker.guard().updateDeelnemer( inschrijving, deelnemer );
-		
-		return response( deelnemer, HttpStatus.OK );
-		
-	}
-	
 	
 	@ExceptionHandler( HttpMessageNotReadableException.class)
 	@ResponseBody

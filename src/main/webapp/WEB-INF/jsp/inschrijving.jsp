@@ -33,105 +33,102 @@
 	<div class="container">
 	
 		<br/>
-		<div class="row alert alert-info">
+		<div class="row">
 			
-			<div class="col-sm-2">
-				Status
-			</div>
-			<div class="col-sm-6">
-				<strong><fmt:message key="enrollment.status.${inschrijving.status.value}"/></strong>
+			<div class="col-sm-12 alert alert-info">
+				<strong>Status</strong><br/>
+				<fmt:message key="enrollment.status.${inschrijving.status.value}"/>
 			</div>
 			
-			<div class="col-sm-4">
+		</div>
+			<div class="row">
 				<c:choose>
-						<c:when test="${inschrijving.status.value =='DRAFT'}">
+					<c:when test="${empty inschrijving.vakanties}">
+						<div class="col-sm-12 alert alert-warning">
+							<strong>Vakantie(s)</strong><br/>
+							<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="col-sm-12 alert alert-success">
+						<strong>Vakantie(s)</strong><br/>
+						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
+							<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
+						</c:forEach>
+						</div>
+					</c:otherwise>
+				</c:choose>
+				<c:choose>
+					<c:when test="${inschrijving.contactGegevens.name == null}">
+						<div class="col-sm-12 alert alert-warning">
+							<strong>Contactpersoon</strong><br/>
+							<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="col-sm-12 alert alert-success">
+						<strong>Contactpersoon</strong><br/>
+						<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
+						</div>
+					</c:otherwise>
+				</c:choose>
+				<c:choose>
+					<c:when test="${not areAllMandatoryQuestionsAnswered}">
+						<div class="col-sm-12 alert alert-warning">
+							<strong>Vragenlijst</strong><br/>
+							<span class="">Niet (volledig) ingevuld </span><br/>
+							<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">Vragenlijst invullen</a>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="col-sm-12 alert alert-success">
+							<strong>Vragenlijst</strong><br/>
+							<span>Ingevuld</span>&nbsp;(<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">wijzigen</a>)
+						</div>
+					</c:otherwise>
+				</c:choose>
+				<c:choose>
+					<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
+						<div class="col-sm-12 alert alert-warning">
+							<strong>Deelnemer(s)</strong><br/>
+							<span class="">Nog geen deelnemers toegevoegd</span><br/>
+							<a href="#modal-participant-${inschrijving.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${inschrijving.uuid}">Deelnemer toevoegen</a>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="col-sm-12 alert alert-success">
+						<strong>Deelnemer(s)</strong><br/>
+						<c:forEach items="${related}" var="enrollment">
+								<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)<br/>
+						</c:forEach><br/>
+						<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
+						</div>
+					</c:otherwise>
+				</c:choose>
+			<c:choose>
+					<c:when test="${inschrijving.status.value =='DRAFT'}">
+						<div class="col-sm-12 alert alert-info">
+							<strong>Verstuur</strong><br/>
 							<c:choose>
 								<c:when test="${isComplete==true}">
 									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
 								</c:when>
 								<c:otherwise>
-									<span class="text-warning">Je inschrijving is nog niet volledig</span>
-									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+									<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
+									<span class="text-warning">Een inschrijving is pas volledig als alle bovenstaande kaders groen zijn.</span><br/>
 								</c:otherwise>
 							</c:choose>
-						</c:when>
-						<c:otherwise>
-								<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
-						</c:otherwise>
-						</c:choose>			
-			</div>
-					
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="col-sm-12 alert alert-info">
+							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+						</div>
+					</c:otherwise>
+					</c:choose>	
 		</div>
-				<div class="row">
-					<c:choose>
-						<c:when test="${empty inschrijving.vakanties}">
-							<div class="col-sm-12 alert alert-warning">
-								<strong>Vakantie(s)</strong><br/>
-								<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<div class="col-sm-12 alert alert-success">
-							<strong>Vakantie(s)</strong><br/>
-							<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-								<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
-							</c:forEach>
-							</div>
-						</c:otherwise>
-					</c:choose>
-					<c:choose>
-						<c:when test="${inschrijving.contactGegevens.name == null}">
-							<div class="col-sm-12 alert alert-warning">
-								<strong>Contactpersoon</strong><br/>
-								<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<div class="col-sm-12 alert alert-success">
-							<strong>Contactpersoon</strong><br/>
-							<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
-							</div>
-						</c:otherwise>
-					</c:choose>
-					<c:choose>
-						<c:when test="${not areAllMandatoryQuestionsAnswered}">
-							<div class="col-sm-12 alert alert-warning">
-								<strong>Vragenlijst</strong><br/>
-								<span class="">Niet (volledig) ingevuld </span><br/>
-								<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">Vragenlijst invullen</a>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<div class="col-sm-12 alert alert-success">
-								<strong>Vragenlijst</strong><br/>
-								<span>Ingevuld</span>&nbsp;(<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">wijzigen</a>)
-							</div>
-						</c:otherwise>
-					</c:choose>
-					<c:choose>
-						<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
-							<div class="col-sm-12 alert alert-warning">
-								<strong>Deelnemer(s)</strong><br/>
-								<span class="">Nog geen deelnemers toegevoegd</span><br/>
-								<a href="#modal-participant-${inschrijving.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${inschrijving.uuid}">Deelnemer toevoegen</a>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<div class="col-sm-12 alert alert-success">
-							<strong>Deelnemer(s)</strong><br/>
-							<c:forEach items="${related}" var="enrollment">
-									<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)<br/>
-							</c:forEach><br/>
-							<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
-							</div>
-						</c:otherwise>
-					</c:choose>					
-				
-			</div>
 						
-		<div>
-      
 			<div id="modal-vakantie" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -293,14 +290,14 @@
 							<input id="deelnemer-id-${enrollment.uuid}" type="hidden" value="${enrollment.deelnemers[0].uuid}"></input>
 							<div class="form-group">
 								<label for="deelnemer-voor-${enrollment.uuid}" class="col-sm-4 control-label">Voornaam (*)</label>
-								<div class="col-sm-3">	
-									<input id="deelnemer-voor-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].voorNaam}"></input>
+								<div class="col-sm-6">	
+									<input id="deelnemer-voor-${enrollment.uuid}" name="pd-given" type="text" class="form-control" value="${enrollment.deelnemers[0].voorNaam}"></input>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="deelnemer-familie-${enrollment.uuid}" class="col-sm-4 control-label">Familienaam (*)</label>
-								<div class="col-sm-3">	
-										<input id="deelnemer-familie-${enrollment.uuid}" type="text" class="form-control" value="${enrollment.deelnemers[0].familieNaam}"></input>
+								<div class="col-sm-6">	
+										<input id="deelnemer-familie-${enrollment.uuid}" name="pd-family" type="text" class="form-control" value="${enrollment.deelnemers[0].familieNaam}"></input>
 								</div>
 							</div>
 							<div class="form-group">
@@ -348,44 +345,44 @@
 							</div>
 						<div class="form-group">
 								<label for="participant-geboorte-${enrollment.uuid}" class="col-sm-4 control-label">Geboortedatum (*)</label>
-								<div class="col-sm-2">
+								<div class="col-sm-3">
 									<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>	
 									<input id="participant-geboorte-${enrollment.uuid}" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="participant-telefoon-${enrollment.uuid}" class="col-sm-4 control-label">Telefoonnummer (*)</label>
-								<div class="col-sm-2">
+								<div class="col-sm-4">
 									<input id="participant-telefoon-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].telefoonNummer}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="participant-gsm-${enrollment.uuid}" class="col-sm-4 control-label">GSM-nummer</label>
-								<div class="col-sm-2">
+								<div class="col-sm-4">
 									<input id="participant-gsm-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].mobielNummer}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="deelnemer-email-${enrollment.uuid}" class="col-sm-4 control-label">E-mail</label>
-								<div class="col-sm-3">
-									<input id="deelnemer-email-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.deelnemers[0].email}"></input>
+								<div class="col-sm-6">
+									<input id="deelnemer-email-${enrollment.uuid}" name="pd-email" type="email" class="form-control" value="${enrollment.deelnemers[0].email}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="adres-zipcode-${enrollment.uuid}" class="col-sm-4 control-label">PostCode (*)</label>
-								<div class="col-sm-2">
-									<input id="adres-zipcode-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.zipCode}"></input>
+								<div class="col-sm-4">
+									<input id="adres-zipcode-${enrollment.uuid}" name="pd-zip" type="text" class="form-control" value="${enrollment.adres.zipCode}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="adres-gemeente-${enrollment.uuid}" class="col-sm-4 control-label">Gemeente (*)</label>
-								<div class="col-sm-2">
+								<div class="col-sm-6">
 									<input id="adres-gemeente-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.gemeente}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="adres-straat-${enrollment.uuid}" class="col-sm-4 control-label">Straat (*)</label>
-								<div class="col-sm-3">
+								<div class="col-sm-6">
 									<input id="adres-straat-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.straat}"></input>
 								</div>
 						</div>
@@ -419,11 +416,9 @@
 			</div>
 			</div>
 		</div>
-			
+		
 		</c:forEach>
 
-				
-			
 	</div><!-- container -->
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
@@ -445,33 +440,18 @@
 				}
 				list = list.concat( element.value );	
 			});
-			putVakanties ( id, list, $jq("#vakantie-save"),$jq("#vakantie-status" ) );
+			putVakanties ( id, list, $jq("#vakantie-save"),$jq("#vakantie-status" ), refresh );
 		};
 		
 		var saveContact = function( id ) {
 			var c = new Contact( $jq("#contact-name").val(), $jq("#contact-phone").val(), $jq("#contact-email").val() );
-			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ) );
+			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ), refresh );
 		};
 		
-		var saveParticipant = function( id ) {
+		var toParticipant = function( id ) {
 			
-			var date = $jq("#participant-geboorte-" + id).val() != "" ? moment.utc( $jq("#participant-geboorte-" + id).val(), "DD/MM/YYYY") : null;
-			
-			var deelnemer
-				= new Deelnemer( 
-						$jq("#deelnemer-id-"+id).val(),
-						$jq("#deelnemer-voor-"+id).val(),
-						$jq("#deelnemer-familie-"+id).val(),
-						$jq(".deelnemer-geslacht-"+id+":checked").val(),
-						date,
-						$jq("#participant-telefoon-"+id).val(),
-						$jq("#participant-gsm-"+id).val(),
-						$jq("#deelnemer-email-"+id).val()
-						);
-			
-			
-			
-			putDeelnemer( id, deelnemer, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ), saveParticipantAddress );
+			window.location.hash = "#modal-participant-" + id;
+			window.location.reload();
 			
 		};
 		
@@ -480,29 +460,29 @@
 			var enrollment =
 				new Inschrijving( reference );
 			
-			postEnrollment( enrollment, reference );
+			postEnrollment( enrollment, reference, toParticipant );
 			
 		};
 		
-		var saveParticipant = function( id ) {
+		var saveParticipant = function( id, isNew ) {
 			
-			var date = $jq("#participant-geboorte-" + id).val() != "" ? moment.utc( $jq("#participant-geboorte-" + id).val(), "DD/MM/YYYY") : null;
+			var selector = id;
+			
+			var date = $jq("#participant-geboorte-" + selector).val() != "" ? moment.utc( $jq("#participant-geboorte-" + selector).val(), "DD/MM/YYYY") : null;
 			
 			var deelnemer
 				= new Deelnemer( 
-						$jq("#deelnemer-id-"+id).val(),
-						$jq("#deelnemer-voor-"+id).val(),
-						$jq("#deelnemer-familie-"+id).val(),
-						$jq(".deelnemer-geslacht-"+id+":checked").val(),
+						$jq("#deelnemer-id-"+selector).val(),
+						$jq("#deelnemer-voor-"+selector).val(),
+						$jq("#deelnemer-familie-"+selector).val(),
+						$jq(".deelnemer-geslacht-"+selector+":checked").val(),
 						date,
-						$jq("#participant-telefoon-"+id).val(),
-						$jq("#participant-gsm-"+id).val(),
-						$jq("#deelnemer-email-"+id).val()
+						$jq("#participant-telefoon-"+selector).val(),
+						$jq("#participant-gsm-"+selector).val(),
+						$jq("#deelnemer-email-"+selector).val()
 						);
 			
-			
-			
-			putDeelnemer( id, deelnemer, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ), saveParticipantAddress );
+			putDeelnemer( id, deelnemer, $jq("#participant-save-"+selector ),$jq("#participant-status-"+selector ), saveParticipantAddress );
 			
 		};
 		
@@ -513,8 +493,9 @@
 		};
 		
 		var saveParticipantAddress = function( id ) {
-			var a = new Adres( $jq("#adres-zipcode-"+id).val(), $jq("#adres-gemeente-"+id).val(), $jq("#adres-straat-"+id).val(), $jq("#adres-nummer-"+id).val() );
-			putAddress ( id, a, $jq("#participant-save-"+id ),$jq("#participant-status-"+id ) );
+			var selector = id;
+			var a = new Adres( $jq("#adres-zipcode-"+selector).val(), $jq("#adres-gemeente-"+selector).val(), $jq("#adres-straat-"+selector).val(), $jq("#adres-nummer-"+selector).val() );
+			putAddress ( id, a, $jq("#participant-save-"+selector ),$jq("#participant-status-"+selector ), refresh );
 		};
 		
 		var saveVragen = function( id ) {
@@ -529,7 +510,7 @@
 			$jq( "textarea.q" ).each( function( index, element ) {
 				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
 			});
-			putVragen ( id, list, $jq("#q-save" ),$jq("#q-status" ) );
+			putVragen ( id, list, $jq("#q-save" ),$jq("#q-status" ), refresh );
 		};
 		
 		var saveStatus = function( id ) {
@@ -540,6 +521,11 @@
 		
 		var cancel = function( id ) {
 			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
+		};
+		
+		var refresh = function( ) {
+			window.location.hash="";
+			window.location.reload();
 		};
     	
 		$jq("#vakantie-save").click( function( event ) {
@@ -575,7 +561,16 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveParticipant( $jq(this).attr("data-uuid") );
+			saveParticipant( $jq(this).attr("data-uuid"), false );
+			
+		});
+		
+		$jq("#participant-save-new").click( function( event ) {
+			
+			clearStatus();
+			$jq(this).button('Even geduld...');
+			
+			saveParticipant( $jq(this).attr("data-uuid"), true );
 			
 		});
 		
@@ -603,7 +598,13 @@
 			
 		});
 		
-		
+		$jq( document ).ready(function() {
+			
+			if ( window.location.hash ) {
+				$jq( "#" + window.location.hash.substring(1) ).modal();
+			}
+		    
+		});
 		
     </script>
   </fmt:bundle>

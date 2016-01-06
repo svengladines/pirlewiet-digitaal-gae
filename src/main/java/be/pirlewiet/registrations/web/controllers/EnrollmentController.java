@@ -175,6 +175,20 @@ public class EnrollmentController {
 		
 	}
 	
+	@RequestMapping( value="/participant", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Deelnemer> participantUpdate(
+			@PathVariable String uuid,
+			@RequestBody Deelnemer participant ) {
+		
+		this.retrieve( uuid );
+		
+		this.secretariaatsMedewerker.guard().updateDeelnemer( uuid, participant );
+		
+		return response( participant, HttpStatus.OK );
+		
+	}
+	
 	@RequestMapping( value="/vragen", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<List<Vraag>> vragenUpdate(

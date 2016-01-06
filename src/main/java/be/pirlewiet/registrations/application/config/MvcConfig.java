@@ -8,7 +8,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.pirlewiet.registrations.web.controllers.CodeRequestsController;
 import be.pirlewiet.registrations.web.controllers.CodesController;
-import be.pirlewiet.registrations.web.controllers.DeelnemerController;
+import be.pirlewiet.registrations.web.controllers.ParticipantController;
 import be.pirlewiet.registrations.web.controllers.EnrollmentController;
 import be.pirlewiet.registrations.web.controllers.EnrollmentsController;
 import be.pirlewiet.registrations.web.controllers.OrganisationController;
@@ -67,9 +67,9 @@ public class MvcConfig {
 		}
 		
 		@Bean
-		public DeelnemerController deelnemerController() {
+		public ParticipantController deelnemerController() {
 			
-			return new DeelnemerController();
+			return new ParticipantController();
 			
 		}
 		
