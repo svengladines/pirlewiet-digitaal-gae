@@ -42,9 +42,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
-import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.Reducer;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.web.util.ExcelImporter;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;

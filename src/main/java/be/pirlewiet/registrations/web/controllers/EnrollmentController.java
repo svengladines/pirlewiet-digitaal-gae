@@ -26,8 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.Intaker;
-import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -142,25 +142,6 @@ public class EnrollmentController {
 		
 	}
 	
-	@RequestMapping( value="/deelnemers", method = { RequestMethod.POST } )
-	@ResponseBody
-	public ResponseEntity<Deelnemer> deelnemersAdd(
-				@PathVariable String uuid,
-				@RequestBody Deelnemer deelnemer ) {
-		
-		ResponseEntity<InschrijvingX> retrieve
-			= this.retrieve( uuid );
-		
-		InschrijvingX inschrijving
-			= retrieve.getBody();
-		
-		// temporarily not available (currently only one deelnemer per inschrijving)
-		// this.secretariaatsMedewerker.addDeelnemer( inschrijving.getId(), deelnemer );
-		
-		return response( deelnemer, HttpStatus.OK );
-		
-	}
-	
 	@RequestMapping( value="/adres", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Adres> adressUpdate(
@@ -191,7 +172,7 @@ public class EnrollmentController {
 	
 	@RequestMapping( value="/vragen", method = { RequestMethod.PUT } )
 	@ResponseBody
-	public ResponseEntity<List<Vraag>> vragenUpdate(
+	public ResponseEntity<List<Vraag>> questionsUpdate(
 				@PathVariable String uuid,
 				@RequestBody List<Vraag> vragen ) {
 		
@@ -279,13 +260,21 @@ public class EnrollmentController {
 		model.put( "vakanties", vakanties );
 		model.put( "areAllMandatoryQuestionsAnswered", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving) );
 		
+		boolean isComplete
+			= true;
+		
 		List<InschrijvingX> related
 			= this.secretariaatsMedewerker.guard().findRelated( inschrijving );
 		// related to itself...
 		related.add( inschrijving );
 		
-		logger.info( "[{}], related enrollments (including self): [{}]", organisatie.getCode(), related.size() );
+		logger.debug( "[{}], related enrollments (including self): [{}]", organisatie.getCode(), related.size() );
 		model.put( "related", related );
+		
+		for ( InschrijvingX e : related ) {
+			isComplete &= this.secretariaatsMedewerker.guard().isTheEnrollmentComplete( e );
+		}
+		model.put( "isComplete", isComplete );
 		
 		String view
 			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";

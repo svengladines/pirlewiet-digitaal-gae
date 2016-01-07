@@ -1,9 +1,9 @@
-package be.pirlewiet.registrations.domain;
+package be.pirlewiet.registrations.domain.exception;
 
 @SuppressWarnings("serial")
 public class PirlewietException extends RuntimeException {
 	
-	PirlewietException( String message ) {
+	public PirlewietException( String message ) {
 		super( message );
 	}
 

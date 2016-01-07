@@ -25,8 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
-import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;

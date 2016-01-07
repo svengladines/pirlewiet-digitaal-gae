@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import be.pirlewiet.registrations.domain.PirlewietException;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
+import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Deelnemer;
 
 @Controller

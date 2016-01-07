@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -25,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
+import be.pirlewiet.registrations.domain.exception.IncompleteObjectException;
+import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -535,22 +536,7 @@ public class SecretariaatsMedewerker {
     	
     	if ( d != null ) {
     		
-    		if ( isEmpty(  deelnemer.getVoorNaam() ) ) {
-    			throw new PirlewietException("Geef de voornaam van de deelnemer op");
-    		}
-    		if ( isEmpty( deelnemer.getFamilieNaam() ) ) {
-    			throw new PirlewietException("Geef de familienaam van de deelnemer op");
-    		}
-    		
-    		if ( deelnemer.getGeslacht() == null ) {
-    			throw new PirlewietException("Geef het geslacht van de deelnemer op");
-    		}
-    		if ( deelnemer.getGeboorteDatum() == null ) {
-    			throw new PirlewietException("Geef de geboortedatum van de deelnemer op");
-    		}
-    		if ( isEmpty( deelnemer.getTelefoonNummer() ) && isEmpty( deelnemer.getMobielNummer() ) ) {
-    			throw new PirlewietException("Geef een telefoonnummer of GSM-nummer van de deelnemer op");
-    		}
+    		assertParticipantCompleteness( deelnemer );
     		
     		d.setVoorNaam( deelnemer.getVoorNaam() );
     		d.setFamilieNaam( deelnemer.getFamilieNaam() );
@@ -842,6 +828,42 @@ public class SecretariaatsMedewerker {
 		return complete;
     }
     
+    // dynamic: ready to submit, later: medical file complete ? TODO
+    public boolean isTheEnrollmentComplete( InschrijvingX enrollment ) {
+    	
+    	boolean complete
+			= true;
+    	
+    	// TODO: components should check themselves for completeness ?
+    	
+    	try {
+	
+	    	// holidays
+	    	complete &= ( ! isEmpty( enrollment.getVks() ) );
+	    	
+	    	// contact
+	    	ContactGegevens contact
+	    		= enrollment.getContactGegevens();
+	    	complete &= ( ! isEmpty( contact.getName() ) );
+	    	complete &= ( ! isEmpty( contact.getEmail() ) );
+	    	complete &= ( ! isEmpty( contact.getPhone() ) );
+	    	
+	    	// q-list
+			complete &= this.areAllMandatoryQuestionsAnswered( enrollment );
+			
+			// participants
+			Deelnemer participant 
+				= enrollment.getDeelnemers().get( 0 );
+			
+			this.assertParticipantCompleteness( participant );
+    	}
+    	catch( IncompleteObjectException e ) {
+    		complete = false;
+    	}
+		
+		return complete;
+    }
+    
     public List<InschrijvingX> findRelated( InschrijvingX enrollment ){
     	
     	String uuid
@@ -864,5 +886,25 @@ public class SecretariaatsMedewerker {
     	return related;
     	
     }
+    
+    protected void assertParticipantCompleteness( Deelnemer participant ) {
+    	
+    	if ( isEmpty(  participant.getVoorNaam() ) ) {
+			throw new IncompleteObjectException("Geef de voornaam van de deelnemer op");
+		}
+		if ( isEmpty( participant.getFamilieNaam() ) ) {
+			throw new IncompleteObjectException("Geef de familienaam van de deelnemer op");
+		}
+		
+		if ( participant.getGeslacht() == null ) {
+			throw new IncompleteObjectException("Geef het geslacht van de deelnemer op");
+		}
+		if ( participant.getGeboorteDatum() == null ) {
+			throw new IncompleteObjectException("Geef de geboortedatum van de deelnemer op");
+		}
+		if ( isEmpty( participant.getTelefoonNummer() ) && isEmpty( participant.getMobielNummer() ) ) {
+			throw new IncompleteObjectException("Geef een telefoonnummer of GSM-nummer van de deelnemer op");
+		}
+    } 
  
 }

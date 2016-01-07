@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import be.occam.utils.ftp.FTPClient;
 import be.occam.utils.spring.web.Client;
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
+import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Vragen;
