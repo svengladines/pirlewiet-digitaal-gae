@@ -272,10 +272,15 @@ public class EnrollmentController {
 		model.put( "related", related );
 		
 		for ( InschrijvingX e : related ) {
-			isComplete &= this.secretariaatsMedewerker.guard().isTheEnrollmentComplete( e );
+			boolean thisOneComplete
+				= this.secretariaatsMedewerker.guard().isTheEnrollmentComplete( e );
+			logger.info( "sub-enrollment [{}] is {}complete", thisOneComplete ? "": "not ", e.getUuid() );
+			isComplete &= thisOneComplete;
 		}
+		
 		model.put( "isComplete", isComplete );
 		
+		logger.info( "enrollment [{}] is {}complete", isComplete ? "": "not " );
 		String view
 			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";
 

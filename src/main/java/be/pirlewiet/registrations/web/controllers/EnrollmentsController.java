@@ -54,7 +54,7 @@ public class EnrollmentsController {
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
 	@ResponseBody
-	public ResponseEntity<List<InschrijvingX>> get( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ResponseEntity<List<InschrijvingX>> query( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		List<InschrijvingX> inschrijvingen
 			= new ArrayList<InschrijvingX>( );

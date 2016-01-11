@@ -34,15 +34,17 @@
 		
 			<br/>
 		
-			<form class="form-horizontal">
-				
-				<div class="form-group form-group-lg">
-					<div>
-						<button type="button" id="nieuw" class="btn btn-primary btn-lg" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+			<c:if test="${ 'hfu608' == organisation.code }">
+				<form class="form-horizontal">
+					
+					<div class="form-group form-group-lg">
+						<div>
+							<button type="button" id="nieuw" class="btn btn-primary btn-lg" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+						</div>
 					</div>
-				</div>
-				
-			</form>
+					
+				</form>
+			</c:if>
 		</div>
 	
 		<div class="row mandatory">

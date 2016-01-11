@@ -842,14 +842,16 @@ public class SecretariaatsMedewerker {
 	    	complete &= ( ! isEmpty( enrollment.getVks() ) );
 	    	
 	    	// contact
-	    	ContactGegevens contact
-	    		= enrollment.getContactGegevens();
-	    	complete &= ( ! isEmpty( contact.getName() ) );
-	    	complete &= ( ! isEmpty( contact.getEmail() ) );
-	    	complete &= ( ! isEmpty( contact.getPhone() ) );
+	    	if ( enrollment.getReference() == null ) {
+	    		ContactGegevens contact
+	    			= enrollment.getContactGegevens();
+		    	complete &= ( ! isEmpty( contact.getName() ) );
+		    	complete &= ( ! isEmpty( contact.getEmail() ) );
+		    	complete &= ( ! isEmpty( contact.getPhone() ) );
 	    	
-	    	// q-list
-			complete &= this.areAllMandatoryQuestionsAnswered( enrollment );
+		    	// q-list, only for root enrollment for now | TODO, medical questions must be answered for all...
+	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment );
+	    	}
 			
 			// participants
 			Deelnemer participant 
@@ -859,6 +861,7 @@ public class SecretariaatsMedewerker {
     	}
     	catch( IncompleteObjectException e ) {
     		complete = false;
+    		logger.info( "enrollement not complete ", e );
     	}
 		
 		return complete;

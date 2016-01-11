@@ -72,6 +72,7 @@ public class DevData {
 		// pirlewiet.setUuid( KeyFactory.keyToString( pirlewiet.getKey() ) );
 		this.organsiatieRepository.saveAndFlush( pirlewiet );
 		
+		{
 		Organisatie ocmw
 			= new Organisatie();
 	
@@ -115,6 +116,26 @@ public class DevData {
 		this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
 		
 		this.logger.info( "lisa id is [{}]", lisa.getUuid() );
+		}
+		
+		{
+			Organisatie ocmw
+				= new Organisatie();
+		
+			ocmw.setNaam("VZW Svekke");
+			ocmw.setCode( "hfu608" );
+			ocmw.setEmail( "sven.gladines@foo.bar" );
+			ocmw.setTelefoonNummer( "016123456" );
+			ocmw.setAdres( new Adres() );
+			ocmw.getAdres().setGemeente( "Leuven" );
+			ocmw.getAdres().setStraat( "Oude Markt" );
+			ocmw.getAdres().setZipCode( "3000" );
+			ocmw.getAdres().setNummer("1");
+		
+			ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
+			ocmw.setUuid( KeyFactory.keyToString( ocmw.getKey() ) );
+			this.organsiatieRepository.saveAndFlush( ocmw );
+		}
 		
 	}
 	

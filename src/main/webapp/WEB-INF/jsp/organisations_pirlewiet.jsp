@@ -44,7 +44,6 @@
 					<th>E-mail</th>
 					<th>Telefoon</th>
 					<th>GSM</th>
-					<th>E-mail</th>
 					<th>Code</th>
 				</tr>
 			</thead>

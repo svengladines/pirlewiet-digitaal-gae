@@ -79,26 +79,36 @@ public class Intaker {
 		InschrijvingX loaded
 			= this.secretariaatsMedewerker.findInschrijving( inschrijving.getUuid() );
 		
-		if ( Status.Value.AUTO.equals( status.getValue() ) && ( Status.Value.DRAFT.equals( loaded.getStatus().getValue() ) ) ) {
+		if ( Status.Value.AUTO.equals( status.getValue() ) ) {
 			
-			if ( ! isComplete( loaded ) ) {
-				return;
+			if ( Status.Value.DRAFT.equals( loaded.getStatus().getValue() ) ) {
+			
+				if ( ! isComplete( loaded ) ) {
+					return;
+				}
+			
+				takeIn( loaded, status );
 			}
-			
-			takeIn( loaded, status );
 			
 		}
 		else {
 			
 			loaded.getStatus().setComment( status.getComment() );
+			loaded.getStatus().setValue( status.getValue() );
+			
+			this.inschrijvingXRepository.saveAndFlush( loaded );
+			
+			logger.info( "updated enrollment [{}] to status [{}]", loaded.getUuid(), loaded.getStatus().getValue() );
 			
 			List<InschrijvingX> related
 				= this.inschrijvingXRepository.findByReference( loaded.getUuid() );
 			
 			for ( InschrijvingX r : related ) {
 				
-				r.getStatus().setValue( Value.SUBMITTED );
+				r.getStatus().setValue( status.getValue() );
 				this.inschrijvingXRepository.saveAndFlush( r );
+				
+				logger.info( "updated related enrollment [{}] to status [{}]", r.getUuid(), r.getStatus().getValue() );
 				
 			}
 

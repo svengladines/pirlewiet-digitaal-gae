@@ -36,8 +36,11 @@
 		<div class="row">
 			
 			<div class="col-sm-12 alert alert-info">
-				<strong>Status</strong><br/>
-				<fmt:message key="enrollment.status.${inschrijving.status.value}"/>
+				<h4><strong>Status</strong><br/></h4>
+				<p>
+					<i><fmt:message key="enrollment.status.${inschrijving.status.value}"/></i><br/>
+					<fmt:message key="enrollment.status.${inschrijving.status.value}.description"/> <br/>
+				</p>
 			</div>
 			
 		</div>
@@ -45,13 +48,13 @@
 				<c:choose>
 					<c:when test="${empty inschrijving.vakanties}">
 						<div class="col-sm-12 alert alert-warning">
-							<strong>Vakantie(s)</strong><br/>
+							<h4><strong>Vakantie(s)</strong></h4>
 							<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<strong>Vakantie(s)</strong><br/>
+						<h4><strong>Vakantie(s)</strong><br/></h4>
 						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
 							<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
 						</c:forEach>
@@ -61,13 +64,13 @@
 				<c:choose>
 					<c:when test="${inschrijving.contactGegevens.name == null}">
 						<div class="col-sm-12 alert alert-warning">
-							<strong>Contactpersoon</strong><br/>
+							<h4><strong>Contactpersoon</strong><br/></h4>
 							<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<strong>Contactpersoon</strong><br/>
+						<h4><strong>Contactpersoon</strong><br/></h4>
 						<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
 						</div>
 					</c:otherwise>
@@ -75,14 +78,14 @@
 				<c:choose>
 					<c:when test="${not areAllMandatoryQuestionsAnswered}">
 						<div class="col-sm-12 alert alert-warning">
-							<strong>Vragenlijst</strong><br/>
+							<h4><strong>Vragenlijst</strong><br/></h4>
 							<span class="">Niet (volledig) ingevuld </span><br/>
 							<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">Vragenlijst invullen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-							<strong>Vragenlijst</strong><br/>
+							<h4><strong>Vragenlijst</strong><br/></h4>
 							<span>Ingevuld</span>&nbsp;(<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">wijzigen</a>)
 						</div>
 					</c:otherwise>
@@ -90,14 +93,14 @@
 				<c:choose>
 					<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
 						<div class="col-sm-12 alert alert-warning">
-							<strong>Deelnemer(s)</strong><br/>
+							<h4><strong>Deelnemer(s)</strong><br/></h4>
 							<span class="">Nog geen deelnemers toegevoegd</span><br/>
 							<a href="#modal-participant-${inschrijving.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${inschrijving.uuid}">Deelnemer toevoegen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<strong>Deelnemer(s)</strong><br/>
+						<h4><strong>Deelnemer(s)</strong><br/></h4>
 						<c:forEach items="${related}" var="enrollment">
 								<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)<br/>
 						</c:forEach><br/>
@@ -105,12 +108,15 @@
 						</div>
 					</c:otherwise>
 				</c:choose>
+				
 			<c:choose>
 					<c:when test="${inschrijving.status.value =='DRAFT'}">
 						<div class="col-sm-12 alert alert-info">
-							<strong>Verstuur</strong><br/>
 							<c:choose>
 								<c:when test="${isComplete==true}">
+									<p>
+										Je inschrijving is volledig. Je kan deze nu versturen.
+									</p>
 									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
 								</c:when>
@@ -123,7 +129,11 @@
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-info">
-							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+							<p>
+								<strong>Acties</strong>
+							</p>
+							<br/>
+							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Annuleer</button>
 						</div>
 					</c:otherwise>
 					</c:choose>	
@@ -183,13 +193,13 @@
 							<form class="form-horizontal">
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
-									<div class="col-sm-3">	
+									<div class="col-sm-6">	
 										<input id="contact-name" type="text" class="form-control" value="${inschrijving.contactGegevens.name}"></input>
 									</div>
 							</div>
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
-									<div class="col-sm-2">	
+									<div class="col-sm-4">	
 										<input id="contact-phone" type="text" class="form-control" value="${inschrijving.contactGegevens.phone}"></input>
 									</div>
 							</div>
@@ -513,10 +523,18 @@
 			putVragen ( id, list, $jq("#q-save" ),$jq("#q-status" ), refresh );
 		};
 		
-		var saveStatus = function( id ) {
+		var saveStatus = function( id, value ) {
 			var comment = $jq("#status-comment-text").val();
-			var status = new Status ( "AUTO", comment ,true );
-			putStatus ( id, status, $jq("#enrollment-save" ),$jq("#x-status" ) );
+			if ( value ) {
+				var sx = new Status (value, comment ,true );
+				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ) );
+			}
+			else {
+				var sx = new Status ( "AUTO", comment ,true );
+				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ) );	
+			}
+			
+			
 		};
 		
 		var cancel = function( id ) {
@@ -574,7 +592,7 @@
 			
 		});
 		
-		$jq("#enrollment-save").click( function( event ) {
+		$jq("#enrollment-submit").click( function( event ) {
 			
 			clearStatus();
 			$jq(this).button('Even geduld...');
