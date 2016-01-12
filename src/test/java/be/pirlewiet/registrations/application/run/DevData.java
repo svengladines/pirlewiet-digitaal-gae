@@ -18,6 +18,7 @@ import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -60,7 +61,7 @@ public class DevData {
 
 		pirlewiet.setNaam("Pirlewiet VZW");
 		pirlewiet.setCode( "pwt001" );
-		pirlewiet.setEmail( "secretariaat@pirlewiet.be" );
+		pirlewiet.setEmail( PirlewietUtil.PIRLEWIET_EMAIL );
 		pirlewiet.setTelefoonNummer( "09020123456" );
 		pirlewiet.setAdres( new Adres() );
 		pirlewiet.getAdres().setGemeente( "Gent" );

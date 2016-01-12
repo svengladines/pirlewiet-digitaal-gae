@@ -130,7 +130,7 @@ public class Mapper {
 					columns.add( antwoord( vragen.get( 12 ) ) );
 					columns.add( antwoord( vragen.get( 13 ) ) );
 					columns.add( antwoord( vragen.get( 14 ) ) );
-					columns.add( antwoord( vragen.get( 15 ) ) );
+					//columns.add( antwoord( vragen.get( 15 ) ) );
 					
 					columns.add( antwoord( vragen.get( 3 ) ) );
 					

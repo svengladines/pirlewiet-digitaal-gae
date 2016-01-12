@@ -143,7 +143,25 @@ public class EnrollmentsController {
 		if ( PirlewietUtil.isPirlewiet( organisatie ) ) {
 			
 			List<InschrijvingX> inschrijvingen 
-				= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+			= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+		
+			List<InschrijvingX> enrollments
+				= new LinkedList<InschrijvingX>();
+		
+			for ( InschrijvingX enrollment : inschrijvingen ) {
+				
+				enrollments.add( enrollment );
+				
+				List<InschrijvingX> related
+					= this.secretariaatsMedewerker.guard().findRelated( enrollment );
+				
+				if ( related != null ) {
+					enrollments.addAll( related );
+				}
+				
+			}
+		
+		model.put( "enrollments", enrollments );
 		
 		}
 		else {
@@ -168,7 +186,6 @@ public class EnrollmentsController {
 			
 			model.put( "enrollments", enrollments );	
 		}
-		
 	
 		String view
 			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijvingen_pirlewiet" : "inschrijvingen";

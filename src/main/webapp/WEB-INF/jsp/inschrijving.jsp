@@ -127,6 +127,14 @@
 							</c:choose>
 						</div>
 					</c:when>
+					<c:when test="${inschrijving.status.value =='CANCELLED'}">
+						<div class="col-sm-12 alert alert-info">
+							<p>
+								<h4><strong>Acties</strong></h4>
+							</p>
+							Je inschrijving is geannuleerd. Je kan hier geen actie meer op doen.
+						</div>
+					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-info">
 							<p>
@@ -527,11 +535,11 @@
 			var comment = $jq("#status-comment-text").val();
 			if ( value ) {
 				var sx = new Status (value, comment ,true );
-				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ) );
+				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
 			}
 			else {
 				var sx = new Status ( "AUTO", comment ,true );
-				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ) );	
+				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );	
 			}
 			
 			

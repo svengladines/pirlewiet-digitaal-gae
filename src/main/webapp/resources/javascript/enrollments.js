@@ -280,7 +280,12 @@ var putStatus = function ( inschrijving, status, button, statusElement, callback
 	    processData: false,
 		data: JSON.stringify( status ),
 		success: function( ox ) {
-			success( button, statusElement );
+			if ( callback ) {
+				callback( ox );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			error( button, statusElement, jqXHR.responseText );

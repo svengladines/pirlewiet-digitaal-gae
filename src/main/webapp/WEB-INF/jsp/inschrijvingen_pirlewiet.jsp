@@ -28,11 +28,12 @@
 		</div><!-- container -->
 	</div>
 
+	<fmt:bundle basename="pirlewiet-messages">
 	<div class="container">
 	
 		<div class="row mandatory">
 		
-			<h2>NIEUW</h2>
+			<h3>Inschrijvingen</h3>
 			
 			<p>
 		    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download?status=SUBMITTED" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld...">Download</a>
@@ -53,7 +54,7 @@
 			</thead>
 			
 			
-			<c:forEach items="${submitted}" var="inschrijving">
+			<c:forEach items="${enrollments}" var="inschrijving">
 				
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
@@ -68,7 +69,7 @@
 					<td>${inschrijving.deelnemers[0].voorNaam}</td>
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
+					<td><fmt:message key="enrollment.status.${inschrijving.status.value}"/></i></td>
 					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
 				</tr>
 			</c:forEach>
@@ -76,224 +77,10 @@
 			</table>
 			
 		</div>	
-		
-		<div class="row mandatory">
-		
-			<h2>IN BEHANDELING</h2>
-			
-			<table class="table table-bordered">
-			
-			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Ingediend</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
-			</thead>
-			
-			
-			<c:forEach items="${transit}" var="inschrijving">
-				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
-							
-				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${date}</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
-					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
-				</tr>
-			</c:forEach>
-			
-			</table>
-			
-		</div>
-		
-		<div class="row mandatory">
-		
-			<h2>WACHTLIJST</h2>
-			
-			<table class="table table-bordered">
-			
-			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Ingediend</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
-			</thead>
-			
-			
-			<c:forEach items="${waiting}" var="inschrijving">
-				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
-							
-				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${date}</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
-					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
-				</tr>
-			</c:forEach>
-			
-			</table>
-			
-		</div>	
-		
-		<div class="row mandatory">
-		
-			<h2>AANVAARD</h2>
-			
-			<table class="table table-bordered">
-			
-			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Ingediend</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
-			</thead>
-			
-			
-			<c:forEach items="${accepted}" var="inschrijving">
-				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
-							
-				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${date}</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
-					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
-				</tr>
-			</c:forEach>
-			
-			</table>
-			
-		</div>	
-		
-		<div class="row mandatory">
-		
-			<h2>GEWEIGERD</h2>
-			
-			<table class="table table-bordered">
-			
-			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Ingediend</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
-			</thead>
-			
-			
-			<c:forEach items="${rejected}" var="inschrijving">
-				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
-							
-				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${date}</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
-					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
-				</tr>
-			</c:forEach>
-			
-			</table>
-			
-		</div>	
-		
-		<div class="row mandatory">
-		
-			<h2>GEANNULEERD</h2>
-			
-			<table class="table table-bordered">
-			
-			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Ingediend</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
-			</thead>
-			
-			
-			<c:forEach items="${cancelled}" var="inschrijving">
-				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
-							
-				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${date}</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
-					<td>${gd}</td>
-					<td>${inschrijving.status}</td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
-				</tr>
-			</c:forEach>
-			
-			</table>
-			
-		</div>	
-		
 		
 	</div><!-- container -->
+	
+	</fmt:bundle>
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 	

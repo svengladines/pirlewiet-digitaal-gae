@@ -16,11 +16,14 @@ public class PirlewietUtil {
 	public static final String PDIDDY_EMAIL 
 		= "pirlewiet.digitaal@gmail.com";
 	
+	public static final String PIRLEWIET_EMAIL 
+		= "info@pirlewiet.be";
+	
 	public static boolean isPirlewiet( Organisatie organisatie ) {
 		if ( organisatie == null ) {
 			return false;
 		}
-		return organisatie.getEmail() == null ? false : organisatie.getEmail().toLowerCase().equals( "info@pirlewiet.be" );
+		return organisatie.getEmail() == null ? false : organisatie.getEmail().toLowerCase().equals( PIRLEWIET_EMAIL );
 	}
 	
 	public static boolean isPD( Organisatie organisatie ) {
