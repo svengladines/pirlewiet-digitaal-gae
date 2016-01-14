@@ -232,14 +232,16 @@ public class OrganisationManager {
     @Transactional(readOnly=true)
     public Organisatie organisation( String id ) {
     	
-    	Organisatie organsiatie
+    	Organisatie organisatie
     		= this.organisatieRepository.findByUuid( id );
     	
-    	if ( organsiatie != null ) {
+    	if ( organisatie != null ) {
     		logger.info( "found organsiatie with id []", id );
+    		// detach the adres object
+    		organisatie.getAdres().hashCode();
     	}
     	
-    	return organsiatie;
+    	return organisatie;
     	
     }
     

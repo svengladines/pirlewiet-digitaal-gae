@@ -1,5 +1,5 @@
 var base = function() {
 	
-	return "http://localhost:8068";
+	return "http://pirlewiet-digitaal.appspot.com";
 	
 }

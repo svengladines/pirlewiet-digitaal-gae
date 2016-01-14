@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +31,7 @@ import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.CodeRequest;
 import be.pirlewiet.registrations.model.Organisatie;
+import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/organisation"} )
@@ -153,9 +155,39 @@ public class OrganisationController {
 		
 		model.put( "organisation", organisatie );
 		model.put( "incomplete", this.organisationManager.isInComplete( organisatie, true ) );
-		
+
 		String view 
 			= be.pirlewiet.registrations.web.util.PirlewietUtil.isPirlewiet( organisatie) ? "pirlewiet" : "organisation";
+		
+		return new ModelAndView( view, model );	
+		
+	}
+	
+	@RequestMapping( value="/{uuid}", method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
+	public ModelAndView viewAsPirlewiet(
+			@CookieValue(required=true, value="pwtid") String pwtid,
+			@PathVariable(value="uuid" ) String uuid ) {
+		
+
+		Map<String,Object> model
+			= new HashMap<String,Object>();
+		
+		if ( pwtid != null ) {
+			
+			Organisatie loaded
+				= this.buitenWipper.guard().whoHasID(  pwtid  );
+			
+			if ( ! PirlewietUtil.isPirlewiet( loaded ) ) {
+				loaded = this.buitenWipper.guard().whoHasID( uuid  );
+			}
+			
+			model.put( "organisation", loaded );
+			model.put( "incomplete", this.organisationManager.isInComplete( loaded, true ) );
+			model.put( "isPirlewiet", true );
+			
+		}
+		String view 
+			= "organisation";
 		
 		return new ModelAndView( view, model );	
 		

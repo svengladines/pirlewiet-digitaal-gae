@@ -39,12 +39,11 @@
 			<thead>
 				<tr>
 					<th><a href="/rs/organisations.html?order=name">Naam</a></th>
-					<th><a href="/rs/organisations.html?order=street">Adres</a></th>
 					<th><a href="/rs/organisations.html?order=city">Gemeente</a></th>
 					<th>Telefoon</th>
-					<th>GSM</th>
 					<th>E-mail</th>
 					<th>Code</th>
+					<th>Details</th>
 				</tr>
 			</thead>
 			
@@ -54,12 +53,11 @@
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${organisation.updated}" var="updated"></fmt:formatDate>
 				<tr>
 					<td class="nowrap">${organisation.naam}</td>
-					<td>${organisation.adres.straat} ${organisation.adres.nummer}</td>
-					<td>${organisation.adres.zipCode} ${organisation.adres.gemeente}</td>
+					<td>${organisation.adres.gemeente}</td>
 					<td>${organisation.telefoonNummer}</td>
-					<td>${organisation.gsmNummer}</td>
 					<td>${organisation.email}</td>
 					<td>${organisation.code}</td>
+					<td><a href="/rs/organisation/uuid.html=${organisation.uuid}"><i class="fa fa-edit"></i>Bekijk</td>
 				</tr>
 			</c:forEach>
 			

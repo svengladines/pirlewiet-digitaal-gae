@@ -112,14 +112,16 @@
 						<input id="adres-nummer" type="tel" class="form-control" value="${organisation.adres.nummer}"></input>
 					</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-4 control-label"></label>
-				<div class="col-sm-8">
-					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					<span id="organisation-status" class="error hidden">
-					</span>
+			<c:if test="${!isPirlewiet}">
+				<div class="form-group">
+					<label class="col-sm-4 control-label"></label>
+					<div class="col-sm-8">
+						<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<span id="organisation-status" class="error hidden">
+						</span>
+					</div>
 				</div>
-			</div>
+			</c:if>
 			
 		</form>
 		
