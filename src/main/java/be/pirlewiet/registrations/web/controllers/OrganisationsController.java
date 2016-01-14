@@ -45,6 +45,7 @@ import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.Reducer;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.domain.exception.PirlewietException;
+import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.web.util.ExcelImporter;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
@@ -465,18 +466,46 @@ public class OrganisationsController {
 				return new Comparator<Organisatie>() {
 					@Override
 					public int compare(Organisatie o1, Organisatie o2) {
-						return o1.getAdres().getGemeente().compareTo( o2.getAdres().getGemeente() );
+						Adres a1 = o1.getAdres();
+						Adres a2 = o2.getAdres();
+						if ( ( a1 == null ) || ( a1.getGemeente() == null ) ) {
+							return -1;
+						}
+						
+						if ( ( a2 == null ) || ( a2.getGemeente() == null ) ) {
+							return 1;
+						}
+						
+						return a1.getGemeente().compareTo( a2.getGemeente() );
 					} };
 		case "street": 
 			return new Comparator<Organisatie>() {
 				@Override
 				public int compare(Organisatie o1, Organisatie o2) {
-					return o1.getAdres().getStraat().compareTo( o2.getAdres().getStraat() );
+					Adres a1 = o1.getAdres();
+					Adres a2 = o2.getAdres();
+					if ( ( a1 == null ) || ( a1.getStraat() == null ) ) {
+						return -1;
+					}
+					
+					if ( ( a2 == null ) || ( a2.getStraat() == null ) ) {
+						return 1;
+					}
+					return a1.getStraat().compareTo( a2.getStraat() );
 				} };
 		default:
 			return new Comparator<Organisatie>() {
 				@Override
 				public int compare(Organisatie o1, Organisatie o2) {
+					
+					if ( ( o1.getNaam() == null ) ) {
+						return -1;
+					}
+					
+					if ( ( o2.getNaam() == null ) ) {
+						return 1;
+					}
+					
 					return o1.getNaam().compareTo( o2.getNaam() );
 				} };	
 		}

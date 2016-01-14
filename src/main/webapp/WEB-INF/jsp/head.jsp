@@ -26,14 +26,15 @@
     <![endif]-->
   </head>
 		
-	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/underscore-1.4.3.js"></script>
-    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/moment.js"></script>
-    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/templates.js"></script>
-    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/pirlewiet.js"></script>
-	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/vakanties.js"></script>
-	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/organisations.js"></script>
-	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/javascript/enrollments.js"></script>
-	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/resources/theme/js/bootstrap.js"></script>	
+	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/underscore-1.4.3.js"></script>
+    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/moment.js"></script>
+    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/environment.js"></script>
+    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/templates.js"></script>
+    <script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/pirlewiet.js"></script>
+	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/vakanties.js"></script>
+	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/organisations.js"></script>
+	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/javascript/enrollments.js"></script>
+	<script type="text/javascript" src="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/theme/js/bootstrap.js"></script>	
 
 </head>

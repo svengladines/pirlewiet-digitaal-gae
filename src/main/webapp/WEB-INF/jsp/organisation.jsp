@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Mijn Organisatie</h1>
 					<p>
-						Registreer je hier als doorverwijzer en beheer het profiel van jouw organisatie.
+						Beheer het profiel van jouw organisatie.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -50,19 +50,6 @@
 			</div>
 			</c:otherwise>
 			</c:choose>
-			<div class="form-group">
-					<label for="organisation-error" class="col-sm-4 control-label"></label>
-					<div class="col-sm-8">
-						<span id="organisation-ok" class="error text-success hidden">
-							Gegevens werden met succes verwerkt. <br/>
-							Als je een nieuwe doorverwijzer bent, werd er een e-mail gestuurd met de inlogcode. <br/>
-							Met deze code kan je inloggen via de <a href="/code.htm">inlogpagina</a>. 
-						</span>
-						<span id="organisation-error" class="error text-danger hidden">
-							Het formulier kon niet worden verwerkt. Controleer de gegevens en probeer opnieuw AUB. 
-						</span>
-					</div>
-			</div>
 		
 			<h2>Gegevens</h2>
 			
@@ -129,6 +116,8 @@
 				<label class="col-sm-4 control-label"></label>
 				<div class="col-sm-8">
 					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+					<span id="organisation-status" class="error hidden">
+					</span>
 				</div>
 			</div>
 			
@@ -157,14 +146,15 @@
 						$jq("#organisation-alternative-email").val()
 						);
 			
+			putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), saveAddress );	
+			
+		};
+		
+		var saveAddress = function( organisation ) {
+			
 			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			if ( organisation.uuid == 0 ) {
-				postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );
-			}
-			else {
-				putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-error" ), putOrganisationAddress, a );	
-			}
+			putOrganisationAddress( organisation, a, $jq("#organisation-save" ),$jq("#organisation-status" ), refresh );	
 			
 		};
 		

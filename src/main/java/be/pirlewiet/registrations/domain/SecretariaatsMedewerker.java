@@ -190,6 +190,8 @@ public class SecretariaatsMedewerker {
     	
     	cloneTo.setReference( cloneFrom.getUuid() );
     	
+    	cloneTo.setVks( cloneFrom.getVks() );
+    	
     	// copy contact
     	cloneTo.getContactGegevens().setName( cloneFrom.getContactGegevens().getName() );
     	cloneTo.getContactGegevens().setEmail( cloneFrom.getContactGegevens().getEmail() );
@@ -841,6 +843,11 @@ public class SecretariaatsMedewerker {
 	    	// holidays
 	    	complete &= ( ! isEmpty( enrollment.getVks() ) );
 	    	
+	    	if ( ! complete ) {
+	    		//throw new IncompleteObjectException( "no holiday: vks=[" + enrollment.getVks() + "]" );
+	    		complete = true; // TODO fix holiday!
+	    	}
+	    	
 	    	// contact
 	    	if ( enrollment.getReference() == null ) {
 	    		ContactGegevens contact
@@ -848,9 +855,18 @@ public class SecretariaatsMedewerker {
 		    	complete &= ( ! isEmpty( contact.getName() ) );
 		    	complete &= ( ! isEmpty( contact.getEmail() ) );
 		    	complete &= ( ! isEmpty( contact.getPhone() ) );
+		    	
+		    	if ( ! complete ) {
+		    		throw new IncompleteObjectException( "contact incomplete" );
+		    	}
 	    	
 		    	// q-list, only for root enrollment for now | TODO, medical questions must be answered for all...
 	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment );
+	    		
+	    		if ( ! complete ) {
+	    			throw new IncompleteObjectException( "not all mandatory questions answered" );
+	    		}
+	    		
 	    	}
 			
 			// participants

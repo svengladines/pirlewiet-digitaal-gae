@@ -22,9 +22,6 @@ function success( button, element, message ) {
 	if ( message != undefined ) {
 		element.html( message )	;
 	}
-	else {
-		element.html( "Je aanvraag werd met succes behandeld." );
-	}
 	
 	element.removeClass("text-danger");
 	element.addClass("text-success");
@@ -43,4 +40,8 @@ function clearError() {
 
 function clearStatus() {
 	$jq(".status").removeClass("show").addClass("hidden");
+}
+
+function refresh() {
+	window.location.reload();
 }

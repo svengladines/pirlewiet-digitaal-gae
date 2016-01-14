@@ -118,7 +118,17 @@ public class OrganisationManager {
     	saved 
 			= this.organisatieRepository.saveAndFlush( saved );
     	
-    	logger.info( "created organiation with uuid [{}]", saved.getUuid() );
+    	logger.info( "created organiation with uuid [{}] and code [{}]", saved.getUuid(), code );
+    	
+		boolean published = publishNewList();
+		
+		if ( published ) {
+			this.sendCreatedEmailToOrganisation( saved );
+			this.sendCreatedEmailToPirlewiet( saved );
+		}
+		else {
+			throw new PirlewietException( "Registratie van organisatie is mislukt. Probeer AUB opnieuw. Bij aanhoudende problemen, contacteer ons secretariaat.");
+		}
     	
     	return saved;
     	
@@ -149,19 +159,6 @@ public class OrganisationManager {
     	organisatie.setUpdated( new Date() );
 		
 		organisatie = this.organisatieRepository.saveAndFlush( organisatie );
-		
-		if ( newOrganisation ) {
-			
-			boolean published = publishNewList();
-			
-			if ( published ) {
-				this.sendCreatedEmailToOrganisation( organisatie );
-				this.sendCreatedEmailToPirlewiet( organisatie );
-			}
-			else {
-				throw new PirlewietException( "Registratie van organisatie is mislukt. Probeer AUB opnieuw. Bij aanhoudende problemen, contacteer ons secretariaat.");
-			}
-		}
 		
     	return organisatie;
     	

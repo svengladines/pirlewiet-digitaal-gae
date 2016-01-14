@@ -70,7 +70,7 @@
 					<td>${inschrijving.deelnemers[0].familieNaam}</td>
 					<td>${gd}</td>
 					<td><fmt:message key="enrollment.status.${inschrijving.status.value}"/></i></td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i></td>
+					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i>Beheer</td>
 				</tr>
 			</c:forEach>
 			

@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Organisaties</h1>
 					<p>
-						Overzicht van de geregistreerde organisaties. De laatst aangepaste staan bovenaan.
+						Overzicht van de geregistreerde doorverwijzers.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -41,9 +41,9 @@
 					<th><a href="/rs/organisations.html?order=name">Naam</a></th>
 					<th><a href="/rs/organisations.html?order=street">Adres</a></th>
 					<th><a href="/rs/organisations.html?order=city">Gemeente</a></th>
-					<th>E-mail</th>
 					<th>Telefoon</th>
 					<th>GSM</th>
+					<th>E-mail</th>
 					<th>Code</th>
 				</tr>
 			</thead>

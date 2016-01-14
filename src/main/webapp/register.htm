@@ -28,11 +28,12 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
     
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/jquery-1.11.1.js"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/theme/js/bootstrap.js"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/pirlewiet.js?v=${timestamp}"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/enrollments.js?v=${timestamp}"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/organisations.js?v=${timestamp}"></script>
+    <script src="digitaal/resources/javascript/jquery-1.11.1.js"></script>
+    <script src="digitaal/resources/theme/js/bootstrap.js"></script>
+    <script src="digitaal/resources/javascript/environment.js?v=${timestamp}"></script>
+    <script src="digitaal/resources/javascript/pirlewiet.js?v=${timestamp}"></script>
+    <script src="digitaal/resources/javascript/enrollments.js?v=${timestamp}"></script>
+    <script src="digitaal/resources/javascript/organisations.js?v=${timestamp}"></script>
     
   </head>
 	
@@ -112,36 +113,14 @@
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="adres-zipcode" class="col-sm-4 control-label">Postcode (*)</label>
-					<div class="col-sm-2">
-						<input id="adres-zipcode" type="tel" class="form-control"></input>
-					</div>
-			</div>
-			<div class="form-group">
-					<label for="adres-straat" class="col-sm-4 control-label">Gemeente (*)</label>
-					<div class="col-sm-2">
-						<input id="adres-gemeente" type="tel" class="form-control"></input>
-					</div>
-			</div>
-			<div class="form-group">
-					<label for="adres-straat" class="col-sm-4 control-label">Straat (*)</label>
-					<div class="col-sm-3">
-						<input id="adres-straat" type="tel" class="form-control"></input>
-					</div>
-			</div>
-			<div class="form-group">
-					<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer (*)</label>
-					<div class="col-sm-2">
-						<input id="adres-nummer" type="tel" class="form-control"></input>
-					</div>
-			</div>
-			<div class="form-group">
 				<label class="col-sm-4 control-label"></label>
 				<div class="col-sm-8">
-					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-				</div>
-				<span id="organisation-status" class="error text-success hidden">
+					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button><br/>
+					<span id="organisation-status" class="error text-success hidden">
+					<strong>Registratie gelukt.</strong> <br/> Er werd een e-mail gestuurd naar het opgegeven e-mailadres. <br/>Deze e-mail bevat een inlogcode en verdere instructies.
 				</span>
+				</div>
+				
 			</div>
 			
 		</form>
@@ -179,10 +158,9 @@
 			
 			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
-			postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), putOrganisationAddress, a );
+			postOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ) );
 			
 		};
-		
 		    	
 		$jq("#organisation-save").click( function( event ) {
 			
