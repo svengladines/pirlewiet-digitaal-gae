@@ -150,14 +150,19 @@ public class EnrollmentsController {
 		
 			for ( InschrijvingX enrollment : inschrijvingen ) {
 				
-				enrollments.add( enrollment );
+				List<InschrijvingX> r
+					= new ArrayList<InschrijvingX>();
+				
+				r.add( enrollment );
 				
 				List<InschrijvingX> related
 					= this.secretariaatsMedewerker.guard().findRelated( enrollment );
 				
 				if ( related != null ) {
-					enrollments.addAll( related );
+					r.addAll( related );
 				}
+				
+				enrollments.addAll( r );
 				
 			}
 		

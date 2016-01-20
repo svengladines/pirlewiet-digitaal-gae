@@ -446,3 +446,7 @@ a:after {
 	white-space: nowrap;
 }
 
+.max-height {
+	height: 100%;	
+}
+

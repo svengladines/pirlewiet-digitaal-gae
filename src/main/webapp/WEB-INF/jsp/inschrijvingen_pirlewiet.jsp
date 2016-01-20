@@ -42,36 +42,57 @@
 			<table class="table table-bordered">
 			
 			<thead>
-				<tr>
-					<th>Vakantie(s)</th>
-					<th>Ingediend</th>
-					<th>Voornaam</th>
-					<th>Familienaam</th>
-					<th>Geboortedatum</th>
-					<th>Status</th>
-					<th>Beheer</th>
-				</tr>
 			</thead>
 			
 			
-			<c:forEach items="${enrollments}" var="inschrijving">
+	<c:forEach items="${enrollments}" var="enrollment">
 				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${inschrijving.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
+				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.inschrijvingsdatum}" var="date"></fmt:formatDate>
+				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
+				
+	<c:if test="${enrollment.reference == null}">
+					</tbody>
+			
+					</table>
+					
+					<br/>
+					
+					<table class="table table-bordered table-striped">
+			
+					<thead>
+					</thead>
+					<tbody>
+					
+					<tr>
+						<th scope="row">Inschrijving</th>
+						<td colspan="1">
+							<a href="./inschrijvingen/${enrollment.uuid}.html" class="pull-right">bewerk</a>
+						</td>
+					</tr>
+			
+					<tr>
+						<th scope="row">Vakantie(s)</th>
+						<td colspan="1">
+							<c:forEach items="${enrollment.vakanties}" var="vakantie">
+								${vakantie.naam}<br/>
+							</c:forEach>
+					</tr>
+					<tr>
+						<th scope="row">Contactpersoon</th>
+						<td colspan="1">
+							${enrollment.contactGegevens.name}
+						</td>
+					</tr>
+				</c:if>
 							
-				<tr>
-					<td>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
-							${vakantie.naam}<br/>
-						</c:forEach>
-					</td>
-					<td>${date}</td>
-					<td>${inschrijving.deelnemers[0].voorNaam}</td>
-					<td>${inschrijving.deelnemers[0].familieNaam}</td>
-					<td>${gd}</td>
-					<td><fmt:message key="enrollment.status.${inschrijving.status.value}"/></i></td>
-					<td><a href="./inschrijvingen/${inschrijving.uuid}.html"><i class="fa fa-edit"></i>Beheer</td>
-				</tr>
+					<tr>
+						<th scope="row">Deelnemer(s)</th>
+						<td colspan="1">
+							${enrollment.deelnemers[0].voorNaam} &nbsp; ${enrollment.deelnemers[0].familieNaam} (${gd})
+							<span class="pull-right"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></i></strong></span>
+						</td>
+					</tr>
+				
 			</c:forEach>
 			
 			</table>

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import be.occam.utils.timing.Timing;
+import be.pirlewiet.registrations.domain.q.QIDs;
+import be.pirlewiet.registrations.domain.q.QList;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -116,25 +116,39 @@ public class Mapper {
 					List<Vraag> vragen
 						= inschrijving.getVragen();
 					
-					columns.add( antwoord( vragen.get( 1 ) ) );
-					columns.add( antwoord( vragen.get( 0 ) ) );
+					QList qList
+						= new QList( vragen );
 					
-					columns.add( antwoord( vragen.get( 4 ) ) );
-					columns.add( antwoord( vragen.get( 5 ) ) );
-					
-					columns.add( antwoord( vragen.get( 7 ) ) );
-					columns.add( antwoord( vragen.get( 8 ) ) );
-					columns.add( antwoord( vragen.get( 9 ) ) );
-					columns.add( antwoord( vragen.get( 10 ) ) );
-					columns.add( antwoord( vragen.get( 11 ) ) );
-					columns.add( antwoord( vragen.get( 12 ) ) );
-					columns.add( antwoord( vragen.get( 13 ) ) );
-					columns.add( antwoord( vragen.get( 14 ) ) );
-					//columns.add( antwoord( vragen.get( 15 ) ) );
-					
-					columns.add( antwoord( vragen.get( 3 ) ) );
-					
-					columns.add( antwoord( vragen.get( 2 ) ) );
+					// Q = contact
+					columns.add( antwoord( qList.getVraag( QIDs.QID_SHARED_CONTACT ) ) );
+					// R = bill
+					columns.add( antwoord( qList.getVraag( QIDs.QID_SHARED_BILL ) ) );
+					// S = medic
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_MEDIC ) ) );
+					// T = medic tel
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_MEDIC_TEL ) ) );
+					// U = sports
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_SPORTS) ) );
+					// V = game
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_GAME ) ) );
+					// W = wandelen
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_HIKE ) ) );
+					// X = fietsen 
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_BIKE ) ) );
+					// Y = zwemmen
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_SWIM ) ) );
+					// Z = roken
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_SMOKE ) ) );
+					// AA = aandachtspunten = 10
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_REMARKS ) ) );
+					// AB = medicijnen = 11
+					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_MEDICINS ) ) );
+					// AC = foto's = 0
+					columns.add( antwoord( qList.getVraag( QIDs.QID_SHARED_PHOTO ) ) );
+					// AD = naam gezin = ?
+					columns.add( "/" );
+					// AE = eerder meegeweest ?
+					columns.add( antwoord( qList.getVraag( QIDs.QID_HISTORY ) ) );
 					
 					StringBuilder b
 						= new StringBuilder("");
@@ -317,5 +331,5 @@ public class Mapper {
 		// return vraag.getVraag();
 		
 	}
-
+	
 }

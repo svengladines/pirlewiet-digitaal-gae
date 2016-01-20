@@ -34,6 +34,7 @@ import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.InschrijvingX;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Status;
+import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
@@ -170,7 +171,7 @@ public class EnrollmentController {
 		
 	}
 	
-	@RequestMapping( value="/vragen", method = { RequestMethod.PUT } )
+	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<List<Vraag>> questionsUpdate(
 				@PathVariable String uuid,
@@ -258,7 +259,8 @@ public class EnrollmentController {
 			= this.secretariaatsMedewerker.guard().actueleVakanties( );
 		
 		model.put( "vakanties", vakanties );
-		model.put( "areAllMandatoryQuestionsAnswered", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving) );
+		model.put( "applicationQListComplete", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving, Tags.TAG_APPLICATION ) );
+		model.put( "medicQListComplete", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving, Tags.TAG_MEDIC ) );
 		
 		boolean isComplete
 			= true;
@@ -278,9 +280,16 @@ public class EnrollmentController {
 			isComplete &= thisOneComplete;
 		}
 		
+		// complete ?
+		logger.info( "enrollment [{}] is {}complete", inschrijving.getUuid(), isComplete ? "": "not " );
 		model.put( "isComplete", isComplete );
 		
-		logger.info( "enrollment [{}] is {}complete", inschrijving.getUuid(), isComplete ? "": "not " );
+		// status ?
+		Status applicationStatus
+			= this.secretariaatsMedewerker.guard().whatIsTheApplicationStatus( related );
+		
+		model.put("applicationStatus", applicationStatus );
+		
 		String view
 			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";
 

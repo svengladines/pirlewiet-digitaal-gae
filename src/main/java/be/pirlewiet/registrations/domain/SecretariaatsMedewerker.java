@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -26,6 +28,7 @@ import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepositor
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.domain.exception.IncompleteObjectException;
 import be.pirlewiet.registrations.domain.exception.PirlewietException;
+import be.pirlewiet.registrations.domain.q.QList;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.ContactGegevens;
 import be.pirlewiet.registrations.model.Deelnemer;
@@ -36,7 +39,6 @@ import be.pirlewiet.registrations.model.Status.Value;
 import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.Vraag;
-import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.DeelnemerRepository;
 import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
@@ -168,8 +170,8 @@ public class SecretariaatsMedewerker {
     	
     		this.addDeelnemer( inschrijving , deelnemer );
     	
-    		Vragen vragen
-    			= new Vragen();
+    		QList vragen
+    			= QList.template();
     	
 	    	for ( String key : vragen.getVragen().keySet() ) {
 	    		
@@ -218,8 +220,8 @@ public class SecretariaatsMedewerker {
     	
     	saved = this.addDeelnemer( saved , deelnemer );
     	
-    	Vragen vragen
-    		= new Vragen();
+    	QList vragen
+			= QList.template();
     	
     	for ( String key : vragen.getVragen().keySet() ) {
     		
@@ -425,7 +427,12 @@ public class SecretariaatsMedewerker {
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
     	
+    	Set<String> tags
+    		= new HashSet<String>();
+    	
     	for ( Vraag vraag : vragen ) {
+    		
+    		tags.add( vraag.getTag() );
     	
 	    	for ( Vraag v : inschrijving.getVragen() ) {
 	    		
@@ -442,7 +449,11 @@ public class SecretariaatsMedewerker {
     	inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
     	boolean complete
-    		= this.areAllMandatoryQuestionsAnswered( inschrijving );
+    		= true;
+    	
+    		for ( String tag : tags ) {
+    			complete &= this.areAllMandatoryQuestionsAnswered( inschrijving, tag );
+    		}
     	
     	if ( ! complete ) {
     		throw new RuntimeException("Beantwoord alle vragen met een (*). Vul eventueel 'Niet van toepassing' (NVT) in." );
@@ -807,7 +818,7 @@ public class SecretariaatsMedewerker {
 		
 	} 
     
-    public boolean areAllMandatoryQuestionsAnswered( InschrijvingX enrollment ) {
+    public boolean areAllMandatoryQuestionsAnswered( InschrijvingX enrollment, String tag ) {
     	
     	boolean complete
 			= true;
@@ -815,10 +826,9 @@ public class SecretariaatsMedewerker {
 		for ( Vraag vraag : enrollment.getVragen() ) {
 			
 			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
-				// MEDIC & INTERNAL are not mandatory
-				if ( ! ( Tags.TAG_MEDIC.equals( vraag.getTag() ) || ( Tags.TAG_INTERNAL.equals( vraag.getTag() ) ) ) ) { 
+				if ( tag.equals( vraag.getTag() ) ) { 
 					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
-						logger.info( "mandatory question [{}][{}] was not answered", vraag.getUuid(), vraag.getVraag() );
+						logger.info( "[{}]; mandatory question [{}] was not answered", enrollment.getUuid(), vraag.getVraag() );
 						complete = false;
 						break;
 					}
@@ -860,14 +870,16 @@ public class SecretariaatsMedewerker {
 		    		throw new IncompleteObjectException( "contact incomplete" );
 		    	}
 	    	
-		    	// q-list, only for root enrollment for now | TODO, medical questions must be answered for all...
-	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment );
+		    	// q-list, only for root enrollment for now
+	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_APPLICATION );
 	    		
 	    		if ( ! complete ) {
 	    			throw new IncompleteObjectException( "not all mandatory questions answered" );
 	    		}
 	    		
 	    	}
+	    	
+	    	complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );
 			
 			// participants
 			Deelnemer participant 
@@ -906,6 +918,52 @@ public class SecretariaatsMedewerker {
     	
     }
     
+    public Status whatIsTheApplicationStatus( List<InschrijvingX> related ) {
+    	
+    	Status status
+    		= new Status( );
+    	
+		// an application gets status 'submitted', any of the enrollments is submitted
+    	// an application gets status 'complete' when none of the enrollments need handling 
+
+    	boolean isComplete
+    		= false;
+    	
+    	boolean isDraft
+    		= false;
+    	
+    	for ( InschrijvingX enrollment : related ) {
+
+			if ( this.needsHandling( enrollment ) ) {
+				
+				isComplete = false;
+				
+			}
+			else if ( ! this.hasBeenHandled( enrollment ) ) {
+				
+				// no need for handling and not handled ? then it must be DRAFT
+				
+				// DRAFT as long as any of the enrollment is in draft
+				isDraft = true;
+				
+			}
+    		
+    	}
+    	
+    	if ( isDraft ) {
+    		status.setValue( Value.DRAFT );
+    	}
+    	else if ( isComplete ) {
+    		status.setValue( Value.COMPLETE );
+    	}
+    	else {
+    		status.setValue( Value.SUBMITTED );
+    	}
+    	
+    	return status;
+    	
+    }
+    
     protected void assertParticipantCompleteness( Deelnemer participant ) {
     	
     	if ( isEmpty(  participant.getVoorNaam() ) ) {
@@ -925,5 +983,23 @@ public class SecretariaatsMedewerker {
 			throw new IncompleteObjectException("Geef een telefoonnummer of GSM-nummer van de deelnemer op");
 		}
     } 
+    
+    protected boolean needsHandling( InschrijvingX enrollment ) {
+    	
+    	Value value
+    		= enrollment.getStatus().getValue();
+    	
+    	return ( Value.SUBMITTED.equals( value ) || Value.WAITINGLIST.equals( value ) );
+    	
+    }
+    
+    protected boolean hasBeenHandled( InschrijvingX enrollment ) {
+    	
+    	Value value
+    		= enrollment.getStatus().getValue();
+    	
+    	return ( Value.ACCEPTED.equals( value ) || Value.REJECTED.equals( value ) );
+    	
+    }
  
 }

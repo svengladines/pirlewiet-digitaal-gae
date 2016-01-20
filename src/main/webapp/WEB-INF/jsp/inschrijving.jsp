@@ -38,8 +38,8 @@
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><fmt:message key="enrollment.status.${inschrijving.status.value}"/></i><br/>
-					<fmt:message key="enrollment.status.${inschrijving.status.value}.description"/> <br/>
+					<i><fmt:message key="application.status.${applicationStatus.value}"/></i><br/>
+					<fmt:message key="application.status.${applicationStatus.value}.description"/> <br/>
 				</p>
 			</div>
 			
@@ -48,13 +48,13 @@
 				<c:choose>
 					<c:when test="${empty inschrijving.vakanties}">
 						<div class="col-sm-12 alert alert-warning">
-							<h4><strong>Vakantie(s)</strong></h4>
+							<i class="fa fa-4 fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
 							<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<h4><strong>Vakantie(s)</strong><br/></h4>
+						<i class="fa fa-4 fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
 						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
 							<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
 						</c:forEach>
@@ -64,61 +64,81 @@
 				<c:choose>
 					<c:when test="${inschrijving.contactGegevens.name == null}">
 						<div class="col-sm-12 alert alert-warning">
-							<h4><strong>Contactpersoon</strong><br/></h4>
+							<i class="fa fa-4 fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
 							<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<h4><strong>Contactpersoon</strong><br/></h4>
+						<i class="fa fa-4 fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
 						<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${not areAllMandatoryQuestionsAnswered}">
+					<c:when test="${not applicationQListComplete}">
 						<div class="col-sm-12 alert alert-warning">
-							<h4><strong>Vragenlijst</strong><br/></h4>
+							<i class="fa fa-4 fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 							<span class="">Niet (volledig) ingevuld </span><br/>
-							<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">Vragenlijst invullen</a>
+							<a href="#modal-qlist-application" class="todo" data-toggle="modal" data-target="#modal-qlist-application">Vragenlijst invullen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-							<h4><strong>Vragenlijst</strong><br/></h4>
-							<span>Ingevuld</span>&nbsp;(<a href="#modal-questions" class="todo" data-toggle="modal" data-target="#modal-questions">wijzigen</a>)
+							<i class="fa fa-4 fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+							<span>Ingevuld</span>&nbsp;(<a href="#modal-qlist-application" class="todo" data-toggle="modal" data-target="#modal-qlist-application">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
 					<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
 						<div class="col-sm-12 alert alert-warning">
-							<h4><strong>Deelnemer(s)</strong><br/></h4>
+							<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 							<span class="">Nog geen deelnemers toegevoegd</span><br/>
 							<a href="#modal-participant-${inschrijving.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${inschrijving.uuid}">Deelnemer toevoegen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
-						<div class="col-sm-12 alert alert-success">
-						<h4><strong>Deelnemer(s)</strong><br/></h4>
-						<c:forEach items="${related}" var="enrollment">
-								<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)<br/>
-						</c:forEach><br/>
-						<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
-						</div>
+						<c:choose>
+							<c:when test="${applicationStatus == 'COMPLETE'}">
+								<div class="col-sm-12 alert alert-success">
+								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+									<c:forEach items="${related}" var="enrollment">
+											<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche</a>
+									</c:forEach><br/>									
+								</div>
+							</c:when>
+							<c:otherwise>
+							<div class="col-sm-12 alert alert-warning">
+								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+									<c:forEach items="${related}" var="enrollment">
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
+											<c:choose>
+												<c:when test="${not medicQListComplete}">
+														<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen</a>
+												</c:when>
+												<c:otherwise>
+														<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche aanpassen</a>
+												</c:otherwise>
+											</c:choose>
+									</c:forEach><br/>									
+								</div>
+							</c:otherwise>
+						</c:choose>
 					</c:otherwise>
 				</c:choose>
 				
 			<c:choose>
-					<c:when test="${inschrijving.status.value =='DRAFT'}">
+					<c:when test="${applicationStatus.value =='DRAFT'}">
 						<div class="col-sm-12 alert alert-info">
 							<c:choose>
 								<c:when test="${isComplete==true}">
 									<p>
 										Je inschrijving is volledig. Je kan deze nu versturen.
 									</p>
-									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verwijder</button>
 								</c:when>
 								<c:otherwise>
 									<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
@@ -127,12 +147,12 @@
 							</c:choose>
 						</div>
 					</c:when>
-					<c:when test="${inschrijving.status.value =='CANCELLED'}">
+					<c:when test="${applicationStatus.value =='CANCELLED'}">
 						<div class="col-sm-12 alert alert-info">
 							<p>
 								<h4><strong>Acties</strong></h4>
 							</p>
-							Je inschrijving is geannuleerd. Je kan hier geen actie meer op doen.
+							De inschrijving is geannuleerd. Je kan hier geen actie meer voor ondernemen.
 						</div>
 					</c:when>
 					<c:otherwise>
@@ -141,7 +161,7 @@
 								<strong>Acties</strong>
 							</p>
 							<br/>
-							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Annuleer</button>
+							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-bolt"></i>&nbsp;&nbsp;Annuleer</button>
 						</div>
 					</c:otherwise>
 					</c:choose>	
@@ -180,7 +200,7 @@
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 							<span id ="vakantie-status"></span>
 						</div>
 					</div>
@@ -222,7 +242,7 @@
 						<div class="modal-footer">
 							<div class="form-group">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-								<button type="button" id="contact-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<button type="button" id="contact-save" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 								<span id ="contact-status"></span>
 							</div>
 						</div>
@@ -230,7 +250,7 @@
 				</div>
 			</div>
 					
-			<div id="modal-questions" class="modal fade" tabindex="-1" role="dialog">
+			<div id="modal-qlist-application" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -240,7 +260,7 @@
 					<div class="modal-body">
 						<form class="form-horizontal">
 						<c:forEach items="${inschrijving.vragen}" var="vraag">
-								<c:if test="${vraag.tag eq 'various' or vraag.tag eq 'fotos'}">
+								<c:if test="${vraag.tag eq 'application'}">
 									<div class="form-group">
 										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
 										<c:choose>
@@ -248,23 +268,23 @@
 												<div class="col-sm-6">
 													<div class="checkbox">
 														<label>
-															<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+															<input type="radio" name="${vraag.uuid}" class="q" data-tag="${vraag.tag}" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
 														</label>
 														&nbsp;&nbsp;&nbsp;
 														<label>
-															<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+															<input type="radio" name="${vraag.uuid}" class="q" data-tag="${vraag.tag}" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
 														</label>
 													</div>
 												</div>
 											</c:when>
 											<c:when test="${vraag.type eq 'Text'}">
 												<div class="col-sm-3">
-													<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
+													<input id="${vraag.uuid}" type="text" class="form-control q" data-tag="${vraag.tag}" value="${vraag.antwoord}"></input>
 												</div>
 											</c:when>
 											<c:when test="${vraag.type eq 'Area'}">
 												<div class="col-sm-6">
-													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64" data-tag="${vraag.tag}">${vraag.antwoord}</textarea>
 												</div>
 											</c:when>
 										</c:choose>
@@ -276,8 +296,8 @@
 					<div class="modal-footer">
 						<div class="form-group">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="q-save" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
-							<span id ="q-status"></span>
+							<button type="button" id="q-save-application" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<span id ="q-status-application"></span>
 						</div>
 					</div>
 				</div>
@@ -423,7 +443,67 @@
 							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
 							<div class="col-sm-4">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-								<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<span id ="participant-status-${enrollment.uuid}"></span>
+							</div>
+						</div>
+						
+						</form>
+			
+				</div>
+			</div>
+			</div>
+		</div>
+		
+		<!-- Medical file -->
+		<div id="modal-participant-${enrollment.uuid}-medical" class="modal fade" tabindex="-1" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+			
+							<h2>Medische fiche ${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}x</h2>
+						</div>
+					<div class="modal-body">
+					
+						<form class="form-horizontal">
+							<c:forEach items="${enrollment.vragen}" var="vraag">
+								<c:if test="${vraag.tag eq 'medic'}">
+									<div class="form-group">
+										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
+										<c:choose>
+											<c:when test="${vraag.type eq 'YesNo'}">
+												<div class="col-sm-6">
+													<div class="checkbox">
+														<label>
+															<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+														</label>
+														&nbsp;&nbsp;&nbsp;
+														<label>
+															<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+														</label>
+													</div>
+												</div>
+											</c:when>
+											<c:when test="${vraag.type eq 'Text'}">
+												<div class="col-sm-3">
+													<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
+												</div>
+											</c:when>
+											<c:when test="${vraag.type eq 'Area'}">
+												<div class="col-sm-6">
+													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+												</div>
+											</c:when>
+										</c:choose>
+										</div>
+								</c:if>
+						</c:forEach>
+					
+						<div class="form-group">
+							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
+							<div class="col-sm-4">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+								<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 								<span id ="participant-status-${enrollment.uuid}"></span>
 							</div>
 						</div>
@@ -516,19 +596,19 @@
 			putAddress ( id, a, $jq("#participant-save-"+selector ),$jq("#participant-status-"+selector ), refresh );
 		};
 		
-		var saveVragen = function( id ) {
+		var saveQList = function( id, tag ) {
 			var list
 				= [];
-			$jq( "input:checked.q" ).each( function( index, element ) {
-				list.push( new Vraag( element.name, element.attributes["data-q"], element.value ) );
+			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new Vraag( element.name, tag, element.attributes["data-q"], element.value ) );
 			});
-			$jq( "input[type='text'].q" ).each( function( index, element ) {
-				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
+			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new Vraag( element.id, tag, element.attributes["data-q"], element.value ) );
 			});
-			$jq( "textarea.q" ).each( function( index, element ) {
-				list.push( new Vraag( element.id, element.attributes["data-q"], element.value ) );
+			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new Vraag( element.id, tag, element.attributes["data-q"], element.value ) );
 			});
-			putVragen ( id, list, $jq("#q-save" ),$jq("#q-status" ), refresh );
+			putVragen ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
 		};
 		
 		var saveStatus = function( id, value ) {
@@ -572,12 +652,12 @@
 			
 		});
 		
-		$jq("#q-save").click( function( event ) {
+		$jq("#q-save-application").click( function( event ) {
 			
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveVragen( "${inschrijving.uuid}" );
+			saveQList( "${inschrijving.uuid}", "application" );
 			
 		});
 		

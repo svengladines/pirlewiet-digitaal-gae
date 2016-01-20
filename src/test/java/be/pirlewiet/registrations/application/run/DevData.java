@@ -64,6 +64,7 @@ public class DevData {
 		pirlewiet.setEmail( PirlewietUtil.PIRLEWIET_EMAIL );
 		pirlewiet.setTelefoonNummer( "09020123456" );
 		pirlewiet.setAdres( new Adres() );
+		pirlewiet.setEmail( "info@pirlewiet.be");
 		pirlewiet.getAdres().setGemeente( "Gent" );
 		pirlewiet.getAdres().setZipCode( "6000" );
 		pirlewiet.getAdres().setStraat( "Sint-X" );
@@ -103,6 +104,7 @@ public class DevData {
 		lisaSimpson.getAdres().setZipCode( "6000");
 		lisaSimpson.getAdres().setStraat( "x" );
 		lisaSimpson.getAdres().setNummer( "x" );
+		lisaSimpson.setYear( 2016 );
 		
 	
 		lisaSimpson = this.inschrijvingXRepository.saveAndFlush( lisaSimpson );

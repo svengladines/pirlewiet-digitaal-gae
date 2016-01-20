@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
-import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.web.util.DataGuard;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
@@ -70,10 +68,6 @@ public class OrganisationManager {
 	
 	@Resource
 	protected OrganisatieRepository organisatieRepository;
-	
-	@Transient
-	@Resource
-	protected Vragen vragen;
 	
 	@Resource
 	BuitenWipper buitenWipper;

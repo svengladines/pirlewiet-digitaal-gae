@@ -21,20 +21,21 @@
 				<div class="col-lg-12">
 					<h1>Inschrijvingen</h1>
 					<p>
-						Beheer hier de inschrijvingen van jouw organisatie (vanaf 15 januari).
+						Beheer hier de inschrijvingen van jouw organisatie.
 					</p>
 				</div>
 			</div><!-- row -->
 		</div><!-- container -->
 	</div>
 
+	<fmt:bundle basename="pirlewiet-messages">
 	<div class="container content">
 	
 		<div class="row">
 		
 			<br/>
 		
-			<c:if test="${ 'hfu608' == organisation.code }">
+			<c:if test="${ true }">
 				<form class="form-horizontal">
 					
 					<div class="form-group form-group-lg">
@@ -71,9 +72,8 @@
 					<tbody>
 					
 					<tr>
-						<th scope="row">Status</th>
+						<th scope="row">Inschrijving</th>
 						<td colspan="1">
-							<strong>${enrollment.status}</strong>
 							<a href="./inschrijvingen/${enrollment.uuid}.html" class="pull-right">bewerk</a>
 						</td>
 					</tr>
@@ -96,6 +96,7 @@
 					<tr>
 						<th scope="row">Deelnemer</th>
 						<td>${enrollment.deelnemers[0].voorNaam} &nbsp; ${enrollment.deelnemers[0].familieNaam} (${gd})
+						<span class="pull-right text-${enrollment.status.value == 'ACCEPTED' ? 'success' : enrollment.status.value == 'REJECTED' ? 'danger' : 'info' }"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
 					</tr>
 				
 			</c:forEach>
@@ -107,6 +108,8 @@
 		</div>	
 		
 	</div><!-- container -->
+	
+	</fmt:bundle>
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>
 

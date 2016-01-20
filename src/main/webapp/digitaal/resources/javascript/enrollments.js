@@ -36,9 +36,10 @@ var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm,
 	
 };
 
-var Vraag = function ( id, vraag, antwoord ) {
+var Vraag = function ( id, tag, vraag, antwoord ) {
 	
 	this.uuid = id;
+	this.tag = tag;
 	this.vraag = vraag;
 	this.antwoord = antwoord;
 	
@@ -230,7 +231,7 @@ var putVragen = function ( inschrijving, vragen, button, statusElement, callback
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/vragen",
+		url:"/rs/inschrijvingen/" + inschrijving + "/qlist",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,

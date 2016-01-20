@@ -91,13 +91,25 @@
 					</c:otherwise>
 				</c:choose>
 						<div class="col-sm-12 alert alert-success">
-						<h4><strong>Deelnemer(s)</strong><br/></h4>
-						<c:forEach items="${related}" var="enrollment">
-								<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)
-								<button type="button" class="btn btn-success enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="ACCEPTED"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Aanvaard</button>
-								<button type="button" class="btn btn-danger enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="REJECTED"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Weiger</button>
-								<button type="button" class="btn btn-primary enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="WAITINGLIST"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Wachtlijst</button>
-						</c:forEach><br/>
+							<div class="row">
+								<div class="col-sm-12"><h4><strong>Deelnemer(s)</strong><br/></h4></div>
+							</div>
+							<c:forEach items="${related}" var="enrollment">
+						<div class="row">
+							<div class="col-sm-4 media-middle max-height">
+								${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
+							</div>
+							<div class="col-sm-8">
+									<button type="button" class="btn btn-success enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="ACCEPTED"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Aanvaard</button>
+									<button type="button" class="btn btn-danger enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="REJECTED"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Weiger</button>
+									<button type="button" class="btn btn-primary enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="WAITINGLIST"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Wachtlijst</button>
+							</div>
+						</div>
+						<div>
+							<br/>
+						</div>
+						</c:forEach>
+						
 						</div>
 				
 		</div>

@@ -26,11 +26,11 @@ import be.pirlewiet.registrations.domain.PostBode;
 import be.pirlewiet.registrations.domain.Reducer;
 import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.domain.Viewer;
+import be.pirlewiet.registrations.domain.q.QList;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockOneScenario;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockScenario;
 import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
 import be.pirlewiet.registrations.model.Organisatie;
-import be.pirlewiet.registrations.model.Vragen;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Configuration
@@ -132,11 +132,6 @@ public class PirlewietApplicationConfig {
 			
 			return new Reducer();
 			
-		}
-		
-		@Bean
-		public Vragen vragen () {
-			return new Vragen();
 		}
 		
 		@Bean
