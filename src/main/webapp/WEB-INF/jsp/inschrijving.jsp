@@ -100,17 +100,8 @@
 					</c:when>
 					<c:otherwise>
 						<c:choose>
-							<c:when test="${applicationStatus == 'COMPLETE'}">
-								<div class="col-sm-12 alert alert-success">
-								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-									<c:forEach items="${related}" var="enrollment">
-											<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche</a>
-									</c:forEach><br/>									
-								</div>
-							</c:when>
-							<c:otherwise>
-							<div class="col-sm-12 alert alert-warning">
+							<c:when test="${ not ( participantComplete && medicQListComplete ) }">
+								<div class="col-sm-12 alert alert-warning">
 								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<c:forEach items="${related}" var="enrollment">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
@@ -122,6 +113,16 @@
 														<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche aanpassen</a>
 												</c:otherwise>
 											</c:choose>
+									</c:forEach><br/>									
+								</div>
+								
+							</c:when>
+							<c:otherwise>
+							<div class="col-sm-12 alert alert-success">
+								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+									<c:forEach items="${related}" var="enrollment">
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche aanpassen</a>
 									</c:forEach><br/>									
 								</div>
 							</c:otherwise>
@@ -430,6 +431,38 @@
 									<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.nummer}"></input>
 								</div>
 						</div>
+								<c:forEach items="${inschrijving.vragen}" var="vraag">
+								<c:if test="${vraag.tag eq 'history'}">
+									<div class="form-group">
+										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
+										<c:choose>
+											<c:when test="${vraag.type eq 'YesNo'}">
+												<div class="col-sm-6">
+													<div class="checkbox">
+														<label>
+															<input type="radio" name="${vraag.uuid}" class="q" data-tag="${vraag.tag}" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+														</label>
+														&nbsp;&nbsp;&nbsp;
+														<label>
+															<input type="radio" name="${vraag.uuid}" class="q" data-tag="${vraag.tag}" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+														</label>
+													</div>
+												</div>
+											</c:when>
+											<c:when test="${vraag.type eq 'Text'}">
+												<div class="col-sm-3">
+													<input id="${vraag.uuid}" type="text" class="form-control q" data-tag="${vraag.tag}" value="${vraag.antwoord}"></input>
+												</div>
+											</c:when>
+											<c:when test="${vraag.type eq 'Area'}">
+												<div class="col-sm-6">
+													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64" data-tag="${vraag.tag}">${vraag.antwoord}</textarea>
+												</div>
+											</c:when>
+										</c:choose>
+										</div>
+								</c:if>
+						</c:forEach>
 						<div id="status-comment" class="form-group">
 							<label class="col-sm-4 control-label">Opmerking<br/>
 							<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
@@ -438,7 +471,7 @@
 							<div class="col-sm-8">
 								<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
 							</div>
-					</div>
+						</div>
 						<div class="form-group">
 							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
 							<div class="col-sm-4">
@@ -475,23 +508,23 @@
 												<div class="col-sm-6">
 													<div class="checkbox">
 														<label>
-															<input type="radio" name="${vraag.uuid}" class="q" value="Y" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+															<input type="radio" name="${vraag.uuid}" class="q" value="Y" data-tag="medic" ${vraag.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
 														</label>
 														&nbsp;&nbsp;&nbsp;
 														<label>
-															<input type="radio" name="${vraag.uuid}" class="q" value="N" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+															<input type="radio" name="${vraag.uuid}" class="q" value="N" data-tag="medic" ${vraag.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
 														</label>
 													</div>
 												</div>
 											</c:when>
 											<c:when test="${vraag.type eq 'Text'}">
 												<div class="col-sm-3">
-													<input id="${vraag.uuid}" type="text" class="form-control q" value="${vraag.antwoord}"></input>
+													<input id="${vraag.uuid}" type="text" class="form-control q" data-tag="medic" value="${vraag.antwoord}"></input>
 												</div>
 											</c:when>
 											<c:when test="${vraag.type eq 'Area'}">
 												<div class="col-sm-6">
-													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64">${vraag.antwoord}</textarea>
+													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64" data-tag="medic">${vraag.antwoord}</textarea>
 												</div>
 											</c:when>
 										</c:choose>
@@ -499,14 +532,13 @@
 								</c:if>
 						</c:forEach>
 					
+					<div class="modal-footer">
 						<div class="form-group">
-							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
-							<div class="col-sm-4">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-								<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
-								<span id ="participant-status-${enrollment.uuid}"></span>
-							</div>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+							<button type="button" id="q-save-medic" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<span id ="q-status-medic"></span>
 						</div>
+					</div>
 						
 						</form>
 			
@@ -593,7 +625,11 @@
 		var saveParticipantAddress = function( id ) {
 			var selector = id;
 			var a = new Adres( $jq("#adres-zipcode-"+selector).val(), $jq("#adres-gemeente-"+selector).val(), $jq("#adres-straat-"+selector).val(), $jq("#adres-nummer-"+selector).val() );
-			putAddress ( id, a, $jq("#participant-save-"+selector ),$jq("#participant-status-"+selector ), refresh );
+			putAddress ( id, a, $jq("#participant-save-"+selector ),$jq("#participant-status-"+selector ), saveParticipantList );
+		};
+		
+		var saveParticipantList = function( id ) {
+			return saveQList( id, "history" );
 		};
 		
 		var saveQList = function( id, tag ) {
@@ -658,6 +694,15 @@
 			$jq(this).button('Even geduld...');
 			
 			saveQList( "${inschrijving.uuid}", "application" );
+			
+		});
+		
+		$jq("#q-save-medic").click( function( event ) {
+			
+			clearStatus();
+			$jq(this).button('Even geduld...');
+			
+			saveQList( "${inschrijving.uuid}", "medic" );
 			
 		});
 		

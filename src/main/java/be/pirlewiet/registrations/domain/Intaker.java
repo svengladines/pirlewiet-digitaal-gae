@@ -132,6 +132,8 @@ public class Intaker {
 	
 	protected InschrijvingX takeIn( InschrijvingX enrollment, Status status ) {
 		
+		enrollment.setInschrijvingsdatum( new Date() );
+		
 		enrollment.getStatus().setValue( Value.SUBMITTED );
 		
 		if ( isEmpty( status.getComment() ) ) {

@@ -66,6 +66,30 @@ public class SecretariaatsMedewerker {
 			}
 		
 		};
+		
+
+	protected final Comparator<InschrijvingX> mostRecent
+			= new Comparator<InschrijvingX>() {
+
+		@Override
+		public int compare(InschrijvingX o1, InschrijvingX o2) {
+			
+			Date d1 = o1.getInschrijvingsdatum();
+			Date d2 = o2.getInschrijvingsdatum();
+			
+			if ( d1 == null ) {
+				return 1;
+			}
+			else if ( d2 == null ) {
+				return -1;
+			}
+			else {
+				return d1.compareTo( d2 );
+			}
+			
+		}
+			
+	};
 	
 	@Resource
 	protected EnrollmentRepository inschrijvingXRepository;
@@ -332,6 +356,8 @@ public class SecretariaatsMedewerker {
     		
     	}
     	
+    	Collections.sort( inschrijvingen, mostRecent );
+    	
     	return inschrijvingen;
     	
     }
@@ -447,17 +473,6 @@ public class SecretariaatsMedewerker {
     	}
     	
     	inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
-    	
-    	boolean complete
-    		= true;
-    	
-    		for ( String tag : tags ) {
-    			complete &= this.areAllMandatoryQuestionsAnswered( inschrijving, tag );
-    		}
-    	
-    	if ( ! complete ) {
-    		throw new RuntimeException("Beantwoord alle vragen met een (*). Vul eventueel 'Niet van toepassing' (NVT) in." );
-    	}
     	
     	return inschrijving;
     	
@@ -836,6 +851,26 @@ public class SecretariaatsMedewerker {
 			}
 			
 		}
+	
+		return complete;
+    }
+    
+    public boolean isTheParticipantComplete( InschrijvingX enrollment ) {
+    	
+    	boolean complete
+			= true;
+    	
+    	try {
+	
+ 			Deelnemer participant 
+    			= enrollment.getDeelnemers().get( 0 );
+    				
+    		this.assertParticipantCompleteness( participant );
+    	 }
+    	 catch( IncompleteObjectException e ) {
+    	 	complete = false;
+    	 	logger.info( "enrollment participant not complete ", e );
+    	 }
 	
 		return complete;
     }
