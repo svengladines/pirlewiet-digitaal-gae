@@ -11,7 +11,7 @@ import be.pirlewiet.registrations.web.util.DataGuard;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class SetOrganisationsUuidScenario extends Scenario {
+public class SetOrganisationsUUIDScenario extends Scenario {
 	
 	@Resource
 	OrganisatieRepository organisatieRepository;
@@ -19,7 +19,7 @@ public class SetOrganisationsUuidScenario extends Scenario {
 	@Resource
 	DataGuard dataGuard;
 	
-	public SetOrganisationsUuidScenario guard() {
+	public SetOrganisationsUUIDScenario guard() {
     	this.dataGuard.guard();
     	return this;
     }

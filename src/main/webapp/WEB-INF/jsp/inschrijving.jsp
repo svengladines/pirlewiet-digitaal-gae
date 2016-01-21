@@ -100,19 +100,12 @@
 					</c:when>
 					<c:otherwise>
 						<c:choose>
-							<c:when test="${ not ( participantComplete && medicQListComplete ) }">
+							<c:when test="${ not participantComplete }">
 								<div class="col-sm-12 alert alert-warning">
 								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<c:forEach items="${related}" var="enrollment">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
-											<c:choose>
-												<c:when test="${not medicQListComplete}">
-														<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen</a>
-												</c:when>
-												<c:otherwise>
-														<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche aanpassen</a>
-												</c:otherwise>
-											</c:choose>
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
 									</c:forEach><br/>									
 								</div>
 								
@@ -122,7 +115,7 @@
 								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<c:forEach items="${related}" var="enrollment">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche aanpassen</a>
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
 									</c:forEach><br/>									
 								</div>
 							</c:otherwise>

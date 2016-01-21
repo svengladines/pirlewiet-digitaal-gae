@@ -1,6 +1,6 @@
 package be.pirlewiet.registrations.domain;
 
-import static be.pirlewiet.registrations.web.util.Bits.isEmpty;
+import static be.pirlewiet.registrations.web.util.Utils.isEmpty;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;

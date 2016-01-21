@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockOneScenario;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockScenario;
-import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
+import be.pirlewiet.registrations.domain.scenarios.SetQuestionsQIDScenario;
 import be.pirlewiet.registrations.web.util.ExcelImporter;
 
 @Controller
@@ -28,13 +28,16 @@ public class ScenarioController {
 		= LoggerFactory.getLogger( ScenarioController.class );
 	
 	@Resource
-	SetOrganisationsUuidScenario setOrganisationsUuidScenario;
+	SetQuestionsQIDScenario setOrganisationsUuidScenario;
 	
 	@Resource
 	ReadyToRockScenario readyToRockScenario;
 	
 	@Resource
 	ReadyToRockOneScenario readyToRockOneScenario;
+	
+	@Resource
+	SetQuestionsQIDScenario setQuestionsQIDScenario;
 	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
@@ -45,6 +48,7 @@ public class ScenarioController {
 		
 		try {
 		
+			/*
 			if ( "uuid".equals( id ) ) {
 				this.setOrganisationsUuidScenario.guard().execute();
 				return response( Boolean.TRUE, HttpStatus.OK );
@@ -55,6 +59,18 @@ public class ScenarioController {
 			}
 			else if ( "rockme".equals( id ) ) {
 				this.readyToRockOneScenario.guard().execute( q );
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
+			else if ( "".equals( id ) ) {
+				this.readyToRockOneScenario.guard().execute( q );
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
+			else {
+				return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
+			}
+			*/
+			if ( "qid".equals( id ) ) {
+				this.setQuestionsQIDScenario.guard().execute();
 				return response( Boolean.TRUE, HttpStatus.OK );
 			}
 			else {

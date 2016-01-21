@@ -38,6 +38,7 @@ import be.pirlewiet.registrations.model.Status;
 import be.pirlewiet.registrations.model.Status.Value;
 import be.pirlewiet.registrations.model.Tags;
 import be.pirlewiet.registrations.model.Vakantie;
+import be.pirlewiet.registrations.model.VakantieType;
 import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.repositories.DeelnemerRepository;
 import be.pirlewiet.registrations.repositories.EnrollmentRepository;
@@ -111,6 +112,9 @@ public class SecretariaatsMedewerker {
 	
 	@Resource
 	protected OrganisatieRepository organisatieRepository;
+	
+	@Resource
+	protected HolidayManager holidayManager;
 	
 	@Resource
 	BuitenWipper buitenWipper;
@@ -485,10 +489,15 @@ public class SecretariaatsMedewerker {
     		throw new PirlewietException("Selecteer minstens 1 vakantie");
     	}
     	
+    	vakanties = vakanties.replaceAll("\"", "" ).trim();
+    	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
     	
-    	inschrijving.setVks( vakanties.replaceAll("\"", "" ) );
+    	// make sure only the same sort of holidays are selected
+    	this.holidayManager.singleType( vakanties );
+    	
+    	inschrijving.setVks( vakanties );
     	
 		inschrijving = this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
@@ -837,7 +846,7 @@ public class SecretariaatsMedewerker {
     	
     	boolean complete
 			= true;
-	
+
 		for ( Vraag vraag : enrollment.getVragen() ) {
 			
 			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
@@ -866,6 +875,15 @@ public class SecretariaatsMedewerker {
     			= enrollment.getDeelnemers().get( 0 );
     				
     		this.assertParticipantCompleteness( participant );
+    		
+    		VakantieType type
+    			= this.holidayManager.singleType( enrollment.getVks() );
+    	
+	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) ) {
+	    		// for KIKA and TIKA, medical list must be filled in
+	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );	
+	    	}
+    		
     	 }
     	 catch( IncompleteObjectException e ) {
     	 	complete = false;
@@ -914,7 +932,13 @@ public class SecretariaatsMedewerker {
 	    		
 	    	}
 	    	
-	    	complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );
+	    	VakantieType type
+	    		= this.holidayManager.singleType( enrollment.getVks() );
+	    	
+	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) ) {
+	    		// for KIKA and TIKA, medical list must be filled in
+	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );	
+	    	}
 			
 			// participants
 			Deelnemer participant 

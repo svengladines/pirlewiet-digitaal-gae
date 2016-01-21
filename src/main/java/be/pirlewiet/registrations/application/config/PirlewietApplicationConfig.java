@@ -19,6 +19,7 @@ import be.pirlewiet.registrations.domain.BuitenWipper;
 import be.pirlewiet.registrations.domain.CodeMan;
 import be.pirlewiet.registrations.domain.Detacher;
 import be.pirlewiet.registrations.domain.HeadQuarters;
+import be.pirlewiet.registrations.domain.HolidayManager;
 import be.pirlewiet.registrations.domain.Intaker;
 import be.pirlewiet.registrations.domain.Mapper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
@@ -29,7 +30,7 @@ import be.pirlewiet.registrations.domain.Viewer;
 import be.pirlewiet.registrations.domain.q.QList;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockOneScenario;
 import be.pirlewiet.registrations.domain.scenarios.ReadyToRockScenario;
-import be.pirlewiet.registrations.domain.scenarios.SetOrganisationsUuidScenario;
+import be.pirlewiet.registrations.domain.scenarios.SetQuestionsQIDScenario;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
@@ -135,6 +136,13 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
+		HolidayManager holidayManager() {
+			
+			return new HolidayManager();
+			
+		}
+		
+		@Bean
 		public JavaMailSender javaMailSender () {
 			JavaMailSenderImpl sender
 				= new JavaMailSenderImpl();
@@ -160,8 +168,8 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
-		public SetOrganisationsUuidScenario setOrganisationsUuidScenario() {
-			return new SetOrganisationsUuidScenario();
+		public SetQuestionsQIDScenario setOrganisationsUuidScenario() {
+			return new SetQuestionsQIDScenario();
 		}
 		
 		@Bean

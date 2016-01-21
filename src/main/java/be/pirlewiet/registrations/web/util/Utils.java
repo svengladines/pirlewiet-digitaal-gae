@@ -1,6 +1,6 @@
 package be.pirlewiet.registrations.web.util;
 
-public class Bits {
+public class Utils {
 	
 	public static boolean isEmpty( String x ) {
     	

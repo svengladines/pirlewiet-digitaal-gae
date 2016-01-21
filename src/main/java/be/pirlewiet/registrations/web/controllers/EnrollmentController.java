@@ -260,7 +260,6 @@ public class EnrollmentController {
 		
 		model.put( "vakanties", vakanties );
 		model.put( "applicationQListComplete", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving, Tags.TAG_APPLICATION ) );
-		model.put( "medicQListComplete", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving, Tags.TAG_MEDIC ) );
 		model.put( "participantComplete", this.secretariaatsMedewerker.guard().isTheParticipantComplete( inschrijving ) );
 		
 		boolean isComplete
