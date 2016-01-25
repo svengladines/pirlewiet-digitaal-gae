@@ -101,21 +101,48 @@ public class EnrollmentsController {
 			= this.buitenWipper.guard().whoHasID( pwtid  );
 		
 		// TODO: check organisatie != null
-		List<InschrijvingX> inschrijvingen
+		List<InschrijvingX> applications
 			= null;
 		
 		if ( Status.Value.DRAFT.equals( status ) && ( PirlewietUtil.isPirlewiet( organisatie ) ) ) {
-			inschrijvingen = this.secretariaatsMedewerker.guard().drafts();
+			applications = this.secretariaatsMedewerker.guard().drafts();
 		}
 		else {
-			inschrijvingen = this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+			applications = this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
 		}
 		
-		List<String[]> mapped
-			= this.mapper.asStrings( inschrijvingen, status );
+		logger.info( "download; number of applications is [{}]", applications.size() );
+		
+		List<String[]> rows
+			= new LinkedList<String[]>();
+
+		for ( InschrijvingX application : applications ) {
+			
+			List<InschrijvingX> related
+				= this.secretariaatsMedewerker.guard().findRelated( application );
+			
+			if ( related != null ) {
+				logger.info( "[{}]; found [{}] related enrollments", application.getUuid(), related.size() );
+			}
+			else {
+				logger.info( "[{}]; found no related enrollments" );
+			}
+			
+			List<String[]> mapped
+				= this.mapper.asStrings( application, related, status );
+			
+			if ( mapped != null ) {
+				
+				rows.addAll( mapped );
+				
+			}
+		
+		}
+		
+		
 
 		byte[] result 
-			= this.mapper.asBytes( mapped );
+			= this.mapper.asBytes( rows );
 	
 		String disp
 			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();

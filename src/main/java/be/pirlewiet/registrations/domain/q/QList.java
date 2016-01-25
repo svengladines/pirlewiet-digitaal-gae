@@ -25,16 +25,16 @@ public class QList {
 			
 				new Vraag( Type.Text, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC, "Naam huisarts" ),
 				new Vraag( Type.Text,Tags.TAG_MEDIC,  QIDs.QID_MEDIC_MEDIC_TEL, "Telefoon huisarts" ),
-				new Vraag( Type.Label,  Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL,  "Mag de deelnemer deelnemen aan:" ),
-				new Vraag( Type.YesNo,  Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Sport" ),
-				new Vraag( Type.YesNo, Tags.TAG_MEDIC,  QIDs.QID_MEDIC_MEDIC_TEL,"Spel" ),
-				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Wandelen" ),
-				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Fietsen" ),
-				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Zwemmen" ),
-				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Voor tieners (14-16 jaar): mag uw kind roken?" ),
-				new Vraag( Type.Area, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Zijn er specifieke aandachtspunten waar de kampleiding rekening mee dient te houden? Bv. angsten, eetgewoontes, ADHD, autisme, mentale of fysieke beperking, bedplassen, allergieën, astma, epilepsie, vroegere ziektes/operaties, gedrag, ..." ),
-				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Moet de deelnemer geneesmiddelen innemen tijdens het kamp of de vakantie?" ),
-				new Vraag( Type.Area, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Indien ja, welke geneesmiddelen en welke dosering?" )
+				new Vraag( Type.Label,  Tags.TAG_MEDIC, QIDs.QID_MEDIC_CAN,  "Mag de deelnemer deelnemen aan:" ),
+				new Vraag( Type.YesNo,  Tags.TAG_MEDIC, QIDs.QID_MEDIC_SPORTS, "Sport" ),
+				new Vraag( Type.YesNo, Tags.TAG_MEDIC,  QIDs.QID_MEDIC_GAME,"Spel" ),
+				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_HIKE, "Wandelen" ),
+				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_BIKE, "Fietsen" ),
+				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_SWIM, "Zwemmen" ),
+				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_SMOKE, "Voor tieners (14-16 jaar): mag uw kind roken?" ),
+				new Vraag( Type.Area, Tags.TAG_MEDIC, QIDs.QID_MEDIC_REMARKS, "Zijn er specifieke aandachtspunten waar de kampleiding rekening mee dient te houden? Bv. angsten, eetgewoontes, ADHD, autisme, mentale of fysieke beperking, bedplassen, allergieën, astma, epilepsie, vroegere ziektes/operaties, gedrag, ..." ),
+				new Vraag( Type.YesNo, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDICINS, "Moet de deelnemer geneesmiddelen innemen tijdens het kamp of de vakantie?" ),
+				new Vraag( Type.Area, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDICINS_DETAIL, "Indien ja, welke geneesmiddelen en welke dosering?" )
 		};
 		
 		Vraag[] fotos

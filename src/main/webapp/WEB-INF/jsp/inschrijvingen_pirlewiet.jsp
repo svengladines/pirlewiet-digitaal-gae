@@ -33,11 +33,9 @@
 	
 		<div class="row mandatory">
 		
-			<h3>Inschrijvingen</h3>
-			
-			<p>
-		    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download?status=SUBMITTED" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld...">Download</a>
-			</p>
+			<br/>
+		
+	    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download?status=SUBMITTED" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld..."><i class="fa fa-arrow-circle-o-down"></i>&nbsp;Download</a>
 			
 			<table class="table table-bordered">
 			
@@ -64,7 +62,7 @@
 					<tbody>
 					
 					<tr>
-						<th scope="row">Inschrijving</th>
+						<th scope="row" class="th-row">Inschrijving <span class="pull-right">${date}</span></th>
 						<td colspan="1">
 							<a href="./inschrijvingen/${enrollment.uuid}.html" class="pull-right">bewerk</a>
 						</td>

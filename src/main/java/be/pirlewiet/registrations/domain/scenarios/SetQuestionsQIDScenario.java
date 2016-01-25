@@ -33,11 +33,17 @@ public class SetQuestionsQIDScenario extends Scenario {
 	@Override
 	public void execute( String... parameters ) {
 		
+		this.guard();
+		
 		List<Vraag> questions
 			= this.questionRepository.findAll();
 		
 		QList templateQuestions
 			= QList.template();
+		
+		int max = 100;
+		int done = 0;
+		int todo = 0;
 		
 		for ( Vraag loaded : questions ) {
 			
@@ -48,7 +54,14 @@ public class SetQuestionsQIDScenario extends Scenario {
 				
 				if ( matched != null ) {
 					
+					if ( done >= max ) {
+						todo++;
+						continue;
+					}
+					
 					logger.info( "matched question [{}]", loaded.getUuid() );
+					logger.info( "old question q [{}]", loaded.getVraag() );
+					logger.info( "matched question q [{}]", loaded.getVraag() );
 					logger.info( "old question tag is [{}]", loaded.getTag() );
 					logger.info( "new question tag is [{}]", matched.getTag() );
 					logger.info( "new question QID is [{}]", matched.getQID() );
@@ -57,17 +70,28 @@ public class SetQuestionsQIDScenario extends Scenario {
 					loaded.setQID( matched.getQID() );
 					loaded.setTag( matched.getTag() );
 					
-					//this.questionRepository.saveAndFlush( loaded );
+					try {
+					
+						this.questionRepository.saveAndFlush( loaded );
+						done++;
+						
+					}
+					catch( Exception e ) {
+						logger.warn( "failed to update question" ,e );
+						break;
+					}
+					
 					
 				}
 				else {
 					logger.warn( "found not match for question [{}] : [{}]", loaded.getUuid(), loaded.getVraag() );
 				}
-				
-				
+			
 			}
 			
 		}
+		
+		logger.info( "scenario ended with [{}] updates, todo: [{}]", done, todo );
 		
 	}
 	

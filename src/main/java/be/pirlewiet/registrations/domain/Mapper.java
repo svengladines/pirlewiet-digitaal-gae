@@ -33,47 +33,48 @@ public class Mapper {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	
-	
-	public byte[] map( Collection<InschrijvingX> inschrijvingen, Status.Value status ) {
-		
-		List<String[]> asStrings
-			= this.asStrings( inschrijvingen , status );
-		
-		return this.asBytes( asStrings );
-		
-	}
-	
-	public List<String[]> asStrings( Collection<InschrijvingX> inschrijvingen, Status.Value status ) {
+	public List<String[]> asStrings( InschrijvingX application, Collection<InschrijvingX> related, Status.Value status ) {
 		
 		List<String[]> mapped
-			= new ArrayList<String[]>( inschrijvingen.size() );
+			= new ArrayList<String[]>( related.size() + 1 );
+			
+		List<InschrijvingX> all
+			= new ArrayList<InschrijvingX>( related.size() + 1 );
+		
+		all.add( application );
+		all.addAll( related );
 		
 		try {
 			
-			for ( InschrijvingX inschrijving : inschrijvingen ) {
+			if ( status != null ) {
+				if ( ! status.equals( application.getStatus().getValue() ) ) {
+					return mapped;
+				}
+			}
+			
+			for ( InschrijvingX enrollment : all ) {
 				
 				try {
 					
-					if ( status != null ) {
-						if ( ! status.equals( inschrijving.getStatus().getValue() ) ) {
-							continue;
-						}
-					}
-					
-					//INSCHRIJVINGSDATUM	VOORNAAM	NAAM	M/V	GEBOORTEDATUM	ADRES	POSTCODE	GEMEENTE	TEL/GSM	E-MAIL	
+					//INSCHRIJVINGSDATUM, VOORNAAM, NAAM, M/V, GEBOORTEDATUM, ADRES	POSTCODE	GEMEENTE	TEL/GSM	E-MAIL	
 					// NAAM DIENST	CONTACTPERSOON DIENST	ADRES DIENST TEL/GSM DIENST	E-MAIL DIENST
 				
 					List<String> columns
 						= new ArrayList<String>( 16 );
 					
 					Deelnemer deelnemer
-						= inschrijving.getDeelnemers().get( 0 );
+						= enrollment.getDeelnemers().get( 0 );
 					
 					Organisatie organisation
-						= inschrijving.getOrganisatie();
+						= application.getOrganisatie();
 					
-					columns.add( Timing.date( inschrijving.getInschrijvingsdatum(), Timing.dateFormat ) );
+					if ( enrollment.getInschrijvingsdatum() != null ) {
+						columns.add( Timing.date( enrollment.getInschrijvingsdatum(), Timing.dateFormat ) );
+					}
+					else {
+						columns.add( "?" );
+					}
+					
 					if ( deelnemer != null ) {
 						columns.add( deelnemer.getVoorNaam() );
 						columns.add( deelnemer.getFamilieNaam() );
@@ -82,7 +83,7 @@ public class Mapper {
 					}
 					
 					Adres adres
-						= inschrijving.getAdres();
+						= enrollment.getAdres();
 					
 					if ( adres != null ) {
 						
@@ -98,10 +99,10 @@ public class Mapper {
 					
 					columns.add( organisation.getNaam());
 					ContactGegevens contact
-						= inschrijving.getContactGegevens();
+						= application.getContactGegevens();
 					
 					if ( contact != null ) {
-						columns.add( inschrijving.getContactGegevens().getName() );
+						columns.add( application.getContactGegevens().getName() );
 						columns.add( new StringBuilder().append( organisation.getAdres().getStraat() ).append( " " ).append( organisation.getAdres().getNummer() ).append( ",").append( organisation.getAdres().getZipCode() ).append( " ").append( organisation.getAdres().getGemeente() ).toString());
 						columns.add( contact.getPhone() );
 						columns.add( contact.getEmail());
@@ -113,47 +114,53 @@ public class Mapper {
 					
 					// SPORT	SPEL	WANDELEN	FIETSEN	ZWEMMEN	ROKEN	AANDACHTSPUNTEN	GENEESMIDDELEN	FOTO'S	NAAM GEZIN	KEUZE VAKANTIE
 					
-					List<Vraag> vragen
-						= inschrijving.getVragen();
+					List<Vraag> applicationQuestions
+						= application.getVragen();
 					
-					QList qList
-						= new QList( vragen );
+					List<Vraag> enrollmentQuestions
+						= application.getVragen();
+					
+					QList appQList
+						= new QList( applicationQuestions );
+					
+					QList eQList
+						= new QList( enrollmentQuestions );
 					
 					// Q = contact
-					columns.add( antwoord( qList.getVraag( QIDs.QID_SHARED_CONTACT ) ) );
+					columns.add( antwoord( appQList.getVraag( QIDs.QID_SHARED_CONTACT ) ) );
 					// R = bill
-					columns.add( antwoord( qList.getVraag( QIDs.QID_SHARED_BILL ) ) );
+					columns.add( antwoord( appQList.getVraag( QIDs.QID_SHARED_BILL ) ) );
 					// S = medic
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_MEDIC ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_MEDIC ) ) );
 					// T = medic tel
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_MEDIC_TEL ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_MEDIC_TEL ) ) );
 					// U = sports
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_SPORTS) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_SPORTS) ) );
 					// V = game
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_GAME ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_GAME ) ) );
 					// W = wandelen
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_HIKE ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_HIKE ) ) );
 					// X = fietsen 
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_BIKE ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_BIKE ) ) );
 					// Y = zwemmen
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_SWIM ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_SWIM ) ) );
 					// Z = roken
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_SMOKE ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_SMOKE ) ) );
 					// AA = aandachtspunten = 10
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_REMARKS ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_REMARKS ) ) );
 					// AB = medicijnen = 11
-					columns.add( antwoord( qList.getVraag( QIDs.QID_MEDIC_MEDICINS ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_MEDIC_MEDICINS ) ) );
 					// AC = foto's = 0
-					columns.add( antwoord( qList.getVraag( QIDs.QID_SHARED_PHOTO ) ) );
+					columns.add( antwoord( appQList.getVraag( QIDs.QID_SHARED_PHOTO ) ) );
 					// AD = naam gezin = ?
 					columns.add( "/" );
 					// AE = eerder meegeweest ?
-					columns.add( antwoord( qList.getVraag( QIDs.QID_HISTORY ) ) );
+					columns.add( antwoord( eQList.getVraag( QIDs.QID_HISTORY ) ) );
 					
 					StringBuilder b
 						= new StringBuilder("");
 					
-					for ( Vakantie v : inschrijving.getVakanties() ) {
+					for ( Vakantie v : application.getVakanties() ) {
 						
 						if ( b.length() > 0 ) {
 							b.append( ",");
@@ -165,7 +172,7 @@ public class Mapper {
 					
 					columns.add( b.toString() );
 					
-					columns.add( inschrijving.getStatus().getComment() );
+					columns.add( enrollment.getStatus().getComment() );
 					
 					mapped.add( columns.toArray( new String[] {} ) );
 				}
@@ -295,7 +302,11 @@ public class Mapper {
 	protected String antwoord( Vraag vraag ) {
 		
 		String antwoord 
-			= "";
+			= "?";
+		
+		if ( vraag == null ) {
+			return antwoord;
+		}
 		
 		if ( Type.Text.equals( vraag.getType() ) ) {
 			

@@ -85,7 +85,7 @@ public class SecretariaatsMedewerker {
 				return -1;
 			}
 			else {
-				return d1.compareTo( d2 );
+				return  ( 0- d1.compareTo( d2 ) );
 			}
 			
 		}
@@ -306,7 +306,7 @@ public class SecretariaatsMedewerker {
     		= this.inschrijvingXRepository.findByYear( 2016 );// = PirlewietUtil.isPirlewiet( organisatie ) ? this.inschrijvingXRepository.findAll() : this.inschrijvingXRepository.findByOrganisatie( organisatie );
     		// SGL|| findByOrganisatie does not work in GAE ... at least not out-of-the-box
     	
-    	logger.info( "total number of enrollments: [{}]", all.size() );
+    	logger.info( "total number of enrollments for 2016: [{}]", all.size() );
     	
     	Iterator<InschrijvingX> it
     		= all.iterator();
@@ -337,13 +337,10 @@ public class SecretariaatsMedewerker {
 	    		if ( isPirlewiet ) {
 	    			
 	    			if ( Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
-	    				logger.info( "enrollment with status DRAFT not sent to pirlewiet", inschrijving.getUuid() );
 	    				continue;
 	    			}
 	    			
 	    		}
-	    		
-	    		// logger.info( "x.[{}] versus o.[{}], match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
 	    		
 	    		inschrijvingen.add( inschrijving );
 	    		

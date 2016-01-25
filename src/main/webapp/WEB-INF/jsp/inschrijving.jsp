@@ -106,7 +106,9 @@
 									<c:forEach items="${related}" var="enrollment">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
 											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
-									</c:forEach><br/>									
+											<br/>
+									</c:forEach><br/>
+									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>									
 								</div>
 								
 							</c:when>
@@ -116,7 +118,9 @@
 									<c:forEach items="${related}" var="enrollment">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
 											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
-									</c:forEach><br/>									
+											<br/>
+									</c:forEach><br/>
+									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
 								</div>
 							</c:otherwise>
 						</c:choose>
@@ -528,7 +532,7 @@
 					<div class="modal-footer">
 						<div class="form-group">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="q-save-medic" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<button type="button" id="q-save-medic" class="btn btn-primary" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 							<span id ="q-status-medic"></span>
 						</div>
 					</div>
@@ -695,7 +699,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveQList( "${inschrijving.uuid}", "medic" );
+			saveQList( $jq(this).attr("data-uuid"), "medic" );
 			
 		});
 		

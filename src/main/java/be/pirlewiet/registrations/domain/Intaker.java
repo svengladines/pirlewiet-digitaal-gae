@@ -132,7 +132,10 @@ public class Intaker {
 	
 	protected InschrijvingX takeIn( InschrijvingX enrollment, Status status ) {
 		
-		enrollment.setInschrijvingsdatum( new Date() );
+		Date submitted
+			= new Date();
+		
+		enrollment.setInschrijvingsdatum( submitted );
 		
 		enrollment.getStatus().setValue( Value.SUBMITTED );
 		
@@ -157,6 +160,7 @@ public class Intaker {
 		for ( InschrijvingX r : related ) {
 			
 			r.getStatus().setValue( Value.SUBMITTED );
+			r.setInschrijvingsdatum( submitted );
 			this.inschrijvingXRepository.saveAndFlush( r );
 			
 		}
@@ -267,7 +271,7 @@ public class Intaker {
     }
 	 
 	
-	protected MimeMessage formatIntakeMessageToPirlewiet( InschrijvingX inschrijving, List<InschrijvingX> related, Organisatie organisation ) {
+	protected MimeMessage formatIntakeMessageToPirlewiet( InschrijvingX application, List<InschrijvingX> related, Organisatie organisation ) {
 		
 		String templateString
 			 = "/templates/to-pirlewiet/enrollment-takenin.tmpl";
@@ -292,11 +296,11 @@ public class Intaker {
 			Map<String, Object> model = new HashMap<String, Object>();
 					
 			model.put( "organisation", organisation );
-			model.put( "enrollment", inschrijving );
-			model.put( "id", inschrijving.getUuid() );
+			model.put( "enrollment", application );
+			model.put( "id", application.getUuid() );
 			model.put( "related", related );
 			// TODO use vakantiedetails for more efficiency ?
-			model.put("vakanties", vakanties( inschrijving ) );
+			model.put("vakanties", vakanties( application ) );
 			
 			StringWriter bodyWriter 
 				= new StringWriter();
@@ -311,7 +315,7 @@ public class Intaker {
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
 			helper.setTo( to );
-			helper.setReplyTo( inschrijving.getContactGegevens().getEmail() );
+			helper.setReplyTo( application.getContactGegevens().getEmail() );
 			helper.setSubject( "Nieuwe inschrijving" );
 				
 			String text
@@ -321,19 +325,26 @@ public class Intaker {
 				
 			helper.setText(text, true);
 			
-			List<String[]> strings
-				= this.mapper.asStrings( Arrays.asList( inschrijving ), null );
-				
-			if ( strings != null ) {
+			if ( related != null ) {
+				logger.info( "[{}]; [{}] related enrollments", application.getUuid(), related.size() );
+			}
+			else {
+				logger.info( "[{}]; no related enrollments", application.getUuid() );
+			}
+			
+			List<String[]> rows
+				= this.mapper.asStrings( application, related, Status.Value.SUBMITTED );
+			
+			if ( rows != null ) {
 				
 				byte[] bytes
-					= this.mapper.asBytes( strings );
+					= this.mapper.asBytes( rows );
 				
 				ByteArrayResource bis
 					= new ByteArrayResource( bytes );
 				
 				helper.addAttachment( 
-						new StringBuilder( inschrijving.getUuid() ).append( ".xlsx" ).toString(),
+						new StringBuilder( application.getUuid() ).append( ".xlsx" ).toString(),
 						bis,
 						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 			}
