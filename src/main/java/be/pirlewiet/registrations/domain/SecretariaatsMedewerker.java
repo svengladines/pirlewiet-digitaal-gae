@@ -876,8 +876,8 @@ public class SecretariaatsMedewerker {
     		VakantieType type
     			= this.holidayManager.singleType( enrollment.getVks() );
     	
-	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) ) {
-	    		// for KIKA and TIKA, medical list must be filled in
+	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) || VakantieType.Vov.equals( type ) ) {
+	    		// for KIKA and TIKA, VOV medical list must be filled in
 	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );	
 	    	}
     		
@@ -932,7 +932,7 @@ public class SecretariaatsMedewerker {
 	    	VakantieType type
 	    		= this.holidayManager.singleType( enrollment.getVks() );
 	    	
-	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) ) {
+	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) || VakantieType.Vov.equals( type ) ) {
 	    		// for KIKA and TIKA, medical list must be filled in
 	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );	
 	    	}

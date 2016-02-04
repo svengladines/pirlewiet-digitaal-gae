@@ -532,7 +532,7 @@
 					<div class="modal-footer">
 						<div class="form-group">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="q-save-medic" class="btn btn-primary" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<button type="button" class="btn btn-primary btn-save-medic" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 							<span id ="q-status-medic"></span>
 						</div>
 					</div>
@@ -694,7 +694,7 @@
 			
 		});
 		
-		$jq("#q-save-medic").click( function( event ) {
+		$jq(".btn-save-medic").click( function( event ) {
 			
 			clearStatus();
 			$jq(this).button('Even geduld...');
