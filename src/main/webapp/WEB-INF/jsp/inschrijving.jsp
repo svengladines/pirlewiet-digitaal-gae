@@ -491,9 +491,13 @@
 					<div class="modal-content">
 						<div class="modal-header">
 			
-							<h2>Medische fiche ${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}x</h2>
+							<h2>Medische fiche ${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</h2>
 						</div>
 					<div class="modal-body">
+					
+						<div class="alert alert-info" role="alert">
+							<strong>Opgelet</strong>: alle vragen moeten beantwoord worden om de inschrijving te kunnen versturen. Indien de vraag niet van toepassing is, vul dan "NVT" in.
+						</div>
 					
 						<form class="form-horizontal">
 							<c:forEach items="${enrollment.vragen}" var="vraag">
