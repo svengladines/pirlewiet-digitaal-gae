@@ -81,135 +81,165 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 	
 		vovVoorjaar.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgP21mAoM" );
 		this.bootcamps.put( vovVoorjaar.getUuid(), vovVoorjaar );
+		
+		/**
+		 * Zomer
+		 */
+		
+		{
+			// VOV2
+			Vakantie vakantie
+				= new Vakantie();
+		
+			vakantie.setBeginDatum( Timing.date("08/07/2016") );
+			vakantie.setEindDatum( Timing.date("15/07/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setType( VakantieType.Vov );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer VOV 2");
+			vakantie.setPeriode( Period.Summer );
+		
+			vakantie.setUuid( "VOV2-SUMMER-2016" );
+			
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+		}
+		
+		{
+			// Driedaagse
+			Vakantie vakantie
+				= new Vakantie();
 
-		/*
+			vakantie.setBeginDatum( Timing.date("08/07/2016") );
+			vakantie.setEindDatum( Timing.date("11/07/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setType( VakantieType.DrieDaagse );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer Driedaagse");
+			vakantie.setPeriode( Period.Summer );
 		
-		Vakantie kikaEen
-			= new Vakantie();
+			vakantie.setUuid( "DRIEDAAGSE-SUMMER-2016" );
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+			
+		}
+		
+		{
+		
+			Vakantie vakantie
+				= new Vakantie();
+	
+			vakantie.setBeginDatum( Timing.date("11/07/2016") );
+			vakantie.setEindDatum( Timing.date("15/07/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setType( VakantieType.Cava );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer Cava");
+			vakantie.setPeriode( Period.Summer );
+		
+			vakantie.setUuid( "CAVA-SUMMER-2016" );
+			
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+		
+		}
+		
+		{
+			// KIKA 1
+			Vakantie vakantie
+				= new Vakantie();
 
-		kikaEen.setBeginDatum( Timing.date("14/07/2016") );
-		kikaEen.setEindDatum( Timing.date("21/07/2016") );
-		kikaEen.setBeginInschrijving( Timing.date("01/10/2015") );
-		kikaEen.setEindInschrijving( Timing.date("01/07/2016") );
-		kikaEen.setType( VakantieType.Kika );
-		kikaEen.setJaar( 2016 );
-		kikaEen.setNaam( "Zomer KIKA 1");
-		kikaEen.setPeriode( Period.Summer );
-	
-		kikaEen.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgLnikQoM" );
-		this.bootcamps.put( kikaEen.getUuid(), kikaEen );
+			vakantie.setBeginDatum( Timing.date("11/07/2016") );
+			vakantie.setEindDatum( Timing.date("21/07/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setType( VakantieType.Kika );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer KIKA 1");
+			vakantie.setPeriode( Period.Summer );
+		
+			vakantie.setUuid( "KIKA1-SUMMER-2016" );
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+			
+		}
 
-		Vakantie kikaTwee
-			= new Vakantie();
+		{
+			// TIKA
+			Vakantie vakantie
+				= new Vakantie();
 
-		kikaTwee.setBeginDatum( Timing.date("23/07/2016") );
-		kikaTwee.setEindDatum( Timing.date("30/07/2016") );
-		kikaTwee.setBeginInschrijving( Timing.date("01/10/2015") );
-		kikaTwee.setEindInschrijving( Timing.date("15/07/2016") );
-		kikaTwee.setType( VakantieType.Kika );
-		kikaTwee.setJaar( 2016 );
-		kikaTwee.setNaam( "Zomer KIKA 2");
-		kikaTwee.setPeriode( Period.Summer );
-	
-		kikaTwee.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgMSmiQoM" );
-		this.bootcamps.put( kikaTwee.getUuid(), kikaTwee );
+			vakantie.setBeginDatum( Timing.date("16/07/2016") );
+			vakantie.setEindDatum( Timing.date("23/07/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setType( VakantieType.Tika );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer Tika");
+			vakantie.setPeriode( Period.Summer );
+		
+			vakantie.setUuid( "TIKA-SUMMER-2016" );
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+			
+		}
+		
+		{
+			// KIKA 2
+			Vakantie vakantie
+				= new Vakantie();
 
-		Vakantie vov2
-			= new Vakantie();
-	
-		vov2.setBeginDatum( Timing.date("05/07/2016") );
-		vov2.setEindDatum( Timing.date("10/07/2016") );
-		vov2.setBeginInschrijving( Timing.date("01/10/2015") );
-		vov2.setEindInschrijving( Timing.date("01/07/2016") );
-		vov2.setType( VakantieType.Vov );
-		vov2.setJaar( 2016 );
-		vov2.setNaam( "Zomer VOV 2");
-		vov2.setPeriode( Period.Summer );
-	
-		vov2.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgJu-nQoM" );
+			vakantie.setBeginDatum( Timing.date("20/07/2016") );
+			vakantie.setEindDatum( Timing.date("29/07/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setType( VakantieType.Kika );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer Kika 2");
+			vakantie.setPeriode( Period.Summer );
 		
-		this.bootcamps.put( vov2.getUuid(), vov2 );
-	
-		Vakantie drie
-		= new Vakantie();
-	
-		drie.setBeginDatum( Timing.date("11/07/2016") );
-		drie.setEindDatum( Timing.date("13/07/2016") );
-		drie.setBeginInschrijving( Timing.date("01/10/2015") );
-		drie.setEindInschrijving( Timing.date("01/07/2016") );
-		drie.setType( VakantieType.DrieDaagse );
-		drie.setJaar( 2016 );
-		drie.setNaam( "Zomer Driedaagse");
-		drie.setPeriode( Period.Summer );
-		drie.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgMDhigoM" );
+			vakantie.setUuid( "KIKA2-SUMMER-2016" );
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+			
+		}
 		
-		this.bootcamps.put( drie.getUuid(), drie );
-	
-		Vakantie cava
-			= new Vakantie();
-	
-		cava.setBeginDatum( Timing.date("13/07/2016") );
-		cava.setEindDatum( Timing.date("17/07/2016") );
-		cava.setBeginInschrijving( Timing.date("01/10/2015") );
-		cava.setEindInschrijving( Timing.date("01/07/2016") );
-		cava.setType( VakantieType.Cava );
-		cava.setJaar( 2016 );
-		cava.setNaam( "Zomer Cava");
-		cava.setPeriode( Period.Summer );
-	
-		cava.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgO_9mwoM" );
+		{
+			// GEZINS 1
+			Vakantie vakantie
+				= new Vakantie();
+
+			vakantie.setBeginDatum( Timing.date("30/07/2016") );
+			vakantie.setEindDatum( Timing.date("07/08/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("15/07/2016") );
+			vakantie.setType( VakantieType.Gezin );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer Gezins 1");
+			vakantie.setPeriode( Period.Summer );
 		
-		this.bootcamps.put( cava.getUuid(), cava );
-	
-		Vakantie tika
-			= new Vakantie();
-	
-		tika.setBeginDatum( Timing.date("18/07/2016") );
-		tika.setEindDatum( Timing.date("24/07/2016") );
-		tika.setBeginInschrijving( Timing.date("01/10/2015") );
-		tika.setEindInschrijving( Timing.date("01/07/2016") );
-		tika.setType( VakantieType.Tika );
-		tika.setJaar( 2016 );
-		tika.setNaam( "Zomer TIKA");
-		tika.setPeriode( Period.Summer );
-	
-		tika.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgLn2iAoM" );
+			vakantie.setUuid( "GEZIN1-SUMMER-2016" );
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+			
+		}
 		
-		this.bootcamps.put( tika.getUuid(), tika );
-	
-		Vakantie gezins2
-			= new Vakantie();
-	
-		gezins2.setBeginDatum( Timing.date("09/08/2016") );
-		gezins2.setEindDatum( Timing.date("16/08/2016") );
-		gezins2.setBeginInschrijving( Timing.date("01/10/2015") );
-		gezins2.setEindInschrijving( Timing.date("01/08/2016") );
-		gezins2.setType( VakantieType.Gezin );
-		gezins2.setJaar( 2016 );
-		gezins2.setNaam( "Zomer Gezins 2");
-		gezins2.setPeriode( Period.Summer );
-	
-		gezins2.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgML7jwoM" );
+		{
+			// GEZINS 2
+			Vakantie vakantie
+				= new Vakantie();
+
+			vakantie.setBeginDatum( Timing.date("07/08/2016") );
+			vakantie.setEindDatum( Timing.date("15/08/2016") );
+			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
+			vakantie.setEindInschrijving( Timing.date("15/07/2016") );
+			vakantie.setType( VakantieType.Gezin );
+			vakantie.setJaar( 2016 );
+			vakantie.setNaam( "Zomer Gezins 2");
+			vakantie.setPeriode( Period.Summer );
 		
-		this.bootcamps.put( gezins2.getUuid(), gezins2 );
+			vakantie.setUuid( "GEZIN2-SUMMER-2016" );
+			this.bootcamps.put( vakantie.getUuid(), vakantie );
+			
+		}
 	
-		Vakantie gezins1
-			= new Vakantie();
-	
-		gezins1.setBeginDatum( Timing.date("01/08/2016") );
-		gezins1.setEindDatum( Timing.date("08/08/2016") );
-		gezins1.setBeginInschrijving( Timing.date("01/10/2015") );
-		gezins1.setEindInschrijving( Timing.date("15/07/2016") );
-		gezins1.setType( VakantieType.Gezin );
-		gezins1.setJaar( 2016 );
-		gezins1.setNaam( "Zomer Gezins 1");
-		gezins1.setPeriode( Period.Summer );
-	
-		gezins1.setUuid( "ahRzfnBpcmxld2lldC1kaWdpdGFhbHIVCxIIVmFrYW50aWUYgICAgO_nhgoM" );
-		
-		this.bootcamps.put( gezins1.getUuid(), gezins1  );
-		*/
-		
+				
 	}
 
 	@Override
