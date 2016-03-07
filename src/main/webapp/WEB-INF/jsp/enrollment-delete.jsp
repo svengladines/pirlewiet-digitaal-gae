@@ -104,8 +104,8 @@
 								<div class="col-sm-12 alert alert-warning">
 								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<c:forEach items="${related}" var="enrollment">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
 											<br/>
 									</c:forEach><br/>
 									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>									
@@ -116,8 +116,8 @@
 							<div class="col-sm-12 alert alert-success">
 								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<c:forEach items="${related}" var="enrollment">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
 											<br/>
 									</c:forEach><br/>
 									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
@@ -617,6 +617,12 @@
 			
 		};
 		
+		var deleteParticipant = function( id ) {
+			
+			deleteEnrollment( id, $jq("#x-"+id ),$jq("#participant-delete-status-"+id ) );
+			
+		};
+		
 		var saveParticipantAddress = function( id ) {
 			var selector = id;
 			var a = new Adres( $jq("#adres-zipcode-"+selector).val(), $jq("#adres-gemeente-"+selector).val(), $jq("#adres-straat-"+selector).val(), $jq("#adres-nummer-"+selector).val() );
@@ -658,12 +664,6 @@
 		
 		var cancel = function( id ) {
 			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
-		};
-		
-		var deleteParticipant = function( id ) {
-			
-			deleteEnrollment( id, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
-			
 		};
 		
 		var refresh = function( ) {
@@ -741,17 +741,6 @@
 			$jq(this).button('Even geduld...');
 			
 			cancel( "${inschrijving.uuid}" );
-			
-		});
-		
-		$jq(".enrollment-delete").click( function( event ) {
-			
-			var uuid 
-				= event.currentTarget.attributes["data-uuid"].value;
-			
-			$jq(this).button('Even geduld...');
-			
-			deleteParticipant( uuid );
 			
 		});
 		

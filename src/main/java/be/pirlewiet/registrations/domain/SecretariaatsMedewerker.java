@@ -321,9 +321,17 @@ public class SecretariaatsMedewerker {
     		InschrijvingX inschrijving
 				= it.next();
     		
+    		String uuid
+    			=  inschrijving.getUuid();
+    		
     		try {
 	    		
 	    		inschrijving = this.detach( inschrijving.getUuid() );
+	    		
+	    		if ( inschrijving == null ) {
+	    			logger.warn( "[{}]; detached enrollment is null, skip", uuid );
+	    			continue;
+	    		}
 	    		
 	    		if ( (!isPirlewiet) && ( ! inschrijving.getOrganisatie().getUuid().equals( organisatie.getUuid() ) ) ) {
 	    			// logger.info( "x.[{}] versus o.[{}], no match", inschrijving.getOrganisatie().getUuid(), organisatie.getUuid() );
@@ -352,7 +360,7 @@ public class SecretariaatsMedewerker {
 	    		**/
     		}
     		catch( Exception e ) {
-    			logger.warn( String.format( "could not process enrollment [%s]", inschrijving.getUuid() ), e );
+    			logger.warn( "failed to load enrollment", e );
     		}
     		
     	}

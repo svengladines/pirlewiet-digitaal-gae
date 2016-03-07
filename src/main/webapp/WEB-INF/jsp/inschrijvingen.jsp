@@ -72,21 +72,21 @@
 					<tbody>
 					
 					<tr>
-						<th scope="row">Inschrijving</th>
+						<th scope="row" class="th-row">Inschrijving</th>
 						<td colspan="1">
 							<a href="./inschrijvingen/${enrollment.uuid}.html" class="pull-right">bewerk</a>
 						</td>
 					</tr>
 			
 					<tr>
-						<th scope="row">Vakantie(s)</th>
+						<th scope="row" class="th-row" >Vakantie(s)</th>
 						<td colspan="1">
 							<c:forEach items="${enrollment.vakanties}" var="vakantie">
 								${vakantie.naam}<br/>
 							</c:forEach>
 					</tr>
 					<tr>
-						<th scope="row">Contactpersoon</th>
+						<th scope="row" class="th-row">Contactpersoon</th>
 						<td colspan="1">
 							${enrollment.contactGegevens.name}
 						</td>
@@ -94,7 +94,7 @@
 				</c:if>
 							
 					<tr>
-						<th scope="row">Deelnemer</th>
+						<th scope="row" class="th-row">Deelnemer</th>
 						<td>${enrollment.deelnemers[0].voorNaam} &nbsp; ${enrollment.deelnemers[0].familieNaam} (${gd})
 						<span class="pull-right text-${enrollment.status.value == 'ACCEPTED' ? 'success' : enrollment.status.value == 'REJECTED' ? 'danger' : 'info' }"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
 					</tr>

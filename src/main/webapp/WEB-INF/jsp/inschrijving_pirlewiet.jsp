@@ -512,6 +512,12 @@
 			
 		};
 		
+		var deleteEnrollment = function( id ) {
+			
+			deleteEnrollment( id, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
+			
+		};
+		
 		var refresh = function( ) {
 			window.location.hash="";
 			window.location.reload();
@@ -581,6 +587,17 @@
 			var status = event.currentTarget.attributes["data-status"].value;
 			
 			saveStatus( uuid, status, $jq("#status-comment-text").val() );
+			
+		});
+		
+		$jq("#enrollment-delete").click( function( event ) {
+			
+			var uuid 
+				= event.currentTarget.attributes["data-uuid"].value;
+			
+			$jq(this).button('Even geduld...');
+			
+			deleteEnrollment( uuid );
 			
 		});
 		
