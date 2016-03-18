@@ -23,7 +23,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijving</h1>
 					<p>
-						Beheer een inschrijving.
+						Beheer een application.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -38,100 +38,127 @@
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><fmt:message key="application.status.${applicationStatus.value}"/></i><br/>
-					<fmt:message key="application.status.${applicationStatus.value}.description"/> <br/>
+					<i><spring:message code="application.status.${applicationStatus.value}"/></i><br/>
+					<spring:message code="application.status.${applicationStatus.value}.description"/> <br/>
 				</p>
 			</div>
 			
 		</div>
 			<div class="row">
 				<c:choose>
-					<c:when test="${empty inschrijving.vakanties}">
+					<c:when test="${applicationHolidaysResult.value != 'OK'}">
 						<div class="col-sm-12 alert alert-warning">
-							<i class="fa fa-4 fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
+							<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
 							<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<i class="fa fa-4 fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
+						<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
+						<c:forEach items="${application.vakanties}" var="vakantie">
 							<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
 						</c:forEach>
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${inschrijving.contactGegevens.name == null}">
+					<c:when test="${applicationContactResult.value != 'OK'}">
 						<div class="col-sm-12 alert alert-warning">
-							<i class="fa fa-4 fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
+							<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
 							<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-						<i class="fa fa-4 fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
-						<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
+						<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
+						<span>${application.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${not applicationQListComplete}">
+					<c:when test="${applicationQuestionListResult.value != 'OK'}">
 						<div class="col-sm-12 alert alert-warning">
-							<i class="fa fa-4 fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 							<span class="">Niet (volledig) ingevuld </span><br/>
 							<a href="#modal-qlist-application" class="todo" data-toggle="modal" data-target="#modal-qlist-application">Vragenlijst invullen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-							<i class="fa fa-4 fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 							<span>Ingevuld</span>&nbsp;(<a href="#modal-qlist-application" class="todo" data-toggle="modal" data-target="#modal-qlist-application">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${inschrijving.deelnemers[0].voorNaam == null}">
-						<div class="col-sm-12 alert alert-warning">
-							<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-							<span class="">Nog geen deelnemers toegevoegd</span><br/>
-							<a href="#modal-participant-${inschrijving.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${inschrijving.uuid}">Deelnemer toevoegen</a>
-						</div>
-					</c:when>
-					<c:otherwise>
+					<c:when test="${ enrollmentsStatus.value != 'OK' }">
 						<c:choose>
-							<c:when test="${ not participantComplete }">
+							<c:when test="${ enrollmentsStatus.errorCode == 'APPLICATION_NO_ENROLLMENTS' }">
 								<div class="col-sm-12 alert alert-warning">
-								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-									<c:forEach items="${related}" var="enrollment">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
-											<br/>
-									</c:forEach><br/>
-									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>									
+									<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+									<span class="">Nog geen deelnemers toegevoegd</span><br/>
+									<a href="#modal-participant-${application.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${application.uuid}">Deelnemer toevoegen</a>
 								</div>
-								
 							</c:when>
 							<c:otherwise>
-							<div class="col-sm-12 alert alert-success">
-								<i class="fa fa-4 fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-									<c:forEach items="${related}" var="enrollment">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
-											<br/>
-									</c:forEach><br/>
-									<a href="javascript:addParticipant('${inschrijving.uuid}');" class="todo">Deelnemer toevoegen</a>
+								<div class="col-sm-12 alert alert-warning">
+									<i class="fa fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+									<p>
+										Er ontbreken nog gegevens van minstens 1 deelnemer. Kijk AUB de gegevens na. <br/>
+									</p>
+									<p>
+										<strong>Opgelet</strong>: voor KIKA, TIKA en VOV-vakanties moet ook de medische fiche <strong>volledig</strong> ingevuld zijn voordat je de inschrijving kan doorsturen. <br/> <br/>
+									</p>
+									<div class="container">
+										<c:forEach items="${enrollmentsStatus.object}" var="enrollmentStatus">
+											<c:set var="enrollment" value="${enrollmentStatus.object}"/>
+											<div class="row">
+												<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
+													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
+												</div>
+												<div class="col-sm-1">
+												</div>
+												<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
+													<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
+												</div>
+											</div>
+										</c:forEach><br/>
+										<a href="javascript:addParticipant('${application.uuid}');" class="todo">Deelnemer toevoegen</a>									
+									</div>
 								</div>
 							</c:otherwise>
 						</c:choose>
+					</c:when>
+					<c:otherwise>
+						<div class="col-sm-12 alert alert-success">
+							<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+							<div class="container">
+								<c:forEach items="${enrollmentsStatus.object}" var="enrollmentStatus">
+									<c:set var="enrollment" value="${enrollmentStatus.object}"/>
+									<div class="row">
+										<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
+										</div>
+										<div class="col-sm-1">
+										</div>
+										<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
+										</div>
+									</div>
+								</c:forEach><br/>
+								<a href="javascript:addParticipant('${application.uuid}');" class="todo">Deelnemer toevoegen</a>									
+							</div>
+						</div>
 					</c:otherwise>
 				</c:choose>
+					
 				
 			<c:choose>
 					<c:when test="${applicationStatus.value =='DRAFT'}">
 						<div class="col-sm-12 alert alert-info">
+							<i class="fa fa-2x fa-envelope pull-right"></i><h4><strong>Indienen</strong><br/></h4>
 							<c:choose>
-								<c:when test="${isComplete==true}">
+								<c:when test="${(applicationHolidaysResult.value == 'OK') && (applicationContactResult.value == 'OK') && (applicationQuestionListResult.value == 'OK') && (applicationEnrollmentsResult.value != 'OK') }">
 									<p>
 										Je inschrijving is volledig. Je kan deze nu versturen.
 									</p>
@@ -182,7 +209,7 @@
 								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.beginDatum}" var="start"></fmt:formatDate>	
 								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.eindDatum}" var="end"></fmt:formatDate>
 								<c:set var="contains" value="false" />
-								<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
+								<c:forEach items="${application.vakanties}" var="vakantie">	
 									<c:choose>
 										<c:when test="${vakantie.uuid eq vk.uuid}">
 											<c:set var="contains" value="true" />
@@ -212,7 +239,7 @@
 							<h2>Contactgegevens doorverwijzer</h2>
 							
 							<p>
-								Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze inschrijving.
+								Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze application.
 							</p>
 						</div>
 						<div class="modal-body">
@@ -220,19 +247,19 @@
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
 									<div class="col-sm-6">	
-										<input id="contact-name" type="text" class="form-control" value="${inschrijving.contactGegevens.name}"></input>
+										<input id="contact-name" type="text" class="form-control" value="${application.contactGegevens.name}"></input>
 									</div>
 							</div>
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
 									<div class="col-sm-4">	
-										<input id="contact-phone" type="text" class="form-control" value="${inschrijving.contactGegevens.phone}"></input>
+										<input id="contact-phone" type="text" class="form-control" value="${application.contactGegevens.phone}"></input>
 									</div>
 							</div>
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
 									<div class="col-sm-3">	
-										<input id="contact-email" type="email" class="form-control" value="${inschrijving.contactGegevens.email}"></input>
+										<input id="contact-email" type="email" class="form-control" value="${application.contactGegevens.email}"></input>
 									</div>
 							</div>
 							</form>
@@ -257,7 +284,7 @@
 						</div>
 					<div class="modal-body">
 						<form class="form-horizontal">
-						<c:forEach items="${inschrijving.vragen}" var="vraag">
+						<c:forEach items="${application.vragen}" var="vraag">
 								<c:if test="${vraag.tag eq 'application'}">
 									<div class="form-group">
 										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
@@ -313,7 +340,7 @@
 						</div>
 					<div class="modal-body">
 			
-						<c:if test="${inschrijving.uuid != enrollment.uuid}">
+						<c:if test="${application.uuid != enrollment.uuid}">
 						
 							<p class="alert alert-warning">
 								Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
@@ -428,7 +455,7 @@
 									<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.adres.nummer}"></input>
 								</div>
 						</div>
-								<c:forEach items="${inschrijving.vragen}" var="vraag">
+								<c:forEach items="${application.vragen}" var="vraag">
 								<c:if test="${vraag.tag eq 'history'}">
 									<div class="form-group">
 										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
@@ -660,7 +687,7 @@
 			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
 		};
 		
-		var deleteParticipant = function( id ) {
+		var deleteDraftEnrollment = function( id ) {
 			
 			deleteEnrollment( id, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
 			
@@ -676,7 +703,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveVakanties( "${inschrijving.uuid}" );
+			saveVakanties( "${application.uuid}" );
 			
 		});
 		
@@ -685,7 +712,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveContact( "${inschrijving.uuid}" );
+			saveContact( "${application.uuid}" );
 			
 		});
 		
@@ -694,7 +721,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveQList( "${inschrijving.uuid}", "application" );
+			saveQList( "${application.uuid}", "application" );
 			
 		});
 		
@@ -731,7 +758,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveStatus( "${inschrijving.uuid}" );
+			saveStatus( "${application.uuid}" );
 			
 		});
 		
@@ -740,7 +767,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			cancel( "${inschrijving.uuid}" );
+			cancel( "${application.uuid}" );
 			
 		});
 		
@@ -751,7 +778,7 @@
 			
 			$jq(this).button('Even geduld...');
 			
-			deleteParticipant( uuid );
+			deleteDraftEnrollment( uuid );
 			
 		});
 		

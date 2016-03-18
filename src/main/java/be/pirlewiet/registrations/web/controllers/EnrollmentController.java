@@ -250,43 +250,23 @@ public class EnrollmentController {
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		InschrijvingX inschrijving
+		InschrijvingX application
 			= entity.getBody();
 		
-		model.put( "inschrijving", inschrijving );
+		model.put( "application", application );
 		
 		List<Vakantie> vakanties
 			= this.secretariaatsMedewerker.guard().actueleVakanties( );
 		
 		model.put( "vakanties", vakanties );
-		model.put( "applicationQListComplete", this.secretariaatsMedewerker.guard().areAllMandatoryQuestionsAnswered( inschrijving, Tags.TAG_APPLICATION ) );
-		model.put( "participantComplete", this.secretariaatsMedewerker.guard().isTheParticipantComplete( inschrijving ) );
+		model.put( "applicationHolidaysResult", this.secretariaatsMedewerker.guard().checkApplicationHolidaysStatus( application ) );
+		model.put( "applicationContactResult", this.secretariaatsMedewerker.guard().checkApplicationContactStatus( application ) );
+		model.put( "applicationQuestionListResult", this.secretariaatsMedewerker.guard().checkApplicationQuestionList( application ) );
+		model.put( "enrollmentsStatus", this.secretariaatsMedewerker.guard().checkEnrollmentsStatus( application ) );
+		model.put( "related", this.secretariaatsMedewerker.guard().findRelated( application, true) );
 		
-		boolean isComplete
-			= true;
-		
-		List<InschrijvingX> related
-			= this.secretariaatsMedewerker.guard().findRelated( inschrijving );
-		// related to itself...
-		related.add( inschrijving );
-		
-		logger.debug( "[{}], related enrollments (including self): [{}]", organisatie.getCode(), related.size() );
-		model.put( "related", related );
-		
-		for ( InschrijvingX e : related ) {
-			boolean thisOneComplete
-				= this.secretariaatsMedewerker.guard().isTheEnrollmentComplete( e );
-			logger.info( "sub-enrollment [{}] is {}complete", e.getUuid(), thisOneComplete ? "": "not " );
-			isComplete &= thisOneComplete;
-		}
-		
-		// complete ?
-		logger.info( "enrollment [{}] is {}complete", inschrijving.getUuid(), isComplete ? "": "not " );
-		model.put( "isComplete", isComplete );
-		
-		// status ?
 		Status applicationStatus
-			= this.secretariaatsMedewerker.guard().whatIsTheApplicationStatus( related );
+			= this.secretariaatsMedewerker.guard().whatIsTheApplicationStatus( application );
 		
 		model.put("applicationStatus", applicationStatus );
 		

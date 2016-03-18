@@ -4,6 +4,7 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+	<%@ taglib uri = "http://www.springframework.org/tags" prefix = "spring"%>
 
 	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	
@@ -23,7 +24,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijving</h1>
 					<p>
-						Beheer een inschrijving.
+						Beheer een application. (${pageContext.request.locale.language})
 					</p>
 				</div>
 			</div><!-- row -->
@@ -38,15 +39,15 @@
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><fmt:message key="enrollment.status.${inschrijving.status.value}"/></i><br/>
-					<fmt:message key="enrollment.status.${inschrijving.status.value}.description"/> <br/>
+					<i><spring:message code="enrollment.status.${application.status.value}"/></i><br/>
+					<spring:message code="enrollment.status.${application.status.value}.description"/> <br/>
 				</p>
 			</div>
 			
 		</div>
 			<div class="row">
 				<c:choose>
-					<c:when test="${empty inschrijving.vakanties}">
+					<c:when test="${empty application.vakanties}">
 						<div class="col-sm-12 alert alert-warning">
 							<h4><strong>Vakantie(s)</strong></h4>
 							<a href="#modal-vakantie" class="todo" data-toggle="modal">Vakantie selecteren</a>
@@ -55,14 +56,14 @@
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<h4><strong>Vakantie(s)</strong><br/></h4>
-						<c:forEach items="${inschrijving.vakanties}" var="vakantie">
+						<c:forEach items="${application.vakanties}" var="vakantie">
 							<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
 						</c:forEach>
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${inschrijving.contactGegevens.name == null}">
+					<c:when test="${application.contactGegevens.name == null}">
 						<div class="col-sm-12 alert alert-warning">
 							<h4><strong>Contactpersoon</strong><br/></h4>
 							<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
@@ -71,7 +72,7 @@
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<h4><strong>Contactpersoon</strong><br/></h4>
-						<span>${inschrijving.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
+						<span>${application.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -100,9 +101,9 @@
 								${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzig</a>)&nbsp;&nbsp;&nbsp;
 							</div>
 							<div class="col-sm-8">
-									<button type="button" class="btn btn-success enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="ACCEPTED"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Aanvaard</button>
-									<button type="button" class="btn btn-danger enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="REJECTED"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Weiger</button>
-									<button type="button" class="btn btn-primary enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="WAITINGLIST"><i class="fa fa-bolt"></i>&nbsp;&nbsp;Wachtlijst</button>
+									<button type="button" class="btn btn-success enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="ACCEPTED"><i class="fa fa-thumbs-up"></i></i>&nbsp;&nbsp;Aanvaard</button>
+									<button type="button" class="btn btn-danger enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="REJECTED"><i class="fa fa-thumbs-down"></i>&nbsp;&nbsp;Geweigerd</button>
+									<button type="button" class="btn btn-primary enrollment-set-status" data-uuid="${enrollment.uuid}" data-status="WAITINGLIST"><i class="fa fa-list"></i>&nbsp;&nbsp;Wachtlijst</button>
 							</div>
 						</div>
 						<div>
@@ -131,7 +132,7 @@
 								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.beginDatum}" var="start"></fmt:formatDate>	
 								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.eindDatum}" var="end"></fmt:formatDate>
 								<c:set var="contains" value="false" />
-								<c:forEach items="${inschrijving.vakanties}" var="vakantie">	
+								<c:forEach items="${application.vakanties}" var="vakantie">	
 									<c:choose>
 										<c:when test="${vakantie.uuid eq vk.uuid}">
 											<c:set var="contains" value="true" />
@@ -161,7 +162,7 @@
 							<h2>Contactgegevens doorverwijzer</h2>
 							
 							<p>
-								Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze inschrijving.
+								Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze application.
 							</p>
 						</div>
 						<div class="modal-body">
@@ -169,19 +170,19 @@
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
 									<div class="col-sm-6">	
-										<input id="contact-name" type="text" class="form-control" value="${inschrijving.contactGegevens.name}"></input>
+										<input id="contact-name" type="text" class="form-control" value="${application.contactGegevens.name}"></input>
 									</div>
 							</div>
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
 									<div class="col-sm-4">	
-										<input id="contact-phone" type="text" class="form-control" value="${inschrijving.contactGegevens.phone}"></input>
+										<input id="contact-phone" type="text" class="form-control" value="${application.contactGegevens.phone}"></input>
 									</div>
 							</div>
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
 									<div class="col-sm-3">	
-										<input id="contact-email" type="email" class="form-control" value="${inschrijving.contactGegevens.email}"></input>
+										<input id="contact-email" type="email" class="form-control" value="${application.contactGegevens.email}"></input>
 									</div>
 							</div>
 							</form>
@@ -206,7 +207,7 @@
 						</div>
 					<div class="modal-body">
 						<form class="form-horizontal">
-						<c:forEach items="${inschrijving.vragen}" var="vraag">
+						<c:forEach items="${application.vragen}" var="vraag">
 								<c:if test="${vraag.tag eq 'various' or vraag.tag eq 'fotos'}">
 									<div class="form-group">
 										<label class="col-sm-6 control-label">${vraag.vraag} (*)</label>
@@ -262,7 +263,7 @@
 						</div>
 					<div class="modal-body">
 			
-						<c:if test="${inschrijving.uuid != enrollment.uuid}">
+						<c:if test="${application.uuid != enrollment.uuid}">
 						
 							<p class="alert alert-warning">
 								Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
@@ -528,7 +529,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveVakanties( "${inschrijving.uuid}" );
+			saveVakanties( "${application.uuid}" );
 			
 		});
 		
@@ -537,7 +538,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveContact( "${inschrijving.uuid}" );
+			saveContact( "${application.uuid}" );
 			
 		});
 		
@@ -546,7 +547,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveVragen( "${inschrijving.uuid}" );
+			saveVragen( "${application.uuid}" );
 			
 		});
 		
@@ -574,7 +575,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveStatus( "${inschrijving.uuid}" );
+			saveStatus( "${application.uuid}" );
 			
 		});
 		

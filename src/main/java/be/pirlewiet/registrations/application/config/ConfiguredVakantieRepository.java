@@ -28,7 +28,7 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 		kikaEenPasen.setBeginDatum( Timing.date("29/03/2016") );
 		kikaEenPasen.setEindDatum( Timing.date("02/04/2016") );
 		kikaEenPasen.setBeginInschrijving( Timing.date("12/12/2015") );
-		kikaEenPasen.setEindInschrijving( Timing.date("15/03/2016") );
+		kikaEenPasen.setEindInschrijving( Timing.date("15/04/2016") );
 		kikaEenPasen.setType( VakantieType.Kika );
 		kikaEenPasen.setJaar( 2016 );
 		kikaEenPasen.setNaam( "KIKA 1 Pasen");
@@ -43,7 +43,7 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 		kikaTweePasen.setBeginDatum( Timing.date("04/04/2016") );
 		kikaTweePasen.setEindDatum( Timing.date("08/04/2016") );
 		kikaTweePasen.setBeginInschrijving( Timing.date("12/12/2015") );
-		kikaTweePasen.setEindInschrijving( Timing.date("15/03/2016") );
+		kikaTweePasen.setEindInschrijving( Timing.date("15/04/2016") );
 		kikaTweePasen.setType( VakantieType.Kika );
 		kikaTweePasen.setJaar( 2016 );
 		kikaTweePasen.setNaam( "KIKA 2 Pasen");
@@ -58,7 +58,7 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 		gezinsVoorjaar.setBeginDatum( Timing.date("29/03/2016") );
 		gezinsVoorjaar.setEindDatum( Timing.date("02/04/2016") );
 		gezinsVoorjaar.setBeginInschrijving( Timing.date("12/12/2015") );
-		gezinsVoorjaar.setEindInschrijving( Timing.date("15/03/2016") );
+		gezinsVoorjaar.setEindInschrijving( Timing.date("15/04/2016") );
 		gezinsVoorjaar.setType( VakantieType.Gezin );
 		gezinsVoorjaar.setJaar( 2016 );
 		gezinsVoorjaar.setNaam( "Gezinsvakantie Pasen");

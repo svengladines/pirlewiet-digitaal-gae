@@ -119,7 +119,7 @@ public class EnrollmentsController {
 		for ( InschrijvingX application : applications ) {
 			
 			List<InschrijvingX> related
-				= this.secretariaatsMedewerker.guard().findRelated( application );
+				= this.secretariaatsMedewerker.guard().findRelated( application,true );
 			
 			if ( related != null ) {
 				logger.info( "[{}]; found [{}] related enrollments", application.getUuid(), related.size() );
@@ -183,7 +183,7 @@ public class EnrollmentsController {
 				r.add( enrollment );
 				
 				List<InschrijvingX> related
-					= this.secretariaatsMedewerker.guard().findRelated( enrollment );
+					= this.secretariaatsMedewerker.guard().findRelated( enrollment, false );
 				
 				if ( related != null ) {
 					r.addAll( related );
@@ -208,7 +208,7 @@ public class EnrollmentsController {
 				enrollments.add( enrollment );
 				
 				List<InschrijvingX> related
-					= this.secretariaatsMedewerker.guard().findRelated( enrollment );
+					= this.secretariaatsMedewerker.guard().findRelated( enrollment, false );
 				
 				if ( related != null ) {
 					enrollments.addAll( related );

@@ -1,43 +1,22 @@
 package be.pirlewiet.registrations.domain;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
-import be.occam.utils.ftp.FTPClient;
-import be.occam.utils.spring.web.Client;
-import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
-import be.pirlewiet.registrations.domain.exception.PirlewietException;
-import be.pirlewiet.registrations.model.Adres;
-import be.pirlewiet.registrations.model.InschrijvingX;
+import be.pirlewiet.registrations.domain.exception.ErrorCode;
 import be.pirlewiet.registrations.model.Organisatie;
 import be.pirlewiet.registrations.model.Vakantie;
 import be.pirlewiet.registrations.model.VakantieType;
-import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.VakantieRepository;
+import be.pirlewiet.registrations.web.ResultDTO;
+import be.pirlewiet.registrations.web.ResultDTO.Value;
 import be.pirlewiet.registrations.web.util.DataGuard;
-import be.pirlewiet.registrations.web.util.PirlewietUtil;
-
-import com.google.appengine.api.datastore.KeyFactory;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 public class HolidayManager {
 	
@@ -86,7 +65,11 @@ public class HolidayManager {
     }
     
     @Transactional( readOnly=false )
-    public VakantieType singleType( String vks ) {
+    public ResultDTO<VakantieType> checkSingleType( String vks ) {
+    	
+    	ResultDTO<VakantieType> result
+    		= new ResultDTO<VakantieType>();
+    	result.setValue( Value.OK );
     	
     	VakantieType type
     		= null;
@@ -119,7 +102,7 @@ public class HolidayManager {
 						
 						if ( ! type.equals( v.getType() ) ) {
 							
-							throw new PirlewietException( "Je mag per inschrijving enkel vakanties van hetzelfde type selecteren.");
+							result.setErrorCode( ErrorCode.APPLICATION_HOLIDAY_MIXED );
 							
 						}
 						
@@ -127,13 +110,20 @@ public class HolidayManager {
 					
 				}
 				else {
-					throw new RuntimeException( "no vakantie with id [" + t.trim() + "]" );
+					result.setErrorCode( ErrorCode.APPLICATION_HOLIDAY_NOT_FOUND );
 				}
 				
 			}
 		}
     	
-    	return type;
+    	if ( result.getErrorCode() != null ) {
+    		result.setValue( Value.NOK );
+    	}
+    	else {
+    		result.setObject( type );
+    	}
+    	
+    	return result;
     	
     }
 

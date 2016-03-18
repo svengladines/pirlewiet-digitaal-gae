@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,13 +21,15 @@ import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.LocaleResolver;
 
 import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
-import be.pirlewiet.registrations.domain.exception.IncompleteObjectException;
+import be.pirlewiet.registrations.domain.exception.ErrorCode;
 import be.pirlewiet.registrations.domain.exception.PirlewietException;
 import be.pirlewiet.registrations.domain.q.QList;
 import be.pirlewiet.registrations.model.Adres;
@@ -45,6 +48,7 @@ import be.pirlewiet.registrations.repositories.EnrollmentRepository;
 import be.pirlewiet.registrations.repositories.OrganisatieRepository;
 import be.pirlewiet.registrations.repositories.PersoonRepository;
 import be.pirlewiet.registrations.repositories.VraagRepository;
+import be.pirlewiet.registrations.web.ResultDTO;
 import be.pirlewiet.registrations.web.util.DataGuard;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
@@ -130,6 +134,12 @@ public class SecretariaatsMedewerker {
 	
 	@Resource
 	DataGuard dataGuard;
+	
+	@Resource
+	MessageSource messageSource;
+	
+	@Resource
+	LocaleResolver localeResolver;
 	
     public SecretariaatsMedewerker( ) {
     }
@@ -487,6 +497,7 @@ public class SecretariaatsMedewerker {
     	
     }
     
+    // TODO, return ResultDTO<>
     @Transactional(readOnly=false)
     public InschrijvingX updateVakanties( String inschrijvingID, String vakanties ) {
     	
@@ -500,7 +511,12 @@ public class SecretariaatsMedewerker {
     		= this.findInschrijving( inschrijvingID );
     	
     	// make sure only the same sort of holidays are selected
-    	this.holidayManager.singleType( vakanties );
+    	ResultDTO<VakantieType> type
+    		= this.holidayManager.checkSingleType( vakanties );
+    	
+    	if ( ! ResultDTO.Value.OK.equals( type.getValue() ) ) {
+    		throw new PirlewietException("Per inschrijving mag je maar 1 type vakantie selecteren, bv. KIKA 1 en KIKA 2, ...");
+    	}
     	
     	inschrijving.setVks( vakanties );
     	
@@ -578,7 +594,8 @@ public class SecretariaatsMedewerker {
     	
     	if ( d != null ) {
     		
-    		assertParticipantCompleteness( deelnemer );
+    		// TODO, check participant!
+    		// assertParticipantCompleteness( deelnemer );
     		
     		d.setVoorNaam( deelnemer.getVoorNaam() );
     		d.setFamilieNaam( deelnemer.getFamilieNaam() );
@@ -672,7 +689,7 @@ public class SecretariaatsMedewerker {
 		if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
 			
 			MimeMessage message
-				= formatUpdateMessage( loaded, oldStatus );
+				= formatUpdateMessageToOrganisation( loaded, oldStatus );
 
 			if ( message != null ) {
 				
@@ -720,7 +737,7 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    protected MimeMessage formatUpdateMessage( InschrijvingX inschrijving, Status.Value oldStatus ) {
+    protected MimeMessage formatUpdateMessageToOrganisation( InschrijvingX enrollment, Status.Value oldStatus ) {
 		
 		MimeMessage message
 			= null;
@@ -730,20 +747,33 @@ public class SecretariaatsMedewerker {
 	
 		try {
 			
+			Status newStatus
+				= enrollment.getStatus();
+			
 			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/pirlewiet/update.tmpl" );
+				= this.getClass().getResourceAsStream( "/templates/to-organisation/enrollment-status-update.tmpl" );
 			
 			Template template 
 				= new Template("code", new InputStreamReader( tis ), cfg );
 			
 			Map<String, Object> model = new HashMap<String, Object>();
+			
+			String oldStatusMessage
+				= this.messageSource.getMessage( String.format( "enrollment.status.%s",  oldStatus) , new Object[] {}, localeResolver.resolveLocale( null ) );
+			
+			String newStatusMessage
+				= this.messageSource.getMessage( String.format( "enrollment.status.%s",  newStatus.getValue() ) , new Object[] {}, localeResolver.resolveLocale( null ) );
+			
+			String newStatusDescription
+				= this.messageSource.getMessage( String.format( "enrollment.status.%s.description",  newStatus.getValue() ) , new Object[] {}, localeResolver.resolveLocale( null ) );
 					
-			model.put( "organisatie", inschrijving.getOrganisatie() );
-			model.put( "inschrijving", inschrijving );
-			model.put( "vakanties", vakantieDetails( inschrijving ) );
-			Status old = new Status( oldStatus );
-			model.put( "old", old );
-			model.put( "id", inschrijving.getUuid() );
+			model.put( "enrollment", enrollment );
+			model.put( "vakanties", vakantieDetails( enrollment ) );
+			model.put( "oldStatusMessage", oldStatusMessage );
+			model.put( "newStatusMessage", newStatusMessage );
+			model.put( "newStatusDescription", newStatusDescription );
+			model.put( "newStatusComment", newStatus.getComment() );
+			model.put( "uuid", enrollment.getUuid() );
 			
 			StringWriter bodyWriter 
 				= new StringWriter();
@@ -756,7 +786,7 @@ public class SecretariaatsMedewerker {
 			MimeMessageHelper helper = new MimeMessageHelper( message,"utf-8" );
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( inschrijving.getContactGegevens().getEmail() );
+			helper.setTo( enrollment.getContactGegevens().getEmail() );
 			helper.setReplyTo( "info@pirlewiet.be" );
 			helper.setSubject( "Uw inschrijving bij Pirlewiet" );
 				
@@ -847,10 +877,10 @@ public class SecretariaatsMedewerker {
 		
 	} 
     
-    public boolean areAllMandatoryQuestionsAnswered( InschrijvingX enrollment, String tag ) {
+    public String areAllMandatoryQuestionsAnswered( InschrijvingX enrollment, String tag ) {
     	
-    	boolean complete
-			= true;
+    	String notAnswered
+			= null;
 
 		for ( Vraag vraag : enrollment.getVragen() ) {
 			
@@ -858,7 +888,7 @@ public class SecretariaatsMedewerker {
 				if ( tag.equals( vraag.getTag() ) ) { 
 					if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
 						logger.info( "[{}]; mandatory question [{}] was not answered", enrollment.getUuid(), vraag.getVraag() );
-						complete = false;
+						notAnswered = vraag.getVraag();
 						break;
 					}
 				}
@@ -866,109 +896,195 @@ public class SecretariaatsMedewerker {
 			
 		}
 	
-		return complete;
-    }
-    
-    public boolean isTheParticipantComplete( InschrijvingX enrollment ) {
-    	
-    	boolean complete
-			= true;
-    	
-    	try {
-	
- 			Deelnemer participant 
-    			= enrollment.getDeelnemers().get( 0 );
-    				
-    		this.assertParticipantCompleteness( participant );
-    		
-    		VakantieType type
-    			= this.holidayManager.singleType( enrollment.getVks() );
-    	
-	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) || VakantieType.Vov.equals( type ) ) {
-	    		// for KIKA and TIKA, VOV medical list must be filled in
-	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );	
-	    	}
-    		
-    	 }
-    	 catch( IncompleteObjectException e ) {
-    	 	complete = false;
-    	 	logger.info( "enrollment participant not complete ", e );
-    	 }
-	
-		return complete;
-    }
-    
-    // dynamic: ready to submit, later: medical file complete ? TODO
-    public boolean isTheEnrollmentComplete( InschrijvingX enrollment ) {
-    	
-    	boolean complete
-			= true;
-    	
-    	// TODO: components should check themselves for completeness ?
-    	
-    	try {
-	
-	    	// holidays
-	    	complete &= ( ! isEmpty( enrollment.getVks() ) );
-	    	
-	    	if ( ! complete ) {
-	    		//throw new IncompleteObjectException( "no holiday: vks=[" + enrollment.getVks() + "]" );
-	    		complete = true; // TODO fix holiday!
-	    	}
-	    	
-	    	// contact
-	    	if ( enrollment.getReference() == null ) {
-	    		ContactGegevens contact
-	    			= enrollment.getContactGegevens();
-		    	complete &= ( ! isEmpty( contact.getName() ) );
-		    	complete &= ( ! isEmpty( contact.getEmail() ) );
-		    	complete &= ( ! isEmpty( contact.getPhone() ) );
-		    	
-		    	if ( ! complete ) {
-		    		throw new IncompleteObjectException( "contact incomplete" );
-		    	}
-	    	
-		    	// q-list, only for root enrollment for now
-	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_APPLICATION );
-	    		
-	    		if ( ! complete ) {
-	    			throw new IncompleteObjectException( "not all mandatory questions answered" );
-	    		}
-	    		
-	    	}
-	    	
-	    	VakantieType type
-	    		= this.holidayManager.singleType( enrollment.getVks() );
-	    	
-	    	if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) || VakantieType.Vov.equals( type ) ) {
-	    		// for KIKA and TIKA, medical list must be filled in
-	    		complete &= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );	
-	    	}
-			
-			// participants
-			Deelnemer participant 
-				= enrollment.getDeelnemers().get( 0 );
-			
-			this.assertParticipantCompleteness( participant );
-    	}
-    	catch( IncompleteObjectException e ) {
-    		complete = false;
-    		logger.info( "enrollement not complete ", e );
-    	}
+		return notAnswered;
 		
-		return complete;
     }
     
-    public List<InschrijvingX> findRelated( InschrijvingX enrollment ){
+    public ResultDTO<InschrijvingX> checkApplicationHolidaysStatus( InschrijvingX application ) {
+    	
+    	ResultDTO<InschrijvingX> result
+    		= new ResultDTO<InschrijvingX>();
+    	
+    	result.setValue( ResultDTO.Value.OK );
+    	result.setObject( application );
+	
+		if ( isEmpty( application.getVks() ) ) {
+			
+			result.setValue( ResultDTO.Value.NOK );
+			result.setErrorCode( ErrorCode.APPLICATION_HOLIDAY_NONE );
+			
+		}
+		else {
+			
+			ResultDTO<VakantieType> typeResult
+				= this.holidayManager.checkSingleType( application.getVks() );
+			
+			result.setValue( typeResult.getValue() );
+			result.setErrorCode( typeResult.getErrorCode() );
+			
+		}
+	    	
+    	return result;
+    	
+    }
+    
+    public ResultDTO<InschrijvingX> checkApplicationContactStatus( InschrijvingX application ) {
+    	
+    	ResultDTO<InschrijvingX> result
+    		= new ResultDTO<InschrijvingX>();
+    	
+    	result.setValue( ResultDTO.Value.OK );
+    	result.setObject( application );
+	
+    	// contact
+		ContactGegevens contact
+			= application.getContactGegevens();
+		
+		boolean contactOK
+			= true;
+		
+		contactOK &=  ( ! isEmpty( contact.getName() ) );
+		contactOK &= ( ! isEmpty( contact.getEmail() ) );
+		contactOK &= ( ! isEmpty( contact.getPhone() ) );
+	    	
+    	if ( ! contactOK ) {
+    		result.setValue(  ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.APPLICATION_CONTACT_INCOMPLETE );
+    	}
+	    	
+    	return result;
+    	
+    }
+    
+    public ResultDTO<InschrijvingX> checkApplicationQuestionList( InschrijvingX application ) {
+    	
+    	ResultDTO<InschrijvingX> result
+    		= new ResultDTO<InschrijvingX>();
+    	
+    	result.setValue( ResultDTO.Value.OK );
+    	result.setObject( application );
+	
+    	// check list
+		String qListNotAnswered 
+			= this.areAllMandatoryQuestionsAnswered( application, Tags.TAG_APPLICATION );
+	    	
+    	if ( qListNotAnswered != null ) {
+    		result.setValue(  ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.APPLICATION_QLIST_INCOMPLETE );
+    	}
+	    	
+    	return result;
+    	
+    }
+    
+ public ResultDTO<List<ResultDTO<InschrijvingX>>> checkEnrollmentsStatus( InschrijvingX application ) {
+    	
+	 	ResultDTO<List<ResultDTO<InschrijvingX>>> result
+    		= new ResultDTO<List<ResultDTO<InschrijvingX>>>();
+    	
+    	result.setValue( ResultDTO.Value.OK );
+    	
+    	List<InschrijvingX> enrollments
+    		= this.findRelated( application, true );
+    	
+    	if ( enrollments == null ) {
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.APPLICATION_NOT_FOUND );
+    		return result;
+    	}
+    	else if ( enrollments.isEmpty() ) {
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.APPLICATION_NO_ENROLLMENTS );
+    		return result;
+    	}
+    	
+    	// OK, we have enrollments
+    	
+    	List<ResultDTO<InschrijvingX>> enrollmentResults
+    		= new ArrayList<ResultDTO<InschrijvingX>>( enrollments.size() );
+    	
+    	boolean allIsWell
+    		= true;
+    	
+    	boolean allIsFalse
+    		= true;
+    	
+    	for ( InschrijvingX enrollment : enrollments ) {
+    		
+    		ResultDTO<InschrijvingX> individualResult
+    			= new ResultDTO<InschrijvingX>();
+    		
+    		individualResult.setValue( ResultDTO.Value.OK );
+    		individualResult.setObject( enrollment );
+    		
+    		ResultDTO<Deelnemer> participantResult
+    			= new ResultDTO<Deelnemer>();
+    		
+    		participantResult 
+    			= this.checkParticipantData( enrollment.getDeelnemers().get( 0) );
+    		
+    		if ( ! ResultDTO.Value.OK.equals( participantResult.getValue() ) ) {
+    			
+    			individualResult.setValue( participantResult.getValue() );
+    			individualResult.setErrorCode( participantResult.getErrorCode() );
+    			
+    		}
+    		else {
+    		
+	    		ResultDTO<VakantieType> typeResult
+	    			= this.holidayManager.checkSingleType( application.getVks() );
+	    		
+	    		// assume type has already been checked
+	    		if ( ResultDTO.Value.OK.equals( typeResult.getValue() ) ) {
+	    			
+	    			VakantieType type
+	    				= typeResult.getObject();
+	    			
+	    			if ( VakantieType.Kika.equals( type ) || VakantieType.Tika.equals( type ) || VakantieType.Vov.equals( type ) ) {
+	    				
+		    			ResultDTO<String> medicalResult
+	    					= this.checkParticipantMedicalFile( enrollment );
+	    			
+		    			individualResult.setValue( medicalResult.getValue() );
+		    			individualResult.setErrorCode( medicalResult.getErrorCode() );
+	    				
+	    			}
+	    			
+	    		}
+    		}
+    		
+    		enrollmentResults.add( individualResult );
+    		
+    		allIsWell &= (ResultDTO.Value.OK.equals( individualResult.getValue() ) );
+    		allIsFalse &= (! ResultDTO.Value.OK.equals( individualResult.getValue() ) );
+    		
+    	} 
+    	
+    	result.setValue( allIsWell ? ResultDTO.Value.OK : ( allIsFalse ? ResultDTO.Value.NOK : ResultDTO.Value.PARTIAL ) );
+    	result.setObject( enrollmentResults );
+    	
+    	return result;
+    	
+    }
+    
+    public List<InschrijvingX> findRelated( InschrijvingX enrollment, boolean includeSelf ){
     	
     	String uuid
     		= enrollment.getUuid();
+    	
+    	if ( uuid == null ) {
+    		return null;
+    	}
     	
     	List<InschrijvingX> found
     		= this.inschrijvingXRepository.findByReference( uuid );
     	
     	List<InschrijvingX> related
     		= new ArrayList<InschrijvingX>( Math.max( 0, found.size() - 1 ) );
+    	
+    	if ( includeSelf ) {
+    		related.add( enrollment );
+    	}
     	
     	for ( InschrijvingX f : found ) {
     		
@@ -982,7 +1098,7 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    public Status whatIsTheApplicationStatus( List<InschrijvingX> related ) {
+    public Status whatIsTheApplicationStatus( InschrijvingX application ) {
     	
     	Status status
     		= new Status( );
@@ -995,6 +1111,9 @@ public class SecretariaatsMedewerker {
     	
     	boolean isDraft
     		= false;
+    	
+    	List<InschrijvingX> related
+    		= this.findRelated( application, true );
     	
     	for ( InschrijvingX enrollment : related ) {
 
@@ -1028,25 +1147,59 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    protected void assertParticipantCompleteness( Deelnemer participant ) {
+    protected ResultDTO<Deelnemer> checkParticipantData( Deelnemer participant ) {
+    	
+    	ResultDTO<Deelnemer> result
+    		= new ResultDTO<Deelnemer>();
+    	
+    	result.setObject( participant);
+    	result.setValue( ResultDTO.Value.OK );
     	
     	if ( isEmpty(  participant.getVoorNaam() ) ) {
-			throw new IncompleteObjectException("Geef de voornaam van de deelnemer op");
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.PARTICIPANT_DATA_GIVEN_NAME_MISSING );
 		}
-		if ( isEmpty( participant.getFamilieNaam() ) ) {
-			throw new IncompleteObjectException("Geef de familienaam van de deelnemer op");
+    	else if ( isEmpty( participant.getFamilieNaam() ) ) {
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.PARTICIPANT_DATA_FAMILY_NAME_MISSING );
 		}
-		
-		if ( participant.getGeslacht() == null ) {
-			throw new IncompleteObjectException("Geef het geslacht van de deelnemer op");
+    	else if ( participant.getGeslacht() == null ) {
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.PARTICIPANT_DATA_GENDER_MISSING );
 		}
-		if ( participant.getGeboorteDatum() == null ) {
-			throw new IncompleteObjectException("Geef de geboortedatum van de deelnemer op");
+    	else if ( participant.getGeboorteDatum() == null ) {
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.PARTICIPANT_DATA_BIRTHDAY_MISSING );
 		}
-		if ( isEmpty( participant.getTelefoonNummer() ) && isEmpty( participant.getMobielNummer() ) ) {
-			throw new IncompleteObjectException("Geef een telefoonnummer of GSM-nummer van de deelnemer op");
+    	else if ( isEmpty( participant.getTelefoonNummer() ) && isEmpty( participant.getMobielNummer() ) ) {
+    		result.setValue( ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.PARTICIPANT_DATA_PHONE_MISSING );
 		}
+    	
+    	return result;
+    	
     } 
+    
+    public ResultDTO<String> checkParticipantMedicalFile( InschrijvingX enrollment ) {
+    	
+    	ResultDTO<String> result
+    		= new ResultDTO<String>();
+    	
+    	result.setValue( ResultDTO.Value.OK );
+	
+    	// qlist
+		String unAnswered
+			= this.areAllMandatoryQuestionsAnswered( enrollment, Tags.TAG_MEDIC );
+	    	
+    	if ( unAnswered != null ) {
+    		result.setValue(  ResultDTO.Value.NOK );
+    		result.setErrorCode( ErrorCode.PARTICIPANT_MEDIC_QUESTION_MISSING );
+    		result.setObject( unAnswered );
+    	}
+	    	
+    	return result;
+    	
+    }
     
     protected boolean needsHandling( InschrijvingX enrollment ) {
     	

@@ -1,20 +1,26 @@
 package be.pirlewiet.registrations.application.config;
 
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.pirlewiet.registrations.web.controllers.CodeRequestsController;
 import be.pirlewiet.registrations.web.controllers.CodesController;
-import be.pirlewiet.registrations.web.controllers.ParticipantController;
 import be.pirlewiet.registrations.web.controllers.EnrollmentController;
 import be.pirlewiet.registrations.web.controllers.EnrollmentsController;
 import be.pirlewiet.registrations.web.controllers.OrganisationController;
 import be.pirlewiet.registrations.web.controllers.OrganisationsController;
 import be.pirlewiet.registrations.web.controllers.PDController;
 import be.pirlewiet.registrations.web.controllers.PageController;
+import be.pirlewiet.registrations.web.controllers.ParticipantController;
 import be.pirlewiet.registrations.web.controllers.PingController;
 import be.pirlewiet.registrations.web.controllers.ScenarioController;
 
@@ -32,6 +38,21 @@ public class MvcConfig {
 			resolver.setPrefix( "/WEB-INF/jsp/" );
 			resolver.setSuffix( ".jsp" );
 			return resolver;
+		}
+		
+		@Bean
+		public MessageSource messageSource() {
+			
+			ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+			messageSource.setBasename( "pirlewiet-messages");
+			messageSource.setDefaultEncoding("utf-8");
+			return messageSource;
+			
+		}
+		
+		@Bean
+		public LocaleResolver localeResolver() {
+			return new FixedLocaleResolver( Locale.forLanguageTag("nl") );
 		}
 		
 	}
@@ -145,6 +166,6 @@ public class MvcConfig {
 			
 		}
 	}
-		
+	
 
 }
