@@ -203,24 +203,8 @@ public class SecretariaatsMedewerker {
 	    		inschrijving.getContactGegevens().setPhone( organisatie.getGsmNummer() );
 	    	}
 	    	
-    		Deelnemer deelnemer
-				= new Deelnemer();
+    		this.addEmptyParticipant( inschrijving );
     	
-    		this.addDeelnemer( inschrijving , deelnemer );
-    	
-    		QList vragen
-    			= QList.template();
-    	
-	    	for ( String key : vragen.getVragen().keySet() ) {
-	    		
-	    		List<Vraag> list
-	    			= vragen.getVragen().get( key );
-	    		
-	    		for ( Vraag vraag : list ) {
-	    			this.addVraag( inschrijving, vraag );
-	    		}
-	    		
-	    	}	
     	}
     	
     	return saved;
@@ -253,10 +237,7 @@ public class SecretariaatsMedewerker {
     	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
     	saved = this.inschrijvingXRepository.saveAndFlush( saved );
     	
-    	Deelnemer deelnemer
-			= new Deelnemer();
-    	
-    	saved = this.addDeelnemer( saved , deelnemer );
+    	saved = this.addEmptyParticipant( saved );
     	
     	QList vragen
 			= QList.template();
@@ -433,8 +414,13 @@ public class SecretariaatsMedewerker {
     		
     		if ( Status.Value.DRAFT.equals( inschrijving.getStatus().getValue() ) ) {
     			
-    			inschrijving.setDeelnemers( null );
-    			this.inschrijvingXRepository.delete( inschrijving );
+    			if ( ( inschrijving.getReference() != null ) && ( ! inschrijving.getReference().isEmpty() ) ) {
+    				// TODO: delete related data (questions,...)
+    				this.inschrijvingXRepository.delete( inschrijving );
+    			}
+    			else {
+    				throw new PirlewietException( "Je kan de hoofddeelnemer niet verwijderen." );
+    			}
     			
     		}
     		else {
@@ -641,15 +627,32 @@ public class SecretariaatsMedewerker {
     	
     }
     
-    protected InschrijvingX addDeelnemer( InschrijvingX inschrijving, Deelnemer deelnemer ) {
+    protected InschrijvingX addEmptyParticipant( InschrijvingX inschrijving ) {
     	
-    	inschrijving.getDeelnemers().add( deelnemer );
+    	Deelnemer participant
+    		= new Deelnemer();
+    	
+    	inschrijving.getDeelnemers().add( participant );
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
     	
-    	deelnemer.setUuid( KeyFactory.keyToString( deelnemer.getKey() ) );
+    	participant.setUuid( KeyFactory.keyToString( participant.getKey() ) );
     	
     	this.inschrijvingXRepository.saveAndFlush( inschrijving );
+    	
+    	QList vragen
+			= QList.template();
+
+    	for ( String key : vragen.getVragen().keySet() ) {
+		
+			List<Vraag> list
+				= vragen.getVragen().get( key );
+			
+			for ( Vraag vraag : list ) {
+				this.addVraag( inschrijving, vraag );
+			}
+		
+    	}		
     	
     	return inschrijving;
     	

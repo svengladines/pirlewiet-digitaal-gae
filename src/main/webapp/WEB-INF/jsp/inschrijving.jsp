@@ -23,7 +23,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijving</h1>
 					<p>
-						Beheer een application.
+						Beheer een inschrijving.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -114,7 +114,7 @@
 											<c:set var="enrollment" value="${enrollmentStatus.object}"/>
 											<div class="row">
 												<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
-													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
+													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;<c:if test="${enrollment.reference != null }">(<a href="javascript:void(0);" class="enrollment-delete todo" data-uuid="${enrollment.uuid}" >verwijder</a>)&nbsp;&nbsp;</c:if>
 												</div>
 												<div class="col-sm-1">
 												</div>
@@ -137,7 +137,7 @@
 									<c:set var="enrollment" value="${enrollmentStatus.object}"/>
 									<div class="row">
 										<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">wijzigen</a>)&nbsp;&nbsp;
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.reference != null }">(<a href="javascript:void(0);" class="enrollment-delete todo" data-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
 										</div>
 										<div class="col-sm-1">
 										</div>
