@@ -5,13 +5,14 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import be.pirlewiet.registrations.web.controllers.ApplicationController;
 import be.pirlewiet.registrations.web.controllers.CodeRequestsController;
 import be.pirlewiet.registrations.web.controllers.CodesController;
 import be.pirlewiet.registrations.web.controllers.EnrollmentController;
@@ -43,9 +44,9 @@ public class MvcConfig {
 		@Bean
 		public MessageSource messageSource() {
 			
-			ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-			messageSource.setBasename( "pirlewiet-messages");
-			messageSource.setDefaultEncoding("utf-8");
+			ReloadableResourceBundleMessageSource  messageSource = new ReloadableResourceBundleMessageSource ();
+			messageSource.setBasename( "classpath:pirlewiet-messages");
+			//messageSource.setDefaultEncoding("utf-8");
 			return messageSource;
 			
 		}
@@ -81,7 +82,14 @@ public class MvcConfig {
 		}
 		
 		@Bean
-		public EnrollmentController inschrijvingController() {
+		public ApplicationController inschrijvingController() {
+			
+			return new ApplicationController();
+			
+		}
+		
+		@Bean
+		public EnrollmentController enrollmentController() {
 			
 			return new EnrollmentController();
 			

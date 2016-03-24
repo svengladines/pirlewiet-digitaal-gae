@@ -40,8 +40,8 @@ import be.pirlewiet.registrations.model.Vraag;
 import be.pirlewiet.registrations.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping( {"/enrollments/{uuid}"} )
-public class EnrollmentController {
+@RequestMapping( {"/inschrijvingen/{uuid}"} )
+public class ApplicationController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
@@ -250,13 +250,28 @@ public class EnrollmentController {
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		InschrijvingX enrollment
+		InschrijvingX application
 			= entity.getBody();
 		
-		model.put( "enrollment", enrollment );
+		model.put( "application", application );
+		
+		List<Vakantie> vakanties
+			= this.secretariaatsMedewerker.guard().actueleVakanties( );
+		
+		model.put( "vakanties", vakanties );
+		model.put( "applicationHolidaysResult", this.secretariaatsMedewerker.guard().checkApplicationHolidaysStatus( application ) );
+		model.put( "applicationContactResult", this.secretariaatsMedewerker.guard().checkApplicationContactStatus( application ) );
+		model.put( "applicationQuestionListResult", this.secretariaatsMedewerker.guard().checkApplicationQuestionList( application ) );
+		model.put( "enrollmentsStatus", this.secretariaatsMedewerker.guard().checkEnrollmentsStatus( application ) );
+		model.put( "related", this.secretariaatsMedewerker.guard().findRelated( application, true) );
+		
+		Status applicationStatus
+			= this.secretariaatsMedewerker.guard().whatIsTheApplicationStatus( application );
+		
+		model.put("applicationStatus", applicationStatus );
 		
 		String view
-			= PirlewietUtil.isPirlewiet( organisatie ) ? "enrollment_pirlewiet" : "error";
+			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";
 
 		return new ModelAndView( view, model );
 		

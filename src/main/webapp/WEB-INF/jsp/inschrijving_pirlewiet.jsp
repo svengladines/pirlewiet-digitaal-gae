@@ -24,7 +24,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijving</h1>
 					<p>
-						Beheer een application. (${pageContext.request.locale.language})
+						Beheer een inschrijving.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -404,7 +404,7 @@
 		</div>
 		
 		</c:forEach>
-
+		
 	</div><!-- container -->
 	
 	<jsp:include page="/WEB-INF/jsp/footer.jsp"/>

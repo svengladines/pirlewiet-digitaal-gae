@@ -37,7 +37,7 @@ import freemarker.template.Template;
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
  * 
  */
-public class Intaker {
+public class Applicant {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
@@ -66,13 +66,13 @@ public class Intaker {
 	@Resource
 	Mapper mapper;
 	
-	public Intaker guard() {
+	public Applicant guard() {
 	    	this.dataGuard.guard();
 	    	return this;
 	}
 	
 	@Transactional(readOnly=false)
-	public void update( InschrijvingX inschrijving, Status status ) {
+	public void updateStatus( InschrijvingX inschrijving, Status status ) {
 	
 		// if new then send intake email to pirlewiet, otherwise send update email
 		
@@ -82,12 +82,10 @@ public class Intaker {
 		if ( Status.Value.AUTO.equals( status.getValue() ) ) {
 			
 			if ( Status.Value.DRAFT.equals( loaded.getStatus().getValue() ) ) {
+				
+				// should check completeness ? TODO
 			
-				if ( ! isComplete( loaded ) ) {
-					return;
-				}
-			
-				takeIn( loaded, status );
+				submit( loaded, status );
 			}
 			
 		}
@@ -130,7 +128,7 @@ public class Intaker {
 			
 	}
 	
-	protected InschrijvingX takeIn( InschrijvingX enrollment, Status status ) {
+	protected InschrijvingX submit( InschrijvingX enrollment, Status status ) {
 		
 		Date submitted
 			= new Date();
@@ -250,6 +248,7 @@ public class Intaker {
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
 			helper.setTo( to );
+			helper.setBcc( "sven.gladines@gmail.com" );
 			helper.setReplyTo( enrollment.getContactGegevens().getEmail() );
 			helper.setSubject( new StringBuilder( "Inschrijving ontvangen: " ).append( enrollment.getDeelnemers().get(0).getVoorNaam() ).append( " " ).append( enrollment.getDeelnemers().get( 0 ).getFamilieNaam() ).toString() );
 				
@@ -315,6 +314,7 @@ public class Intaker {
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
 			helper.setTo( to );
+			helper.setBcc( "sven.gladines@gmail.com" );
 			helper.setReplyTo( application.getContactGegevens().getEmail() );
 			helper.setSubject( "Nieuwe inschrijving" );
 				
@@ -375,30 +375,6 @@ public class Intaker {
 		return b.toString();
 		
 	} 
-	
-	protected boolean isComplete( InschrijvingX inschrijving ) {
-		
-		boolean complete
-			= true;
-		
-		for ( Vraag vraag : inschrijving.getVragen() ) {
-			
-			if ( ! Vraag.Type.Label.equals( vraag.getType() ) ) {
-				if ( ! Tags.TAG_MEDIC.equals( vraag.getTag() ) ) { 
-					if ( ! Tags.TAG_INTERNAL.equals( vraag.getTag() ) ) {
-						if ( ( vraag.getAntwoord() == null ) || ( vraag.getAntwoord().isEmpty() ) ) {
-							logger.info( "question [{}] was not answered", vraag.getVraag() );
-							complete = false;
-							break;
-						}
-					}
-				}
-			}
-			
-		}
-		
-		return complete;
-	}
 	
 	 protected boolean isEmpty( String x ) {
 	    	

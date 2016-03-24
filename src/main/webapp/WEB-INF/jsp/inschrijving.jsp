@@ -4,6 +4,7 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+	<%@ taglib uri = "http://www.springframework.org/tags" prefix = "spring"%>
 
 	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 	
@@ -38,8 +39,8 @@
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><spring:message code="application.status.${applicationStatus.value}"/></i><br/>
-					<spring:message code="application.status.${applicationStatus.value}.description"/> <br/>
+					<i><spring:message code="enrollment.status.${application.status.value}"/></i><br/>
+					<spring:message code="enrollment.status.${application.status.value}.description"/> <br/>
 				</p>
 			</div>
 			
@@ -158,12 +159,12 @@
 						<div class="col-sm-12 alert alert-info">
 							<i class="fa fa-2x fa-envelope pull-right"></i><h4><strong>Indienen</strong><br/></h4>
 							<c:choose>
-								<c:when test="${(applicationHolidaysResult.value == 'OK') && (applicationContactResult.value == 'OK') && (applicationQuestionListResult.value == 'OK') && (applicationEnrollmentsResult.value != 'OK') }">
+								<c:when test="${(applicationHolidaysResult.value == 'OK') && (applicationContactResult.value == 'OK') && (applicationQuestionListResult.value == 'OK') && (enrollmentsStatus.value == 'OK') }">
 									<p>
 										Je inschrijving is volledig. Je kan deze nu versturen.
 									</p>
-									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verwijder</button>
+									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
+									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
 								</c:when>
 								<c:otherwise>
 									<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
@@ -547,12 +548,12 @@
 											</c:when>
 											<c:when test="${vraag.type eq 'Text'}">
 												<div class="col-sm-3">
-													<input id="${vraag.uuid}" type="text" class="form-control q" data-tag="medic" value="${vraag.antwoord}"></input>
+													<input id="${vraag.uuid}" type="text" class="form-control q" data-tag="medic" value="${vraag.antwoord != null ? vraag.antwoord : 'NVT'}"></input>
 												</div>
 											</c:when>
 											<c:when test="${vraag.type eq 'Area'}">
 												<div class="col-sm-6">
-													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64" data-tag="medic">${vraag.antwoord}</textarea>
+													<textarea id="${vraag.uuid}" class="form-control q" rows="10" cols="64" data-tag="medic">${vraag.antwoord != null ? vraag.antwoord : 'NVT'}</textarea>
 												</div>
 											</c:when>
 										</c:choose>

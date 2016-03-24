@@ -286,7 +286,7 @@ public class SecretariaatsMedewerker {
     	return saved;
     }
     
-    
+    @Transactional(readOnly=true)
     public List<InschrijvingX> actueleInschrijvingen( Organisatie organisatie ) {
     	
     	List<InschrijvingX> inschrijvingen
@@ -317,7 +317,7 @@ public class SecretariaatsMedewerker {
     		
     		try {
 	    		
-	    		inschrijving = this.detach( inschrijving.getUuid() );
+	    		inschrijving = this.detacher.detach( inschrijving );
 	    		
 	    		if ( inschrijving == null ) {
 	    			logger.warn( "[{}]; detached enrollment is null, skip", uuid );
@@ -689,7 +689,7 @@ public class SecretariaatsMedewerker {
 		loaded.getStatus().setComment( status.getComment() );
 		this.inschrijvingXRepository.saveAndFlush( loaded );
 
-		if ( Boolean.TRUE.equals( status.getEmailMe() ) ) {
+		if ( true ) {
 			
 			MimeMessage message
 				= formatUpdateMessageToOrganisation( loaded, oldStatus );
@@ -790,6 +790,7 @@ public class SecretariaatsMedewerker {
 				
 			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
 			helper.setTo( enrollment.getContactGegevens().getEmail() );
+			helper.setBcc( "sven.gladines@gmail.com" );
 			helper.setReplyTo( "info@pirlewiet.be" );
 			helper.setSubject( "Uw inschrijving bij Pirlewiet" );
 				

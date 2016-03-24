@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import be.occam.utils.timing.Timing;
+import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Gender;
 import be.pirlewiet.registrations.model.InschrijvingX;
@@ -27,9 +28,9 @@ public class TestData {
 		public static Long Z_KIKA_2 = 2L;
 		public static Long Z_TIKA_1 = 3L;
 		
-		public static Long SARAH= 1L;
+		public static Long lisa= 1L;
 		
-		public static Long IN_SARAH_KIKA_1;
+		public static Long IN_lisa_KIKA_1;
 		
 	}
 
@@ -40,7 +41,7 @@ public class TestData {
 	PersoonRepository persoonRepository;
 	
 	@Resource
-	EnrollmentRepository inschrijvingXRepository;
+	SecretariaatsMedewerker secretariaatsMedewerker;
 	
 	@Resource
 	OrganisatieRepository organsiatieRepository;
@@ -79,16 +80,16 @@ public class TestData {
 		zomerKikaTwee.setUuid( KeyFactory.keyToString( zomerKikaTwee.getKey()  ) );
 		zomerKikaTwee = this.vakantieRepository.saveAndFlush( zomerKikaTwee );
 		
-		Deelnemer sarah
+		Deelnemer lisa
 			= new Deelnemer();
 		
-		// sarah.setId( Ids.SARAH );
-		sarah.setVoorNaam( "Lisa");
-		sarah.setFamilieNaam( "Simpson" );
-		sarah.setEmail("lisa.simpson@springfield.net");
-		sarah.setGeslacht( Gender.F );
+		// lisa.setId( Ids.lisa );
+		lisa.setVoorNaam( "Lisa");
+		lisa.setFamilieNaam( "Simpson" );
+		lisa.setEmail("lisa.simpson@springfield.net");
+		lisa.setGeslacht( Gender.F );
 		
-		this.persoonRepository.saveAndFlush( sarah );
+		this.persoonRepository.saveAndFlush( lisa );
 		
 		Organisatie pirlewiet
 			= new Organisatie();
@@ -106,17 +107,16 @@ public class TestData {
 	
 		ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
 		
-		InschrijvingX sarahKika1
+		InschrijvingX lisaKika1
 			= new InschrijvingX();
-		sarahKika1.setVks( "1" );
-		sarahKika1.getVakanties().add( zomerKikaEen );
-		sarahKika1.getDeelnemers().add( sarah );
-		sarahKika1.setOrganisatie( ocmw );
-		sarahKika1.setStatus( new Status ( Status.Value.SUBMITTED ) );
 		
-		this.inschrijvingXRepository.saveAndFlush( sarahKika1 );
+		lisaKika1.setVks( "1" );
+		lisaKika1.getVakanties().add( zomerKikaEen );
+		lisaKika1.getDeelnemers().add( lisa );
+		lisaKika1.setOrganisatie( ocmw );
+		lisaKika1.setStatus( new Status ( Status.Value.DRAFT ) );
 		
-		
+		this.secretariaatsMedewerker.createEnrollment( lisaKika1 );
 		
 	}
 	

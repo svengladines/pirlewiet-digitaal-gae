@@ -25,11 +25,11 @@
 	</logger>
 	
 	<logger name="org.hibernate">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 	
 	<logger name="org.springframework.orm">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 
 	<logger name="org.springframework.web">

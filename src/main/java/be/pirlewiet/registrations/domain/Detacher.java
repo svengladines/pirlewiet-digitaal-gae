@@ -69,5 +69,52 @@ public class Detacher {
 		return inschrijving;
 		
 	}
+	
+	@Transactional(readOnly=false)
+	public InschrijvingX detach( InschrijvingX enrollment ) {
+		
+		if ( enrollment != null ) {
+        	
+	    	// needed to lazily load the lists (can't load them eagerly, unfortunately)
+			enrollment.getDeelnemers().size();
+			enrollment.getVragen().size();
+			// same for GAE for embedded
+			String contactName = enrollment.getContactGegevens().getName();
+			enrollment.getVragen().hashCode();
+			enrollment.getAdres().hashCode();
+			enrollment.getStatus().hashCode();
+			enrollment.getOrganisatie().getAdres().hashCode();
+			
+			if ( enrollment.getVks() != null ) {
+				StringTokenizer tok
+					= new StringTokenizer( enrollment.getVks().trim(), ",", false );
+				
+				while( tok.hasMoreTokens() ) {
+					
+					String t
+						= tok.nextToken().trim();
+					
+					if ( t.length() == 0 ) {
+						continue;
+					}
+					
+					Vakantie v 
+						= this.configuredVakantieRepository.findByUuid( t.trim() ); 
+			
+					if ( v != null ) {
+						enrollment.getVakanties().add ( v );
+					}
+					else {
+						throw new RuntimeException( "no vakantie with id [" + t.trim() + "]" );
+					}
+					
+				}
+			}
+			
+    	}
+		
+		return enrollment;
+		
+	}
 
 }

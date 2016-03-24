@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
+import be.pirlewiet.registrations.domain.SecretariaatsMedewerker;
 import be.pirlewiet.registrations.model.Adres;
 import be.pirlewiet.registrations.model.Deelnemer;
 import be.pirlewiet.registrations.model.Gender;
@@ -34,7 +35,7 @@ public class DevData {
 	PersoonRepository persoonRepository;
 	
 	@Resource
-	EnrollmentRepository inschrijvingXRepository;
+	SecretariaatsMedewerker secretariaatsMedewerker;
 	
 	@Resource
 	OrganisatieRepository organsiatieRepository;
@@ -94,6 +95,7 @@ public class DevData {
 		
 		InschrijvingX lisaSimpson
 			= new InschrijvingX();
+		
 		lisaSimpson.setVks( this.configuredVakantieRepository.findAll().get( 0 ).getUuid() );
 		lisaSimpson.setOrganisatie( ocmw );
 		lisaSimpson.getStatus().setValue( Status.Value.DRAFT );
@@ -107,17 +109,11 @@ public class DevData {
 		lisaSimpson.setYear( 2016 );
 		
 	
-		lisaSimpson = this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
+		InschrijvingX created 
+			= this.secretariaatsMedewerker.createEnrollment( lisaSimpson );
 		
-		lisaSimpson.getDeelnemers().add( lisa );
-		
-		this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
-		
-		lisa.setUuid( KeyFactory.keyToString( lisa.getKey() ) );
-		lisaSimpson.setUuid( KeyFactory.keyToString( lisaSimpson.getKey() ) );
-		
-		this.inschrijvingXRepository.saveAndFlush( lisaSimpson );
-		
+		this.secretariaatsMedewerker.updateDeelnemer( created.getUuid(), lisa ); 
+				
 		this.logger.info( "lisa id is [{}]", lisa.getUuid() );
 		}
 		

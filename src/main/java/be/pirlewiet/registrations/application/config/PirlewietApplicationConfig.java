@@ -20,7 +20,7 @@ import be.pirlewiet.registrations.domain.CodeMan;
 import be.pirlewiet.registrations.domain.Detacher;
 import be.pirlewiet.registrations.domain.HeadQuarters;
 import be.pirlewiet.registrations.domain.HolidayManager;
-import be.pirlewiet.registrations.domain.Intaker;
+import be.pirlewiet.registrations.domain.Applicant;
 import be.pirlewiet.registrations.domain.Mapper;
 import be.pirlewiet.registrations.domain.OrganisationManager;
 import be.pirlewiet.registrations.domain.PostBode;
@@ -101,9 +101,9 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
-		Intaker intaker() {
+		Applicant intaker() {
 			
-			return new Intaker();
+			return new Applicant();
 			
 		}
 		
