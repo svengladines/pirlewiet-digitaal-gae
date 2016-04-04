@@ -22,9 +22,9 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1>Inschrijving</h1>
+					<h1>Aanvraag</h1>
 					<p>
-						Beheer een inschrijving.
+						Beheer een aanvraag.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -39,8 +39,8 @@
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><spring:message code="enrollment.status.${application.status.value}"/></i><br/>
-					<spring:message code="enrollment.status.${application.status.value}.description"/> <br/>
+					<i><spring:message code="application.status.${applicationStatus.value}"/></i><br/>
+					<spring:message code="application.status.${applicationStatus.value}.description"/> <br/>
 				</p>
 			</div>
 			
@@ -137,12 +137,13 @@
 								<c:forEach items="${enrollmentsStatus.object}" var="enrollmentStatus">
 									<c:set var="enrollment" value="${enrollmentStatus.object}"/>
 									<div class="row">
-										<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
+										<div class="col-sm-4 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>&nbsp;(<a href="#modal-participant-${enrollment.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.reference != null }">(<a href="javascript:void(0);" class="enrollment-delete todo" data-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
 										</div>
-										<div class="col-sm-1">
+										<div class="col-sm-2 alert alert-success">
+											<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
 										</div>
-										<div class="col-sm-5 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
+										<div class="col-sm-4 alert ${enrollmentStatus.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentStatus.errorCode, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
 											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
 										</div>
 									</div>
@@ -163,8 +164,8 @@
 									<p>
 										Je inschrijving is volledig. Je kan deze nu versturen.
 									</p>
-									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
-									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
+									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
+									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
 								</c:when>
 								<c:otherwise>
 									<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
@@ -791,10 +792,12 @@
 		
 		$jq( document ).ready(function() {
 			
+			buttons();
+			
 			if ( window.location.hash ) {
 				$jq( "#" + window.location.hash.substring(1) ).modal();
 			}
-		    
+			
 		});
 		
     </script>

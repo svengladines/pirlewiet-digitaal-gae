@@ -43,12 +43,12 @@
 			</thead>
 			
 			
-	<c:forEach items="${enrollments}" var="enrollment">
+		<c:forEach items="${enrollments}" var="enrollment">
 				
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.inschrijvingsdatum}" var="date"></fmt:formatDate>
 				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
 				
-	<c:if test="${enrollment.reference == null}">
+		<c:if test="${enrollment.reference == null}">
 					</tbody>
 			
 					</table>
@@ -64,7 +64,8 @@
 					<tr>
 						<th scope="row" class="th-row">Inschrijving <span class="pull-right">${date}</span></th>
 						<td colspan="1">
-							<a href="./inschrijvingen/${enrollment.uuid}.html" class="pull-right">bewerk</a>
+							<a href="${pageContext.servletContext.contextPath}/rs/inschrijvingen/${enrollment.uuid}.html" class="pull-left">Details</a>
+							<a href="${pageContext.servletContext.contextPath}/rs/enrollments/${enrollment.uuid}.html" class="btn btn-primary pull-right">Beheer</a>
 						</td>
 					</tr>
 			

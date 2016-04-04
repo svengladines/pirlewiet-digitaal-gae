@@ -17,9 +17,9 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://pirlewiet-digitaal.appspot.com/index.htm">START</a></li>
-            <li ${param.active eq 'organisation' ? "class='active'" : ""}><a href="http://pirlewiet-digitaal.appspot.com/rs/organisation.html">PROFIEL</a></li>
-          	<li ${param.active eq 'enrollments' ? "class='active'" : ""}><a href="http://pirlewiet-digitaal.appspot.com/rs/inschrijvingen.html">INSCHRIJVINGEN</a>
+            <li><a href="${pageContext.servletContext.contextPath}/index.htm">START</a></li>
+            <li ${param.active eq 'organisation' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/rs/organisation.html">PROFIEL</a></li>
+          	<li ${param.active eq 'enrollments' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/rs/inschrijvingen.html">INSCHRIJVINGEN</a>
             </li>
             <li><a href="http://pirlewiet-digitaal.appspot.com/help.htm">HELP</a></li>
             <li><a id="logout" title="Uitloggen" href="${pageContext.request.contextPath}/rs/logout.html"><i class="fa fa-sign-out"></i>&nbsp;Uitloggen</a></li>

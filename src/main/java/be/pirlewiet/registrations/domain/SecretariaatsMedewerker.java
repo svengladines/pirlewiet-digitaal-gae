@@ -487,11 +487,15 @@ public class SecretariaatsMedewerker {
     @Transactional(readOnly=false)
     public InschrijvingX updateVakanties( String inschrijvingID, String vakanties ) {
     	
-    	if ( isEmpty( vakanties ) ) {
+    	if ( vakanties == null ) {
     		throw new PirlewietException("Selecteer minstens 1 vakantie");
     	}
     	
     	vakanties = vakanties.replaceAll("\"", "" ).trim();
+    	
+    	if ( isEmpty( vakanties ) ) {
+    		throw new PirlewietException("Selecteer minstens 1 vakantie");
+    	}
     	
     	InschrijvingX inschrijving
     		= this.findInschrijving( inschrijvingID );
@@ -682,6 +686,10 @@ public class SecretariaatsMedewerker {
 		InschrijvingX loaded
 			= this.findInschrijving( inschrijvingID );
 		
+		if ( Status.Value.SUBMITTED.equals( status.getValue() ) ) {
+			throw new PirlewietException( "Je moet nog een beslissing nemen over de inschrijving." );
+		}
+		
 		Status.Value oldStatus
 			= loaded.getStatus().getValue();
 		
@@ -689,7 +697,7 @@ public class SecretariaatsMedewerker {
 		loaded.getStatus().setComment( status.getComment() );
 		this.inschrijvingXRepository.saveAndFlush( loaded );
 
-		if ( true ) {
+		if ( status.getEmailMe() ) {
 			
 			MimeMessage message
 				= formatUpdateMessageToOrganisation( loaded, oldStatus );
@@ -1107,7 +1115,7 @@ public class SecretariaatsMedewerker {
     	Status status
     		= new Status( );
     	
-		// an application gets status 'submitted', any of the enrollments is submitted
+		// an application gets status 'submitted', if any of the enrollments is submitted
     	// an application gets status 'complete' when none of the enrollments need handling 
 
     	boolean isComplete
@@ -1210,7 +1218,7 @@ public class SecretariaatsMedewerker {
     	Value value
     		= enrollment.getStatus().getValue();
     	
-    	return ( Value.SUBMITTED.equals( value ) || Value.WAITINGLIST.equals( value ) );
+    	return ( Value.SUBMITTED.equals( value ) );
     	
     }
     
@@ -1219,7 +1227,7 @@ public class SecretariaatsMedewerker {
     	Value value
     		= enrollment.getStatus().getValue();
     	
-    	return ( Value.ACCEPTED.equals( value ) || Value.REJECTED.equals( value ) );
+    	return ( Value.ACCEPTED.equals( value ) || Value.REJECTED.equals( value )  || Value.WAITINGLIST.equals( value ) );
     	
     }
  

@@ -73,7 +73,7 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 		vovVoorjaar.setBeginDatum( Timing.date("23/05/2016") );
 		vovVoorjaar.setEindDatum( Timing.date("27/05/2016") );
 		vovVoorjaar.setBeginInschrijving( Timing.date("12/12/2015") );
-		vovVoorjaar.setEindInschrijving( Timing.date("01/05/2016") );
+		vovVoorjaar.setEindInschrijving( Timing.date("27/05/2016") );
 		vovVoorjaar.setType( VakantieType.DrieDaagse );
 		vovVoorjaar.setJaar( 2016 );
 		vovVoorjaar.setNaam( "Vakantie Onder Volwassenen");
@@ -91,10 +91,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 		
-			vakantie.setBeginDatum( Timing.date("08/07/2016") );
+			vakantie.setBeginDatum( Timing.date("09/07/2016") );
 			vakantie.setEindDatum( Timing.date("15/07/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("15/07/2016") );
 			vakantie.setType( VakantieType.Vov );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer VOV 2");
@@ -110,10 +110,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 
-			vakantie.setBeginDatum( Timing.date("08/07/2016") );
+			vakantie.setBeginDatum( Timing.date("09/07/2016") );
 			vakantie.setEindDatum( Timing.date("11/07/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("11/07/2016") );
 			vakantie.setType( VakantieType.DrieDaagse );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer Driedaagse");
@@ -132,7 +132,7 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			vakantie.setBeginDatum( Timing.date("11/07/2016") );
 			vakantie.setEindDatum( Timing.date("15/07/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("15/07/2016") );
 			vakantie.setType( VakantieType.Cava );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer Cava");
@@ -149,10 +149,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 
-			vakantie.setBeginDatum( Timing.date("11/07/2016") );
+			vakantie.setBeginDatum( Timing.date("13/07/2016") );
 			vakantie.setEindDatum( Timing.date("21/07/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("21/07/2016") );
 			vakantie.setType( VakantieType.Kika );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer KIKA 1");
@@ -168,10 +168,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 
-			vakantie.setBeginDatum( Timing.date("16/07/2016") );
+			vakantie.setBeginDatum( Timing.date("17/07/2016") );
 			vakantie.setEindDatum( Timing.date("23/07/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("23/07/2016") );
 			vakantie.setType( VakantieType.Tika );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer Tika");
@@ -187,10 +187,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 
-			vakantie.setBeginDatum( Timing.date("20/07/2016") );
-			vakantie.setEindDatum( Timing.date("29/07/2016") );
+			vakantie.setBeginDatum( Timing.date("22/07/2016") );
+			vakantie.setEindDatum( Timing.date("28/07/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("01/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("28/07/2016") );
 			vakantie.setType( VakantieType.Kika );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer Kika 2");
@@ -206,10 +206,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 
-			vakantie.setBeginDatum( Timing.date("30/07/2016") );
+			vakantie.setBeginDatum( Timing.date("31/07/2016") );
 			vakantie.setEindDatum( Timing.date("07/08/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("15/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("07/08/2016") );
 			vakantie.setType( VakantieType.Gezin );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer Gezins 1");
@@ -225,10 +225,10 @@ public class ConfiguredVakantieRepository implements VakantieRepository {
 			Vakantie vakantie
 				= new Vakantie();
 
-			vakantie.setBeginDatum( Timing.date("07/08/2016") );
+			vakantie.setBeginDatum( Timing.date("08/08/2016") );
 			vakantie.setEindDatum( Timing.date("15/08/2016") );
 			vakantie.setBeginInschrijving( Timing.date("01/03/2016") );
-			vakantie.setEindInschrijving( Timing.date("15/07/2016") );
+			vakantie.setEindInschrijving( Timing.date("15/08/2016") );
 			vakantie.setType( VakantieType.Gezin );
 			vakantie.setJaar( 2016 );
 			vakantie.setNaam( "Zomer Gezins 2");

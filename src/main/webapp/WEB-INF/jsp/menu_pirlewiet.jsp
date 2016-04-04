@@ -18,12 +18,12 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/index.htm">START</a></li>
-            <li ${param.active eq 'organisation' ? "class='active'" : ""}><a href="/rs/organisation.html">PROFIEL</a></li>
-            <li ${param.active eq 'organisations' ? "class='active'" : ""}><a href="/rs/organisations.html">ORGANISATIES</a>
-          	<li ${param.active eq 'enrollments' ? "class='active'" : ""}><a href="/rs/inschrijvingen.html">INSCHRIJVINGEN</a>
+            <li ${param.active eq 'organisation' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/rs/organisation.html">PROFIEL</a></li>
+            <li ${param.active eq 'organisations' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/rs/organisations.html">ORGANISATIES</a>
+          	<li ${param.active eq 'enrollments' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/rs/inschrijvingen.html">INSCHRIJVINGEN</a>
             </li>
             <li><a href="/help.htm">HELP</a></li>
-            <li><a id="logout" title="Uitloggen" href="/rs/logout.html"><i class="fa fa-sign-out"></i>&nbsp;Uitloggen</a></li>
+            <li><a id="logout" title="Uitloggen" href="${pageContext.servletContext.contextPath}/rs/logout.html"><i class="fa fa-sign-out"></i>&nbsp;Uitloggen</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

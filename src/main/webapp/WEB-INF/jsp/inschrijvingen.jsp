@@ -74,7 +74,8 @@
 					<tr>
 						<th scope="row" class="th-row">Inschrijving</th>
 						<td colspan="1">
-							<a href="./inschrijvingen/${enrollment.uuid}.html" class="pull-right">bewerk</a>
+						
+							<a href="${pageContext.servletContext.contextPath}/rs/inschrijvingen/${enrollment.uuid}.html" class="btn btn-primary pull-right">Beheer</a>
 						</td>
 					</tr>
 			

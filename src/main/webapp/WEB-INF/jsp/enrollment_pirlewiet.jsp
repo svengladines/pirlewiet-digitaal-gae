@@ -14,7 +14,7 @@
 	
 	<fmt:bundle basename="pirlewiet-messages">
 
-    <jsp:include page="/WEB-INF/jsp/menu.jsp">
+    <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
     	<jsp:param name="active" value="enrollments"/>
     </jsp:include>
 
@@ -48,11 +48,11 @@
 		<div class="row">
 			<div class="col-sm-12 alert alert-${ fn:length(enrollment.vakanties) == 1 ? 'success' : 'warning'}">
 				<i class="fa fa-2x fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie</strong><br/></h4>
-				<p>Selecteer een vakantie</p>
+				<p>Selecteer vakantie(s)</p>
 					<c:forEach items="${enrollment.vakanties}" var="vakantie">	
-						<div class="radio">
+						<div class="checkbox">
 							<label>
-								<input type="radio" name="vak" class="vakantie" value="${vakantie.uuid}" checked="${ fn:length(enrollment.vakanties) == 1 ? "checked" : "false" }">&nbsp;${vakantie.naam}
+								<input type="checkbox" name="vak" class="vakantie" value="${vakantie.uuid}" checked="checked">&nbsp;${vakantie.naam}
 							</label>
 						</div>
 					</c:forEach>
@@ -84,17 +84,22 @@
 			<div class="row">
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="vak" class="vakantie" value="ACCEPTED" ${ enrollment.status.value == 'ACCEPTED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.ACCEPTED"/><br/>
+						<input type="radio" name="decision" value="ACCEPTED" ${ enrollment.status.value == 'ACCEPTED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.ACCEPTED"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="vak" class="vakantie" value="REJECTED" ${ enrollment.status.value == 'REJECTED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.REJECTED"/><br/>
+						<input type="radio" name="decision" value="REJECTED" ${ enrollment.status.value == 'REJECTED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.REJECTED"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="vak" class="vakantie" value="WAITINGLIST" ${ enrollment.status.value == 'WAITINGLIST' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.WAITINGLIST"/><br/>
+						<input type="radio" name="decision" value="WAITINGLIST" ${ enrollment.status.value == 'WAITINGLIST' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.WAITINGLIST"/><br/>
+					</label>
+				</div>
+				<div class="radio col-sm-12">
+					<label>
+						<input type="radio" name="decision" value="CANCELLED" ${ enrollment.status.value == 'CANCELLED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.CANCELLED"/><br/>
 					</label>
 				</div>
 			</div>
@@ -113,9 +118,7 @@
 				</div>
 				<div class="row">
 					<div class="radio col-sm-12">
-						<textarea class="form-control" rows="10" cols="64">
-							
-						</textarea>
+						<textarea id="decision-comment-text" class="form-control" rows="10" cols="64"></textarea>
 					</div>
 				</div>
 			</div>
@@ -134,9 +137,10 @@
 						</label>
 					</div>
 				</div>
+				<div id="enrollment-status" class="col-sm-12 alert alert-warning hidden"></div>
 			<div class="row">
 				<div class="radio col-sm-12">
-					<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
+					<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 				</div>
 			</div>
 		</div>	
@@ -165,123 +169,30 @@
 				}
 				list = list.concat( element.value );	
 			});
-			putVakanties ( id, list, $jq("#vakantie-save"),$jq("#vakantie-status" ), refresh );
+			putVakanties ( id, list, $jq("#enrollment-submit"),$jq("#enrollment-status" ), saveStatus );
 		};
 		
-		var saveStatus = function( id, value ) {
-			var comment = $jq("#status-comment-text").val();
-			if ( value ) {
-				var sx = new Status (value, comment ,true );
-				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+		var saveStatus = function( id ) {
+			var comment = $jq("#decision-comment-text").val();
+			var decision = $jq( "input[name=decision]:checked" ).val();
+			if ( ! decision ) {
+				decision = "SUBMITTED";	
 			}
-			else {
-				var sx = new Status ( "AUTO", comment ,true );
-				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );	
-			}
-			
+			var sx = new Status (decision, comment ,true );
+			putStatus ( id, sx, $jq("#enrollment-submit" ),$jq("#enrollment-status" ), refresh );
 			
 		};
-		
-		var deleteEnrollment = function( id ) {
-			
-			deleteEnrollment( id, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
-			
-		};
-		
-		var refresh = function( ) {
-			window.location.hash="";
-			window.location.reload();
-		};
-    	
-		$jq("#vakantie-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveVakanties( "${enrollment.uuid}" );
-			
-		});
-		
-		$jq("#contact-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveContact( "${enrollment.uuid}" );
-			
-		});
-		
-		$jq("#q-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveVragen( "${enrollment.uuid}" );
-			
-		});
-		
-
-		$jq(".participant-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveParticipant( $jq(this).attr("data-uuid"), false );
-			
-		});
-		
-		$jq("#participant-save-new").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveParticipant( $jq(this).attr("data-uuid"), true );
-			
-		});
 		
 		$jq("#enrollment-submit").click( function( event ) {
 			
 			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveStatus( "${enrollment.uuid}" );
-			
-		});
-		
-		$jq(".enrollment-set-status").click( function( event ) {
-
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			var uuid = event.currentTarget.attributes["data-uuid"].value;
-			var status = event.currentTarget.attributes["data-status"].value;
-			
-			saveStatus( uuid, status, $jq("#status-comment-text").val() );
-			
-		});
-		
-		$jq("#enrollment-delete").click( function( event ) {
-			
-			var uuid 
-				= event.currentTarget.attributes["data-uuid"].value;
-			
-			$jq(this).button('Even geduld...');
-			
-			deleteEnrollment( uuid );
-			
-		});
-		
-		$jq("#submit-show").click( function( event ) {
-			
-			show('div-submit');	
+			saveVakanties( "${enrollment.uuid}" );
 			
 		});
 		
 		$jq( document ).ready(function() {
 			
-			if ( window.location.hash ) {
-				$jq( "#" + window.location.hash.substring(1) ).modal();
-			}
+			buttons();
 		    
 		});
 		
