@@ -475,3 +475,7 @@ a.edit {
 .hidden {
  display: none;
 }
+
+.th-row {
+ width: 300px;
+}

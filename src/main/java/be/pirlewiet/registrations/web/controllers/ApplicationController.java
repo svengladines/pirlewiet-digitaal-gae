@@ -270,8 +270,9 @@ public class ApplicationController {
 		
 		model.put("applicationStatus", applicationStatus );
 		
+		// pirlewiet no longer has separate 'inschrijving' view
 		String view
-			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving_pirlewiet" : "inschrijving";
+			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving" : "inschrijving";
 
 		return new ModelAndView( view, model );
 		

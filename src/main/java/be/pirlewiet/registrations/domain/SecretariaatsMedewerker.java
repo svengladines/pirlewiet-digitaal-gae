@@ -286,7 +286,8 @@ public class SecretariaatsMedewerker {
     	return saved;
     }
     
-    @Transactional(readOnly=true)
+    // @Transactional(readOnly=true)
+    // this cannot be @Transactional, as the GAE will throw "operating on too many entity groups in a single transaction" on production :o(
     public List<InschrijvingX> actueleInschrijvingen( Organisatie organisatie ) {
     	
     	List<InschrijvingX> inschrijvingen
@@ -1119,7 +1120,7 @@ public class SecretariaatsMedewerker {
     	// an application gets status 'complete' when none of the enrollments need handling 
 
     	boolean isComplete
-    		= false;
+    		= true;
     	
     	boolean isDraft
     		= false;
@@ -1131,7 +1132,7 @@ public class SecretariaatsMedewerker {
 
 			if ( this.needsHandling( enrollment ) ) {
 				
-				isComplete = false;
+				isComplete &= false;
 				
 			}
 			else if ( ! this.hasBeenHandled( enrollment ) ) {
@@ -1227,7 +1228,7 @@ public class SecretariaatsMedewerker {
     	Value value
     		= enrollment.getStatus().getValue();
     	
-    	return ( Value.ACCEPTED.equals( value ) || Value.REJECTED.equals( value )  || Value.WAITINGLIST.equals( value ) );
+    	return ( Value.ACCEPTED.equals( value ) || Value.REJECTED.equals( value )  || Value.WAITINGLIST.equals( value ) || Value.CANCELLED.equals( value ) );
     	
     }
  

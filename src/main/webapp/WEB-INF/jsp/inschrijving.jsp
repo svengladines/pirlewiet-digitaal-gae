@@ -22,9 +22,9 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1>Aanvraag</h1>
+					<h1>Inschrijving</h1>
 					<p>
-						Beheer een aanvraag.
+						Beheer een inschrijving.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -489,15 +489,6 @@
 										</div>
 								</c:if>
 						</c:forEach>
-						<div id="status-comment" class="form-group">
-							<label class="col-sm-4 control-label">Opmerking<br/>
-							<span class="text-info">Deze opmerking mag maximaal 500 karakters bevatten.</span>
-							</label>
-							
-							<div class="col-sm-8">
-								<textarea id="status-comment-text" class="form-control" rows="10" cols="64"></textarea>
-							</div>
-						</div>
 						<div class="form-group">
 							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
 							<div class="col-sm-4">
@@ -672,7 +663,7 @@
 		};
 		
 		var saveStatus = function( id, value ) {
-			var comment = $jq("#status-comment-text").val();
+			var comment = "";
 			if ( value ) {
 				var sx = new Status (value, comment ,true );
 				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );

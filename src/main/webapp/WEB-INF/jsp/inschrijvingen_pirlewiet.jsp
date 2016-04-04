@@ -63,22 +63,21 @@
 					
 					<tr>
 						<th scope="row" class="th-row">Inschrijving <span class="pull-right">${date}</span></th>
-						<td colspan="1">
+						<td colspan="3">
 							<a href="${pageContext.servletContext.contextPath}/rs/inschrijvingen/${enrollment.uuid}.html" class="pull-left">Details</a>
-							<a href="${pageContext.servletContext.contextPath}/rs/enrollments/${enrollment.uuid}.html" class="btn btn-primary pull-right">Beheer</a>
 						</td>
 					</tr>
 			
 					<tr>
 						<th scope="row">Vakantie(s)</th>
-						<td colspan="1">
+						<td colspan="3">
 							<c:forEach items="${enrollment.vakanties}" var="vakantie">
 								${vakantie.naam}<br/>
 							</c:forEach>
 					</tr>
 					<tr>
 						<th scope="row">Contactpersoon</th>
-						<td colspan="1">
+						<td colspan="3">
 							${enrollment.contactGegevens.name}
 						</td>
 					</tr>
@@ -88,7 +87,12 @@
 						<th scope="row">Deelnemer(s)</th>
 						<td colspan="1">
 							${enrollment.deelnemers[0].voorNaam} &nbsp; ${enrollment.deelnemers[0].familieNaam} (${gd})
-							<span class="pull-right"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></i></strong></span>
+						</td>
+						<td colspan="1">
+							<span><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></i></strong></span>
+						</td>
+						<td colspan="1">
+							<a href="${pageContext.servletContext.contextPath}/rs/enrollments/${enrollment.uuid}.html" class="btn btn-primary">Beheer</a>
 						</td>
 					</tr>
 				
