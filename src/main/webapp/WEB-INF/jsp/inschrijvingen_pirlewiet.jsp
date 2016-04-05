@@ -35,7 +35,7 @@
 		
 			<br/>
 		
-	    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download?status=SUBMITTED" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld..."><i class="fa fa-arrow-circle-o-down"></i>&nbsp;Download</a>
+	    	<a id="xls" href="${pageContext.request.contextPath}/rs/inschrijvingen/download?status=SUBMITTED" class="btn btn-primary" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" download="excel.xlsx" data-loading-text="Even geduld..." target="_blank"><i class="fa fa-arrow-circle-o-down"></i>&nbsp;Download</a>
 			
 			<table class="table table-bordered">
 			

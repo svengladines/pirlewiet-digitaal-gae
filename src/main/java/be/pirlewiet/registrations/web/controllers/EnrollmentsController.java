@@ -119,7 +119,7 @@ public class EnrollmentsController {
 		for ( InschrijvingX application : applications ) {
 			
 			List<InschrijvingX> related
-				= this.secretariaatsMedewerker.guard().findRelated( application,true );
+				= this.secretariaatsMedewerker.guard().findRelated( application, false );
 			
 			if ( related != null ) {
 				logger.info( "[{}]; found [{}] related enrollments", application.getUuid(), related.size() );
