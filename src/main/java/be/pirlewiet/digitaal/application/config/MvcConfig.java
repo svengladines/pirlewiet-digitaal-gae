@@ -12,18 +12,18 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import be.pirlewiet.digitaal.web.controllers.ApplicationController;
-import be.pirlewiet.digitaal.web.controllers.CodeRequestsController;
-import be.pirlewiet.digitaal.web.controllers.CodesController;
-import be.pirlewiet.digitaal.web.controllers.EnrollmentController;
-import be.pirlewiet.digitaal.web.controllers.EnrollmentsController;
-import be.pirlewiet.digitaal.web.controllers.OrganisationController;
-import be.pirlewiet.digitaal.web.controllers.OrganisationsController;
-import be.pirlewiet.digitaal.web.controllers.PDController;
-import be.pirlewiet.digitaal.web.controllers.PageController;
-import be.pirlewiet.digitaal.web.controllers.ParticipantController;
-import be.pirlewiet.digitaal.web.controllers.PingController;
-import be.pirlewiet.digitaal.web.controllers.ScenarioController;
+import be.pirlewiet.digitaal.web.controller.ApplicationController;
+import be.pirlewiet.digitaal.web.controller.CodeRequestsController;
+import be.pirlewiet.digitaal.web.controller.CodesController;
+import be.pirlewiet.digitaal.web.controller.EnrollmentController;
+import be.pirlewiet.digitaal.web.controller.EnrollmentsController;
+import be.pirlewiet.digitaal.web.controller.OrganisationController;
+import be.pirlewiet.digitaal.web.controller.OrganisationsController;
+import be.pirlewiet.digitaal.web.controller.PDController;
+import be.pirlewiet.digitaal.web.controller.PageController;
+import be.pirlewiet.digitaal.web.controller.ParticipantController;
+import be.pirlewiet.digitaal.web.controller.PingController;
+import be.pirlewiet.digitaal.web.controller.ScenarioController;
 
 @Configuration
 @EnableWebMvc

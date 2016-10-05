@@ -74,9 +74,6 @@ public class OrganisationManager {
 	DoorMan buitenWipper;
 	
 	@Resource
-	DataGuard dataGuard;
-	
-	@Resource
 	MailMan postBode;
 	
     public OrganisationManager() {
