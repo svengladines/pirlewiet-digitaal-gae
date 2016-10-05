@@ -1,0 +1,37 @@
+<p>
+Beste secretariaatsmedewerker,
+</p>
+
+<p>
+Een doorverwijzer zond een nieuwe inschrijving in. <br/>
+Deze inschrijving kreeg automatisch de status 'In behandeling' en de doorverwijzer kreeg een e-mail ter bevestiging hiervan. <br/>
+</p>
+<p>
+Details van de inschrijving vind je hieronder en in bijlage als Excelbestand<br/>
+</p>
+
+<p>
+	<table>
+		<tbody>
+		<tr>
+			<th scope="row">Vakantie(s)</th>
+			<td>${vakanties}</td>
+		</tr>
+		<tr>
+			<th scope="row">Deelnemer(s)</th>
+			<td>
+				<ul>
+					<li>${enrollment.deelnemers[0].voorNaam} ${enrollment.deelnemers[0].familieNaam} (<a href="http://pirlewiet-digitaal.appspot.com/rs/enrollments/${enrollment.uuid}.html">Beheer</a>)</li>
+					<#list related as r>
+					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam} (<a href="http://pirlewiet-digitaal.appspot.com/rs/enrollments/${r.uuid}.html">Beheer</a>)</li>
+					</#list>
+				</ul>
+			</td>
+		</tr>
+	</table>
+</p>
+
+<p>
+Met vriendelijke groet,<br/>
+Pirlewiet-Digitaal.
+</p>

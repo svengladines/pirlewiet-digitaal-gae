@@ -3,16 +3,16 @@
 	version="2.0">
 	<persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<class>be.pirlewiet.registrations.model.InschrijvingX</class>
-		<class>be.pirlewiet.registrations.model.Adres</class>
-                <class>be.pirlewiet.registrations.model.ContactPersoon</class>
-		<class>be.pirlewiet.registrations.model.Credentials</class>
-		<class>be.pirlewiet.registrations.model.Deelnemer</class>
-		<class>be.pirlewiet.registrations.model.Dienst</class>
-		<class>be.pirlewiet.registrations.model.Persoon</class>
-		<class>be.pirlewiet.registrations.model.SecretariaatsMedewerker</class>
-                <class>be.pirlewiet.registrations.model.Vakantie</class>
-		<class>be.pirlewiet.registrations.model.VakantieType</class>
+		<class>be.pirlewiet.digitaal.model.Enrollment</class>
+		<class>be.pirlewiet.digitaal.model.Address</class>
+                <class>be.pirlewiet.digitaal.model.ContactPersoon</class>
+		<class>be.pirlewiet.digitaal.model.Credentials</class>
+		<class>be.pirlewiet.digitaal.model.Participant</class>
+		<class>be.pirlewiet.digitaal.model.Dienst</class>
+		<class>be.pirlewiet.digitaal.model.Person</class>
+		<class>be.pirlewiet.digitaal.model.SecretariaatsMedewerker</class>
+                <class>be.pirlewiet.digitaal.model.Vakantie</class>
+		<class>be.pirlewiet.digitaal.model.VakantieType</class>
                 <exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.connection.url" value="jdbc:hsqldb:mem:unit-testing-jpa" />

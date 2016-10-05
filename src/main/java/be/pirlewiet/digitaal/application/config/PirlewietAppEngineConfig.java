@@ -1,4 +1,4 @@
-package be.pirlewiet.registrations.application.config;
+package be.pirlewiet.digitaal.application.config;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
@@ -15,27 +15,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.web.util.DataGuard;
-import be.pirlewiet.registrations.web.util.DevGuard;
-
-import com.google.appengine.tools.development.testing.LocalAppIdentityServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalMailServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.apphosting.api.ApiProxy;
+import be.pirlewiet.digitaal.web.util.NoopGuard;
 
 @Configuration
-@Profile({ConfigurationProfiles.DEV})
-public class PirlewietAppEngineConfigForTest {
+@Profile(ConfigurationProfiles.PRODUCTION)
+public class PirlewietAppEngineConfig {
 	
 	final static String JPA_PKG = "be.pirlewiet.digitaal";
 	
 	@Configuration
+	@Profile(ConfigurationProfiles.PRODUCTION)
 	@EnableJpaRepositories(JPA_PKG)
-	@Profile( ConfigurationProfiles.DEV )
 	static class EntityManagerConfig {
 		
 		@Bean
-		public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean(PersistenceProvider persistenceProvider, LocalServiceTestHelper dataStoreHelper ) {
+		public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean(PersistenceProvider persistenceProvider ) {
 			
 			LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 			factory.setPackagesToScan( "be.pirlewiet.digitaal.model" );
@@ -76,27 +70,10 @@ public class PirlewietAppEngineConfigForTest {
 			return transactionManager;
 		}
 		
-	}
-	
-	@Configuration
-	@Profile( ConfigurationProfiles.DEV )
-	public static class LocalServiceConfig {
-		
 		@Bean
-		public LocalServiceTestHelper helper() {
+		DataGuard dataGuard() {
 			
-			LocalServiceTestHelper helper
-				= new LocalServiceTestHelper( new LocalAppIdentityServiceTestConfig(), new LocalDatastoreServiceTestConfig().setApplyAllHighRepJobPolicy(), new LocalMailServiceTestConfig() );
-			helper.setUp();
-			
-			return helper;
-			
-		}
-		
-		@Bean
-		DataGuard dataGuard( LocalServiceTestHelper helper ) {
-			
-			return new DevGuard( ApiProxy.getCurrentEnvironment() );
+			return new NoopGuard();
 			
 		}
 		

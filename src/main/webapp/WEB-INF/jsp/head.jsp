@@ -12,11 +12,11 @@
     <title>Pirlewiet-Inschrijvingen</title>
 
     <!-- Bootstrap/font-awesome CSS -->
-    <link href="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/theme/css/bootstrap.css" rel="stylesheet">
-    <link href="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/theme/css/font-awesome.css" rel="stylesheet">
+    <link href="${be.pirlewiet.digitaal.frontend.url}/digitaal/resources/theme/css/bootstrap.css" rel="stylesheet">
+    <link href="${be.pirlewiet.digitaal.frontend.url}/digitaal/resources/theme/css/font-awesome.css" rel="stylesheet">
 
     <!-- Pirlewiet CSS -->
-    <link href="${be.pirlewiet.registrations.frontend.url}/digitaal/resources/theme/css/pirlewiet.css" rel="stylesheet">
+    <link href="${be.pirlewiet.digitaal.frontend.url}/digitaal/resources/theme/css/pirlewiet.css" rel="stylesheet">
 
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

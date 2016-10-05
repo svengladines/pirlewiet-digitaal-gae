@@ -1,0 +1,50 @@
+<p>
+Beste doorverwijzer,
+</p>
+
+<p>
+Via deze e-mail bevestigen we graag dat we je aanvraag tot inschrijving goed ontvingen en in behandeling hebben genomen.<br/> 
+</p>
+
+<p> 
+	Wanneer een beslissing is genomen rond deze aanvraag of indien er vragen zijn, word je gecontacteerd.
+</p>
+
+<p>
+	<table>
+		<tbody>
+		<tr>
+			<th scope="row">Vakantie(s)</th>
+			<td>${vakanties}</td>
+		</tr>
+		<tr>
+			<th scope="row">Deelnemer(s)</th>
+			<td>
+				<ul>
+					<li>${enrollment.deelnemers[0].voorNaam} ${enrollment.deelnemers[0].familieNaam}</li>
+					<#list related as r>
+					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam}</li>
+					</#list>
+				</ul>
+			</td>
+		</tr>
+	</table>
+</p>
+
+<p>
+<a href="http://pirlewiet-digitaal.appspot.com/rs/inschrijvingen/${enrollment.uuid}.html">Beheer</a> deze inschrijving. 
+</p>
+
+<p>
+Voor het overzicht van alle inschrijvingen, surf naar <a href="http://pirlewiet-digitaal.appspot.com/index.htm">Pirlewiet Digitaal</a>
+</p>
+
+<p>
+Met vriendelijke groet,<br/>
+Pirlewiet Digitaal.
+</p>
+
+<p>
+Deze e-mail werd automatisch gegenereerd; je kan hier niet op antwoorden. <br/>
+Wil je contact opnemen met het secretariaat van Pirlewiet, dan kan dit via www.pirlewiet.be of via info@pirlewiet.be
+</p>

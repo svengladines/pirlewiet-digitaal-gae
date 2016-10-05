@@ -1,5 +1,7 @@
 package be.pirlewiet.registrations.web.util;
 
+import be.pirlewiet.digitaal.web.util.DataGuard;
+
 import com.google.apphosting.api.ApiProxy;
 import com.google.apphosting.api.ApiProxy.Environment;
 

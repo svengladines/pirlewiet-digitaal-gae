@@ -14,12 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import be.occam.test.jtest.JTest;
-import be.pirlewiet.registrations.model.Adres;
-import be.pirlewiet.registrations.model.ContactGegevens;
-import be.pirlewiet.registrations.model.Deelnemer;
-import be.pirlewiet.registrations.model.InschrijvingX;
-import be.pirlewiet.registrations.model.Status;
-import be.pirlewiet.registrations.model.Vraag;
+import be.pirlewiet.digitaal.model.Address;
+import be.pirlewiet.digitaal.model.PersonInfo;
+import be.pirlewiet.digitaal.model.Participant;
+import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.QnA;
 
 public class TestDeelnemerController extends JTest {
 
@@ -31,7 +31,7 @@ public class TestDeelnemerController extends JTest {
 	@Test
 	public void testRetrieve() {
 		
-		ResponseEntity<Deelnemer> response
+		ResponseEntity<Participant> response
 			= this.retrieve();
 		
 		assertEquals( "no 200 received", HttpStatus.OK, response.getStatusCode() );
@@ -48,15 +48,15 @@ public class TestDeelnemerController extends JTest {
 		String familieNaam 
 			= "Connor";
 		
-		ResponseEntity<Deelnemer> entity
+		ResponseEntity<Participant> entity
 			= this.retrieve();
 		
-		Deelnemer sarah
+		Participant sarah
 			= entity.getBody();
 		
 		sarah.setFamilieNaam( familieNaam );
 		
-		ResponseEntity<Deelnemer> updateResponse
+		ResponseEntity<Participant> updateResponse
 			= putJSON( url, sarah );
 		
 		assertEquals( "no 200 received", HttpStatus.OK, updateResponse.getStatusCode() );
@@ -67,13 +67,13 @@ public class TestDeelnemerController extends JTest {
 		
 	}
 	
-	protected ResponseEntity<Deelnemer> retrieve() {
+	protected ResponseEntity<Participant> retrieve() {
 		
 		String url
 			= this.baseResourceUrl().append("/inschrijvingen/1/deelnemers/1").toString();
 		
-		ResponseEntity<Deelnemer> response
-			= getJSON( url, Deelnemer.class );
+		ResponseEntity<Participant> response
+			= getJSON( url, Participant.class );
 	
 		assertEquals( "no 200 received", HttpStatus.OK, response.getStatusCode() );
 		

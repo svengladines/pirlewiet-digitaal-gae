@@ -5,7 +5,7 @@
 
 	<filter>
 		<filter-name>cookieFilter</filter-name>
-		<filter-class>be.pirlewiet.registrations.web.filters.CookieFilter</filter-class>
+		<filter-class>be.pirlewiet.digitaal.web.filters.CookieFilter</filter-class>
 	</filter>
 
 	<filter-mapping>
@@ -24,7 +24,7 @@
 		</init-param>
 		<init-param>
 		    <param-name>contextConfigLocation</param-name>
-		    <param-value>be.pirlewiet.registrations.application.config</param-value>
+		    <param-value>be.pirlewiet.digitaal.application.config</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
