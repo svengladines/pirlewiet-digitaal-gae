@@ -12,9 +12,9 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
+import be.pirlewiet.digitaal.application.run.DevData;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
-import be.pirlewiet.registrations.application.run.DevData;
-import be.pirlewiet.registrations.jtests.TestData;
+import be.pirlewiet.digitaal.jtests.TestData;
 
 @Configuration
 public class PirlewietApplicationConfigForTest {

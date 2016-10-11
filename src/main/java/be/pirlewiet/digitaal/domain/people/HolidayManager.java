@@ -15,8 +15,8 @@ import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.HolidayRepository;
-import be.pirlewiet.digitaal.web.ResultDTO;
-import be.pirlewiet.digitaal.web.ResultDTO.Value;
+import be.pirlewiet.digitaal.web.Result;
+import be.pirlewiet.digitaal.web.Result.Value;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class HolidayManager {
@@ -63,10 +63,10 @@ public class HolidayManager {
     }
     
     @Transactional( readOnly=false )
-    public ResultDTO<HolidayType> checkSingleType( String vks ) {
+    public Result<HolidayType> checkSingleType( String vks ) {
     	
-    	ResultDTO<HolidayType> result
-    		= new ResultDTO<HolidayType>();
+    	Result<HolidayType> result
+    		= new Result<HolidayType>();
     	result.setValue( Value.OK );
     	
     	HolidayType type

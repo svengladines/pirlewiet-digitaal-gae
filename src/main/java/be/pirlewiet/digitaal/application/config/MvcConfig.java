@@ -75,6 +75,15 @@ public class MvcConfig {
 	public static class ControllerConfig {
 		
 		@Bean
+		public OrganisationsController organisationsController() {
+			
+			return new OrganisationsController();
+			
+		}
+		
+		/*
+		
+		@Bean
 		public EnrollmentsController inschrijvingenController() {
 			
 			return new EnrollmentsController();
@@ -117,13 +126,6 @@ public class MvcConfig {
 		}
 		
 		@Bean
-		public OrganisationsController organisatiesController() {
-			
-			return new OrganisationsController();
-			
-		}
-		
-		@Bean
 		public OrganisationController organisatieController() {
 			
 			return new OrganisationController();
@@ -155,6 +157,7 @@ public class MvcConfig {
 			return new PDController();
 			
 		}
+		*/
 		
 		
 	}

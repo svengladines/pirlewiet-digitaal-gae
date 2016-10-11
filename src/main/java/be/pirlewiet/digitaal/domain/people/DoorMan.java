@@ -16,9 +16,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
+import be.pirlewiet.digitaal.domain.exception.ErrorCode;
+import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.CodeRequest;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.OrganisatieRepository;
+import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
@@ -33,7 +35,7 @@ public class DoorMan {
 		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
-	protected OrganisatieRepository organisatieRepository;
+	protected OrganisationRepository organisationRepository;
 	
 	@Resource
 	protected DataGuard dataGuard;
@@ -63,7 +65,28 @@ public class DoorMan {
 			return pDiddy;
 		}
 		
-		return this.organisatieRepository.findOneByCode( code );
+		return this.organisationRepository.findOneByCode( code );
+	}
+	
+	@Transactional(readOnly=true)
+	public Organisation actor( String uuid ) {
+		
+		if ( PirlewietUtil.PDIDDY_ID.equals( uuid ) ) {
+			return pDiddy;
+		}
+		
+		Organisation organisatie
+			= this.organisationRepository.findByUuid( uuid );
+		
+		if ( organisatie != null ) {
+			// detach the object
+			organisatie.getAddress().hashCode();
+			return organisatie;
+		}
+		else {
+			throw new PirlewietException( ErrorCode.PWT_UNKNOWN_ACTOR, "unknown actor" );
+		}
+		
 	}
 	
 	@Transactional(readOnly=true)
@@ -74,10 +97,10 @@ public class DoorMan {
 		}
 		
 		Organisation organisatie
-			= this.organisatieRepository.findByUuid( uuid );
+			= this.organisationRepository.findByUuid( uuid );
 		if ( organisatie != null ) {
 			// detach the object
-			organisatie.getAdres().hashCode();
+			organisatie.getAddress().hashCode();
 			return organisatie;
 		}
 		else {
@@ -102,7 +125,7 @@ public class DoorMan {
 			= codeRequest.getEmail();
 		
 		Organisation organisatie
-			= this.organisatieRepository.findOneByEmail( email );
+			= this.organisationRepository.findOneByEmail( email );
 		
 		if ( organisatie == null ) {
 			logger.warn( "no organisation with email [{}]", email );
@@ -118,21 +141,21 @@ public class DoorMan {
 			logger.info( "code exists, code is [{}]", code );
 			if ( ( organisatie.getUuid() == null ) || ( organisatie.getUuid().isEmpty() ) ) {
 				organisatie.setUuid( KeyFactory.keyToString( organisatie.getKey() ) );
-				organisatie = this.organisatieRepository.saveAndFlush( organisatie );
+				organisatie = this.organisationRepository.saveAndFlush( organisatie );
 			}
 		}
 		
 		while ( code == null ) {
 			code = this.codeMan.generateCode();
-			if ( this.organisatieRepository.findOneByCode( code ) != null ) {
+			if ( this.organisationRepository.findOneByCode( code ) != null ) {
 				// code already taken
 				code = null;
 				continue;
 			}
-			logger.info( "generated code for [{}] : [{}]", organisatie.getNaam(), code );
+			logger.info( "generated code for [{}] : [{}]", organisatie.getName(), code );
 			organisatie.setCode( code );
-			organisatie = this.organisatieRepository.saveAndFlush( organisatie );
-			logger.info( "saved code [{}] for [{}]", code, organisatie.getNaam() );
+			organisatie = this.organisationRepository.saveAndFlush( organisatie );
+			logger.info( "saved code [{}] for [{}]", code, organisatie.getName() );
 		}
 		
 		
@@ -163,7 +186,7 @@ public class DoorMan {
 		
 		while ( code == null ) {
 			code = this.codeMan.generateCode();
-			if ( this.organisatieRepository.findOneByCode( code ) != null ) {
+			if ( this.organisationRepository.findOneByCode( code ) != null ) {
 				// code already taken
 				code = null;
 				continue;

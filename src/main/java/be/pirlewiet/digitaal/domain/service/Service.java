@@ -5,7 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import be.pirlewiet.digitaal.model.D;
+import be.occam.utils.spring.web.Result;
+import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public abstract class Service<D,O> {
@@ -18,20 +19,22 @@ public abstract class Service<D,O> {
 	    return this;
 	}
 	
-	public D create( D dto, D actor ) {
-		return dto;
+	public Result<D> create( D dto, Organisation actor ) {
+		return new Result<D>( dto );
 	}
 	
-	public D update( D organisation, D actor ) {
-		return organisation;
+	public Result<D> update( D dto , Organisation actor ) {
+		return new Result<D>( dto );
 	}
 	
-	public D delete( D organisation, D actor ) {
-		return organisation;
+	public Result<D> delete( D dto, Organisation actor ) {
+		return new Result<D>( dto );
 	}
 	
-	public List<D> query( D actor ) {
-		return Arrays.asList( );
+	public Result<List<D>> query( Organisation actor ) {
+		List<D> list
+			= Arrays.asList();
+		return new Result<List<D>>( list );
 	}
 
 }

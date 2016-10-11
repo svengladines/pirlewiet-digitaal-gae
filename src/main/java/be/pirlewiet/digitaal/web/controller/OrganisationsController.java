@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
+import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.Reducer;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
@@ -50,20 +53,46 @@ public class OrganisationsController {
 	@Resource
 	DoorMan doorMan;
 	
-	@Resource
-	Reducer reducer;
+	//@Resource
+	// Reducer reducer;
 	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
 	
-	@RequestMapping( method = { RequestMethod.POST} )
+	@RequestMapping( method = { RequestMethod.GET} )
 	@ResponseBody
-	public ResponseEntity<OrganisationDTO> post( @RequestBody OrganisationDTO organisation, @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
+	public ResponseEntity<Result<List<OrganisationDTO>>> query( @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
 		
 		Organisation actor 
 			= this.doorMan.whoHasID( pwtid );
 		
-		OrganisationDTO created
+		Result<List<OrganisationDTO>> created
+			= this.organisationService.guard().query( actor );
+		
+		/*
+		Cookie cookie
+			= new Cookie( "pwtid", created.getUuid() );
+	
+		cookie.setMaxAge( 3600 * 24 * 30 * 12 );
+	
+		cookie.setPath( "/" );
+	
+		response.addCookie( cookie );
+		
+		*/
+		
+		return response( created, HttpStatus.OK );
+			
+	}
+	
+	@RequestMapping( method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE } )
+	@ResponseBody
+	public ResponseEntity<Result<OrganisationDTO>> post( @RequestBody OrganisationDTO organisation, @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
+		
+		Organisation actor 
+			= this.doorMan.guard().whoHasID( pwtid );
+		
+		Result<OrganisationDTO> created
 			= this.organisationService.guard().create( organisation, actor );
 		
 		/*
@@ -254,10 +283,10 @@ public class OrganisationsController {
 		
 	}
 	
-	protected Organisation mapTo( String[] columns ) {
+	protected OrganisationDTO mapTo( String[] columns ) {
 		
-		Organisation organisatie
-			= new Organisation();
+		OrganisationDTO organisatie
+			= new OrganisationDTO();
 		
 		if ( ! isEmpty( columns[ 0 ] ) ) {
 			
@@ -270,6 +299,7 @@ public class OrganisationsController {
 			
 		}
 		
+		/*
 		String straat
 			= columns[ 3 ];
 		
@@ -306,6 +336,7 @@ public class OrganisationsController {
 		
 		logger.info( "[gemeente={}]", gemeente );
 		organisatie.getAddress().setGemeente( gemeente );
+		*/
 		
 		String telefoon
 			= columns[ 6 ];

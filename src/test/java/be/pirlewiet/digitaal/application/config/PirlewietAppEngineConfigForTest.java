@@ -15,7 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.web.util.DataGuard;
-import be.pirlewiet.registrations.web.util.DevGuard;
+import be.pirlewiet.digitaal.web.util.DevGuard;
 
 import com.google.appengine.tools.development.testing.LocalAppIdentityServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -31,7 +31,7 @@ public class PirlewietAppEngineConfigForTest {
 	
 	@Configuration
 	@EnableJpaRepositories(JPA_PKG)
-	@Profile( ConfigurationProfiles.DEV )
+	@Profile( { ConfigurationProfiles.DEV, ConfigurationProfiles.TEST } )
 	static class EntityManagerConfig {
 		
 		@Bean
@@ -79,7 +79,7 @@ public class PirlewietAppEngineConfigForTest {
 	}
 	
 	@Configuration
-	@Profile( ConfigurationProfiles.DEV )
+	@Profile( { ConfigurationProfiles.DEV, ConfigurationProfiles.TEST } )
 	public static class LocalServiceConfig {
 		
 		@Bean

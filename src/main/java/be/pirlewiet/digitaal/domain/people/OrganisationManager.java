@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.domain.people;
 
+import static be.occam.utils.javax.Utils.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -19,15 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
-import be.occam.utils.ftp.FTPClient;
-import be.occam.utils.spring.web.Client;
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
-import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
-import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
@@ -41,10 +39,10 @@ public class OrganisationManager {
 	HeadQuarters headQuarters;
 	
 	@Resource
-	FTPClient ftpClient;
+	protected Organisation pDiddy;
 	
 	@Resource
-	protected Organisation pDiddy;
+	protected AddressManager addressManager;
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
@@ -79,11 +77,6 @@ public class OrganisationManager {
     public OrganisationManager() {
     }
     
-    public OrganisationManager guard() {
-    	this.dataGuard.guard();
-    	return this;
-    }
-    
     @Transactional( readOnly=false )
     public Organisation create( Organisation organisation ) {
     	
@@ -94,7 +87,7 @@ public class OrganisationManager {
     		= this.organisationRepository.findOneByEmail( email );
     	
     	if ( existing != null ) {
-    		throw new PirlewietException( String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_TAKEN, String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
     	}
     	
     	String code 
@@ -112,47 +105,26 @@ public class OrganisationManager {
     	
     	logger.info( "created organiation with uuid [{}] and code [{}]", saved.getUuid(), code );
     	
-		boolean published = publishNewList();
-		
-		if ( published ) {
-			this.sendCreatedEmailToOrganisation( saved );
-			this.sendCreatedEmailToPirlewiet( saved );
-		}
-		else {
-			throw new PirlewietException( "Registratie van organisatie is mislukt. Probeer AUB opnieuw. Bij aanhoudende problemen, contacteer ons secretariaat.");
-		}
+    	
+		// boolean published = publishNewList(); // SGL| no longer publish the list synchronously, it causes latency and sometimes errors
+    	// TODO, publish list asynchronously
+		this.sendCreatedEmailToOrganisation( saved );
+		this.sendCreatedEmailToPirlewiet( saved );
     	
     	return saved;
     	
     }
 
-    @Transactional(readOnly=false)
-    public Organisation updateAddress( String id, Address adres ) {
+    // @Transactional(readOnly=false)
+    public Organisation updateAddress( Organisation organisation, String addressUuid ) {
     	
-    	Organisation organisatie
-    		= this.organisation( id );
-    	
-    	boolean newOrganisation
-    		= ( organisatie.getAddress().getGemeente() == null );
-    	
-    	if ( isEmpty( adres.getGemeente() ) ) {
-    		throw new RuntimeException("Geef de gemeente op");
-    	}
-    	
-    	if ( isEmpty( adres.getStraat() ) ) {
-    		throw new RuntimeException("Geef de straat op");
-    	}
-    	
-    	if ( isEmpty( adres.getNummer() ) ) {
-    		throw new RuntimeException("Geef huis- en eventueel busnummer op");
-    	}
-    	
-    	organisatie.setAddress( adres );
-    	organisatie.setUpdated( new Date() );
+    	    	
+    	organisation.setAddressUuid( addressUuid );
+    	organisation.setUpdated( new Date() );
 		
-		organisatie = this.organisationRepository.saveAndFlush( organisatie );
+    	organisation = this.organisationRepository.saveAndFlush( organisation );
 		
-    	return organisatie;
+    	return organisation;
     	
     }
     
@@ -166,15 +138,15 @@ public class OrganisationManager {
     		return null;
     	}
     	
-    	if ( this.isEmpty( organisation.getName() ) ) {
+    	if ( isEmpty( organisation.getName() ) ) {
     		throw new RuntimeException("Geef de naam van de organisatie op");
     	}
     	
-    	if ( this.isEmpty( organisation.getEmail() ) ) {
+    	if ( isEmpty( organisation.getEmail() ) ) {
     		throw new RuntimeException("Geef het e-mailadres van de organisatie op");
     	}
     	
-    	if ( this.isEmpty( organisation.getPhone() ) && this.isEmpty( organisation.getPhone() ) ) {
+    	if ( isEmpty( organisation.getPhone() ) && isEmpty( organisation.getPhone() ) ) {
     		throw new RuntimeException("Geef ofwel een telefoonnummer ofwel een gsm-nummer op");
     	}
     	
@@ -187,8 +159,6 @@ public class OrganisationManager {
     	
     	Organisation saved
     		= this.organisationRepository.saveAndFlush( loaded );
-    	
-    	saved.setAddress( loaded.getAddress() );
     	
     	logger.info( "updated organisation with uiid [{}]", saved.getUuid() );
     	
@@ -204,20 +174,13 @@ public class OrganisationManager {
     	incomplete |= isEmpty( organisation.getName() ) ;
     	incomplete |= isEmpty( organisation.getPhone() ) ;
     	incomplete |= isEmpty( organisation.getEmail() ) ;
-    	if ( checkAddress && ( organisation.getAddress() != null ) ) {
-	    	incomplete |= isEmpty( organisation.getAddress().getZipCode() );
-	    	incomplete |= isEmpty( organisation.getAddress().getGemeente() );
-	    	incomplete |= isEmpty( organisation.getAddress().getStraat() );
-	    	incomplete |= isEmpty( organisation.getAddress().getNummer() );
+    	if ( checkAddress && ( organisation.getAddressUuid() != null ) ) {
+    		
+    		incomplete = ( ! this.addressManager.isComplete( organisation.getAddressUuid() ) ); 
+	    	
     	}
     	
     	return incomplete;
-    	
-    }
-    
-    protected boolean isEmpty( String x ) {
-    	
-    	return ( x == null ) || ( x.isEmpty() );
     	
     }
     
@@ -229,15 +192,12 @@ public class OrganisationManager {
     	
     	if ( organisatie != null ) {
     		logger.info( "found organsiatie with id []", id );
-    		// detach the adres object
-    		organisatie.getAddress().hashCode();
     	}
     	
     	return organisatie;
     	
     }
     
-    @Transactional(readOnly=true)
     public List<Organisation> all( ) {
     	
     	List<Organisation> all
@@ -247,7 +207,6 @@ public class OrganisationManager {
 			= new ArrayList<Organisation>();
     	
     	for ( Organisation organisation : all ) {
-    		organisation.getAddress().hashCode();
     		
     		if ( ! PirlewietUtil.isPirlewiet( organisation ) ) {
     			filtered.add( organisation );
@@ -350,6 +309,7 @@ public class OrganisationManager {
 
     }
     
+    /*
     protected boolean publishNewList() {
     	
     	try {
@@ -372,5 +332,6 @@ public class OrganisationManager {
 		}
     	
     }
+    */
     
 }

@@ -31,6 +31,7 @@ import be.pirlewiet.digitaal.domain.q.QList;
 import be.pirlewiet.digitaal.domain.scenario.ReadyToRockOneScenario;
 import be.pirlewiet.digitaal.domain.scenario.ReadyToRockScenario;
 import be.pirlewiet.digitaal.domain.scenario.SetQuestionsQIDScenario;
+import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
@@ -63,19 +64,34 @@ public class PirlewietApplicationConfig {
 	}
 	
 	@Configuration
-	public static class BeansConfig {
+	public static class ServiceConfig {
 		
 		@Bean
-		Secretary secretariaatsMedewerker( ) {
+		OrganisationService organisationService() {
+			return new OrganisationService();
+		}
+		
+	}
+	
+	@Configuration
+	public static class PeopleConfig {
+		
+		@Bean 
+		HeadQuarters headQuarters() {
+			return new HeadQuarters( "info@pirlewiet.be" );
+		}
+		
+		@Bean
+		DoorMan doorMan() {
 			
-			return new Secretary(  );
+			return new DoorMan();
 			
 		}
 		
 		@Bean
-		DoorMan buitenWipper() {
+		OrganisationManager organisationManager() {
 			
-			return new DoorMan();
+			return new OrganisationManager();
 			
 		}
 		
@@ -86,17 +102,40 @@ public class PirlewietApplicationConfig {
 			
 		}
 		
+
 		@Bean
-		MailMan postBode() {
+		MailMan mailMan() {
 			
 			return new MailMan();
 			
 		}
 		
+		// can use 'real' javasender, it is stubbed by GAE
 		@Bean
-		OrganisationManager organisationManager() {
+		public JavaMailSender javaMailSender () {
+			JavaMailSenderImpl sender
+				= new JavaMailSenderImpl();
+			return sender;
+		}
+		
+		@Bean
+		public Organisation pDiddy() {
 			
-			return new OrganisationManager();
+			Organisation pDiddy
+				= new Organisation();
+			
+			pDiddy.setEmail( PirlewietUtil.PDIDDY_EMAIL );
+			pDiddy.setUuid( PirlewietUtil.PDIDDY_ID );
+			pDiddy.setCode( PirlewietUtil.PDIDDY_CODE );
+			
+			return pDiddy;
+		}
+		
+		/*
+		@Bean
+		Secretary secretary( ) {
+			
+			return new Secretary(  );
 			
 		}
 		
@@ -143,26 +182,6 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
-		public JavaMailSender javaMailSender () {
-			JavaMailSenderImpl sender
-				= new JavaMailSenderImpl();
-			return sender;
-		}
-		
-		@Bean
-		public Organisation pDiddy() {
-			
-			Organisation pDiddy
-				= new Organisation();
-			
-			pDiddy.setEmail( PirlewietUtil.PDIDDY_EMAIL );
-			pDiddy.setUuid( PirlewietUtil.PDIDDY_ID );
-			pDiddy.setCode( PirlewietUtil.PDIDDY_CODE );
-			
-			return pDiddy;
-		}
-		
-		@Bean
 		public FTPClient ftpClient() {
 			return new FTPClient( "94.198.164.46", "pirlewietbe", "d;giTaal.15");
 		}
@@ -182,10 +201,13 @@ public class PirlewietApplicationConfig {
 			return new ReadyToRockOneScenario();
 		}
 		
+		*/
+		
 		@Bean
 		ConfiguredVakantieRepository configuredVakantieRepository() {
 			return new ConfiguredVakantieRepository();
 		}
+		
 	}
 	
 	@Configuration

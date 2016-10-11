@@ -5,12 +5,12 @@
 
 	<filter>
 		<filter-name>cookieFilter</filter-name>
-		<filter-class>be.pirlewiet.digitaal.web.filters.CookieFilter</filter-class>
+		<filter-class>be.pirlewiet.digitaal.web.filter.CookieFilter</filter-class>
 	</filter>
 
 	<filter-mapping>
 		<filter-name>cookieFilter</filter-name>
-		<url-pattern>/rs/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
  
 	<servlet>
@@ -31,7 +31,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>/rs/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 	
 	<!--

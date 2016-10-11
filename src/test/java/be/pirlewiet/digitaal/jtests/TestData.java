@@ -1,24 +1,6 @@
 package be.pirlewiet.digitaal.jtests;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import be.occam.utils.timing.Timing;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Participant;
-import be.pirlewiet.digitaal.model.Gender;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Period;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-import be.pirlewiet.digitaal.repositories.OrganisatieRepository;
-import be.pirlewiet.digitaal.repositories.PersoonRepository;
-import be.pirlewiet.digitaal.repositories.VakantieRepository;
-
-import com.google.appengine.api.datastore.KeyFactory;
 
 public class TestData {
 	
@@ -34,6 +16,7 @@ public class TestData {
 		
 	}
 
+	/*
 	@Resource
 	VakantieRepository vakantieRepository;
 	
@@ -46,8 +29,12 @@ public class TestData {
 	@Resource
 	OrganisatieRepository organsiatieRepository;
 	
+	*/
+	
 	@PostConstruct
 	public void injectData() {
+		
+		/*
 		
 		Holiday zomerKikaEen
 			= new Holiday();
@@ -118,6 +105,9 @@ public class TestData {
 		
 		this.secretariaatsMedewerker.createEnrollment( lisaKika1 );
 		
+			*/
+		
 	}
+
 	
 }

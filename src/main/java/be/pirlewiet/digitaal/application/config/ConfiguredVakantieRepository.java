@@ -10,12 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import be.occam.utils.timing.Timing;
-import be.pirlewiet.digitaal.model.Period;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.repositories.VakantieRepository;
+import be.pirlewiet.digitaal.model.Period;
+import be.pirlewiet.digitaal.repositories.HolidayRepository;
 
-public class ConfiguredVakantieRepository implements VakantieRepository {
+public class ConfiguredVakantieRepository implements HolidayRepository {
 	
 	final Map<String,Holiday> bootcamps
 		= new HashMap<String,Holiday>();
