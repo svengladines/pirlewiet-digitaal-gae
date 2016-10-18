@@ -140,16 +140,19 @@
 	
 	    	$jq.ajax( {
 	    		type: "post",
-	    		url:"/rs/codes",
+	    		url:"/api/codes",
 	    		contentType: "application/json",
 	    	    processData: false,
 	    		data: JSON.stringify(code),
 	    		success: function( ) {
-	    			window.document.location = "/rs/start.html";
+	    			window.document.location = "/start.html";
 	    		},
 	    		error: function(  jqXHR, textStatus, errorThrown ) {
 	    			if( jqXHR.status == 422 ) {
 	    				error( $jq("#codebtn"), $jq("#code-error") );
+	    			}
+	    			else {
+	    				error( $jq("#codebtn"), $jq("#code-error"), "Er trad een fout op. Probeer AUB opnieuw. Indien de fout blijft optreden, contacteer dan ons secretariaat." );
 	    			}
 	    		}
 	    	});

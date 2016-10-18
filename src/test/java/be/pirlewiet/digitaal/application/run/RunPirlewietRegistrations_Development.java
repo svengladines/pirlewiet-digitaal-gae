@@ -5,10 +5,6 @@ import org.junit.Test;
 import be.occam.test.jtest.JTest;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 
-import com.google.appengine.tools.development.testing.LocalAppIdentityServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
 public class RunPirlewietRegistrations_Development extends JTest {
 	
 	public RunPirlewietRegistrations_Development() {

@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
-import be.pirlewiet.digitaal.domain.exception.ErrorCode;
+import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.CodeRequest;
 import be.pirlewiet.digitaal.model.Organisation;
@@ -79,12 +79,10 @@ public class DoorMan {
 			= this.organisationRepository.findByUuid( uuid );
 		
 		if ( organisatie != null ) {
-			// detach the object
-			organisatie.getAddress().hashCode();
 			return organisatie;
 		}
 		else {
-			throw new PirlewietException( ErrorCode.PWT_UNKNOWN_ACTOR, "unknown actor" );
+			throw new PirlewietException( ErrorCodes.PWT_UNKNOWN_ACTOR );
 		}
 		
 	}
@@ -99,8 +97,6 @@ public class DoorMan {
 		Organisation organisatie
 			= this.organisationRepository.findByUuid( uuid );
 		if ( organisatie != null ) {
-			// detach the object
-			organisatie.getAddress().hashCode();
 			return organisatie;
 		}
 		else {

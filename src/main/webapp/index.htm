@@ -13,13 +13,13 @@
 
     <link rel="icon" href="http://www.pirlewiet.be/digitaal/resources/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
     
-    <link rel="stylesheet" href="http://www.pirlewiet.be/digitaal/resources/theme/css/bootstrap.css">
-    <link rel="stylesheet" href="http://www.pirlewiet.be/digitaal/resources/theme/css/font-awesome.css">
+    <link rel="stylesheet" href="/digitaal/resources/theme/css/bootstrap.css">
+    <link rel="stylesheet" href="/digitaal/resources/theme/css/font-awesome.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://www.pirlewiet.be/digitaal/resources/theme/css/pirlewiet.css">
+    <link rel="stylesheet" href="/digitaal/resources/theme/css/pirlewiet.css">
 
-    <script src="http://www.pirlewiet.be/digitaal/resources/javascript/jquery-1.11.1.js"></script>
-    <script src="http://www.pirlewiet.be/digitaal/resources/theme/js/bootstrap.js"></script>
+    <script src="/digitaal/resources/javascript/jquery-1.11.1.js"></script>
+    <script src="/digitaal/resources/theme/js/bootstrap.js"></script>
     
   </head>
 
@@ -34,7 +34,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</a>
+          <span class="navbar-brand">PIRLEWIET DIGITAAL</span>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
@@ -70,17 +70,17 @@
 		
 		<div class="row centered">
 			<i class="fa fa-leaf"></i>
-			<h1>Voorjaar 2016</h1>
+			<h1>Voorjaar 2017</h1>
 			<br/>
-			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 15 januari 2016 </p>
+			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 15 januari 2017 </p>
 
 		</div>
 		<br>
 		
 		<div class="row centered">
-			<i class="fa fa-sun-o"></i><h1></i>Zomer 2016</h1>
+			<i class="fa fa-sun-o"></i><h1></i>Zomer 2017</h1>
 			<br/>
-			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 1 maart 2016 </p>
+			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 1 maart 2017 </p>
 
 		</div>
 		<br>
@@ -127,13 +127,13 @@
     	var $jq = jQuery.noConflict();
     	
     	$jq("#goon").click( function () {
-    		window.document.location = "http://pirlewiet-digitaal.appspot.com/rs/start.html";
+    		window.document.location = "/start.html";
     	});
 
     	
    		$jq.ajax( {
    			type: "get",
-   			url:"/rs/ping",
+   			url:"/api/ping",
    			success: function( ix ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-success");
    				$jq("#goontext").html("Ga verder");

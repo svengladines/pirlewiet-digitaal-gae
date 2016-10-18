@@ -77,7 +77,6 @@ public class OrganisationManager {
     public OrganisationManager() {
     }
     
-    @Transactional( readOnly=false )
     public Organisation create( Organisation organisation ) {
     	
     	String email
@@ -115,7 +114,6 @@ public class OrganisationManager {
     	
     }
 
-    // @Transactional(readOnly=false)
     public Organisation updateAddress( Organisation organisation, String addressUuid ) {
     	
     	    	
@@ -128,7 +126,6 @@ public class OrganisationManager {
     	
     }
     
-    @Transactional( readOnly=false )
     public Organisation update( String id, Organisation organisation ) {
     	
     	Organisation loaded 
@@ -143,11 +140,11 @@ public class OrganisationManager {
     	}
     	
     	if ( isEmpty( organisation.getEmail() ) ) {
-    		throw new RuntimeException("Geef het e-mailadres van de organisatie op");
+    		throw new RuntimeException("Geef het e-mailadres op");
     	}
     	
     	if ( isEmpty( organisation.getPhone() ) && isEmpty( organisation.getPhone() ) ) {
-    		throw new RuntimeException("Geef ofwel een telefoonnummer ofwel een gsm-nummer op");
+    		throw new RuntimeException("Geef een telefoonnummer op");
     	}
     	
     	loaded.setPhone( organisation.getPhone() );
@@ -174,9 +171,9 @@ public class OrganisationManager {
     	incomplete |= isEmpty( organisation.getName() ) ;
     	incomplete |= isEmpty( organisation.getPhone() ) ;
     	incomplete |= isEmpty( organisation.getEmail() ) ;
-    	if ( checkAddress && ( organisation.getAddressUuid() != null ) ) {
+    	if ( checkAddress ) {
     		
-    		incomplete = ( ! this.addressManager.isComplete( organisation.getAddressUuid() ) ); 
+    		incomplete = ( organisation.getAddressUuid() == null) || ( ! this.addressManager.isComplete( organisation.getAddressUuid() ) ); 
 	    	
     	}
     	
@@ -184,7 +181,6 @@ public class OrganisationManager {
     	
     }
     
-    @Transactional(readOnly=true)
     public Organisation organisation( String id ) {
     	
     	Organisation organisatie

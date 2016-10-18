@@ -4,33 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import be.occam.utils.ftp.FTPClient;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
-import be.pirlewiet.digitaal.domain.Mapper;
-import be.pirlewiet.digitaal.domain.Reducer;
-import be.pirlewiet.digitaal.domain.Viewer;
-import be.pirlewiet.digitaal.domain.people.ApplicationManager;
-import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.CodeMan;
-import be.pirlewiet.digitaal.domain.people.Detacher;
-import be.pirlewiet.digitaal.domain.people.HolidayManager;
+import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.domain.q.QList;
-import be.pirlewiet.digitaal.domain.scenario.ReadyToRockOneScenario;
-import be.pirlewiet.digitaal.domain.scenario.ReadyToRockScenario;
-import be.pirlewiet.digitaal.domain.scenario.SetQuestionsQIDScenario;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
@@ -100,6 +87,11 @@ public class PirlewietApplicationConfig {
 			
 			return new CodeMan();
 			
+		}
+		
+		@Bean
+		AddressManager addressManager() {
+			return new AddressManager();
 		}
 		
 

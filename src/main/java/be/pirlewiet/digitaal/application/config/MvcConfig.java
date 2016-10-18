@@ -12,18 +12,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import be.pirlewiet.digitaal.web.controller.ApplicationController;
-import be.pirlewiet.digitaal.web.controller.CodeRequestsController;
 import be.pirlewiet.digitaal.web.controller.CodesController;
-import be.pirlewiet.digitaal.web.controller.EnrollmentController;
-import be.pirlewiet.digitaal.web.controller.EnrollmentsController;
 import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
-import be.pirlewiet.digitaal.web.controller.PDController;
 import be.pirlewiet.digitaal.web.controller.PageController;
-import be.pirlewiet.digitaal.web.controller.ParticipantController;
 import be.pirlewiet.digitaal.web.controller.PingController;
-import be.pirlewiet.digitaal.web.controller.ScenarioController;
 
 @Configuration
 @EnableWebMvc
@@ -81,6 +74,34 @@ public class MvcConfig {
 			
 		}
 		
+		@Bean
+		public OrganisationController organisationController() {
+			
+			return new OrganisationController();
+			
+		}
+		
+		@Bean
+		public PingController pingController() {
+			
+			return new PingController();
+			
+		}
+		
+		@Bean
+		public PageController pageController() {
+			
+			return new PageController();
+			
+		}
+		
+		@Bean
+		public CodesController codesController() {
+			
+			return new CodesController();
+			
+		}
+		
 		/*
 		
 		@Bean
@@ -112,27 +133,6 @@ public class MvcConfig {
 		}
 		
 		@Bean
-		public PageController pageController() {
-			
-			return new PageController();
-			
-		}
-		
-		@Bean
-		public CodesController codesController() {
-			
-			return new CodesController();
-			
-		}
-		
-		@Bean
-		public OrganisationController organisatieController() {
-			
-			return new OrganisationController();
-			
-		}
-		
-		@Bean
 		public CodeRequestsController codeRequestsController() {
 			return new CodeRequestsController();
 		}
@@ -141,13 +141,6 @@ public class MvcConfig {
 		public ScenarioController scenarioController() {
 			
 			return new ScenarioController();
-			
-		}
-		
-		@Bean
-		public PingController pingController() {
-			
-			return new PingController();
 			
 		}
 		

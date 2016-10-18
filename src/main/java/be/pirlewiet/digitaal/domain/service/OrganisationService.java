@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.service;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
@@ -38,6 +39,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public Result<OrganisationDTO> create(OrganisationDTO dto, Organisation actor) {
 		
 		Result<OrganisationDTO> result
@@ -56,13 +58,34 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
+	@Override
+	@Transactional(readOnly=false)
+	public Result<OrganisationDTO> update(OrganisationDTO dto, Organisation actor) {
+		
+		Result<OrganisationDTO> result
+			= new Result<OrganisationDTO>();
+		
+		Organisation organisation
+			= Organisation.from( dto );
+		
+		Organisation created
+			= this.organisationManager.update( dto.getUuid(), organisation );
+		
+		result.setValue( Value.OK );
+		result.setObject( OrganisationDTO.from( created ) );
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=true)
 	public Result<OrganisationDTO> findOneByUuid( String uuid, Organisation actor ) {
 		
 		Result<OrganisationDTO> result
 			= new Result<OrganisationDTO>();
 		
 		Organisation found 
-			= this.organisationRepository.findByUuid( uuid );
+			= this.organisationManager.organisation( uuid );
 		
 		if ( found == null ) {
 			result.setValue( Value.NOK );
@@ -70,13 +93,20 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		}
 		else {
 			result.setValue( Value.OK );
-			result.setObject( OrganisationDTO.from( found ) );
+			
+			OrganisationDTO dto
+				= OrganisationDTO.from( found );
+			
+			dto.setInComplete( this.organisationManager.isInComplete( found, true ) );
+			
+			result.setObject( dto );
 		}
 		
 		return result;
 		
 	}
 	
+	@Transactional(readOnly=false)
 	public Result<AddressDTO> updateAddress( String uuid, AddressDTO address, Organisation actor ) {
 		
 		Result<AddressDTO> result
@@ -92,7 +122,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		Address updated
 			= this.addressManager.createOrUpdate( Address.from( address ) );
 		
-		this.organisationManager.updateAddress( organisationResult.getObject(), updated.getUuid() );
+		this.organisationManager.updateAddress( Organisation.from( organisationResult.getObject() ), updated.getUuid() );
 		
 		result.setValue( Value.OK );
 		result.setObject( AddressDTO.from( updated ) );
@@ -100,6 +130,5 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		return result;
 		
 	}
-
 	
 }

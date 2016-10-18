@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.web.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 
 public class PirlewietUtil {
@@ -18,6 +19,14 @@ public class PirlewietUtil {
 	
 	public static final String PIRLEWIET_EMAIL 
 		= "info@pirlewiet.be";
+	
+	public static boolean isPirlewiet( OrganisationDTO organisatie ) {
+		if ( organisatie == null ) {
+			return false;
+		}
+		return organisatie.getEmail() == null ? false : organisatie.getEmail().toLowerCase().equals( PIRLEWIET_EMAIL );
+	}
+	
 	
 	public static boolean isPirlewiet( Organisation organisatie ) {
 		if ( organisatie == null ) {

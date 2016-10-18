@@ -2,12 +2,11 @@ var Organisatie = function ( email ) {
 	this.email = email;
 };
 
-var Organisation = function ( id, name, telephone, gsm, email ) {
+var Organisation = function ( id, name, phone, email ) {
 	
 	this.uuid = id;
-	this.naam = name;
-	this.telefoonNummer = telephone;
-	this.gsmNummer = gsm;
+	this.name = name;
+	this.phone = phone;
 	this.email = email;
 	
 };
@@ -20,7 +19,7 @@ var postOrganisation = function ( organisation, button, statusElement, callback 
 
 	$jq.ajax( {
 		type: "post",
-		url: base() + "/rs/organisations",
+		url: base() + "/api/organisations",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
@@ -39,7 +38,7 @@ var putOrganisation = function ( organisation, button, errorElement, callback, c
 
 	$jq.ajax( {
 		type: "put",
-		url: base() + "/rs/organisation",
+		url: base() + "/api/organisation",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
@@ -58,7 +57,7 @@ var putOrganisationAddress = function ( organisation, adres, button, statusEleme
 
 	$jq.ajax( {
 		type: "put",
-		url: base() + "/rs/organisation/adres",
+		url: base() + "/api/organisation/address",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,

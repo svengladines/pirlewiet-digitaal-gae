@@ -14,12 +14,12 @@ var Contact = function ( naam, tel, email ) {
 	
 };
 
-var Adres = function ( zipcode, gemeente, straat, nummer ) {
+var Address = function ( zipcode, city, street, number ) {
 	
 	this.zipCode = zipcode;
-	this.gemeente = gemeente;
-	this.straat = straat;
-	this.nummer = nummer;
+	this.city = city;
+	this.street = street;
+	this.number = number;
 	
 };
 

@@ -1,25 +1,13 @@
 package be.pirlewiet.digitaal.application.run;
 
-import java.util.Date;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.pirlewiet.digitaal.application.config.ConfiguredVakantieRepository;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Participant;
-import be.pirlewiet.digitaal.model.Gender;
-import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-import be.pirlewiet.digitaal.repositories.OrganisatieRepository;
-import be.pirlewiet.digitaal.repositories.PersoonRepository;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -29,19 +17,12 @@ public class DevData {
 		= LoggerFactory.getLogger( this.getClass() );
 
 	@Resource
-	ConfiguredVakantieRepository configuredVakantieRepository;
-	
-	@Resource
-	PersoonRepository persoonRepository;
-	
-	@Resource
-	Secretary secretariaatsMedewerker;
-	
-	@Resource
-	OrganisatieRepository organsiatieRepository;
+	OrganisationRepository organsiationRepository;
 	
 	@PostConstruct
 	public void injectData() {
+		
+		/*
 		
 		Participant lisa
 			= new Participant();
@@ -116,24 +97,20 @@ public class DevData {
 				
 		this.logger.info( "lisa id is [{}]", lisa.getUuid() );
 		}
+		*/
 		
 		{
-			Organisation ocmw
+			Organisation vzwSvekke
 				= new Organisation();
 		
-			ocmw.setNaam("VZW Svekke");
-			ocmw.setCode( "hfu608" );
-			ocmw.setEmail( "sven.gladines@foo.bar" );
-			ocmw.setTelefoonNummer( "016123456" );
-			ocmw.setAdres( new Address() );
-			ocmw.getAdres().setGemeente( "Leuven" );
-			ocmw.getAdres().setStraat( "Oude Markt" );
-			ocmw.getAdres().setZipCode( "3000" );
-			ocmw.getAdres().setNummer("1");
+			vzwSvekke.setName("VZW Svekke");
+			vzwSvekke.setCode( "svk013" );
+			vzwSvekke.setEmail( "sven.gladines@foo.bar" );
+			vzwSvekke.setPhone( "016123456" );
 		
-			ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
-			ocmw.setUuid( KeyFactory.keyToString( ocmw.getKey() ) );
-			this.organsiatieRepository.saveAndFlush( ocmw );
+			vzwSvekke = this.organsiationRepository.saveAndFlush( vzwSvekke );
+			vzwSvekke.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );
+			this.organsiationRepository.saveAndFlush( vzwSvekke );
 		}
 		
 	}

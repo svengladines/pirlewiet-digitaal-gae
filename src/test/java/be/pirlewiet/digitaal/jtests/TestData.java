@@ -1,6 +1,10 @@
 package be.pirlewiet.digitaal.jtests;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 
 public class TestData {
 	
@@ -14,22 +18,25 @@ public class TestData {
 		
 		public static Long IN_lisa_KIKA_1;
 		
+		public static Long OCMW_KEY = 1001L;
+		
 	}
 
+	
 	/*
 	@Resource
-	VakantieRepository vakantieRepository;
+	HolidayRepository vakantieRepository;
+	
 	
 	@Resource
 	PersoonRepository persoonRepository;
 	
 	@Resource
 	Secretary secretariaatsMedewerker;
+	*/
 	
 	@Resource
-	OrganisatieRepository organsiatieRepository;
-	
-	*/
+	OrganisationRepository organsiationRepository;
 	
 	@PostConstruct
 	public void injectData() {
@@ -106,6 +113,15 @@ public class TestData {
 		this.secretariaatsMedewerker.createEnrollment( lisaKika1 );
 		
 			*/
+		
+		Organisation ocmw
+			= new Organisation();
+		
+		ocmw.setUuid( "ocmw" );
+		ocmw.setName("OCMW Leuven");
+		ocmw.setCode( "abc123" );
+		
+		ocmw = this.organsiationRepository.saveAndFlush( ocmw );
 		
 	}
 

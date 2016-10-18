@@ -2,12 +2,16 @@ package be.pirlewiet.digitaal.web.controller;
 
 import static be.occam.utils.spring.web.Controller.response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -15,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.dto.AddressDTO;
 import be.pirlewiet.digitaal.dto.OrganisationDTO;
@@ -32,9 +36,6 @@ public class OrganisationController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
-	
-	@Resource
-	Secretary secretariaatsMedewerker;
 	
 	@Resource
 	OrganisationService organisationService;
@@ -91,38 +92,40 @@ public class OrganisationController {
 		
 	}
 	
-	/*
+	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @CookieValue(required=false, value="pwtid") String pwtid ) {
 		
-		OrganisationDTO organisatie
+		OrganisationDTO organisation
 			= null;
 		
 		if ( pwtid != null ) {
 			
-			ResponseEntity<OrganisationDTO> entity
-				= this.retrieve( pwtid );
-			organisatie = entity.getBody();
+			ResponseEntity<Result<OrganisationDTO>> entity
+				= this.retrieveMine( pwtid );
+			
+			organisation = entity.getBody().getObject();
 			
 		}
 		
-		if ( organisatie == null ) {
-			organisatie = new OrganisationDTO();
+		if ( organisation == null ) {
+			organisation = new OrganisationDTO();
 		}
 		
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		model.put( "organisation", organisatie );
-		model.put( "incomplete", this.organisationService.isInComplete( organisatie, true ) );
+		model.put( "organisation", organisation );
+		model.put( "incomplete", organisation.getInComplete() );
 
 		String view 
-			= be.pirlewiet.digitaal.web.util.PirlewietUtil.isPirlewiet( organisatie) ? "pirlewiet" : "organisation";
+			= be.pirlewiet.digitaal.web.util.PirlewietUtil.isPirlewiet( organisation ) ? "pirlewiet" : "organisation";
 		
 		return new ModelAndView( view, model );	
 		
 	}
 	
+	/*
 	@RequestMapping( value="/{uuid}", method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView viewAsPirlewiet(
 			@CookieValue(required=true, value="pwtid") String pwtid,

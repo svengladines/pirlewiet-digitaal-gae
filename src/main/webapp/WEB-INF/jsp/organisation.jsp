@@ -61,19 +61,13 @@
 			<div class="form-group">
 				<label for="organisation-name" class="col-sm-4 control-label">Naam organisatie (*)</label>
 				<div class="col-sm-3">	
-					<input id="organisation-name" type="text" class="form-control" value="${organisation.naam}"></input>
+					<input id="organisation-name" type="text" class="form-control" value="${organisation.name}"></input>
 				</div>
 			</div>
 			<div class="form-group">
 					<label for="organisation-telefoon" class="col-sm-4 control-label">Telefoonnummer (*)</label>
 					<div class="col-sm-2">
-						<input id="organisation-telephone" type="tel" class="form-control" value="${organisation.telefoonNummer}"></input>
-					</div>
-			</div>
-			<div class="form-group">
-					<label for="organisation-gsm" class="col-sm-4 control-label">GSM-nummer</label>
-					<div class="col-sm-2">
-						<input id="organisation-gsm" type="tel" class="form-control" value="${organisation.gsmNummer}"></input>
+						<input id="organisation-telephone" type="tel" class="form-control" value="${organisation.phone}"></input>
 					</div>
 			</div>
 			<div class="form-group">
@@ -91,25 +85,25 @@
 			<div class="form-group">
 					<label for="adres-zipcode" class="col-sm-4 control-label">Postcode (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-zipcode" type="tel" class="form-control" value="${organisation.adres.zipCode}"></input>
+						<input id="adres-zipcode" type="tel" class="form-control" value="${adress.zipCode}"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="adres-straat" class="col-sm-4 control-label">Gemeente (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-gemeente" type="tel" class="form-control" value="${organisation.adres.gemeente}"></input>
+						<input id="adres-gemeente" type="tel" class="form-control" value="${address.gemeente}"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="adres-straat" class="col-sm-4 control-label">Straat (*)</label>
 					<div class="col-sm-3">
-						<input id="adres-straat" type="tel" class="form-control" value="${organisation.adres.straat}"></input>
+						<input id="adres-straat" type="tel" class="form-control" value="${address.straat}"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-nummer" type="tel" class="form-control" value="${organisation.adres.nummer}"></input>
+						<input id="adres-nummer" type="tel" class="form-control" value="${address.nummer}"></input>
 					</div>
 			</div>
 			<c:if test="${!isPirlewiet}">
@@ -142,19 +136,18 @@
 				= new Organisation( 
 						$jq("#organisation-id").val(),
 						$jq("#organisation-name").val(),
-						$jq("#organisation-telephone").val(),
-						$jq("#organisation-gsm").val(),
-						$jq("#organisation-email").val(),
-						$jq("#organisation-alternative-email").val()
+						$jq("#organisation-phone").val(),
+						$jq("#organisation-email").val()
 						);
 			
-			putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), saveAddress );	
+			// putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), saveAddress );	
+			putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ) );
 			
 		};
 		
 		var saveAddress = function( organisation ) {
 			
-			var a = new Adres( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
+			var a = new Address( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
 			
 			putOrganisationAddress( organisation, a, $jq("#organisation-save" ),$jq("#organisation-status" ), refresh );	
 			
@@ -163,7 +156,7 @@
 		    	
 		$jq("#organisation-save").click( function( event ) {
 			
-			clearError();
+			$jq("#organisation-save").button('loading');
 			
 			$jq(this).button('loading');
 			

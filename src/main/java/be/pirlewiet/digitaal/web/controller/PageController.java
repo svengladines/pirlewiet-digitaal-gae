@@ -51,10 +51,10 @@ public class PageController {
 		if ( "start".equals( page ) ) {
 			
 			if ( this.organisationManager.isInComplete( organisatie, true ) ) {
-				mav.setView( new RedirectView("/rs/organisation.html") );
+				mav.setView( new RedirectView("/api/organisation.html") );
 			}
 			else {
-				mav.setView( new RedirectView("/rs/organisation.html") );
+				mav.setView( new RedirectView("/api/organisation.html") );
 				// mav.setView( new RedirectView("/rs/inschrijvingen.html") );
 			}
 		
