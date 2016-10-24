@@ -17,7 +17,7 @@ import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
-@RequestMapping(value="/{page}.html")
+@RequestMapping(value="/start.html")
 public class PageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( PageController.class );
@@ -29,7 +29,7 @@ public class PageController {
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.GET) 
-	public ModelAndView view( @PathVariable String page, @CookieValue( required = false, value="pwtid" ) String pwtID )  {
+	public ModelAndView view( @CookieValue( required = false, value="pwtid" ) String pwtID )  {
 		
 		ModelAndView mav
 			= new ModelAndView();
@@ -37,30 +37,17 @@ public class PageController {
 		if ( pwtID == null ) {
 			mav.setView( new RedirectView("code.htm") );
 			return mav;
-		} 
-		
-		
-		Organisation organisatie
-			= this.buitenWipper.guard().whoHasID(  pwtID  );	
-		
-		if ( organisatie == null ) {
-			mav.setView( new RedirectView("/code.htm") );
-			return mav;
-		}
-		
-		if ( "start".equals( page ) ) {
-			
-			if ( this.organisationManager.isInComplete( organisatie, true ) ) {
-				mav.setView( new RedirectView("/api/organisation.html") );
-			}
-			else {
-				mav.setView( new RedirectView("/api/organisation.html") );
-				// mav.setView( new RedirectView("/rs/inschrijvingen.html") );
-			}
-		
 		}
 		else {
-			mav.setViewName( page );
+			Organisation organisatie
+				= this.buitenWipper.guard().whoHasID(  pwtID  );	
+		
+			if ( organisatie == null ) {
+				mav.setView( new RedirectView("/code.htm") );
+			}
+			else {
+				mav.setView( new RedirectView("/organisation.html") );
+			}	
 		}
 		
 		return mav;

@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.application.run;
+package be.pirlewiet.digitaal.jtests;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -6,7 +6,9 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repositories.AddressRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
@@ -18,6 +20,9 @@ public class DevData {
 
 	@Resource
 	OrganisationRepository organsiationRepository;
+	
+	@Resource
+	AddressRepository addressRepository;
 	
 	@PostConstruct
 	public void injectData() {
@@ -110,6 +115,17 @@ public class DevData {
 		
 			vzwSvekke = this.organsiationRepository.saveAndFlush( vzwSvekke );
 			vzwSvekke.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );
+			
+			Address vzwSvekkeAddress = new Address();
+			vzwSvekkeAddress.setZipCode( "6000" );
+			vzwSvekkeAddress.setStreet( "Sint-X" );
+			vzwSvekkeAddress.setNumber( "61" );
+			vzwSvekkeAddress = this.addressRepository.saveAndFlush( vzwSvekkeAddress );
+			vzwSvekkeAddress.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );
+			vzwSvekkeAddress = this.addressRepository.saveAndFlush( vzwSvekkeAddress );
+			
+			vzwSvekke.setAddressUuid( vzwSvekkeAddress.getUuid() );
+			
 			this.organsiationRepository.saveAndFlush( vzwSvekke );
 		}
 		

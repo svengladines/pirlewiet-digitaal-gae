@@ -91,19 +91,19 @@
 			<div class="form-group">
 					<label for="adres-straat" class="col-sm-4 control-label">Gemeente (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-gemeente" type="tel" class="form-control" value="${address.gemeente}"></input>
+						<input id="adres-gemeente" type="tel" class="form-control" value="${address.city}"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="adres-straat" class="col-sm-4 control-label">Straat (*)</label>
 					<div class="col-sm-3">
-						<input id="adres-straat" type="tel" class="form-control" value="${address.straat}"></input>
+						<input id="adres-straat" type="tel" class="form-control" value="${address.street}"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-nummer" type="tel" class="form-control" value="${address.nummer}"></input>
+						<input id="adres-nummer" type="tel" class="form-control" value="${address.number}"></input>
 					</div>
 			</div>
 			<c:if test="${!isPirlewiet}">

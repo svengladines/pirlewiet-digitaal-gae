@@ -25,6 +25,10 @@ public class AddressManager {
 		
 	}
 	
+	public Address findOneByUuid( String uuid ) {
+		return this.addressRepository.findByUuid( uuid );
+	}
+	
 	public void checkComplete( String uuid ) {
 		
 		Address address

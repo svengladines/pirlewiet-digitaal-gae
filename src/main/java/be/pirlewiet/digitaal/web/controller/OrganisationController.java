@@ -93,38 +93,6 @@ public class OrganisationController {
 	}
 	
 	
-	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=false, value="pwtid") String pwtid ) {
-		
-		OrganisationDTO organisation
-			= null;
-		
-		if ( pwtid != null ) {
-			
-			ResponseEntity<Result<OrganisationDTO>> entity
-				= this.retrieveMine( pwtid );
-			
-			organisation = entity.getBody().getObject();
-			
-		}
-		
-		if ( organisation == null ) {
-			organisation = new OrganisationDTO();
-		}
-		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-		
-		model.put( "organisation", organisation );
-		model.put( "incomplete", organisation.getInComplete() );
-
-		String view 
-			= be.pirlewiet.digitaal.web.util.PirlewietUtil.isPirlewiet( organisation ) ? "pirlewiet" : "organisation";
-		
-		return new ModelAndView( view, model );	
-		
-	}
-	
 	/*
 	@RequestMapping( value="/{uuid}", method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView viewAsPirlewiet(

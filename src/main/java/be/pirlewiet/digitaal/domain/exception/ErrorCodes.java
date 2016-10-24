@@ -31,5 +31,7 @@ public class ErrorCodes {
 	public static ErrorCode ADDRESS_STREET_MISSING = new ErrorCode("ADDRESS_STREET_MISSING");
 	public static ErrorCode ADDRESS_NUMBER_MISSING = new ErrorCode("ADDRESS_NUMBER_MISSING");
 	public static ErrorCode ADDRESS_ZIPCODE_MISSING = new ErrorCode("ADDRESS_ZIPCODE_MISSING");
+	
+	public static ErrorCode INTERNAL = new ErrorCode("pwtInternal");
 
 }

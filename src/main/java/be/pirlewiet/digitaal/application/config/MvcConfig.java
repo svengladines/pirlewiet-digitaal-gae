@@ -17,6 +17,7 @@ import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.PageController;
 import be.pirlewiet.digitaal.web.controller.PingController;
+import be.pirlewiet.digitaal.web.controller.page.OrganisationPageController;
 
 @Configuration
 @EnableWebMvc
@@ -65,7 +66,24 @@ public class MvcConfig {
 	*/
 	
 	@Configuration
-	public static class ControllerConfig {
+	public static class PageControllerConfig {
+		
+		@Bean
+		public PageController pageController() {
+			
+			return new PageController();
+			
+		}
+		
+		@Bean
+		public OrganisationPageController organisationPageController() {
+			return new OrganisationPageController();
+		}
+		
+	}
+	
+	@Configuration
+	public static class ApiControllerConfig {
 		
 		@Bean
 		public OrganisationsController organisationsController() {
@@ -85,13 +103,6 @@ public class MvcConfig {
 		public PingController pingController() {
 			
 			return new PingController();
-			
-		}
-		
-		@Bean
-		public PageController pageController() {
-			
-			return new PageController();
 			
 		}
 		

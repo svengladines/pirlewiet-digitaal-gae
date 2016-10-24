@@ -94,13 +94,52 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		else {
 			result.setValue( Value.OK );
 			
+			boolean inComplete 
+				= this.organisationManager.isInComplete( found, true );
+			
+			if  (found.getAddressUuid() == null ) {
+				
+				// address is required
+				inComplete = true;
+				
+			}
+			else {
+				
+				inComplete |= this.addressManager.isComplete( uuid );
+				
+			}
+			
 			OrganisationDTO dto
 				= OrganisationDTO.from( found );
 			
-			dto.setInComplete( this.organisationManager.isInComplete( found, true ) );
+			dto.setInComplete( inComplete );
 			
 			result.setObject( dto );
 		}
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<AddressDTO> getAddress( String addressUuid, Organisation actor ) {
+		
+		Result<AddressDTO> result
+			= new Result<AddressDTO>();
+		
+		Address address 
+			= this.addressManager.findOneByUuid( addressUuid );
+		
+		if ( address == null ) {
+			result.setValue( Value.NOK );
+			result.setErrorCode( ErrorCodes.INTERNAL );
+		}
+		else {
+			
+		}
+		
+		result.setValue( Value.OK );
+		result.setObject( AddressDTO.from( address ) );
 		
 		return result;
 		
