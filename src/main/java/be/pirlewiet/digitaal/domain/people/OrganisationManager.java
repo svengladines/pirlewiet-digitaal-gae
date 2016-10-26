@@ -126,25 +126,25 @@ public class OrganisationManager {
     	
     }
     
-    public Organisation update( String id, Organisation organisation ) {
+    public Organisation update( String uuid, Organisation organisation ) {
     	
     	Organisation loaded 
-    		= organisation( id );
+    		= organisation( uuid );
     	
     	if ( loaded == null ) {
     		return null;
     	}
     	
     	if ( isEmpty( organisation.getName() ) ) {
-    		throw new RuntimeException("Geef de naam van de organisatie op");
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_NAME_MISSING );
     	}
     	
     	if ( isEmpty( organisation.getEmail() ) ) {
-    		throw new RuntimeException("Geef het e-mailadres op");
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING );
     	}
     	
-    	if ( isEmpty( organisation.getPhone() ) && isEmpty( organisation.getPhone() ) ) {
-    		throw new RuntimeException("Geef een telefoonnummer op");
+    	if ( isEmpty( organisation.getPhone() ) ) {
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_PHONE_MISSING );
     	}
     	
     	loaded.setPhone( organisation.getPhone() );
@@ -187,7 +187,7 @@ public class OrganisationManager {
     		= this.organisationRepository.findByUuid( id );
     	
     	if ( organisatie != null ) {
-    		logger.info( "found organsiatie with id []", id );
+    		logger.info( "found organsiatiion with id [{}]", id );
     	}
     	
     	return organisatie;

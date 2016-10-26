@@ -35,6 +35,8 @@ var postOrganisation = function ( organisation, button, statusElement, callback 
 };
 
 var putOrganisation = function ( organisation, button, errorElement, callback, callbackParam ) {
+	
+	busyButton( button );
 
 	$jq.ajax( {
 		type: "put",
@@ -44,7 +46,9 @@ var putOrganisation = function ( organisation, button, errorElement, callback, c
 	    processData: false,
 		data: JSON.stringify( organisation ),
 		success: function( jqXHR ) {
-			callback( organisation );
+			if ( callback ) {
+				callback();
+			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			error( button, errorElement );

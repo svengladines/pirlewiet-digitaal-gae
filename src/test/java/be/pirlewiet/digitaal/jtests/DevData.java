@@ -117,9 +117,10 @@ public class DevData {
 			vzwSvekke.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );
 			
 			Address vzwSvekkeAddress = new Address();
-			vzwSvekkeAddress.setZipCode( "6000" );
-			vzwSvekkeAddress.setStreet( "Sint-X" );
-			vzwSvekkeAddress.setNumber( "61" );
+			vzwSvekkeAddress.setZipCode( "3370" );
+			vzwSvekkeAddress.setCity("Neervelp");
+			vzwSvekkeAddress.setStreet( "Vertrijksestraat" );
+			//vzwSvekkeAddress.setNumber( "33" );
 			vzwSvekkeAddress = this.addressRepository.saveAndFlush( vzwSvekkeAddress );
 			vzwSvekkeAddress.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );
 			vzwSvekkeAddress = this.addressRepository.saveAndFlush( vzwSvekkeAddress );

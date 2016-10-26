@@ -57,7 +57,7 @@
 				Velden met een (*) moet je zeker invullen.
 			</p>
 			
-			<input id="organisation-id" type="hidden" value="${organisation.uuid}"></input>
+			<input id="organisation-uuid" type="hidden" value="${organisation.uuid}"></input>
 			<div class="form-group">
 				<label for="organisation-name" class="col-sm-4 control-label">Naam organisatie (*)</label>
 				<div class="col-sm-3">	
@@ -67,7 +67,7 @@
 			<div class="form-group">
 					<label for="organisation-telefoon" class="col-sm-4 control-label">Telefoonnummer (*)</label>
 					<div class="col-sm-2">
-						<input id="organisation-telephone" type="tel" class="form-control" value="${organisation.phone}"></input>
+						<input id="organisation-phone" type="tel" class="form-control" value="${organisation.phone}"></input>
 					</div>
 			</div>
 			<div class="form-group">
@@ -77,33 +77,27 @@
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="organisation-alternative-email" class="col-sm-4 control-label">Alternatief e-mailadres</label>
-					<div class="col-sm-3">
-						<input id="organisation-alternative-email" type="email" class="form-control" value="${organisation.alternativeEmail}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"></input>
-					</div>
-			</div>
-			<div class="form-group">
 					<label for="adres-zipcode" class="col-sm-4 control-label">Postcode (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-zipcode" type="tel" class="form-control" value="${adress.zipCode}"></input>
+						<input id="address-zipcode" type="tel" class="form-control" value="${address.zipCode}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="adres-straat" class="col-sm-4 control-label">Gemeente (*)</label>
+					<label for="adres-city" class="col-sm-4 control-label">Gemeente (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-gemeente" type="tel" class="form-control" value="${address.city}"></input>
+						<input id="address-city" type="text" class="form-control" value="${address.city}"></input>
 					</div>
 			</div>
 			<div class="form-group">
-					<label for="adres-straat" class="col-sm-4 control-label">Straat (*)</label>
+					<label for="adres-street" class="col-sm-4 control-label">Straat (*)</label>
 					<div class="col-sm-3">
-						<input id="adres-straat" type="tel" class="form-control" value="${address.street}"></input>
+						<input id="address-street" type="text" class="form-control" value="${address.street}"></input>
 					</div>
 			</div>
 			<div class="form-group">
 					<label for="adres-nummer" class="col-sm-4 control-label">Huisnummer (*)</label>
 					<div class="col-sm-2">
-						<input id="adres-nummer" type="tel" class="form-control" value="${address.number}"></input>
+						<input id="address-number" type="text" class="form-control" value="${address.number}"></input>
 					</div>
 			</div>
 			<c:if test="${!isPirlewiet}">
@@ -134,20 +128,19 @@
 			
 			var organisation
 				= new Organisation( 
-						$jq("#organisation-id").val(),
+						$jq("#organisation-uuid").val(),
 						$jq("#organisation-name").val(),
 						$jq("#organisation-phone").val(),
 						$jq("#organisation-email").val()
 						);
 			
-			// putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), saveAddress );	
-			putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ) );
+			putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), saveAddress );	
 			
 		};
 		
 		var saveAddress = function( organisation ) {
 			
-			var a = new Address( $jq("#adres-zipcode").val(), $jq("#adres-gemeente").val(), $jq("#adres-straat").val(), $jq("#adres-nummer").val() );
+			var a = new Address( $jq("#address-zipcode").val(), $jq("#address-city").val(), $jq("#address-street").val(), $jq("#address-number").val() );
 			
 			putOrganisationAddress( organisation, a, $jq("#organisation-save" ),$jq("#organisation-status" ), refresh );	
 			
@@ -155,10 +148,6 @@
 		
 		    	
 		$jq("#organisation-save").click( function( event ) {
-			
-			$jq("#organisation-save").button('loading');
-			
-			$jq(this).button('loading');
 			
 			saveOrganisation();
 			

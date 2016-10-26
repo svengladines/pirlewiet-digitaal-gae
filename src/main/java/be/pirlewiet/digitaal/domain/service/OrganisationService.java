@@ -68,11 +68,11 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		Organisation organisation
 			= Organisation.from( dto );
 		
-		Organisation created
+		Organisation updated
 			= this.organisationManager.update( dto.getUuid(), organisation );
 		
 		result.setValue( Value.OK );
-		result.setObject( OrganisationDTO.from( created ) );
+		result.setObject( OrganisationDTO.from( updated ) );
 		
 		return result;
 		
@@ -151,17 +151,18 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		Result<AddressDTO> result
 			= new Result<AddressDTO>();
 		
-		Result<OrganisationDTO> organisationResult
-			= this.findOneByUuid( uuid , actor );
-		
-		if ( ! Value.OK.equals( organisationResult.getValue() ) ) {
-			// TODO
+		Organisation found 
+			= this.organisationManager.organisation( uuid );
+	
+		if ( found == null ) {
+			result.setValue( Value.NOK );
+			result.setErrorCode( ErrorCodes.ORGANISATION_NOT_FOUND );
 		}
 		
 		Address updated
 			= this.addressManager.createOrUpdate( Address.from( address ) );
 		
-		this.organisationManager.updateAddress( Organisation.from( organisationResult.getObject() ), updated.getUuid() );
+		this.organisationManager.updateAddress( found, updated.getUuid() );
 		
 		result.setValue( Value.OK );
 		result.setObject( AddressDTO.from( updated ) );

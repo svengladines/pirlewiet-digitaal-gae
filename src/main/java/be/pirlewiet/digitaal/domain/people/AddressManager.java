@@ -3,9 +3,12 @@ package be.pirlewiet.digitaal.domain.people;
 import static be.occam.utils.javax.Utils.*;
 import javax.annotation.Resource;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.IncompleteObjectException;
 import be.pirlewiet.digitaal.model.Address;
+import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
 
 public class AddressManager {
@@ -18,10 +21,15 @@ public class AddressManager {
 	
 	public Address createOrUpdate( Address address ) {
 		
-		Address created
+		Address saved 
 			= this.addressRepository.saveAndFlush( address );
+	
+		saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+	
+		saved 
+			= this.addressRepository.saveAndFlush( saved );
 		
-		return created;
+		return saved;
 		
 	}
 	
