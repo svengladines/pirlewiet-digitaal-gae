@@ -1,7 +1,8 @@
 package be.pirlewiet.digitaal.jtests.controller;
 
 import static be.occam.utils.javax.Utils.map;
-import static be.occam.utils.spring.web.Client.*;
+import static be.occam.utils.spring.web.Client.getHTML;
+import static be.occam.utils.spring.web.Client.postJSON;
 
 import java.util.Map;
 

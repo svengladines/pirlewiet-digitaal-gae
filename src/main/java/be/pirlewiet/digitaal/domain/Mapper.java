@@ -19,12 +19,12 @@ import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QList;
 import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.Participant;
 import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Participant;
+import be.pirlewiet.digitaal.model.PersonInfo;
 import be.pirlewiet.digitaal.model.QnA;
 import be.pirlewiet.digitaal.model.QnA.Type;
 

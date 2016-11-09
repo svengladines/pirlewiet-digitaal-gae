@@ -33,7 +33,7 @@
 	</logger>
 	
 	<logger name="org.hibernate">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 	
 	<logger name="be.pirlewiet">

@@ -95,7 +95,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			result.setValue( Value.OK );
 			
 			boolean inComplete 
-				= this.organisationManager.isInComplete( found, true );
+				= this.organisationManager.isInComplete( found, false );
 			
 			if  (found.getAddressUuid() == null ) {
 				
@@ -105,7 +105,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			}
 			else {
 				
-				inComplete |= this.addressManager.isComplete( uuid );
+				inComplete |= ( ! this.addressManager.isComplete( uuid ) );
 				
 			}
 			

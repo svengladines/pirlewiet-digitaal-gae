@@ -10,7 +10,6 @@ import be.pirlewiet.digitaal.application.config.ConfiguredVakantieRepository;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-import be.pirlewiet.digitaal.repositories.VakantieRepository;
 
 public class Detacher {
 	

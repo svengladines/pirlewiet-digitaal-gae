@@ -1,15 +1,15 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import static be.occam.utils.javax.Utils.*;
-import javax.annotation.Resource;
+import static be.occam.utils.javax.Utils.isEmpty;
 
-import com.google.appengine.api.datastore.KeyFactory;
+import javax.annotation.Resource;
 
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.IncompleteObjectException;
 import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
+
+import com.google.appengine.api.datastore.KeyFactory;
 
 public class AddressManager {
 	

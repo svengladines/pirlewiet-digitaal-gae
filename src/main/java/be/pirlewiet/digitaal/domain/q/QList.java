@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.model.QnA;
 import be.pirlewiet.digitaal.model.QnA.Type;
+import be.pirlewiet.digitaal.model.Tags;
 
 public class QList {
 	

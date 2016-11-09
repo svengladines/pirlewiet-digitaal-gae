@@ -31,12 +31,12 @@ public class CookieFilter implements Filter {
 				= (HttpServletResponse) response;
 			
 			// unauthenticated requests
-			if ( ( httpRequest.getRequestURI().equals( "/rs/codes" ) )
-					|| ( httpRequest.getRequestURI().equals( "/rs/ping" ) )
-					|| ( httpRequest.getRequestURI().equals( "/rs/coderequests" ) ) 
-					|| ( httpRequest.getRequestURI().equals( "/rs/organisation.html" ) )
-					|| ( httpRequest.getRequestURI().equals( "/rs/organisation/adres" ) )
-					|| ( httpRequest.getRequestURI().equals( "/rs/organisations" ) ) ) {
+			if ( ( httpRequest.getRequestURI().equals( "/api/codes" ) )
+					|| ( httpRequest.getRequestURI().equals( "/api/ping" ) )
+					|| ( httpRequest.getRequestURI().equals( "/api/coderequests" ) ) 
+					|| ( httpRequest.getRequestURI().equals( "/organisation.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/api/organisation/adres" ) )
+					|| ( httpRequest.getRequestURI().equals( "/api/organisations" ) ) ) {
 				chain.doFilter( httpRequest, httpResponse );
 				return;
 			}

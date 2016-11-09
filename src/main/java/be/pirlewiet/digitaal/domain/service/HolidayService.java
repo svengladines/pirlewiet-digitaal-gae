@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
-import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 

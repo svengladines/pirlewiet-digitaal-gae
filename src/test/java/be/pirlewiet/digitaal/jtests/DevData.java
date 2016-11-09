@@ -5,10 +5,14 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.digitaal.model.Address;
+import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
+import be.pirlewiet.digitaal.repositories.ApplicationRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
@@ -22,9 +26,13 @@ public class DevData {
 	OrganisationRepository organsiationRepository;
 	
 	@Resource
+	ApplicationRepository applicationRepository;
+	
+	@Resource
 	AddressRepository addressRepository;
 	
 	@PostConstruct
+	@Transactional(readOnly=false)
 	public void injectData() {
 		
 		/*
@@ -104,10 +112,10 @@ public class DevData {
 		}
 		*/
 		
-		{
-			Organisation vzwSvekke
-				= new Organisation();
+		Organisation vzwSvekke
+			= new Organisation();
 		
+		{
 			vzwSvekke.setName("VZW Svekke");
 			vzwSvekke.setCode( "svk013" );
 			vzwSvekke.setEmail( "sven.gladines@foo.bar" );
@@ -120,15 +128,34 @@ public class DevData {
 			vzwSvekkeAddress.setZipCode( "3370" );
 			vzwSvekkeAddress.setCity("Neervelp");
 			vzwSvekkeAddress.setStreet( "Vertrijksestraat" );
-			//vzwSvekkeAddress.setNumber( "33" );
+			vzwSvekkeAddress.setNumber( "33" );
 			vzwSvekkeAddress = this.addressRepository.saveAndFlush( vzwSvekkeAddress );
 			vzwSvekkeAddress.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );
 			vzwSvekkeAddress = this.addressRepository.saveAndFlush( vzwSvekkeAddress );
 			
 			vzwSvekke.setAddressUuid( vzwSvekkeAddress.getUuid() );
 			
-			this.organsiationRepository.saveAndFlush( vzwSvekke );
+			vzwSvekke = this.organsiationRepository.saveAndFlush( vzwSvekke );
+			
+			logger.info( "VZW Svekke has UUID [{}]", vzwSvekke.getUuid() );
+			
 		}
+		
+		Application applicationOne
+			= new Application();
+		
+		applicationOne.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
+		applicationOne.setOrganisationUuid( vzwSvekke.getUuid() );
+		applicationOne.setYear( 2017 );
+		applicationOne.setReference( "APP123" );
+		
+		applicationOne = this.applicationRepository.saveAndFlush( applicationOne );
+		applicationOne.setUuid( KeyFactory.keyToString( applicationOne.getKey() ) );
+		applicationOne = this.applicationRepository.saveAndFlush( applicationOne );
+		
+		logger.info( "Application One has UUID [{}]", applicationOne.getUuid() );
+		logger.info( "Application One has Organisation [{}]", applicationOne.getOrganisationUuid() );
+		logger.info( "Application One has Year [{}]", applicationOne.getYear() );
 		
 	}
 	

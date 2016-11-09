@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller;
+package be.pirlewiet.digitaal.web.controller.page;
 
 import javax.annotation.Resource;
 
@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,9 +17,9 @@ import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
 @RequestMapping(value="/start.html")
-public class PageController {
+public class StartPageController {
 	
-	private final static Logger logger = LoggerFactory.getLogger( PageController.class );
+	private final static Logger logger = LoggerFactory.getLogger( StartPageController.class );
 	
 	@Resource
 	OrganisationManager organisationManager;

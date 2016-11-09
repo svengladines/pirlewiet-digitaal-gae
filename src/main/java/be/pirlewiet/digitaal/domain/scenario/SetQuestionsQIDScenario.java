@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import be.pirlewiet.digitaal.domain.q.QList;
 import be.pirlewiet.digitaal.model.QnA;
-import be.pirlewiet.digitaal.repositories.VraagRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.Utils;
 

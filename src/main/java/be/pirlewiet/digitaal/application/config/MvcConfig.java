@@ -15,9 +15,11 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import be.pirlewiet.digitaal.web.controller.CodesController;
 import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
-import be.pirlewiet.digitaal.web.controller.PageController;
 import be.pirlewiet.digitaal.web.controller.PingController;
+import be.pirlewiet.digitaal.web.controller.page.ApplicationsPageController;
+import be.pirlewiet.digitaal.web.controller.page.LogoutPageController;
 import be.pirlewiet.digitaal.web.controller.page.OrganisationPageController;
+import be.pirlewiet.digitaal.web.controller.page.StartPageController;
 
 @Configuration
 @EnableWebMvc
@@ -69,15 +71,25 @@ public class MvcConfig {
 	public static class PageControllerConfig {
 		
 		@Bean
-		public PageController pageController() {
+		public StartPageController pageController() {
 			
-			return new PageController();
+			return new StartPageController();
 			
 		}
 		
 		@Bean
 		public OrganisationPageController organisationPageController() {
 			return new OrganisationPageController();
+		}
+		
+		@Bean
+		public ApplicationsPageController applicationsPageController() {
+			return new ApplicationsPageController();
+		}
+		
+		@Bean
+		public LogoutPageController logOutPageController() {
+			return new LogoutPageController();
 		}
 		
 	}

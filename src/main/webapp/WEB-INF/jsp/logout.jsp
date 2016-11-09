@@ -52,7 +52,7 @@
     	
     	$jq.ajax( {
    				type: "delete",
-   				url:"/rs/codes",
+   				url:"/api/codes",
    				success: function( ) {
    						$jq("#inprogress").removeClass("show").addClass("hidden");
    						$jq("#done").removeClass("hidden").addClass("show");

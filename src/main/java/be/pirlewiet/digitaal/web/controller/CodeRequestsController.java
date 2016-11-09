@@ -3,7 +3,6 @@ package be.pirlewiet.digitaal.web.controller;
 import static be.occam.utils.spring.web.Controller.response;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.CodeRequest;
-import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
 @RequestMapping(value="/coderequests")

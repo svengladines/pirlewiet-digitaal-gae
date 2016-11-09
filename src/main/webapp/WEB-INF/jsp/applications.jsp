@@ -50,61 +50,44 @@
 	
 		<div class="row mandatory">
 		
-			<table>
-			<tbody>
+			<span>${applications.value}</span>
+		
+			<c:choose>
 			
-			<c:forEach items="${enrollments}" var="enrollment">
-				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.inschrijvingsdatum}" var="date"></fmt:formatDate>
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.deelnemers[0].geboorteDatum}" var="gd"></fmt:formatDate>
-				
-				<c:if test="${enrollment.reference == null}">
-					</tbody>
+			<c:when test="${applications.value == 'OK'}">
 			
-					</table>
+					<c:forEach items="${applications.object}" var="application">
 					
-					<br/>
-					
-					<table class="table table-bordered table-striped">
-			
-					<thead>
-					</thead>
-					<tbody>
-					
-					<tr>
-						<th scope="row" class="th-row">Inschrijving</th>
-						<td colspan="1">
+						<table class="table table-bordered table-striped">
 						
-							<a href="${pageContext.servletContext.contextPath}/rs/inschrijvingen/${enrollment.uuid}.html" class="btn btn-primary pull-right">Beheer</a>
-						</td>
-					</tr>
-			
-					<tr>
-						<th scope="row" class="th-row" >Vakantie(s)</th>
-						<td colspan="1">
-							<c:forEach items="${enrollment.vakanties}" var="vakantie">
-								${vakantie.naam}<br/>
-							</c:forEach>
-					</tr>
-					<tr>
-						<th scope="row" class="th-row">Contactpersoon</th>
-						<td colspan="1">
-							${enrollment.contactGegevens.name}
-						</td>
-					</tr>
-				</c:if>
+						<thead>
+							<th scope="row" class="th-row">ID</th>
+							<td colspan="1">${application.uuid}</td>
+						</thead>
 							
-					<tr>
-						<th scope="row" class="th-row">Deelnemer</th>
-						<td>${enrollment.deelnemers[0].voorNaam} &nbsp; ${enrollment.deelnemers[0].familieNaam} (${gd})
-						<span class="pull-right text-${enrollment.status.value == 'ACCEPTED' ? 'success' : enrollment.status.value == 'REJECTED' ? 'danger' : 'info' }"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
-					</tr>
-				
-			</c:forEach>
+						<tbody>
+						
+							<tr>
+								<th scope="row" class="th-row">Referentie</th>
+								<td colspan="1">
+									${application.reference}
+								</td>
+							</tr>
+							
+						</tbody>
+						</table>			
+					</c:forEach>
 			
-			<tbody>
-			</tbody>
-			</table>
+				
+			</c:when>
+			
+			<c:otherwise>
+			
+				<span>${applications.result.errorCode}</span>
+			
+			</c:otherwise>
+			
+			</c:choose>
 			
 		</div>	
 		

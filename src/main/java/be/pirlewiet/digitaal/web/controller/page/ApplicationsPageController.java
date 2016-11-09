@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller;
+package be.pirlewiet.digitaal.web.controller.page;
 
 import static be.occam.utils.spring.web.Controller.response;
 
@@ -27,84 +27,69 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import be.occam.utils.spring.web.Result;
 import be.occam.utils.timing.Timing;
-import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.Secretary;
+import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping( {"/applications"} )
-public class ApplicationsController {
+@RequestMapping( {"/applications.html"} )
+public class ApplicationsPageController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
-	Secretary secretary;
+	DoorMan doorMan;
 	
 	@Resource
-	DoorMan buitenWipper;
+	ApplicationService applicationService;
 	
-	@Resource
-	Mapper mapper;
-	
-	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json"} )
-	@ResponseBody
-	public ResponseEntity<List<Application>> query( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		List<Application> applications
-			= new ArrayList<Application>( );
-		
-		Organisation organisation
-			= this.organisation( request, pwtid );
-		
-		applications.addAll( this.secretary.guard().applicationsOfOrganisation( organisation ) );
-		
-		return response( applications, HttpStatus.OK );
-		
-	}
+	/*
 	
 	@RequestMapping( method = { RequestMethod.POST } )
 	@ResponseBody
-	public ResponseEntity<Enrollment> post( @RequestBody Application application, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ResponseEntity<Result<ApplicationDTO>> post( @RequestBody ApplicationDTO application, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		Organisation organisation
-			= this.organisation( request, pwtid );
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
 		
-		inschrijving.setorganisation( organisation );
+		application.setOrganisationUuid( actor.getUuid() );
 		
-		logger.info( "[{}]; request to create application, provided reference [{}]", organisation.getNaam(), inschrijving.getReference() );
+		logger.info( "[{}]; request to create application", actor.getName() );
 		
-		Enrollment aangemaakt
-			= this.secretariaatsMedewerker.guard().createEnrollment( inschrijving );
+		Result<ApplicationDTO> created
+			= this.applicationService.guard().create( application , actor);
 		
-		if ( aangemaakt == null ) {
+		if ( created == null ) {
 			throw new RuntimeException("create failed");
 		}
 		
-		logger.info( "created enrollment with id [{}], reference [{}]", aangemaakt.getUuid(), aangemaakt.getReference() );
+		logger.info( "created enrollment with id [{}]", created.getObject().getUuid() );
 		
-		return response( aangemaakt, HttpStatus.CREATED );
+		return response( created, HttpStatus.CREATED );
 			
 	}
 	
 	@RequestMapping( value="/download", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
-	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) EnrollmentStatus.Value status ) {
+	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) ApplicationStatus.Value status ) {
 		
 
-		Organisation organisation
-			= this.buitenWipper.guard().whoHasID( pwtid  );
+		Organisation actor
+			= this.doorMan.guard().whoHasID( pwtid  );
 		
 		// TODO: check organisation != null
 		List<Enrollment> applications
 			= null;
 		
-		if ( EnrollmentStatus.Value.DRAFT.equals( status ) && ( PirlewietUtil.isPirlewiet( organisation ) ) ) {
+		if ( ApplicationStatus.Value.DRAFT.equals( status ) && ( PirlewietUtil.isPirlewiet( organisation ) ) ) {
 			applications = this.secretariaatsMedewerker.guard().drafts();
 		}
 		else {
@@ -156,52 +141,26 @@ public class ApplicationsController {
 		
 	}
 	
+	*/
+	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		Organisation organisation
-			= this.buitenWipper.guard().whoHasID( pwtid  );
+		Organisation actor
+			= this.doorMan.guard().whoHasID( pwtid  );
 
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 	
-		model.put( "organisation", organisation );
+		model.put( "organisation", actor );
 	
-		if ( PirlewietUtil.isPirlewiet( organisation ) ) {
+		Result<List<ApplicationDTO>> applications 
+				= this.applicationService.guard().query( actor );
 			
-			List<Enrollment> inschrijvingen 
-			= this.secretariaatsMedewerker.guard().applicationsOfOrganisation( organisation );
+		List<Enrollment> enrollments
+			= new LinkedList<Enrollment>();
 		
-			List<Enrollment> enrollments
-				= new LinkedList<Enrollment>();
-		
-			for ( Enrollment enrollment : inschrijvingen ) {
-				
-				List<Enrollment> r
-					= new ArrayList<Enrollment>();
-				
-				r.add( enrollment );
-				
-				List<Enrollment> related
-					= this.secretariaatsMedewerker.guard().findRelated( enrollment, false );
-				
-				if ( related != null ) {
-					r.addAll( related );
-				}
-				
-				enrollments.addAll( r );
-				
-			}
-		
-		model.put( "enrollments", enrollments );
-		
-		}
-		else {
-			List<Enrollment> inschrijvingen 
-				= this.secretariaatsMedewerker.guard().applicationsOfOrganisation( organisation );
-			
-			List<Enrollment> enrollments
-				= new LinkedList<Enrollment>();
+		/*
 			
 			for ( Enrollment enrollment : inschrijvingen ) {
 				
@@ -218,9 +177,13 @@ public class ApplicationsController {
 			
 			model.put( "enrollments", enrollments );	
 		}
+		
+		*/
+		
+		model.put( "applications", applications );
 	
 		String view
-			= PirlewietUtil.isPirlewiet( organisation ) ? "inschrijvingen_pirlewiet" : "inschrijvingen";
+			= "applications";
 		
 		return new ModelAndView( view, model );
 		

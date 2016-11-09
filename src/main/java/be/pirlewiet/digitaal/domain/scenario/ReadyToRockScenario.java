@@ -4,13 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.OrganisatieRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
-
-import com.google.appengine.api.datastore.KeyFactory;
 
 public class ReadyToRockScenario extends Scenario {
 	

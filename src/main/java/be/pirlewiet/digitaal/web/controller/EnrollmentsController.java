@@ -32,8 +32,8 @@ import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller

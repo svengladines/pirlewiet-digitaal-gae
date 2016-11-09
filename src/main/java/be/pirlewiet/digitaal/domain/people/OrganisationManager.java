@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.isEmpty;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -18,7 +19,6 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;

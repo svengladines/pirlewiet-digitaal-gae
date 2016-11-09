@@ -10,13 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.pirlewiet.digitaal.domain.HeadQuarters;
-import be.pirlewiet.digitaal.domain.exception.ErrorCode;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.HolidayRepository;
-import be.pirlewiet.digitaal.web.Result;
-import be.pirlewiet.digitaal.web.Result.Value;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class HolidayManager {

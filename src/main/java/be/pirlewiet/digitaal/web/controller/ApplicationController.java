@@ -29,13 +29,12 @@ import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.Participant;
 import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Participant;
+import be.pirlewiet.digitaal.model.PersonInfo;
 import be.pirlewiet.digitaal.model.QnA;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 

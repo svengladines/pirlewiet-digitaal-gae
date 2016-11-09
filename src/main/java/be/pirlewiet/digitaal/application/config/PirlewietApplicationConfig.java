@@ -2,6 +2,7 @@ package be.pirlewiet.digitaal.application.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,10 +15,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
+import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.CodeMan;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
+import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
@@ -58,6 +61,11 @@ public class PirlewietApplicationConfig {
 			return new OrganisationService();
 		}
 		
+		@Bean
+		ApplicationService applicationService() {
+			return new ApplicationService();
+		}
+		
 	}
 	
 	@Configuration
@@ -92,6 +100,11 @@ public class PirlewietApplicationConfig {
 		@Bean
 		AddressManager addressManager() {
 			return new AddressManager();
+		}
+		
+		@Bean
+		ApplicationManager applicationManager(@Value("${pirlewiet.currentYear}") int currentYear ) {
+			return new ApplicationManager( currentYear );
 		}
 		
 
