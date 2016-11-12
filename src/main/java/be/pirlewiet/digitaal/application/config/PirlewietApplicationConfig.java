@@ -23,6 +23,7 @@ import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Configuration
@@ -207,11 +208,6 @@ public class PirlewietApplicationConfig {
 		}
 		
 		*/
-		
-		@Bean
-		ConfiguredVakantieRepository configuredVakantieRepository() {
-			return new ConfiguredVakantieRepository();
-		}
 		
 	}
 	

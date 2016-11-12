@@ -1,5 +1,7 @@
 package be.pirlewiet.digitaal.jtests;
 
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -10,9 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
+import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Period;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
+import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
+import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
@@ -30,6 +39,12 @@ public class DevData {
 	
 	@Resource
 	AddressRepository addressRepository;
+	
+	@Resource
+	HolidayRepository holidayRepository;
+	
+	@Resource
+	EnrollmentRepository enrollmentRepository;
 	
 	@PostConstruct
 	@Transactional(readOnly=false)
@@ -141,13 +156,30 @@ public class DevData {
 			
 		}
 		
+		Holiday weekendAtBernies
+			= new Holiday();
+		
+		weekendAtBernies.setName( "Weekend at Bernie's");
+		weekendAtBernies.setPeriod( Period.Spring );
+		weekendAtBernies.setType( HolidayType.Kika );
+		weekendAtBernies.setStart( new Date() );
+		weekendAtBernies.setEnd( new Date() );
+		weekendAtBernies.setDeadLine( new Date() );
+		
+		weekendAtBernies = holidayRepository.saveAndFlush( weekendAtBernies );
+		
+		weekendAtBernies.setUuid( KeyFactory.keyToString( weekendAtBernies.getKey() ) );
+		weekendAtBernies = holidayRepository.saveAndFlush( weekendAtBernies );
+		
 		Application applicationOne
 			= new Application();
-		
+	
 		applicationOne.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
 		applicationOne.setOrganisationUuid( vzwSvekke.getUuid() );
 		applicationOne.setYear( 2017 );
 		applicationOne.setReference( "APP123" );
+		applicationOne.setContactPersonName( "Svekke" );
+		applicationOne.setHolidays( weekendAtBernies.getName() );
 		
 		applicationOne = this.applicationRepository.saveAndFlush( applicationOne );
 		applicationOne.setUuid( KeyFactory.keyToString( applicationOne.getKey() ) );
@@ -157,6 +189,17 @@ public class DevData {
 		logger.info( "Application One has Organisation [{}]", applicationOne.getOrganisationUuid() );
 		logger.info( "Application One has Year [{}]", applicationOne.getYear() );
 		
+		Enrollment lisaAtBernies
+			= new Enrollment();
+		
+		lisaAtBernies.setHolidayName( weekendAtBernies.getName() );
+		lisaAtBernies.setStatus( new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
+		lisaAtBernies.setParticipantName( "Lisa" );
+		
+		lisaAtBernies = enrollmentRepository.saveAndFlush( lisaAtBernies );
+		lisaAtBernies.setUuid( KeyFactory.keyToString( lisaAtBernies.getKey() ) );
+		lisaAtBernies = this.enrollmentRepository.saveAndFlush( lisaAtBernies );
+	
 	}
 	
 }

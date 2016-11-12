@@ -50,29 +50,53 @@
 	
 		<div class="row mandatory">
 		
-			<span>${applications.value}</span>
-		
 			<c:choose>
 			
 			<c:when test="${applications.value == 'OK'}">
 			
 					<c:forEach items="${applications.object}" var="application">
 					
-						<table class="table table-bordered table-striped">
+						<table class="table table-bordered">
 						
 						<thead>
-							<th scope="row" class="th-row">ID</th>
-							<td colspan="1">${application.uuid}</td>
+							<tr>
+								<th scope="row" class="th-row">Inschrijving</th>
+								<td colspan="2">
+									<a title="${application.uuid}" href="/rs/inschrijvingen/ahRzfnBpcmxld2lldC1kaWdpdGFhbHIyCxILT3JnYW5pc2F0aWUYgICAwKjN1wsMCxINSW5zY2hyaWp2aW5nWBiAgICAgLmECgw.html" class="btn btn-primary pull-right">Beheer</a>
+								</td>
+							</tr>
 						</thead>
 							
 						<tbody>
 						
 							<tr>
 								<th scope="row" class="th-row">Referentie</th>
-								<td colspan="1">
+								<td colspan="2">
 									${application.reference}
 								</td>
 							</tr>
+							
+							<tr>
+								<th scope="row" class="th-row">Vakantie(s)</th>
+								<td colspan="2">
+									${application.holidays}
+								</td>
+							</tr>
+							
+							<tr>
+								<th scope="row" class="th-row">ContactPersoon</th>
+								<td colspan="2">
+									${application.contactPersonName}
+								</td>
+							</tr>
+							
+							<c:forEach items="${applications.enrollments}" var="application">
+							
+							<tr>
+								<th scope="row" class="th-row" colspan="2">Deelnemer</th>
+							</tr>
+							
+							</c:forEach>
 							
 						</tbody>
 						</table>			
