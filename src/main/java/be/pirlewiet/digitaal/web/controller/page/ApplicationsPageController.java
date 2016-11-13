@@ -2,8 +2,6 @@ package be.pirlewiet.digitaal.web.controller.page;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,25 +17,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import be.occam.utils.spring.web.Result;
-import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.ApplicationStatus;
+import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"/applications.html"} )
@@ -51,6 +43,9 @@ public class ApplicationsPageController {
 	
 	@Resource
 	ApplicationService applicationService;
+	
+	@Resource
+	EnrollmentService enrollmentService;
 	
 	/*
 	
@@ -157,28 +152,16 @@ public class ApplicationsPageController {
 		Result<List<ApplicationDTO>> applications 
 				= this.applicationService.guard().query( actor );
 			
-		List<Enrollment> enrollments
-			= new LinkedList<Enrollment>();
-		
-		/*
+		for ( ApplicationDTO application : applications.getObject() ) {
 			
-			for ( Enrollment enrollment : inschrijvingen ) {
-				
-				enrollments.add( enrollment );
-				
-				List<Enrollment> related
-					= this.secretariaatsMedewerker.guard().findRelated( enrollment, false );
-				
-				if ( related != null ) {
-					enrollments.addAll( related );
-				}
-				
+			Result<List<EnrollmentDTO>> enrollments
+				= this.enrollmentService.guard().query( application.getUuid(), actor );
+			
+			if ( Result.Value.OK.equals( enrollments.getValue() ) ) {
+				application.getEnrollments().addAll( enrollments.getObject() );
 			}
 			
-			model.put( "enrollments", enrollments );	
 		}
-		
-		*/
 		
 		model.put( "applications", applications );
 	

@@ -18,12 +18,13 @@ import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.CodeMan;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
 import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Configuration
@@ -67,6 +68,11 @@ public class PirlewietApplicationConfig {
 			return new ApplicationService();
 		}
 		
+		@Bean
+		EnrollmentService enrollmentService() {
+			return new EnrollmentService();
+		}
+		
 	}
 	
 	@Configuration
@@ -106,6 +112,11 @@ public class PirlewietApplicationConfig {
 		@Bean
 		ApplicationManager applicationManager(@Value("${pirlewiet.currentYear}") int currentYear ) {
 			return new ApplicationManager( currentYear );
+		}
+		
+		@Bean
+		EnrollmentManager enrollmentManager() {
+			return new EnrollmentManager();
 		}
 		
 

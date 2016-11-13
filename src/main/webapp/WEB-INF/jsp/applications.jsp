@@ -90,10 +90,14 @@
 								</td>
 							</tr>
 							
-							<c:forEach items="${applications.enrollments}" var="application">
+							<c:forEach items="${application.enrollments}" var="enrollment">
 							
 							<tr>
-								<th scope="row" class="th-row" colspan="2">Deelnemer</th>
+								<th scope="row" class="th-row">Deelnemer</th>
+								<td colspan="2">
+								<span>${enrollment.participantName}</span>
+								<span class="pull-right text-success"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
+								</td>
 							</tr>
 							
 							</c:forEach>

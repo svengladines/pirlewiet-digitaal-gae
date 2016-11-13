@@ -195,6 +195,7 @@ public class DevData {
 		lisaAtBernies.setHolidayName( weekendAtBernies.getName() );
 		lisaAtBernies.setStatus( new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
 		lisaAtBernies.setParticipantName( "Lisa" );
+		lisaAtBernies.setApplicationUuid( applicationOne.getUuid() );
 		
 		lisaAtBernies = enrollmentRepository.saveAndFlush( lisaAtBernies );
 		lisaAtBernies.setUuid( KeyFactory.keyToString( lisaAtBernies.getKey() ) );
