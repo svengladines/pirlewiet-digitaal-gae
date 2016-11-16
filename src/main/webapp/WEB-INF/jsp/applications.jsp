@@ -62,7 +62,7 @@
 							<tr>
 								<th scope="row" class="th-row">Inschrijving</th>
 								<td colspan="2">
-									<a title="${application.uuid}" href="/rs/inschrijvingen/ahRzfnBpcmxld2lldC1kaWdpdGFhbHIyCxILT3JnYW5pc2F0aWUYgICAwKjN1wsMCxINSW5zY2hyaWp2aW5nWBiAgICAgLmECgw.html" class="btn btn-primary pull-right">Beheer</a>
+									<a title="${application.uuid}" href="/application.html?uuid=${application.uuid}" class="btn btn-primary pull-right">Beheer</a>
 								</td>
 							</tr>
 						</thead>

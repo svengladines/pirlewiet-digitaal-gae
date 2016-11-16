@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.list;
+
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Organisation;
@@ -24,6 +26,9 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	
 	@Resource
 	ApplicationManager applicationManager;
+	
+	@Resource
+	HolidayManager holidayManager;
 	
 	@Override
 	public ApplicationService guard() {
@@ -58,8 +63,32 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 	}
 	
+	@Transactional(readOnly=true)
+	public Result<ApplicationDTO> findOne( String uuid, Organisation actor ) {
+		
+		Result<ApplicationDTO> result
+			= new Result<ApplicationDTO>();
+		
+		Application application
+			= this.guard().applicationManager.findOne( uuid );
+		
+		ApplicationDTO dto
+			= ApplicationDTO.from( application );
+		
+		this.extend( dto );
+		
+		result.setValue( Value.OK );
+		result.setObject( dto );
+		
+		return result;
+		
+	}
+	
 	protected void extend( ApplicationDTO dto ) {
-		// TODO
+		
+		
+		
+		
 	}
 	
 	

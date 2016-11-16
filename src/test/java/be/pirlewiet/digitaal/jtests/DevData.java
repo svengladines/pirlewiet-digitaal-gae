@@ -1,6 +1,8 @@
 package be.pirlewiet.digitaal.jtests;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -159,17 +161,56 @@ public class DevData {
 		Holiday weekendAtBernies
 			= new Holiday();
 		
+		GregorianCalendar bernieStart
+			= new GregorianCalendar();
+		bernieStart.set( Calendar.YEAR, 2017 );
+		bernieStart.set( Calendar.MONTH, 7 );
+		bernieStart.set( Calendar.DAY_OF_MONTH, 1 );
+		
+		GregorianCalendar bernieEnd
+			= new GregorianCalendar();
+		bernieStart.set( Calendar.YEAR, 2017 );
+		bernieStart.set( Calendar.MONTH, 7 );
+		bernieStart.set( Calendar.DAY_OF_MONTH, 15 );
+		
 		weekendAtBernies.setName( "Weekend at Bernie's");
 		weekendAtBernies.setPeriod( Period.Spring );
 		weekendAtBernies.setType( HolidayType.Kika );
-		weekendAtBernies.setStart( new Date() );
-		weekendAtBernies.setEnd( new Date() );
+		weekendAtBernies.setStart( bernieStart.getTime() );
+		weekendAtBernies.setEnd( bernieEnd.getTime() );
 		weekendAtBernies.setDeadLine( new Date() );
 		
 		weekendAtBernies = holidayRepository.saveAndFlush( weekendAtBernies );
 		
 		weekendAtBernies.setUuid( KeyFactory.keyToString( weekendAtBernies.getKey() ) );
 		weekendAtBernies = holidayRepository.saveAndFlush( weekendAtBernies );
+		
+		Holiday weekendAtVernies
+			= new Holiday();
+		
+		GregorianCalendar vernieStart
+			= new GregorianCalendar();
+		vernieStart.set( Calendar.YEAR, 2017 );
+		vernieStart.set( Calendar.MONTH, 7 );
+		vernieStart.set( Calendar.DAY_OF_MONTH, 1 );
+		
+		GregorianCalendar vernieEnd
+			= new GregorianCalendar();
+		vernieStart.set( Calendar.YEAR, 2017 );
+		vernieStart.set( Calendar.MONTH, 7 );
+		vernieStart.set( Calendar.DAY_OF_MONTH, 15 );
+		
+		weekendAtVernies.setName( "Weekend at Vernie's");
+		weekendAtVernies.setPeriod( Period.Spring );
+		weekendAtVernies.setType( HolidayType.Tika );
+		weekendAtVernies.setStart( vernieStart.getTime() );
+		weekendAtVernies.setEnd( vernieEnd.getTime() );
+		weekendAtVernies.setDeadLine( new Date() );
+		
+		weekendAtVernies = holidayRepository.saveAndFlush( weekendAtVernies );
+		
+		weekendAtVernies.setUuid( KeyFactory.keyToString( weekendAtVernies.getKey() ) );
+		weekendAtVernies = holidayRepository.saveAndFlush( weekendAtVernies );
 		
 		Application applicationOne
 			= new Application();

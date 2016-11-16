@@ -35,12 +35,14 @@
 	
 		<br/>
 		<div class="row">
+		
+			<c:set var="application" value="${result.object}" />
 			
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><spring:message code="application.status.${applicationStatus.value}"/></i><br/>
-					<spring:message code="application.status.${applicationStatus.value}.description"/> <br/>
+					<i><fmt:message key="application.status.${application.status.value}"/></i><br/>
+					<fmt:message key="application.status.${application.status.value}.description"/> <br/>
 				</p>
 			</div>
 			
@@ -72,7 +74,7 @@
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
-						<span>${application.contactGegevens.name}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
+						<span>${application.contactPersonName}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -194,46 +196,6 @@
 					</c:choose>	
 		</div>
 						
-			<div id="modal-vakantie" class="modal fade" tabindex="-1" role="dialog">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">			
-							<h2>Vakantie(s)</h2>
-							<p>
-								Selecteer de vakantie(s) waarvoor je wil inschrijven.
-							</p>
-						</div>
-						<div class="modal-body">
-							<c:if test="${empty vakanties}">
-								<p class="text=info">Er is momenteel geen vakantie waar men voor kan inschrijven</p>
-							</c:if>
-							<c:forEach items="${vakanties}" var="vk">
-								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.beginDatum}" var="start"></fmt:formatDate>	
-								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${vk.eindDatum}" var="end"></fmt:formatDate>
-								<c:set var="contains" value="false" />
-								<c:forEach items="${application.vakanties}" var="vakantie">	
-									<c:choose>
-										<c:when test="${vakantie.uuid eq vk.uuid}">
-											<c:set var="contains" value="true" />
-										</c:when>
-									</c:choose>
-									</c:forEach>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" name="vak" class="vakantie" value="${vk.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${vk.naam}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
-										</label>
-									</div>
-							</c:forEach>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
-							<span id ="vakantie-status"></span>
-						</div>
-					</div>
-				</div>	
-			</div>
-		
 			<div id="modal-contact" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -249,9 +211,10 @@
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
 									<div class="col-sm-6">	
-										<input id="contact-name" type="text" class="form-control" value="${application.contactGegevens.name}"></input>
+										<input id="contact-name" type="text" class="form-control" value="${application.contactPersonName}"></input>
 									</div>
 							</div>
+							<!-- 
 							<div class="form-group">
 								<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
 									<div class="col-sm-4">	
@@ -264,6 +227,7 @@
 										<input id="contact-email" type="email" class="form-control" value="${application.contactGegevens.email}"></input>
 									</div>
 							</div>
+							-->
 							</form>
 						</div>
 						<div class="modal-footer">

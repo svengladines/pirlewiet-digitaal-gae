@@ -63,16 +63,6 @@ public class Secretary {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	protected final Comparator<Vakantie> vacationNameComparator
-		= new Comparator<Vakantie>() {
-
-			@Override
-			public int compare(Vakantie o1, Vakantie o2) {
-				return o1.getNaam().compareTo( o2.getNaam() );
-			}
-		
-		};
-		
 
 	protected final Comparator<Application> mostRecentApplications
 			= new Comparator<Application>() {

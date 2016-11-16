@@ -44,6 +44,15 @@ public class ApplicationManager {
 		
 	}
 	
+	public Application findOne( String uuid ) {
+		
+		Application one
+			= this.applicationRepository.findByUuid( uuid );
+		
+		return one;
+		
+	}
+	
 
 }
  

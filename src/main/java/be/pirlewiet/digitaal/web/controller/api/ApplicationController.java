@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller;
+package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
