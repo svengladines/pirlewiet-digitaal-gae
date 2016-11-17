@@ -63,7 +63,7 @@ public class ApplicationPageModalsController {
 			Result<List<HolidayDTO>> holidayResult 
 				= this.holidayService.query( actor );
 			
-			model.put( "holidayResult", holidayResult );
+			model.put( "holidaysResult", holidayResult );
 			
 		}
 		

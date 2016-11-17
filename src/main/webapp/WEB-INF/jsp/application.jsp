@@ -36,7 +36,7 @@
 		<br/>
 		<div class="row">
 		
-			<c:set var="application" value="${result.object}" />
+			<c:set var="application" value="${applicationResult.object}" />
 			
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>

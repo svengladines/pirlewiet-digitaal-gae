@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.domain.people;
 
+import static be.occam.utils.javax.Utils.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -149,6 +150,39 @@ public class HolidayManager {
 	
 		return selected;
     	
+    }
+    
+    public List<Holiday> holidaysFromUUidString( String uuidString ) {
+    	
+    	List<Holiday> holidays
+    		= list();
+    	
+        StringTokenizer tok
+    		= new StringTokenizer( uuidString.trim(), ",", false );
+        
+	    while( tok.hasMoreTokens() ) {
+	    	
+	    	String t
+	    		= tok.nextToken().trim();
+	    	
+	    	if ( t.length() == 0 ) {
+	    		continue;
+	    	}
+	    	
+	    	Holiday v 
+	    		= this.holidayRepository.findByUuid( t ); 
+	
+	    	if ( v != null ) {
+	    		holidays.add ( v );
+	    	}
+	    	else {
+	    		throw new RuntimeException( "no vakantie with id [" + t.trim() + "]" );
+	    	}
+	    	
+	    }
+	    
+	    return holidays;
+	
     }
 
 }

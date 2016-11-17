@@ -79,7 +79,7 @@
 							<tr>
 								<th scope="row" class="th-row">Vakantie(s)</th>
 								<td colspan="2">
-									${application.holidays}
+									${application.holidayNames}
 								</td>
 							</tr>
 							

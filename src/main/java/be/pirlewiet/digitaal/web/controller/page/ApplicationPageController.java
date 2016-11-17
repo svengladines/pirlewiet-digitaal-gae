@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.web.controller.page;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -19,7 +20,9 @@ import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
@@ -31,6 +34,9 @@ public class ApplicationPageController {
 	
 	@Resource
 	ApplicationService applicationService;
+	
+	@Resource
+	HolidayService holidayService;
 	
 	@Resource
 	DoorMan doorMan;
@@ -50,7 +56,7 @@ public class ApplicationPageController {
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		model.put( "result", result );
+		model.put( "applicationResult", result );
 		
 		/*
 		List<Holiday> vakanties

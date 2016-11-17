@@ -15,7 +15,9 @@ import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Service
@@ -52,7 +54,7 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		for ( Application application : applications ) {
 			ApplicationDTO dto
 				= ApplicationDTO.from( application );
-			this.extend( dto );
+			this.extend( dto, application );
 			dtos.add ( dto );
 		}
 		
@@ -75,7 +77,7 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		ApplicationDTO dto
 			= ApplicationDTO.from( application );
 		
-		this.extend( dto );
+		this.extend( dto, application );
 		
 		result.setValue( Value.OK );
 		result.setObject( dto );
@@ -84,9 +86,22 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 	}
 	
-	protected void extend( ApplicationDTO dto ) {
+	protected void extend( ApplicationDTO dto, Application application ) {
 		
+		String holidayString
+			= application.getHolidayUuids();
 		
+		List<Holiday> holidays
+			= this.holidayManager.holidaysFromUUidString( holidayString );
+		
+		for ( Holiday holiday : holidays ) {
+			
+			HolidayDTO holidayDTO
+				= HolidayDTO.from( holiday );
+			
+			dto.getHolidays().add( holidayDTO );
+			
+		}
 		
 		
 	}

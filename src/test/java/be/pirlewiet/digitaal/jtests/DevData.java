@@ -220,7 +220,8 @@ public class DevData {
 		applicationOne.setYear( 2017 );
 		applicationOne.setReference( "APP123" );
 		applicationOne.setContactPersonName( "Svekke" );
-		applicationOne.setHolidays( weekendAtBernies.getName() );
+		applicationOne.setHolidayUuids( weekendAtBernies.getUuid() );
+		applicationOne.setHolidayNames( weekendAtBernies.getName() );
 		
 		applicationOne = this.applicationRepository.saveAndFlush( applicationOne );
 		applicationOne.setUuid( KeyFactory.keyToString( applicationOne.getKey() ) );
