@@ -84,7 +84,7 @@
 							</tr>
 							
 							<tr>
-								<th scope="row" class="th-row">ContactPersoon</th>
+								<th scope="row" class="th-row">Contactpersoon</th>
 								<td colspan="2">
 									${application.contactPersonName}
 								</td>

@@ -68,7 +68,7 @@
 					<c:when test="${applicationContactResult.value != 'OK'}">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
-							<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">Contactpersoon ingeven</a>
+							<a href="javascript:void(0);" class="todo" data-attribute-modal="contact">Contactpersoon ingeven</a>
 						</div>
 					</c:when>
 					<c:otherwise>

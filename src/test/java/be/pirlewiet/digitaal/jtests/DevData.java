@@ -20,11 +20,13 @@ import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Period;
+import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
 import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
+import be.pirlewiet.digitaal.repositories.PersonRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -47,6 +49,9 @@ public class DevData {
 	
 	@Resource
 	EnrollmentRepository enrollmentRepository;
+	
+	@Resource
+	PersonRepository personRepository;
 	
 	@PostConstruct
 	@Transactional(readOnly=false)
@@ -212,6 +217,17 @@ public class DevData {
 		weekendAtVernies.setUuid( KeyFactory.keyToString( weekendAtVernies.getKey() ) );
 		weekendAtVernies = holidayRepository.saveAndFlush( weekendAtVernies );
 		
+		Person bernie
+			= new Person();
+		
+		bernie.setGivenName( "Bernie" );
+		bernie.setFamilyName( "Whatchamacallit" );
+		bernie.setEmail( "bernie@bermuda.com" );
+		
+		bernie = personRepository.saveAndFlush( bernie );
+		bernie.setUuid( KeyFactory.keyToString( bernie.getKey() ) );
+		bernie = this.personRepository.saveAndFlush( bernie );
+		
 		Application applicationOne
 			= new Application();
 	
@@ -222,6 +238,8 @@ public class DevData {
 		applicationOne.setContactPersonName( "Svekke" );
 		applicationOne.setHolidayUuids( weekendAtBernies.getUuid() );
 		applicationOne.setHolidayNames( weekendAtBernies.getName() );
+		applicationOne.setContactPersonName( String.format( "%s %s", bernie.getGivenName(), bernie.getFamilyName() ) );
+		applicationOne.setContactPersonUuid( bernie.getUuid() );
 		
 		applicationOne = this.applicationRepository.saveAndFlush( applicationOne );
 		applicationOne.setUuid( KeyFactory.keyToString( applicationOne.getKey() ) );

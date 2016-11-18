@@ -21,8 +21,10 @@ import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
+import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
@@ -42,6 +44,9 @@ public class ApplicationPageModalsController {
 	DoorMan doorMan;
 	
 	@Resource
+	PersonService personService;
+	
+	@Resource
 	ApplicationManager applicationManager;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
@@ -53,10 +58,10 @@ public class ApplicationPageModalsController {
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		Result<ApplicationDTO> result
+		Result<ApplicationDTO> applicationResult
 			= this.applicationService.findOne( uuid, actor );
 	
-		model.put( "applicationResult", result );
+		model.put( "applicationResult", applicationResult );
 		
 		if ( "holidays".equals( q ) ) {
 			
@@ -64,6 +69,14 @@ public class ApplicationPageModalsController {
 				= this.holidayService.query( actor );
 			
 			model.put( "holidaysResult", holidayResult );
+			
+		}
+		else if ( "contact".equals( q ) ) {
+			
+			Result<PersonDTO> contactResult 
+				= this.personService.retrieve( applicationResult.getObject().getContactPersonUuid() );
+			
+			model.put( "contactResult", contactResult );
 			
 		}
 		

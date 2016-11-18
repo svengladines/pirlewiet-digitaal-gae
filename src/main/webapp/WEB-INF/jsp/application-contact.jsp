@@ -7,6 +7,7 @@
 
 	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 				<c:set value="${applicationResult.object}" var="application"/>
+				<c:set value="${contactResult.object}" var="contact"/>
 				
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -19,26 +20,24 @@
 						</div>
 						<div class="modal-body">
 							<form class="form-horizontal">
-							<div class="form-group">
-								<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
-									<div class="col-sm-6">	
-										<input id="contact-name" type="text" class="form-control" value="${application.contactPersonName}"></input>
-									</div>
-							</div>
-							<!-- 
-							<div class="form-group">
-								<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
-									<div class="col-sm-4">	
-										<input id="contact-phone" type="text" class="form-control" value="${application.contactGegevens.phone}"></input>
-									</div>
-							</div>
-							<div class="form-group">
-								<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
-									<div class="col-sm-3">	
-										<input id="contact-email" type="email" class="form-control" value="${application.contactGegevens.email}"></input>
-									</div>
-							</div>
-							-->
+								<div class="form-group">
+									<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
+										<div class="col-sm-6">	
+											<input id="contact-name" type="text" class="form-control" value="${contact.name}"></input>
+										</div>
+								</div>
+								<div class="form-group">
+									<label for="contact-naam" class="col-sm-4 control-label">Telefoon (*)</label>
+										<div class="col-sm-4">	
+											<input id="contact-phone" type="text" class="form-control" value="${contact.phone}"></input>
+										</div>
+								</div>
+								<div class="form-group">
+									<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
+										<div class="col-sm-3">	
+											<input id="contact-email" type="email" class="form-control" value="${contact.email}"></input>
+										</div>
+								</div>
 							</form>
 						</div>
 						<div class="modal-footer">

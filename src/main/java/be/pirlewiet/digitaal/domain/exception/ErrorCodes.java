@@ -5,11 +5,13 @@ import be.occam.utils.spring.web.ErrorCode;
 public class ErrorCodes {
 	 
 	public static ErrorCode PWT_UNKNOWN_ACTOR = new ErrorCode("pwtUnknownActor");
+	public static ErrorCode PWT_UNKNOWN_PERSON = new ErrorCode("pwtUnknownPerson");
 	
 	public static ErrorCode APPLICATION_NOT_FOUND = new ErrorCode("APPLICATION_NOT_FOUND");
 	public static ErrorCode APPLICATION_HOLIDAY_NONE = new ErrorCode("APPLICATION_HOLIDAY_NONE");
 	public static ErrorCode APPLICATION_HOLIDAY_MIXED = new ErrorCode("APPLICATION_HOLIDAY_MIXED");
 	public static ErrorCode APPLICATION_HOLIDAY_NOT_FOUND = new ErrorCode("APPLICATION_HOLIDAY_NOT_FOUND");
+	public static ErrorCode APPLICATION_CONTACT_MISSING = new ErrorCode("APPLICATION_CONTACT_INCOMPLETE");
 	public static ErrorCode APPLICATION_CONTACT_INCOMPLETE = new ErrorCode("APPLICATION_CONTACT_INCOMPLETE");
 	public static ErrorCode APPLICATION_QLIST_INCOMPLETE = new ErrorCode("APPLICATION_QLIST_INCOMPLETE");
 	public static ErrorCode APPLICATION_NO_ENROLLMENTS = new ErrorCode("APPLICATION_NO_ENROLLMENTS");

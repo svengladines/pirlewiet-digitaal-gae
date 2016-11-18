@@ -22,10 +22,12 @@ import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
+import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
+import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
@@ -80,6 +82,11 @@ public class PirlewietApplicationConfig {
 			return new HolidayService();
 		}
 		
+		@Bean
+		PersonService personService() {
+			return new PersonService();
+		}
+		
 	}
 	
 	@Configuration
@@ -129,6 +136,11 @@ public class PirlewietApplicationConfig {
 		@Bean
 		HolidayManager holidayManager() {
 			return new HolidayManager();
+		}
+		
+		@Bean
+		PersonManager personManager() {
+			return new PersonManager();
 		}
 		
 		@Bean
