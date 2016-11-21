@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
 
@@ -34,6 +33,19 @@ public class EnrollmentManager {
 		// TODO, sort ...
 		
 		return enrollments;
+		
+	}
+	
+	public Enrollment findOneByUuid( String uuid ) {
+		return this.enrollmentRepository.findByUuid( uuid );
+	}
+	
+	public Enrollment template() {
+		
+		Enrollment enrollment 
+			= new Enrollment();
+		
+		return enrollment;
 		
 	}
 	

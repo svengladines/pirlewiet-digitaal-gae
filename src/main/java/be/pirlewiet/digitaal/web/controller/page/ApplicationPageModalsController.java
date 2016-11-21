@@ -20,10 +20,12 @@ import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
@@ -55,8 +57,11 @@ public class ApplicationPageModalsController {
 	@Resource
 	QuestionAndAnswerService questionAndAnswerService;
 	
+	@Resource
+	EnrollmentService enrollmentService;
+	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @RequestParam String uuid, @RequestParam String q, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ModelAndView view( @RequestParam String uuid, @RequestParam String q, @RequestParam(required=false) String enrollmentUuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisation actor
 			= this.doorMan.guard().whoHasID(  pwtid  );
@@ -91,7 +96,24 @@ public class ApplicationPageModalsController {
 			
 			model.put( "qnaResult", qnaResult );
 			
-		}
+		} else if ( "enrollment".equals( q ) ) {
+		
+			Result<EnrollmentDTO> enrollmentResult;
+			
+			if ( enrollmentUuid != null ) {
+				enrollmentResult = this.enrollmentService.findOneByUuid( enrollmentUuid );
+			} else {
+				enrollmentResult = this.enrollmentService.template( );
+			}
+		
+			model.put( "enrollmentResult", enrollmentResult );
+			
+			Result<List<QuestionAndAnswerDTO>> qnaResult 
+				= this.questionAndAnswerService.findByEntityAndTag( enrollmentResult.getObject().getUuid(), Tags.TAG_HISTORY );
+		
+			model.put( "qnaResult", qnaResult );
+		
+	}
 		
 		String view
 			= new StringBuilder("application-").append( q ).toString();

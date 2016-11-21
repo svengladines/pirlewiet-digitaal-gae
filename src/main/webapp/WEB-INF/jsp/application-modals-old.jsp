@@ -333,7 +333,7 @@
 								<label for="deelnemer-geslacht-${enrollment.uuid}" class="col-sm-4 control-label">Geslacht (*)</label>
 								<div class="col-sm-3">
 									<c:choose>
-									<c:when test="${enrollment.deelnemers[0].geslacht eq 'F'}">
+									<c:when test="${enrollment.deelnemers[0].gender eq 'F'}">
 										<div class="checkbox">
 											<label>
 												<input type="radio" name="gender" class="deelnemer-geslacht-${enrollment.uuid}" value="F" checked="checked">&nbsp;Vrouw

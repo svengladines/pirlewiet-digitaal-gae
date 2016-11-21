@@ -100,7 +100,7 @@
 								<div class="col-sm-12 alert alert-warning">
 									<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<span class="">Nog geen deelnemers toegevoegd</span><br/>
-									<a href="#modal-participant-${application.uuid}" class="todo" data-toggle="modal" data-target="#modal-participant-${application.uuid}">Deelnemer toevoegen</a>
+									<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vragenlijst invullen</a>Deelnemer toevoegen</a>
 								</div>
 							</c:when>
 							<c:otherwise>
@@ -126,7 +126,7 @@
 												</div>
 											</div>
 										</c:forEach><br/>
-										<a href="javascript:addParticipant('${application.uuid}');" class="todo">Deelnemer toevoegen</a>									
+										<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>									
 									</div>
 								</div>
 							</c:otherwise>
