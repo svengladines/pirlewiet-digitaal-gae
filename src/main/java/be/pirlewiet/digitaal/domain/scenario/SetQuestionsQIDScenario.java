@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.pirlewiet.digitaal.domain.q.QList;
-import be.pirlewiet.digitaal.model.QnA;
+import be.pirlewiet.digitaal.domain.q.QuestionSheet;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.Utils;
 
@@ -34,21 +34,21 @@ public class SetQuestionsQIDScenario extends Scenario {
 		
 		this.guard();
 		
-		List<QnA> questions
+		List<QuestionAndAnswer> questions
 			= this.questionRepository.findAll();
 		
-		QList templateQuestions
-			= QList.template();
+		QuestionSheet templateQuestions
+			= QuestionSheet.template();
 		
 		int max = 100;
 		int done = 0;
 		int todo = 0;
 		
-		for ( QnA loaded : questions ) {
+		for ( QuestionAndAnswer loaded : questions ) {
 			
 			if ( Utils.isEmpty( loaded.getQID() ) ) {
 				
-				QnA matched
+				QuestionAndAnswer matched
 					= this.matched( loaded , templateQuestions );
 				
 				if ( matched != null ) {
@@ -94,17 +94,17 @@ public class SetQuestionsQIDScenario extends Scenario {
 		
 	}
 	
-	protected QnA matched( QnA key, QList list ) {
+	protected QuestionAndAnswer matched( QuestionAndAnswer key, QuestionSheet list ) {
 		
-		QnA found
+		QuestionAndAnswer found
 			= null;
 		
-		Map<String, List<QnA>> questionsToMatch
+		Map<String, List<QuestionAndAnswer>> questionsToMatch
 			= list.getVragen();
 		
-		for ( List<QnA> l : questionsToMatch.values() ) {
+		for ( List<QuestionAndAnswer> l : questionsToMatch.values() ) {
 			
-			for ( QnA target : l ) {
+			for ( QuestionAndAnswer target : l ) {
 				
 				if ( key.getVraag().equals( target.getVraag() ) ) {
 					found = target;

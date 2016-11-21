@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
@@ -21,12 +22,16 @@ import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Period;
 import be.pirlewiet.digitaal.model.Person;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.QuestionType;
+import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
 import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 import be.pirlewiet.digitaal.repositories.PersonRepository;
+import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -52,6 +57,9 @@ public class DevData {
 	
 	@Resource
 	PersonRepository personRepository;
+	
+	@Resource
+	QuestionAndAnswerRepository questionAndAnswerRepository;
 	
 	@PostConstruct
 	@Transactional(readOnly=false)
@@ -248,6 +256,14 @@ public class DevData {
 		logger.info( "Application One has UUID [{}]", applicationOne.getUuid() );
 		logger.info( "Application One has Organisation [{}]", applicationOne.getOrganisationUuid() );
 		logger.info( "Application One has Year [{}]", applicationOne.getYear() );
+		
+		QuestionAndAnswer qnaOne
+			= new QuestionAndAnswer( QuestionType.Text, Tags.TAG_APPLICATION, QIDs.QID_SHARED_BILL, "Wie betaalt de factuur ?" );
+		qnaOne.setEntityUuid( applicationOne.getUuid() );
+	
+		qnaOne = this.questionAndAnswerRepository.saveAndFlush( qnaOne );
+		qnaOne.setUuid( KeyFactory.keyToString( qnaOne.getKey() ) );
+		qnaOne = this.questionAndAnswerRepository.saveAndFlush( qnaOne ); 
 		
 		Enrollment lisaAtBernies
 			= new Enrollment();

@@ -22,10 +22,13 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.domain.service.PersonService;
+import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
+import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Tags;
 
 @Controller
 @RequestMapping( {"/application-modals.html"} )
@@ -48,6 +51,9 @@ public class ApplicationPageModalsController {
 	
 	@Resource
 	ApplicationManager applicationManager;
+	
+	@Resource
+	QuestionAndAnswerService questionAndAnswerService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @RequestParam String uuid, @RequestParam String q, @CookieValue(required=true, value="pwtid") String pwtid ) {
@@ -77,6 +83,13 @@ public class ApplicationPageModalsController {
 				= this.personService.retrieve( applicationResult.getObject().getContactPersonUuid() );
 			
 			model.put( "contactResult", contactResult );
+			
+		} else if ( "qlist".equals( q ) ) {
+			
+			Result<List<QuestionAndAnswerDTO>> qnaResult 
+				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
+			
+			model.put( "qnaResult", qnaResult );
 			
 		}
 		

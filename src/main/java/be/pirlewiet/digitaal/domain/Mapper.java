@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.q.QIDs;
-import be.pirlewiet.digitaal.domain.q.QList;
+import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
@@ -25,8 +25,8 @@ import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Participant;
 import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.QnA;
-import be.pirlewiet.digitaal.model.QnA.Type;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer.Type;
 
 public class Mapper {
 	
@@ -114,17 +114,17 @@ public class Mapper {
 					
 					// SPORT	SPEL	WANDELEN	FIETSEN	ZWEMMEN	ROKEN	AANDACHTSPUNTEN	GENEESMIDDELEN	FOTO'S	NAAM GEZIN	KEUZE VAKANTIE
 					
-					List<QnA> applicationQuestions
+					List<QuestionAndAnswer> applicationQuestions
 						= application.getVragen();
 					
-					List<QnA> enrollmentQuestions
+					List<QuestionAndAnswer> enrollmentQuestions
 						= application.getVragen();
 					
-					QList appQList
-						= new QList( applicationQuestions );
+					QuestionSheet appQList
+						= new QuestionSheet( applicationQuestions );
 					
-					QList eQList
-						= new QList( enrollmentQuestions );
+					QuestionSheet eQList
+						= new QuestionSheet( enrollmentQuestions );
 					
 					// Q = contact
 					columns.add( antwoord( appQList.getVraag( QIDs.QID_SHARED_CONTACT ) ) );
@@ -299,7 +299,7 @@ public class Mapper {
 		}
 	}
 	
-	protected String antwoord( QnA vraag ) {
+	protected String antwoord( QuestionAndAnswer vraag ) {
 		
 		String antwoord 
 			= "?";

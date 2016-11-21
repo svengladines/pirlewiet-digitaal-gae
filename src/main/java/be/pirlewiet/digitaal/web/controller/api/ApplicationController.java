@@ -35,7 +35,7 @@ import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Participant;
 import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.QnA;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
@@ -172,9 +172,9 @@ public class ApplicationController {
 	
 	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
 	@ResponseBody
-	public ResponseEntity<List<QnA>> questionsUpdate(
+	public ResponseEntity<List<QuestionAndAnswer>> questionsUpdate(
 				@PathVariable String uuid,
-				@RequestBody List<QnA> vragen ) {
+				@RequestBody List<QuestionAndAnswer> vragen ) {
 		
 		ResponseEntity<Enrollment> retrieve
 			= this.retrieve( uuid );

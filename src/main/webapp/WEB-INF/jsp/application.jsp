@@ -79,11 +79,11 @@
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${applicationQuestionListResult.value != 'OK'}">
+					<c:when test="${qnaResult.value != 'OK'}">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 							<span class="">Niet (volledig) ingevuld </span><br/>
-							<a href="#modal-qlist-application" class="todo" data-toggle="modal" data-target="#modal-qlist-application">Vragenlijst invullen</a>
+							<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">Vragenlijst invullen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
