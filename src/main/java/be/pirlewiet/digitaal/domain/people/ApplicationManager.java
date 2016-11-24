@@ -11,6 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
@@ -28,6 +29,9 @@ public class ApplicationManager {
 	
 	@Resource
 	protected ApplicationRepository applicationRepository;
+	
+	@Resource
+	protected HolidayManager holidayManager;
 	
 	public ApplicationManager( int currentYear ) {
 		this.currentYear = currentYear;
@@ -51,6 +55,51 @@ public class ApplicationManager {
 		
 		return one;
 		
+	}
+	
+	public Application updateHolidays( String uuid, List<Holiday> holidays ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Application application
+			= this.findOne( uuid );
+		
+		if ( application != null ) {
+			
+			StringBuilder uuids
+				= new StringBuilder();
+			
+			StringBuilder names
+				= new StringBuilder();
+			
+			for ( int i=0; i < holidays.size(); i++ ) {
+				
+				Holiday holiday = holidays.get( i );
+				
+				uuids.append( holiday.getUuid() );
+				
+				Holiday one
+					= this.holidayManager.findOneByUuid( holiday.getUuid() );
+				
+				logger.info("found holiday [{}], adding...", one.getName() );
+				
+				names.append( one.getName() );
+				
+				if ( i < holidays.size() -1 ) {
+					uuids.append(",");
+					names.append(",");
+				}
+				
+			}
+			
+			application.setHolidayUuids( uuids.toString() );
+			application.setHolidayNames( names.toString() );
+			
+			application = this.applicationRepository.saveAndFlush( application );
+			
+		}
+		
+		return application;
 	}
 	
 

@@ -16,6 +16,7 @@ import be.pirlewiet.digitaal.web.controller.CodesController;
 import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.PingController;
+import be.pirlewiet.digitaal.web.controller.api.ApplicationController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageModalsController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationsPageController;
@@ -135,6 +136,11 @@ public class MvcConfig {
 			
 			return new CodesController();
 			
+		}
+		
+		@Bean
+		public ApplicationController applicationController() {
+			return new ApplicationController();
 		}
 		
 		/*

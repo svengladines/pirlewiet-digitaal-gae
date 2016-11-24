@@ -184,5 +184,11 @@ public class HolidayManager {
 	    return holidays;
 	
     }
+    
+    public Holiday findOneByUuid( String uuid ) {
+    	
+    	return this.holidayRepository.findByUuid( uuid );
+	
+    }
 
 }

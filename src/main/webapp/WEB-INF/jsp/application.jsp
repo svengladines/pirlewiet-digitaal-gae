@@ -211,18 +211,6 @@
     		$jq("#" + id ).removeClass("hidden").addClass("show");
     	};
     	
-		var saveVakanties = function( id ) {
-			var list
-				= "";
-			$jq( ".vakantie:checked" ).each( function( index, element ) {
-				if ( list.length > 0 ) {
-					list = list.concat(",");
-				}
-				list = list.concat( element.value );	
-			});
-			putVakanties ( id, list, $jq("#vakantie-save"),$jq("#vakantie-status" ), refresh );
-		};
-		
 		var saveContact = function( id ) {
 			var c = new Contact( $jq("#contact-name").val(), $jq("#contact-phone").val(), $jq("#contact-email").val() );
 			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ), refresh );
@@ -315,23 +303,37 @@
 			
 		};
 		
+		var saveHolidays = function( id ) {
+			var holidays
+				= new Array();
+			$jq( ".holiday:checked" ).each( function( index, element ) {
+				holidays.push( new Holiday( element.value ) );
+			});
+			putHolidays ( id, holidays, $jq("#holiday-save"),$jq("#holiday-status" ), refresh );
+		};
+		
 		var refresh = function( ) {
 			window.location.hash="";
 			window.location.reload();
 		};
     	
-		$jq("#vakantie-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveVakanties( "${application.uuid}" );
-			
-		});
-		
 		$jq(".todo").click( function( event ) {
 			
-			$jq("#modal").load( "/application-modals.html?uuid=${application.uuid}&q=" + $jq(this).attr("data-attribute-modal") );
+			$jq("#modal").load( "/application-modals.html?uuid=${application.uuid}&q=" + $jq(this).attr("data-attribute-modal"),
+					function() {
+				
+				$jq("#holiday-save").click( function( event ) {
+					
+					clearStatus();
+					$jq(this).button('Even geduld...');
+					
+					saveHolidays( "${application.uuid}" );
+					
+				});
+				
+			});
+			
+			
 			
 			$jq("#modal").modal();
 			

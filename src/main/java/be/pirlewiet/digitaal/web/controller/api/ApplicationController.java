@@ -2,70 +2,66 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import be.pirlewiet.digitaal.domain.exception.PirlewietException;
+import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Participant;
-import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping( {"/inschrijvingen/{uuid}"} )
+@RequestMapping( {"/applications/{uuid}"} )
 public class ApplicationController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	protected final Comparator<Enrollment> firstName
-			= new Comparator<Enrollment>() {
-
-			@Override
-			public int compare(Enrollment o1, Enrollment o2) {
-				return o1.getDeelnemers().get(0).getVoorNaam().compareTo(  o1.getDeelnemers().get(0).getVoorNaam() );
-			}
-			
-			
-		
-		};
+	@Resource
+	ApplicationService applicationService;
 	
 	@Resource
-	Secretary secretariaatsMedewerker;
-	
-	@Resource
-	DoorMan buitenWipper;
+	DoorMan doorMan;
 	
 	@Resource
 	ApplicationManager intaker;
 	
+	@RequestMapping( value="/holidays", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Result<ApplicationDTO>> updateHolidays(
+				@PathVariable String uuid,
+				@RequestBody List<HolidayDTO> holidays,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		Result<ApplicationDTO> x 
+			= this.applicationService.guard().updateHolidays( uuid, holidays, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
+	
+	/*
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
 	@ResponseBody
 	public ResponseEntity<Enrollment> retrieve( @PathVariable String uuid ) {
@@ -96,22 +92,9 @@ public class ApplicationController {
 	@RequestMapping( method = { RequestMethod.DELETE } )
 	public ResponseEntity<Enrollment> delete( @PathVariable String uuid ) {
 		
-		this.secretariaatsMedewerker.guard().deleteEnrollment( uuid );
+		// this.secretariaatsMedewerker.guard().deleteEnrollment( uuid );
 		
 		return response( HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/vakanties", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<String> updateVakanties(
-				@PathVariable String uuid,
-				@RequestBody String vakanties ) {
-		
-		Enrollment x 
-			= this.secretariaatsMedewerker.guard().updateVakanties( uuid, vakanties );
-		
-		return response( vakanties, HttpStatus.OK );
 		
 	}
 	
@@ -121,7 +104,7 @@ public class ApplicationController {
 				@PathVariable String uuid,
 				@RequestBody PersonInfo contactGegevens ) {
 		
-		this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
+		// this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
 		
 		return response( contactGegevens, HttpStatus.OK );
 		
@@ -278,5 +261,6 @@ public class ApplicationController {
 		return new ModelAndView( view, model );
 		
 	}
+	*/
 	
 }

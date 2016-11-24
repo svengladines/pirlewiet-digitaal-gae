@@ -5,11 +5,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public abstract class Service<D,O> {
+	
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
 	DataGuard dataGuard;

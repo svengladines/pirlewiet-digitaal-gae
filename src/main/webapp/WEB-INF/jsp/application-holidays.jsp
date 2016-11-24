@@ -37,18 +37,17 @@
 									</c:forEach>
 									<div class="checkbox">
 										<label>
-											<input type="checkbox" name="vak" class="vakantie" value="${h.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${h.name}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
+											<input type="checkbox" name="vak" class="holiday" value="${h.uuid}" ${contains == true ? "checked='checked'" : ""}>&nbsp;${h.name}&nbsp;&nbsp;&nbsp;(${start} t.e.m. ${end})
 										</label>
 									</div>
 							</c:forEach>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="vakantie-save" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
-							<span id ="vakantie-status"></span>
+							<button type="button" id="holiday-save" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<span id ="holiday-status"></span>
 						</div>
 					</div>
-				</div>	
-
-
+				</div>
+				
   </fmt:bundle>

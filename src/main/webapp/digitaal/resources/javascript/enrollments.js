@@ -6,6 +6,10 @@ var Inschrijving = function ( reference ) {
 	
 };
 
+var Holiday = function( uuid ) {
+	this.uuid = uuid;
+};
+
 var Contact = function ( naam, tel, email ) {
 	
 	this.name = naam;
@@ -203,18 +207,18 @@ var putAddress = function ( inschrijving, adres, button, statusElement, callback
 	
 };
 
-var putVakanties = function ( inschrijving, vakanties, button, statusElement, callback ) {
+var putHolidays = function ( application, holidays, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/vakanties",
+		url:"/api/applications/" + application + "/holidays",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
-		data: JSON.stringify( vakanties ),
+		data: JSON.stringify( holidays ),
 		success: function( returned ) {
 			if ( callback ) {
-				callback( inschrijving );
+				callback( application );
 			}
 			else {
 				success( button, statusElement, "Opgeslagen" );

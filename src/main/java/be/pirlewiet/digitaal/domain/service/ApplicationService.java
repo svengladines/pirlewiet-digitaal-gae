@@ -86,6 +86,35 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 	}
 	
+	@Transactional(readOnly=false)
+	public Result<ApplicationDTO> updateHolidays ( String uuid, List<HolidayDTO> holidays, Organisation actor ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Result<ApplicationDTO> result
+			= new Result<ApplicationDTO>();
+		
+		List<Holiday> holidayz
+			= list();
+		
+		for ( HolidayDTO dto : holidays ) {
+			
+			Holiday holiday 
+				=  Holiday.from( dto );
+			
+			holidayz.add( holiday );
+		}
+		
+		Application updated
+			= this.applicationManager.updateHolidays( uuid, holidayz );
+		
+		result.setValue( Value.OK );
+		result.setObject( ApplicationDTO.from( updated ) );
+		
+		return result;
+		
+	}
+	
 	protected void extend( ApplicationDTO dto, Application application ) {
 		
 		String holidayString
