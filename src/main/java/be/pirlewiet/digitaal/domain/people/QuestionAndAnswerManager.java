@@ -23,9 +23,24 @@ public class QuestionAndAnswerManager {
     	
     }
     
+    public QuestionAndAnswer findOneByUuid( String uuid ) {
+    	return this.questionAndAnswerRepository.findOneByUuid( uuid );
+    }
+    
     public List<QuestionAndAnswer> findByEntityAndTag( String entityUuid, String tag ) {
     	
     	return this.questionAndAnswerRepository.findByEntityUuidAndTag( entityUuid, tag );
+    	
+    }
+    
+    public QuestionAndAnswer update( QuestionAndAnswer toUpdate, QuestionAndAnswer update ) {
+    	
+    	// currently only update answer
+    	toUpdate.setAnswer( update.getAnswer() );
+    	
+    	toUpdate = this.questionAndAnswerRepository.saveAndFlush( toUpdate );
+    	
+    	return toUpdate;
     	
     }
     

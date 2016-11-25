@@ -1,37 +1,14 @@
 package be.pirlewiet.digitaal.domain;
 
-import static be.pirlewiet.digitaal.web.util.Utils.isEmpty;
-
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import be.occam.utils.timing.Timing;
-import be.pirlewiet.digitaal.domain.q.QIDs;
-import be.pirlewiet.digitaal.domain.q.QuestionSheet;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Participant;
-import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer.Type;
 
 public class Mapper {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
+	
+	/*
 	
 	public List<String[]> asStrings( Enrollment application, Collection<Enrollment> related, EnrollmentStatus.Value status ) {
 		
@@ -342,5 +319,7 @@ public class Mapper {
 		// return vraag.getVraag();
 		
 	}
+	
+	*/
 	
 }

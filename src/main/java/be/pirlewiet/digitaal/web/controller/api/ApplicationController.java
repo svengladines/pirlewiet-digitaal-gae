@@ -24,6 +24,8 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.PersonDTO;
+import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
@@ -60,6 +62,46 @@ public class ApplicationController {
 		return response( x, HttpStatus.OK );
 		
 	}
+	
+	@RequestMapping( value="/contact", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Result<ApplicationDTO>> updateContact(
+				@PathVariable String uuid,
+				@RequestBody PersonDTO contact,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("application.updateContact");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		Result<ApplicationDTO> x 
+			= this.applicationService.guard().updateContact( uuid, contact, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
+	
+	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Result<ApplicationDTO>> updateQList(
+				@PathVariable String uuid,
+				@RequestBody List<QuestionAndAnswerDTO> qList ,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("application.updateQList");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		Result<ApplicationDTO> x 
+			= this.applicationService.guard().updateQList ( uuid, qList, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
+	
+	
 	
 	/*
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )

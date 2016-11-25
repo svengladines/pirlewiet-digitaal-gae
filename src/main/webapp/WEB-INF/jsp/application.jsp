@@ -37,6 +37,7 @@
 		<div class="row">
 		
 			<c:set var="application" value="${applicationResult.object}" />
+			<c:set var="questionList" value="${applicationQuestionListResult.object}" />
 			
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
@@ -49,23 +50,21 @@
 		</div>
 			<div class="row">
 				<c:choose>
-					<c:when test="${applicationHolidaysResult.value != 'OK'}">
+					<c:when test="${application.holidayNames == null }">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
-							<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">Vakantie selecteren</a>
+							<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">Vakantie(s) selecteren</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
-						<c:forEach items="${application.vakanties}" var="vakantie">
-							<span>${vakantie.naam}</span>&nbsp;(<a href="#modal-vakantie" class="todo" data-toggle="modal">wijzigen</a>)<br/>
-						</c:forEach>
+							<span>${application.holidayNames}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">Wijzigen</a>)<br/>
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${applicationContactResult.value != 'OK'}">
+					<c:when test="${application.contactPersonName == null }">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
 							<a href="javascript:void(0);" class="todo" data-attribute-modal="contact">Contactpersoon ingeven</a>
@@ -74,22 +73,22 @@
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
-						<span>${application.contactPersonName}</span>&nbsp;(<a href="#modal-contact" class="todo" data-toggle="modal" data-target="#modal-contact">wijzigen</a>)
+						<span>${application.contactPersonName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="contact">Wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${qnaResult.value != 'OK'}">
+					<c:when test="${applicationQuestionListResult.value != 'OK'}">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 							<span class="">Niet (volledig) ingevuld </span><br/>
-							<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">Vragenlijst invullen</a>
+							<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">Vragenlijst invullen/aanvullen</a>
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
-							<span>Ingevuld</span>&nbsp;(<a href="#modal-qlist-application" class="todo" data-toggle="modal" data-target="#modal-qlist-application">wijzigen</a>)
+							<span>Ingevuld</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -212,7 +211,7 @@
     	};
     	
 		var saveContact = function( id ) {
-			var c = new Contact( $jq("#contact-name").val(), $jq("#contact-phone").val(), $jq("#contact-email").val() );
+			var c = new Contact( $jq("#contact-uuid").val(), $jq("#contact-given-name").val(), $jq("#contact-family-name").val(), $jq("#contact-phone").val(), $jq("#contact-email").val() );
 			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ), refresh );
 		};
 		
@@ -268,15 +267,15 @@
 			var list
 				= [];
 			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
-				list.push( new Vraag( element.name, tag, element.attributes["data-q"], element.value ) );
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
 			});
 			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
-				list.push( new Vraag( element.id, tag, element.attributes["data-q"], element.value ) );
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
 			});
 			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
-				list.push( new Vraag( element.id, tag, element.attributes["data-q"], element.value ) );
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
 			});
-			putVragen ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
+			putQList ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
 		};
 		
 		var saveStatus = function( id, value ) {
@@ -331,6 +330,24 @@
 					
 				});
 				
+				$jq("#contact-save").click( function( event ) {
+					
+					clearStatus();
+					$jq(this).button('Even geduld...');
+					
+					saveContact( "${application.uuid}" );
+					
+				});
+				
+				$jq("#q-save-application").click( function( event ) {
+					
+					clearStatus();
+					$jq(this).button('Even geduld...');
+					
+					saveQList( "${application.uuid}", "application" );
+					
+				});
+				
 			});
 			
 			
@@ -339,23 +356,6 @@
 			
 		});
 		
-		$jq("#contact-save").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveContact( "${application.uuid}" );
-			
-		});
-		
-		$jq("#q-save-application").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveQList( "${application.uuid}", "application" );
-			
-		});
 		
 		$jq(".btn-save-medic").click( function( event ) {
 			

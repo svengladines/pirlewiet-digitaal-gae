@@ -19,7 +19,6 @@
 						<form class="form-horizontal">
 						
 						<c:forEach items="${qna}" var="question">
-						tag:${question.tag}
 								<c:if test="${question.tag eq 'application'}">
 									<div class="form-group">
 										<label class="col-sm-6 control-label">${question.question} (*)</label>

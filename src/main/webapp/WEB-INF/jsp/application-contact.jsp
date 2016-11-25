@@ -20,10 +20,17 @@
 						</div>
 						<div class="modal-body">
 							<form class="form-horizontal">
+								<input type="hidden" id="contact-uuid" value="${contact.uuid}">
+								<div class="form-group">
+									<label for="contact-naam" class="col-sm-4 control-label">Voornaam (*)</label>
+										<div class="col-sm-6">	
+											<input id="contact-given-name" type="text" class="form-control" value="${contact.givenName}"></input>
+										</div>
+								</div>
 								<div class="form-group">
 									<label for="contact-naam" class="col-sm-4 control-label">Naam (*)</label>
 										<div class="col-sm-6">	
-											<input id="contact-name" type="text" class="form-control" value="${contact.name}"></input>
+											<input id="contact-family-name" type="text" class="form-control" value="${contact.familyName}"></input>
 										</div>
 								</div>
 								<div class="form-group">
@@ -34,7 +41,7 @@
 								</div>
 								<div class="form-group">
 									<label for="contact-naam" class="col-sm-4 control-label">E-mail (*)</label>
-										<div class="col-sm-3">	
+										<div class="col-sm-6">	
 											<input id="contact-email" type="email" class="form-control" value="${contact.email}"></input>
 										</div>
 								</div>

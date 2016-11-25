@@ -24,6 +24,7 @@ import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
+import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
@@ -153,6 +154,11 @@ public class PirlewietApplicationConfig {
 		@Bean
 		QuestionAndAnswerManager questionAndAnswerManager() {
 			return new QuestionAndAnswerManager();
+		}
+		
+		@Bean
+		Secretary secretary() {
+			return new Secretary();
 		}
 		
 		@Bean

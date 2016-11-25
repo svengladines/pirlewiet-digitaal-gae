@@ -17,13 +17,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import be.occam.utils.spring.web.Result;
+import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
+import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Tags;
 
 @Controller
 @RequestMapping( {"application.html"} )
@@ -44,19 +48,30 @@ public class ApplicationPageController {
 	@Resource
 	ApplicationManager applicationManager;
 	
+	@Resource
+	QuestionAndAnswerService questionAndAnswerService;
+	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @RequestParam String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisation actor
 			= this.doorMan.guard().whoHasID(  pwtid  );
 		
-		Result<ApplicationDTO> result
+		Result<ApplicationDTO> applicationResult
 			= this.applicationService.findOne( uuid, actor );
 		
 		Map<String,Object> model
 			= new HashMap<String,Object>();
 		
-		model.put( "applicationResult", result );
+		model.put( "applicationResult", applicationResult );
+		
+		if ( Value.OK.equals( applicationResult.getValue() ) ) {
+			
+			Result<List<QuestionAndAnswerDTO>> qnaResult 
+				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
+			
+			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( applicationResult.getObject(), qnaResult.getObject() ) );			
+		}
 		
 		/*
 		List<Holiday> vakanties
@@ -65,7 +80,6 @@ public class ApplicationPageController {
 		model.put( "vakanties", vakanties );
 		model.put( "applicationHolidaysResult", this.secretariaatsMedewerker.guard().checkApplicationHolidaysStatus( application ) );
 		model.put( "applicationContactResult", this.secretariaatsMedewerker.guard().checkApplicationContactStatus( application ) );
-		model.put( "applicationQuestionListResult", this.secretariaatsMedewerker.guard().checkApplicationQuestionList( application ) );
 		model.put( "enrollmentsStatus", this.secretariaatsMedewerker.guard().checkEnrollmentsStatus( application ) );
 		model.put( "related", this.secretariaatsMedewerker.guard().findRelated( application, true) );
 		

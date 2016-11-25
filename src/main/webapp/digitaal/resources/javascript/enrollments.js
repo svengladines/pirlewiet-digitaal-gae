@@ -10,9 +10,11 @@ var Holiday = function( uuid ) {
 	this.uuid = uuid;
 };
 
-var Contact = function ( naam, tel, email ) {
+var Contact = function ( uuid, givenName, familyName, tel, email ) {
 	
-	this.name = naam;
+	this.uuid = uuid;
+	this.givenName = givenName;
+	this.familyName = familyName;
 	this.phone = tel;
 	this.email = email;
 	
@@ -40,12 +42,11 @@ var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm,
 	
 };
 
-var Vraag = function ( id, tag, vraag, antwoord ) {
+var QuestionAndAnswer = function ( uuid, tag, answer ) {
 	
-	this.uuid = id;
+	this.uuid = uuid;
 	this.tag = tag;
-	this.vraag = vraag;
-	this.antwoord = antwoord;
+	this.answer = answer;
 	
 };
 
@@ -63,11 +64,11 @@ var Status = function ( value, comment, email ) {
 };
 
 
-var viewInschrijving = function( index, inschrijving ) {
+var viewInschrijving = function( index, application ) {
 	
-	var vakantie = inschrijving.vakantie;
+	var vakantie = application.vakantie;
 	
-	var html = _.template( contemplate("inschrijving-row"), inschrijving );
+	var html = _.template( contemplate("application-row"), application );
 	// var html = "x";
 	
 	$jq("tbody[data-vakantie$='" + vakantie.uuid + "']" ).append( html );
@@ -78,10 +79,10 @@ var retrieveInschrijving = function ( id ) {
 
 	$jq.ajax( {
 		type: "get",
-		url:"/rs/inschrijvingen/" + id,
+		url:"/api/applications/" + id,
 		dataType: "json",
 		success: function( ix ) {
-				inschrijving = ix;
+				application = ix;
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			//alert( errorThrown );
@@ -94,10 +95,10 @@ var retrieveInschrijvingen = function ( ) {
 
 	$jq.ajax( {
 		type: "get",
-		url:"/rs/inschrijvingen",
+		url:"/api/applications",
 		dataType: "json",
-		success: function( inschrijvingen ) {
-				$jq.each( inschrijvingen, viewInschrijving );
+		success: function( applications ) {
+				$jq.each( applications, viewInschrijving );
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
 			// alert( errorThrown );
@@ -110,21 +111,21 @@ var postEnrollment = function ( rx, reference, callback ) {
 
 	$jq.ajax( {
 		type: "post",
-		url:"/rs/inschrijvingen",
+		url:"/api/applications",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify(rx),
-		success: function( inschrijving ) {
+		success: function( application ) {
 				if ( reference == null ) {
-					window.location.href = "/rs/inschrijvingen/" + inschrijving.uuid + ".html";
+					window.location.href = "/api/applications/" + application.uuid + ".html";
 				}
 				else {
 					if ( callback ) {
-						callback( inschrijving.uuid, inschrijving.deelnemers[0].uuid );
+						callback( application.uuid, application.deelnemers[0].uuid );
 					}
 					else {
-						window.location.href = "/rs/inschrijvingen/" + reference + ".html";
+						window.location.href = "/api/applications/" + reference + ".html";
 					}
 				}
 		},
@@ -135,18 +136,18 @@ var postEnrollment = function ( rx, reference, callback ) {
 	
 };
 
-var putDeelnemer = function ( inschrijving, dx, button, statusElement, callback ) {
+var putDeelnemer = function ( application, dx, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/participant",
+		url:"/api/applications/" + application + "/participant",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify(dx),
 		success: function( deelnemer ) {
 				if ( callback ) {
-					callback( inschrijving );
+					callback( application );
 				}
 				else {
 					success( button, statusElement, "Opgeslagen" );
@@ -159,18 +160,18 @@ var putDeelnemer = function ( inschrijving, dx, button, statusElement, callback 
 	
 };
 
-var putContact = function ( inschrijving, contact, button, statusElement, callback ) {
+var putContact = function ( application, contact, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/contact",
+		url:"/api/applications/" + application + "/contact",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify( contact ),
 		success: function( returned ) {
 			if ( callback ) {
-				callback( inschrijving );
+				callback( application );
 			}
 			else {
 				success( button, statusElement, "Opgeslagen" );
@@ -183,18 +184,18 @@ var putContact = function ( inschrijving, contact, button, statusElement, callba
 	
 };
 
-var putAddress = function ( inschrijving, adres, button, statusElement, callback ) {
+var putAddress = function ( application, adres, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/adres",
+		url:"/api/applications/" + application + "/adres",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
 		data: JSON.stringify( adres ),
 		success: function( returned ) {
 			if ( callback ) {
-				callback( inschrijving );
+				callback( application );
 			}
 			else {
 				success( button, statusElement, "Opgeslagen" );
@@ -231,18 +232,18 @@ var putHolidays = function ( application, holidays, button, statusElement, callb
 	
 };
 
-var putVragen = function ( inschrijving, vragen, button, statusElement, callback ) {
+var putQList = function ( application, qList, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/qlist",
+		url:"/api/applications/" + application + "/qlist",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
-		data: JSON.stringify( vragen ),
+		data: JSON.stringify( qList ),
 		success: function( returned ) {
 			if ( callback ) {
-				callback( inschrijving );
+				callback( application );
 			}
 			else {
 				success( button, statusElement, "Opgeslagen" );
@@ -255,11 +256,11 @@ var putVragen = function ( inschrijving, vragen, button, statusElement, callback
 	
 };
 
-var putOpmerking = function ( inschrijving, opmerking, formstatusElement ) {
+var putOpmerking = function ( application, opmerking, formstatusElement ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving.uuid + "/opmerking",
+		url:"/api/applications/" + application.uuid + "/opmerking",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
@@ -275,11 +276,11 @@ var putOpmerking = function ( inschrijving, opmerking, formstatusElement ) {
 	
 };
 
-var putStatus = function ( inschrijving, status, button, statusElement, callback ) {
+var putStatus = function ( application, status, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/rs/inschrijvingen/" + inschrijving + "/status",
+		url:"/api/applications/" + application + "/status",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
@@ -299,14 +300,14 @@ var putStatus = function ( inschrijving, status, button, statusElement, callback
 	
 };
 
-var deleteEnrollment = function ( inschrijving, button, statusElement, callback ) {
+var deleteEnrollment = function ( application, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "delete",
-		url:"/rs/inschrijvingen/" + inschrijving,
+		url:"/api/applications/" + application,
 		success: function( ox ) {
 			if ( callback ) {
-				callback( inschrijving );
+				callback( application );
 			}
 			else {
 				success( button, statusElement, "Verwijderd" );

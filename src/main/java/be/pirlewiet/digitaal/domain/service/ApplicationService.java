@@ -14,11 +14,18 @@ import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
+import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
+import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.PersonDTO;
+import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Person;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.Tags;
 
 @Service
 public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Service<ApplicationDTO,Application> {
@@ -30,7 +37,13 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	ApplicationManager applicationManager;
 	
 	@Resource
+	QuestionAndAnswerManager questionAndAnswerManager;
+	
+	@Resource
 	HolidayManager holidayManager;
+	
+	@Resource
+	Secretary secretary;
 	
 	@Override
 	public ApplicationService guard() {
@@ -113,6 +126,100 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 		return result;
 		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<ApplicationDTO> updateContact ( String uuid, PersonDTO contact, Organisation actor ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Result<ApplicationDTO> result
+			= new Result<ApplicationDTO>();
+		
+		List<Holiday> holidayz
+			= list();
+		
+		Person c
+			= Person.from( contact );
+		
+		Application updated
+			= this.applicationManager.updateContact( uuid, c );
+		
+		result.setValue( Value.OK );
+		result.setObject( ApplicationDTO.from( updated ) );
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<ApplicationDTO> updateQList ( String uuid, List<QuestionAndAnswerDTO> qList, Organisation actor ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Result<ApplicationDTO> result
+			= new Result<ApplicationDTO>();
+		
+		List<QuestionAndAnswer> list
+			= list();
+		
+		for ( QuestionAndAnswerDTO dto : qList ) {
+			
+			QuestionAndAnswer holiday 
+				=  QuestionAndAnswer.from( dto );
+			
+			list.add( holiday );
+		}
+		
+		Application updated
+			= this.applicationManager.updateQList( uuid, list );
+		
+		result.setValue( Value.OK );
+		result.setObject( ApplicationDTO.from( updated ) );
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=true)
+	public Result<List<Result<QuestionAndAnswerDTO>>> checkApplicationQuestionList( ApplicationDTO application, List<QuestionAndAnswerDTO> list ) {
+		
+		List<QuestionAndAnswer> qnaList
+			= this.questionAndAnswerManager.findByEntityAndTag( application.getUuid(), Tags.TAG_APPLICATION );
+		 
+		 Result<List<Result<QuestionAndAnswer>>> secretaryResult
+			= this.secretary.checkApplicationQuestionList( application.getUuid(), qnaList );
+		 
+		 Result<List<Result<QuestionAndAnswerDTO>>> result
+		 	= new Result<List<Result<QuestionAndAnswerDTO>>>();
+		 
+		 List<Result<QuestionAndAnswerDTO>> listResult
+		 	= list();
+		 
+		 result.setValue( secretaryResult.getValue() );
+		 result.setErrorCode( secretaryResult.getErrorCode() );
+		 
+		 for ( Result<QuestionAndAnswer> qna : secretaryResult.getObject() ) {
+			 
+			Result<QuestionAndAnswerDTO> dtoResult
+				= new Result<QuestionAndAnswerDTO>();
+			
+			dtoResult.setValue( qna.getValue() );
+			dtoResult.setErrorCode( qna.getErrorCode() );
+				
+			QuestionAndAnswerDTO a
+				= QuestionAndAnswerDTO.from( qna.getObject() );
+			
+			dtoResult.setObject( a );
+			
+			listResult.add( dtoResult );
+				
+		}
+		 
+		 result.setObject( listResult );
+		  
+		 return result;
+	    	
 	}
 	
 	protected void extend( ApplicationDTO dto, Application application ) {

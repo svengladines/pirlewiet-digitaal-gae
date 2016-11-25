@@ -108,12 +108,7 @@ public class ApplicationPageModalsController {
 		
 			model.put( "enrollmentResult", enrollmentResult );
 			
-			Result<List<QuestionAndAnswerDTO>> qnaResult 
-				= this.questionAndAnswerService.findByEntityAndTag( enrollmentResult.getObject().getUuid(), Tags.TAG_HISTORY );
-		
-			model.put( "qnaResult", qnaResult );
-		
-	}
+		}
 		
 		String view
 			= new StringBuilder("application-").append( q ).toString();

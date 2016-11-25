@@ -1,69 +1,32 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import static be.occam.utils.javax.Utils.isEmpty;
+import static be.occam.utils.javax.Utils.list;
+
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
-import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.LocaleResolver;
 
-import be.pirlewiet.digitaal.domain.ant.BuitenWipper;
-import be.pirlewiet.digitaal.domain.people.PostBode;
-import be.pirlewiet.digitaal.model.Address;
+import be.occam.utils.spring.web.Result;
+import be.occam.utils.spring.web.Result.Value;
+import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Participant;
-import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.Status;
-import be.pirlewiet.digitaal.model.Status.Value;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.model.Tags;
-import be.pirlewiet.digitaal.model.Vakantie;
-import be.pirlewiet.digitaal.model.VakantieType;
-import be.pirlewiet.digitaal.model.Vraag;
-import be.pirlewiet.digitaal.repositories.DeelnemerRepository;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-import be.pirlewiet.digitaal.repositories.PersoonRepository;
-import be.pirlewiet.digitaal.repositories.VraagRepository;
-import be.pirlewiet.registrations.application.config.ConfiguredVakantieRepository;
-import be.pirlewiet.registrations.application.config.PirlewietApplicationConfig;
-import be.pirlewiet.registrations.domain.exception.ErrorCode;
-import be.pirlewiet.registrations.domain.exception.PirlewietException;
-import be.pirlewiet.registrations.domain.q.QList;
-import be.pirlewiet.registrations.web.ResultDTO;
-import be.pirlewiet.registrations.web.util.DataGuard;
-import be.pirlewiet.registrations.web.util.PirlewietUtil;
-
-import com.google.appengine.api.datastore.KeyFactory;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 public class Secretary {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
-	
 
+	/*
 	protected final Comparator<Application> mostRecentApplications
 			= new Comparator<Application>() {
 
@@ -86,46 +49,20 @@ public class Secretary {
 		}
 			
 	};
+	*/
 	
 	@Resource
 	protected EnrollmentRepository inschrijvingXRepository;
-	
-	@Transient
-	@Resource
-	protected PersoonRepository persoonRepository;
-	
-	@Transient
-	@Resource
-	protected DeelnemerRepository deelnemerRepository;
-	
-	@Transient
-	@Resource
-	protected ConfiguredVakantieRepository configuredVakantieRepository;
-	
-	@Resource
-	protected VraagRepository vraagRepository;
-	
-	@Resource
-	protected OrganisationRepository organisationRepository;
 	
 	@Resource
 	protected HolidayManager holidayManager;
 	
 	@Resource
-	BuitenWipper buitenWipper;
+	protected PersonManager personManager;
 	
 	@Resource
-	Detacher detacher;
-	
-	@Resource
-	PostBode postBode;
-	
-	@Resource
-	JavaMailSender javaMailSender;
-	
-	@Resource
-	DataGuard dataGuard;
-	
+	DoorMan doorMan;
+
 	@Resource
 	MessageSource messageSource;
 	
@@ -135,10 +72,78 @@ public class Secretary {
     public Secretary( ) {
     }
     
-    public Secretary guard() {
-    	this.dataGuard.guard();
-    	return this;
+  public Result<List<Result<QuestionAndAnswer>>> checkApplicationQuestionList( String applicationUUID, List<QuestionAndAnswer> list ) {
+    	
+	  	Result<List<Result<QuestionAndAnswer>>> result
+    		= new Result<List<Result<QuestionAndAnswer>>>();
+	  	
+    	result.setValue( Result.Value.OK );
+	
+    	// check list
+    	List<Result<QuestionAndAnswer>> individualResults 
+			= this.areAllMandatoryQuestionsAnswered( applicationUUID, list, Tags.TAG_APPLICATION );
+    	
+    	boolean allOK = true;
+		boolean allNOK = true;
+		
+    	for ( Result<QuestionAndAnswer> individualResult : individualResults ) {
+    		
+	    	if ( ! Result.Value.OK.equals( individualResult.getValue() ) ) {
+	    		allOK = false;
+	    	}
+	    	else {
+	    		allNOK = false;
+	    	}
+	    	
+    	}
+    	
+    	if ( !allOK ) {
+    		
+    		result.setValue( allNOK ? Result.Value.NOK : Result.Value.PARTIAL );
+    		
+    	}
+    	
+    	result.setObject( individualResults );
+	    	
+    	return result;
+    	
     }
+  
+  public  List<Result<QuestionAndAnswer>>  areAllMandatoryQuestionsAnswered( String reference, List<QuestionAndAnswer> list, String tag ) {
+  	
+	  List<Result<QuestionAndAnswer>> individualResults
+	  	= list();
+
+		for ( QuestionAndAnswer questionAndAnswer : list ) {
+			
+			Result<QuestionAndAnswer> individualResult
+				= new Result<QuestionAndAnswer>();
+			
+			individualResult.setValue( Value.OK );
+			individualResult.setObject( questionAndAnswer );
+			
+			if ( ! QuestionType.Label.equals( questionAndAnswer.getType() ) ) {
+			
+				if ( isEmpty( questionAndAnswer.getAnswer() ) ) {
+
+					individualResult.setValue( Value.NOK );
+					individualResult.setErrorCode( ErrorCodes.APPLICATION_QLIST_INCOMPLETE );
+					logger.info( "[{}]; mandatory question [{}] was not answered", reference, questionAndAnswer.getQuestion() );
+					
+					
+				}
+				
+			}
+			
+			individualResults.add( individualResult );
+			
+		}
+	
+		return individualResults;
+		
+  }
+  
+  /*
 
     @Transactional(readOnly=false)
     public Enrollment createEnrollment( Enrollment inschrijving ) {
@@ -260,7 +265,6 @@ public class Secretary {
     	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
     	this.configuredVakantieRepository.saveAndFlush( saved );
     	
-    	/*
     	for ( String key : vragen.getVragen().keySet() ) {
     		
     		List<Vraag> list
@@ -272,7 +276,6 @@ public class Secretary {
     		}
     		
     	}
-    	*/
     	
     	return saved;
     }
@@ -335,12 +338,10 @@ public class Secretary {
 	    		
 	    		inschrijvingen.add( inschrijving );
 	    		
-	    		/**
 	    		// enkel toevoegen als de vakantie nog niet voorbij is
 	    		if ( inschrijving.getVakantie().getEindDatum().after( new Date() ) ) {
 	    			inschrijvingen.add( inschrijving );
 	    		} 
-	    		**/
     		}
     		catch( Exception e ) {
     			logger.warn( "failed to load enrollment", e );
@@ -960,26 +961,6 @@ public class Secretary {
     	
     }
     
-    public ResultDTO<Enrollment> checkApplicationQuestionList( Enrollment application ) {
-    	
-    	ResultDTO<Enrollment> result
-    		= new ResultDTO<Enrollment>();
-    	
-    	result.setValue( ResultDTO.Value.OK );
-    	result.setObject( application );
-	
-    	// check list
-		String qListNotAnswered 
-			= this.areAllMandatoryQuestionsAnswered( application, Tags.TAG_APPLICATION );
-	    	
-    	if ( qListNotAnswered != null ) {
-    		result.setValue(  ResultDTO.Value.NOK );
-    		result.setErrorCode( ErrorCode.APPLICATION_QLIST_INCOMPLETE );
-    	}
-	    	
-    	return result;
-    	
-    }
     
  public ResultDTO<List<ResultDTO<Enrollment>>> checkEnrollmentsStatus( Enrollment application ) {
     	
@@ -1222,5 +1203,7 @@ public class Secretary {
     	return ( Value.ACCEPTED.equals( value ) || Value.REJECTED.equals( value )  || Value.WAITINGLIST.equals( value ) || Value.CANCELLED.equals( value ) );
     	
     }
+    
+    */
  
 }
