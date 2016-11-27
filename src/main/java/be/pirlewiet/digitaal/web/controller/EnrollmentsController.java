@@ -2,55 +2,65 @@ package be.pirlewiet.digitaal.web.controller;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
-import be.occam.utils.timing.Timing;
+import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
+import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping( {"/inschrijvingen"} )
+@RequestMapping( {"/applications/{applicationUuid}/enrollments"} )
 public class EnrollmentsController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
-	Secretary secretariaatsMedewerker;
+	EnrollmentService enrollmentService;
 	
 	@Resource
-	DoorMan buitenWipper;
+	DoorMan doorMan;
 	
-	@Resource
+	//@Resource
 	Mapper mapper;
+	
+	@RequestMapping( method = { RequestMethod.POST } )
+	@ResponseBody
+	public ResponseEntity<Result<EnrollmentDTO>> post(
+				@PathVariable String applicationUuid,
+				@RequestBody EnrollmentDTO enrollment, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		Organisation actor
+			= this.doorMan.whoHasID( pwtid );
+		
+		enrollment.setApplicationUuid( applicationUuid );
+		
+		result = this.enrollmentService.create( enrollment, actor );
+		
+		return response( result, HttpStatus.CREATED );
+			
+	}
+	
+	/*
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
 	@ResponseBody
@@ -68,30 +78,7 @@ public class EnrollmentsController {
 		
 	}
 	
-	@RequestMapping( method = { RequestMethod.POST } )
-	@ResponseBody
-	public ResponseEntity<Enrollment> post(
-				@RequestBody Enrollment inschrijving, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		Organisation organisatie
-			= this.organisatie( request, pwtid );
-		
-		inschrijving.setOrganisatie( organisatie );
-		
-		logger.info( "[{}]; request to create enrollment, provided reference [{}]", organisatie.getCode(), inschrijving.getReference() );
-		
-		Enrollment aangemaakt
-			= this.secretariaatsMedewerker.guard().createEnrollment( inschrijving );
-		
-		if ( aangemaakt == null ) {
-			throw new RuntimeException("create failed");
-		}
-		
-		logger.info( "created enrollment with id [{}], reference [{}]", aangemaakt.getUuid(), aangemaakt.getReference() );
-		
-		return response( aangemaakt, HttpStatus.CREATED );
-			
-	}
+	/*
 	
 	@RequestMapping( value="/download", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
 	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) EnrollmentStatus.Value status ) {
@@ -235,6 +222,8 @@ public class EnrollmentsController {
 		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
 		
 	}
+	
+	*/
 	
 	protected Organisation organisatie( WebRequest request, String pwtid ) {
 		

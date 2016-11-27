@@ -12,11 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
+import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
+import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Person;
 
 @Service
 public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Service<EnrollmentDTO,Enrollment> {
@@ -26,6 +30,9 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	
 	@Resource
 	EnrollmentManager enrollmentManager;
+	
+	@Resource
+	PersonManager personManager;
 	
 	@Override
 	public EnrollmentService guard() {
@@ -84,6 +91,52 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		return result;
 		
 	}
+	
+	public Result<EnrollmentDTO> create( EnrollmentDTO enrollment ) {
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		
+		Enrollment toCreate
+			= Enrollment.from( enrollment );
+		
+		try {
+			
+			PersonDTO participant
+				= enrollment.getParticipant();
+			
+			Person toCreateParticipant
+				= Person.from( participant );
+			
+			Person createdParticipant
+				= this.personManager.create( toCreateParticipant );
+			
+			toCreate.setParticipantUuid( createdParticipant.getUuid() );
+		
+			Enrollment created
+				= this.enrollmentManager.create( toCreate );
+			
+			EnrollmentDTO dto
+				= EnrollmentDTO.from( created );
+		
+			result.setValue( Value.OK);
+			result.setObject( dto );
+		
+		}
+		catch( PirlewietException e ) {
+			result.setValue( Value.NOK );
+			//result.setErrorCode(  );
+		}
+		catch( Exception e ) {
+			result.setValue( Value.NOK );
+			result.setErrorCode( ErrorCodes.INTERNAL );	
+		}
+		
+		return result;
+		
+	}
+	
 	
 	public Result<EnrollmentDTO> template( ) {
 		Enrollment enrollment

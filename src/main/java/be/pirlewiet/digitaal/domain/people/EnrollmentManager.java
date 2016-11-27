@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
 
@@ -38,6 +40,18 @@ public class EnrollmentManager {
 	
 	public Enrollment findOneByUuid( String uuid ) {
 		return this.enrollmentRepository.findByUuid( uuid );
+	}
+	
+	public Enrollment create( Enrollment toCreate ) {
+		
+		Enrollment created
+			= this.enrollmentRepository.saveAndFlush( toCreate );
+		
+		created.setUuid( KeyFactory.keyToString( created.getKey() ) );
+		created = this.enrollmentRepository.saveAndFlush( created );
+		
+		return created;
+		
 	}
 	
 	public Enrollment template() {

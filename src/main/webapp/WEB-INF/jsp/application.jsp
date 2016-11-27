@@ -149,7 +149,7 @@
 										</div>
 									</div>
 								</c:forEach><br/>
-								<a href="javascript:addParticipant('${application.uuid}');" class="todo">Deelnemer toevoegen</a>									
+								<a href="javascript:void(0);" class="todo">Deelnemer toevoegen</a>									
 							</div>
 						</div>
 					</c:otherwise>
@@ -222,12 +222,32 @@
 			
 		};
 		
-		var addParticipant = function( reference ) {
+		var addParticipant = function( applicationUuid ) {
+			
+			var address 
+				= new Address( 
+						$jq("#address-zipcode").val(), 
+						$jq("#address-city").val(), 
+						$jq("#address-street").val(), 
+						$jq("#address-number").val() );
+			
+			var participant
+				= new Participant( 
+					$jq("participant-given-name").val(),
+					$jq("participant-family-name").val(),
+					$jq("participant-gender").val(),
+					$jq("participant-birth-day").val(),
+					$jq("participant-phone").val(),
+					$jq("participant-email").val()
+				);
 			
 			var enrollment =
-				new Inschrijving( reference );
+				new Enrollment( 
+						applicationUuid,
+					participant,
+					address);
 			
-			postEnrollment( enrollment, reference, toParticipant );
+			postEnrollment( applicationUuid, enrollment );
 			
 		};
 		
@@ -336,6 +356,15 @@
 					$jq(this).button('Even geduld...');
 					
 					saveContact( "${application.uuid}" );
+					
+				});
+				
+				$jq("#participant-save").click( function( event ) {
+					
+					clearStatus();
+					$jq(this).button('Even geduld...');
+					
+					addParticipant( "${application.uuid}" );
 					
 				});
 				

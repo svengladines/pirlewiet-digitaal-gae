@@ -29,15 +29,15 @@ var Address = function ( zipcode, city, street, number ) {
 	
 };
 
-var Deelnemer = function ( id, voor, familie, geslacht, geboorte, telefoon, gsm, email ) {
+var Participant = function ( givenName, familyName, gender, birthDay, phone, email, id ) {
 	
 	this.uuid = id;
-	this.voorNaam = voor;
-	this.familieNaam = familie;
-	this.geslacht = geslacht;
-	this.geboorteDatum = geboorte;
-	this.telefoonNummer = telefoon;
-	this.mobielNummer = gsm;
+	
+	this.givenName = givenName;
+	this.familyName = familyName;
+	this.gender = gender;
+	this.birthDay = birthDay;
+	this.phone = phone;
 	this.email = email;
 	
 };
@@ -60,6 +60,15 @@ var Status = function ( value, comment, email ) {
 	if ( email != undefined ) {
 		this.emailMe = email;
 	}
+	
+};
+
+var Enrollment = function ( applicationUuid, participant, address, uuid ) {
+	
+	this.applicationUuid = applicationUuid;
+	this.participant = participant;
+	this.address = address;
+	this.uuid = uuid;
 	
 };
 
@@ -107,15 +116,15 @@ var retrieveInschrijvingen = function ( ) {
 	
 };
 
-var postEnrollment = function ( rx, reference, callback ) {
+var postEnrollment = function ( applicationUuid, enrollment, callback ) {
 
 	$jq.ajax( {
 		type: "post",
-		url:"/api/applications",
+		url:"/api/applications/" + applicationUuid + "/enrollments",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
-		data: JSON.stringify(rx),
+		data: JSON.stringify(enrollment),
 		success: function( application ) {
 				if ( reference == null ) {
 					window.location.href = "/api/applications/" + application.uuid + ".html";

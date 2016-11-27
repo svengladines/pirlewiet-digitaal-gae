@@ -13,6 +13,7 @@ import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.pirlewiet.digitaal.web.controller.CodesController;
+import be.pirlewiet.digitaal.web.controller.EnrollmentsController;
 import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.PingController;
@@ -143,14 +144,14 @@ public class MvcConfig {
 			return new ApplicationController();
 		}
 		
-		/*
-		
 		@Bean
-		public EnrollmentsController inschrijvingenController() {
+		public EnrollmentsController enrollmentsController() {
 			
 			return new EnrollmentsController();
 			
 		}
+		
+		/*
 		
 		@Bean
 		public ApplicationController inschrijvingController() {

@@ -30,56 +30,56 @@
 				
 						<form class="form-horizontal">
 						
-							<input id="participant-id-${enrollment.uuid}" type="hidden" value="${enrollment.participant.uuid}"></input>
+							<input id="participant-id" type="hidden" value="${enrollment.participant.uuid}"></input>
 							<div class="form-group">
-								<label for="participant-voor-${enrollment.uuid}" class="col-sm-4 control-label">Voornaam (*)</label>
+								<label for="participant-voor" class="col-sm-4 control-label">Voornaam (*)</label>
 								<div class="col-sm-6">	
-									<input id="participant-voor-${enrollment.uuid}" name="pd-given" type="text" class="form-control" value="${enrollment.participant.voorNaam}"></input>
+									<input id="participant-given-name" name="pd-given" type="text" class="form-control" value="${enrollment.participant.voorNaam}"></input>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="participant-familie-${enrollment.uuid}" class="col-sm-4 control-label">Familienaam (*)</label>
+								<label for="participant-familie" class="col-sm-4 control-label">Familienaam (*)</label>
 								<div class="col-sm-6">	
-										<input id="participant-familie-${enrollment.uuid}" name="pd-family" type="text" class="form-control" value="${enrollment.participant.familieNaam}"></input>
+										<input id="participant-family-name" name="pd-family" type="text" class="form-control" value="${enrollment.participant.familieNaam}"></input>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="participant-geslacht-${enrollment.uuid}" class="col-sm-4 control-label">Geslacht (*)</label>
+								<label for="participant-gender" class="col-sm-4 control-label">Geslacht (*)</label>
 								<div class="col-sm-3">
 									<c:choose>
 									<c:when test="${enrollment.participant.gender eq 'F'}">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="gender" class="participant-geslacht-${enrollment.uuid}" value="F" checked="checked">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-geslacht" value="F" checked="checked">&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="gender" class="participant-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-geslacht" value="M">&nbsp;Man
 											</label>
 										</div>
 									</c:when>
 									<c:when test="${enrollment.participant.geslacht eq 'M'}">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="gender" class="participant-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-geslacht" value="F">&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="gender" class="participant-geslacht-${enrollment.uuid}" value="M" checked="checked">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-geslacht" value="M" checked="checked">&nbsp;Man
 											</label>
 										</div>
 									</c:when>
 									<c:otherwise>
 									<div class="checkbox">
 											<label>
-												<input type="radio" name="gender" class="participant-geslacht-${enrollment.uuid}" value="F">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-geslacht" value="F">&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="gender" class="participant-geslacht-${enrollment.uuid}" value="M">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-geslacht" value="M">&nbsp;Man
 											</label>
 										</div>
 									</c:otherwise>
@@ -87,46 +87,46 @@
 								</div>
 							</div>
 						<div class="form-group">
-								<label for="participant-geboorte-${enrollment.uuid}" class="col-sm-4 control-label">Geboortedatum (*)</label>
+								<label for="participant-birth-day" class="col-sm-4 control-label">Geboortedatum (*)</label>
 								<div class="col-sm-3">
 									<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.participant.birthDay}" var="gd"></fmt:formatDate>	
-									<input id="participant-geboorte-${enrollment.uuid}" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
+									<input id="participant-birth-day" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="participant-telefoon-${enrollment.uuid}" class="col-sm-4 control-label">Telefoonnummer (*)</label>
+								<label for="participant-phone" class="col-sm-4 control-label">Telefoonnummer (*)</label>
 								<div class="col-sm-4">
-									<input id="participant-telefoon-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.participant.phone}"></input>
+									<input id="participant-phone" type="tel" class="form-control" value="${enrollment.participant.phone}"></input>
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="participant-email-${enrollment.uuid}" class="col-sm-4 control-label">E-mail</label>
+								<label for="participant-email" class="col-sm-4 control-label">E-mail</label>
 								<div class="col-sm-6">
-									<input id="participant-email-${enrollment.uuid}" name="pd-email" type="email" class="form-control" value="${enrollment.participant.email}"></input>
+									<input id="participant-email" name="pd-email" type="email" class="form-control" value="${enrollment.participant.email}"></input>
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="address-zipcode-${enrollment.uuid}" class="col-sm-4 control-label">PostCode (*)</label>
+								<label for="address-zipcode" class="col-sm-4 control-label">PostCode (*)</label>
 								<div class="col-sm-4">
-									<input id="adres-zipcode-${enrollment.uuid}" name="pd-zip" type="text" class="form-control" value="${enrollment.participant.address.zipCode}"></input>
+									<input id="address-zipcode" name="pd-zip" type="text" class="form-control" value="${enrollment.participant.address.zipCode}"></input>
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="adres-gemeente-${enrollment.uuid}" class="col-sm-4 control-label">Gemeente (*)</label>
+								<label for="address-city" class="col-sm-4 control-label">Gemeente (*)</label>
 								<div class="col-sm-6">
-									<input id="adres-gemeente-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.participant.address.gemeente}"></input>
+									<input id="address-city" type="tel" class="form-control" value="${enrollment.participant.address.gemeente}"></input>
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="adres-straat-${enrollment.uuid}" class="col-sm-4 control-label">Straat (*)</label>
+								<label for="address-street" class="col-sm-4 control-label">Straat (*)</label>
 								<div class="col-sm-6">
-									<input id="adres-straat-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.participant.address.straat}"></input>
+									<input id="address-street" type="tel" class="form-control" value="${enrollment.participant.address.straat}"></input>
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="adres-nummer-${enrollment.uuid}" class="col-sm-4 control-label">Huisnummer (*)</label>
+								<label for="address-number" class="col-sm-4 control-label">Huisnummer (*)</label>
 								<div class="col-sm-2">
-									<input id="adres-nummer-${enrollment.uuid}" type="tel" class="form-control" value="${enrollment.participant.address.nummer}"></input>
+									<input id="address-number" type="tel" class="form-control" value="${enrollment.participant.address.nummer}"></input>
 								</div>
 						</div>
 						
@@ -163,11 +163,11 @@
 								</c:if>
 						</c:forEach>
 						<div class="form-group">
-							<label for="participant-save-${enrollment.uuid}" class="col-sm-4 control-label"></label>
+							<label for="participant-save" class="col-sm-4 control-label"></label>
 							<div class="col-sm-4">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-								<button type="button" id="participant-save-${enrollment.uuid}" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
-								<span id ="participant-status-${enrollment.uuid}"></span>
+								<button type="button" id="participant-save" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<span id ="participant-status"></span>
 							</div>
 						</div>
 						

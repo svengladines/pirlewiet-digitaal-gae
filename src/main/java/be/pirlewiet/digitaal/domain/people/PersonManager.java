@@ -50,6 +50,19 @@ public class PersonManager {
     	
     }
     
+  public Person create( Person toCreate ) {
+    	
+    	Person created
+    		= this.personRepository.saveAndFlush( toCreate );
+    	
+    	created.setUuid( KeyFactory.keyToString( created.getKey() ) );
+    	created = this.personRepository.saveAndFlush( created );
+    		
+    	return created;
+    		
+    	
+    }
+    
     public Person update( Person toUpdate, Person update ) {
     	
     	toUpdate.setGivenName( update.getGivenName() );
