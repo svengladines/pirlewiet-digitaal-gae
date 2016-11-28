@@ -93,13 +93,13 @@
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${ enrollmentsResult.value != 'OK' }">
+					<c:when test="${ enrollmentsResult.value == 'NOK' }">
 						<c:choose>
-							<c:when test="${ enrollmentsResult.errorCode == 'APPLICATION_NO_ENROLLMENTS' }">
+							<c:when test="${ enrollmentsResult.errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
 								<div class="col-sm-12 alert alert-warning">
 									<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
 									<span class="">Nog geen deelnemers toegevoegd</span><br/>
-									<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vragenlijst invullen</a>Deelnemer toevoegen</a>
+									<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>
 								</div>
 							</c:when>
 							<c:otherwise>
@@ -116,7 +116,7 @@
 											<c:set var="enrollment" value="${enrollmentResult.object}"/>
 											<div class="row">
 												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
-													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">wijzigen</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete todo" data-uuid="${enrollment.uuid}" >verwijder</a>)&nbsp;&nbsp;</c:if>
+													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">wijzigen</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >verwijder</a>)&nbsp;&nbsp;</c:if>
 												</div>
 												<div class="col-sm-1">
 												</div>
@@ -139,7 +139,7 @@
 									<c:set var="enrollment" value="${enrollmentResult.object}"/>
 									<div class="row">
 										<div class="col-sm-4 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete todo" data-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
+											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
 										</div>
 										<div class="col-sm-2 alert alert-success">
 											<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
@@ -189,7 +189,7 @@
 								<strong>Acties</strong>
 							</p>
 							<br/>
-							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-bolt"></i>&nbsp;&nbsp;Annuleer</button>
+							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Annuleer</button>
 						</div>
 					</c:otherwise>
 					</c:choose>	
@@ -247,7 +247,7 @@
 					participant,
 					address);
 			
-			postEnrollment( applicationUuid, enrollment );
+			postEnrollment( applicationUuid, enrollment, refresh );
 			
 		};
 		
@@ -264,7 +264,7 @@
 				= new Participant( 
 					$jq("#participant-given-name").val(),
 					$jq("#participant-family-name").val(),
-					$jq("#participant-gender").val(),
+					$jq(".participant-gender:checked").val(),
 					$jq("#participant-birth-day").val(),
 					$jq("#participant-phone").val(),
 					$jq("#participant-email").val()
@@ -318,9 +318,9 @@
 			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
 		};
 		
-		var deleteDraftEnrollment = function( id ) {
+		var deleteDraftEnrollment = function( applicationUuid, enrollmentUuid ) {
 			
-			deleteEnrollment( id, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
+			deleteEnrollment( applicationUuid, enrollmentUuid, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
 			
 		};
 		
@@ -366,7 +366,7 @@
 					clearStatus();
 					$jq(this).button('Even geduld...');
 					
-					if ( $jq(this).attr("data-attribute-uuid") != null ) {
+					if ( ( $jq(this).attr("data-attribute-uuid") != null ) && ( $jq(this).attr("data-attribute-uuid") != "" ) ) {
 						saveParticipant( "${application.uuid}", $jq(this).attr("data-attribute-uuid") );	
 					}
 					else {
@@ -424,11 +424,11 @@
 		$jq(".enrollment-delete").click( function( event ) {
 			
 			var uuid 
-				= event.currentTarget.attributes["data-uuid"].value;
+				= event.currentTarget.attributes["data-attribute-uuid"].value;
 			
 			$jq(this).button('Even geduld...');
 			
-			deleteDraftEnrollment( uuid );
+			deleteDraftEnrollment( "${application.uuid}" , uuid );
 			
 		});
 		

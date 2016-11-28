@@ -92,5 +92,9 @@ public class PersonManager {
     		
     	
     }
+    
+    public void delete( Person person ) {
+    	this.personRepository.delete( person );
+    }
        
 }

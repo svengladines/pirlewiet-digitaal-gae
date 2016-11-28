@@ -61,6 +61,25 @@ public class EnrollmentController {
 			
 	}
 	
+	@RequestMapping( method = { RequestMethod.DELETE } )
+	@ResponseBody
+	public ResponseEntity<Result<EnrollmentDTO>> delete(
+				@PathVariable String applicationUuid,
+				@PathVariable String enrollmentUuid,
+				WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID( pwtid );
+		
+		result = this.enrollmentService.delete( enrollmentUuid, actor );
+		
+		return response( result, HttpStatus.OK );
+			
+	}
+	
 	/*
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )

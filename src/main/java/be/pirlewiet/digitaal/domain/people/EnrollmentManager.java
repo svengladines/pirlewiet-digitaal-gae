@@ -71,6 +71,12 @@ public class EnrollmentManager {
 		
 	}
 	
+	public void delete( Enrollment enrollment ) {
+		
+		this.enrollmentRepository.delete( enrollment );
+		
+	}
+	
 	public Enrollment template() {
 		
 		Enrollment enrollment 

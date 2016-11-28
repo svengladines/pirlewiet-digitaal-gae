@@ -126,16 +126,8 @@ var postEnrollment = function ( applicationUuid, enrollment, callback ) {
 	    processData: false,
 		data: JSON.stringify(enrollment),
 		success: function( application ) {
-				if ( reference == null ) {
-					window.location.href = "/api/applications/" + application.uuid + ".html";
-				}
-				else {
-					if ( callback ) {
-						callback( application.uuid, application.deelnemers[0].uuid );
-					}
-					else {
-						window.location.href = "/api/applications/" + reference + ".html";
-					}
+				if ( callback ) {
+					callback( );
 				}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
@@ -309,14 +301,14 @@ var putStatus = function ( application, status, button, statusElement, callback 
 	
 };
 
-var deleteEnrollment = function ( application, button, statusElement, callback ) {
+var deleteEnrollment = function ( applicationUuid, enrollmentUuid, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "delete",
-		url:"/api/applications/" + application,
+		url:"/api/applications/" + applicationUuid + "/enrollments/" + enrollmentUuid,
 		success: function( ox ) {
 			if ( callback ) {
-				callback( application );
+				callback( );
 			}
 			else {
 				success( button, statusElement, "Verwijderd" );

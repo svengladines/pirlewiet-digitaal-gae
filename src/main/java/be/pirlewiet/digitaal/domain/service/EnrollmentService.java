@@ -22,6 +22,7 @@ import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 
@@ -75,8 +76,16 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 		}
 		
-		result.setValue( Value.OK );
-		result.setObject( individualResults );
+		if ( individualResults.isEmpty() ) {
+			result.setValue( Value.NOK );
+			result.setErrorCode( ErrorCodes.APPLICATION_NO_ENROLLMENTS );
+		}
+		else {
+			result.setValue( Value.OK );
+			result.setObject( individualResults );
+		}
+		
+		
 		
 		return result;
 		
@@ -106,7 +115,8 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 	}
 	
-	public Result<EnrollmentDTO> create( EnrollmentDTO enrollment ) {
+	@Override
+	public Result<EnrollmentDTO> create( EnrollmentDTO enrollment, Organisation actor ) {
 		
 		Result<EnrollmentDTO> result
 			= new Result<EnrollmentDTO>();
@@ -114,6 +124,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 		Enrollment toCreate
 			= Enrollment.from( enrollment );
+		toCreate.setStatus( new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
 		
 		try {
 			
@@ -127,6 +138,14 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 				= this.personManager.create( toCreateParticipant );
 			
 			toCreate.setParticipantUuid( createdParticipant.getUuid() );
+			
+			Address toCreateAddress
+				= Address.from( enrollment.getAddress() );
+		
+			Address createdAddress 
+				= this.addressManager.createOrUpdate( toCreateAddress );
+			
+			toCreate.setAddressUuid( createdAddress.getUuid() );
 		
 			Enrollment created
 				= this.enrollmentManager.create( toCreate );
@@ -145,6 +164,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		catch( Exception e ) {
 			result.setValue( Value.NOK );
 			result.setErrorCode( ErrorCodes.INTERNAL );	
+			logger.warn( "bugger", e );
 		}
 		
 		return result;
@@ -212,6 +232,34 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	}
 	
 	
+	@Override
+	@Transactional(readOnly=false)
+	public Result<EnrollmentDTO> delete( String enrollmentUuid, Organisation actor) {
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		Enrollment toDelete
+			= this.enrollmentManager.findOneByUuid( enrollmentUuid );
+		
+		Address toDeleteAddress
+			= this.addressManager.findOneByUuid( toDelete.getAddressUuid() );
+		this.addressManager.delete( toDeleteAddress );
+		
+		Person toDeletePerson
+			= this.personManager.findOneByUuid( toDelete.getParticipantUuid() );
+		
+		this.personManager.delete( toDeletePerson );
+		
+		this.enrollmentManager.delete( toDelete );
+		
+		result.setValue( Value.OK );
+		result.setObject( EnrollmentDTO.from( toDelete ) );
+		
+		return result;
+		
+	}
+
 	public Result<EnrollmentDTO> template( ) {
 		Enrollment enrollment
 			= this.enrollmentManager.template();

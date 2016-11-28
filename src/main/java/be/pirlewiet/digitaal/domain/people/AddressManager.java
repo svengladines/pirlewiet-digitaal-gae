@@ -51,6 +51,10 @@ public class AddressManager {
 		return this.addressRepository.findByUuid( uuid );
 	}
 	
+	public void delete( Address address ) {
+		this.addressRepository.delete( address );
+	}
+	
 	public void checkComplete( String uuid ) {
 		
 		Address address

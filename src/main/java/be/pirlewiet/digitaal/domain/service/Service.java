@@ -33,8 +33,8 @@ public abstract class Service<D,O> {
 		return new Result<D>( dto );
 	}
 	
-	public Result<D> delete( D dto, Organisation actor ) {
-		return new Result<D>( dto );
+	public Result<D> delete( String id, Organisation actor ) {
+		return new Result<D>( );
 	}
 	
 	public Result<List<D>> query( Organisation actor ) {

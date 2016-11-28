@@ -50,36 +50,36 @@
 									<c:when test="${enrollment.participant.gender eq 'F'}">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-geslacht" value="F" checked="checked">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-gender" value="F" checked="checked">&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-geslacht" value="M">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-gender" value="M">&nbsp;Man
 											</label>
 										</div>
 									</c:when>
 									<c:when test="${enrollment.participant.gender eq 'M'}">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-geslacht" value="F">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-gender" value="F">&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-geslacht" value="M" checked="checked">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-gender" value="M" checked="checked">&nbsp;Man
 											</label>
 										</div>
 									</c:when>
 									<c:otherwise>
 									<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-geslacht" value="F">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-gender" value="F">&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-geslacht" value="M">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-gender" value="M">&nbsp;Man
 											</label>
 										</div>
 									</c:otherwise>
