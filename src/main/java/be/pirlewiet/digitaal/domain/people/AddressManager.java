@@ -33,6 +33,20 @@ public class AddressManager {
 		
 	}
 	
+	public Address update( Address toUpdate, Address update ) {
+		
+		toUpdate.setCity( update.getCity() );
+		toUpdate.setStreet( update.getStreet() );
+		toUpdate.setNumber( update.getNumber() );
+		toUpdate.setZipCode( update.getZipCode() );
+		
+		Address updated 
+			= this.addressRepository.saveAndFlush( toUpdate );
+	
+		return updated;
+		
+	}
+	
 	public Address findOneByUuid( String uuid ) {
 		return this.addressRepository.findByUuid( uuid );
 	}

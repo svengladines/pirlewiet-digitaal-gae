@@ -53,6 +53,23 @@ public class EnrollmentManager {
 		return created;
 		
 	}
+
+
+	public Enrollment update( Enrollment toUpdate, Enrollment update ) {
+		
+		// TODO
+		toUpdate.setHolidayName( update.getHolidayName() );
+		toUpdate.setHolidayUuid( update.getHolidayUuid() );
+		if ( update.getStatus() != null ) {
+			toUpdate.setStatus( update.getStatus() );
+		}
+		
+		Enrollment updated
+			= this.enrollmentRepository.saveAndFlush( toUpdate );
+		
+		return updated;
+		
+	}
 	
 	public Enrollment template() {
 		

@@ -18,13 +18,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Tags;
@@ -46,10 +46,10 @@ public class ApplicationPageController {
 	DoorMan doorMan;
 	
 	@Resource
-	ApplicationManager applicationManager;
+	QuestionAndAnswerService questionAndAnswerService;
 	
 	@Resource
-	QuestionAndAnswerService questionAndAnswerService;
+	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @RequestParam String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
@@ -70,7 +70,14 @@ public class ApplicationPageController {
 			Result<List<QuestionAndAnswerDTO>> qnaResult 
 				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
 			
-			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( applicationResult.getObject(), qnaResult.getObject() ) );			
+			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( applicationResult.getObject(), qnaResult.getObject() ) );
+			
+			Result<List<Result<EnrollmentDTO>>> enrollmentsResult 
+				= this.enrollmentService.query( applicationResult.getObject().getUuid(), actor );
+			
+			model.put( "enrollmentsResult", enrollmentsResult );
+			
+			
 		}
 		
 		/*

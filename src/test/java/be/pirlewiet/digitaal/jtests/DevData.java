@@ -17,6 +17,7 @@ import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.Gender;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
@@ -32,6 +33,7 @@ import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 import be.pirlewiet.digitaal.repositories.PersonRepository;
 import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
+import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -65,22 +67,34 @@ public class DevData {
 	@Transactional(readOnly=false)
 	public void injectData() {
 		
-		/*
-		
-		Participant lisa
-			= new Participant();
+		Person lisa
+			= new Person();
 		
 		// sarah.setUuid(  Ids.SARAH );
-		lisa.setVoorNaam( "Lisa");
-		lisa.setFamilieNaam( "Simpson" );
+		lisa.setGivenName( "Lisa" );
+		lisa.setFamilyName( "Simpson" );
 		lisa.setEmail("lisa.simpson@springfield.net");
-		lisa.setGeslacht( Gender.F );
-		lisa.setGeboorteDatum( new Date() );
-		lisa.setTelefoonNummer( "x" );
+		lisa.setGender( Gender.F );
+		lisa.setBirthDay( new Date() );
+		lisa.setPhone( "014656896" );
 		
 		
-		// this.persoonRepository.saveAndFlush( sarah );
+		lisa = this.personRepository.saveAndFlush( lisa );
+		lisa.setUuid( KeyFactory.keyToString( lisa.getKey() ) );
+		lisa = this.personRepository.saveAndFlush( lisa );
 		
+		Address lisaAddress
+			= new Address();
+		
+		lisaAddress.setCity( "Springfield" );
+		lisaAddress.setStreet( "Evergreen Terrace" );
+		lisaAddress.setNumber("x");
+		lisaAddress.setZipCode( "Z-001" );
+		
+		lisaAddress = this.addressRepository.saveAndFlush( lisaAddress );
+		lisaAddress.setUuid( KeyFactory.keyToString( lisaAddress.getKey() ) );
+		lisaAddress = this.addressRepository.saveAndFlush( lisaAddress );		
+		/*
 		Organisation pirlewiet
 			= new Organisation();
 
@@ -272,6 +286,8 @@ public class DevData {
 		lisaAtBernies.setStatus( new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
 		lisaAtBernies.setParticipantName( "Lisa" );
 		lisaAtBernies.setApplicationUuid( applicationOne.getUuid() );
+		lisaAtBernies.setParticipantUuid( lisa.getUuid() );
+		lisaAtBernies.setAddressUuid( lisaAddress.getUuid() );
 		
 		lisaAtBernies = enrollmentRepository.saveAndFlush( lisaAtBernies );
 		lisaAtBernies.setUuid( KeyFactory.keyToString( lisaAtBernies.getKey() ) );

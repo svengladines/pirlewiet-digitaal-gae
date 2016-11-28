@@ -34,13 +34,13 @@
 							<div class="form-group">
 								<label for="participant-voor" class="col-sm-4 control-label">Voornaam (*)</label>
 								<div class="col-sm-6">	
-									<input id="participant-given-name" name="pd-given" type="text" class="form-control" value="${enrollment.participant.voorNaam}"></input>
+									<input id="participant-given-name" name="pd-given" type="text" class="form-control" value="${enrollment.participant.givenName}"></input>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="participant-familie" class="col-sm-4 control-label">Familienaam (*)</label>
 								<div class="col-sm-6">	
-										<input id="participant-family-name" name="pd-family" type="text" class="form-control" value="${enrollment.participant.familieNaam}"></input>
+										<input id="participant-family-name" name="pd-family" type="text" class="form-control" value="${enrollment.participant.familyName}"></input>
 								</div>
 							</div>
 							<div class="form-group">
@@ -59,7 +59,7 @@
 											</label>
 										</div>
 									</c:when>
-									<c:when test="${enrollment.participant.geslacht eq 'M'}">
+									<c:when test="${enrollment.participant.gender eq 'M'}">
 										<div class="checkbox">
 											<label>
 												<input type="radio" name="participant-gender" class="participant-geslacht" value="F">&nbsp;Vrouw
@@ -89,8 +89,7 @@
 						<div class="form-group">
 								<label for="participant-birth-day" class="col-sm-4 control-label">Geboortedatum (*)</label>
 								<div class="col-sm-3">
-									<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${enrollment.participant.birthDay}" var="gd"></fmt:formatDate>	
-									<input id="participant-birth-day" type="text" class="form-control" value="${gd}" placeholder="28/08/1977"></input>
+									<input id="participant-birth-day" type="text" class="form-control" value="${enrollment.participant.birthDay}" placeholder="28/08/1977"></input>
 								</div>
 						</div>
 						<div class="form-group">
@@ -108,25 +107,25 @@
 						<div class="form-group">
 								<label for="address-zipcode" class="col-sm-4 control-label">PostCode (*)</label>
 								<div class="col-sm-4">
-									<input id="address-zipcode" name="pd-zip" type="text" class="form-control" value="${enrollment.participant.address.zipCode}"></input>
+									<input id="address-zipcode" name="pd-zip" type="text" class="form-control" value="${enrollment.address.zipCode}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="address-city" class="col-sm-4 control-label">Gemeente (*)</label>
 								<div class="col-sm-6">
-									<input id="address-city" type="tel" class="form-control" value="${enrollment.participant.address.gemeente}"></input>
+									<input id="address-city" type="tel" class="form-control" value="${enrollment.address.city}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="address-street" class="col-sm-4 control-label">Straat (*)</label>
 								<div class="col-sm-6">
-									<input id="address-street" type="tel" class="form-control" value="${enrollment.participant.address.straat}"></input>
+									<input id="address-street" type="tel" class="form-control" value="${enrollment.address.street}"></input>
 								</div>
 						</div>
 						<div class="form-group">
 								<label for="address-number" class="col-sm-4 control-label">Huisnummer (*)</label>
 								<div class="col-sm-2">
-									<input id="address-number" type="tel" class="form-control" value="${enrollment.participant.address.nummer}"></input>
+									<input id="address-number" type="tel" class="form-control" value="${enrollment.address.number}"></input>
 								</div>
 						</div>
 						
@@ -166,7 +165,7 @@
 							<label for="participant-save" class="col-sm-4 control-label"></label>
 							<div class="col-sm-4">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-								<button type="button" id="participant-save" class="btn btn-primary participant-save" data-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+								<button type="button" id="participant-save" class="btn btn-primary participant-save" data-attribute-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 								<span id ="participant-status"></span>
 							</div>
 						</div>

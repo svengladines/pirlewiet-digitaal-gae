@@ -2,224 +2,221 @@ package be.pirlewiet.digitaal.web.controller;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.context.request.WebRequest;
 
-import be.pirlewiet.digitaal.domain.exception.PirlewietException;
-import be.pirlewiet.digitaal.domain.people.ApplicationManager;
+import be.occam.utils.spring.web.Result;
+import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
+import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Participant;
-import be.pirlewiet.digitaal.model.PersonInfo;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping( {"/enrollments/{uuid}"} )
+@RequestMapping( {"/applications/{applicationUuid}/enrollments/{enrollmentUuid}"} )
 public class EnrollmentController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	protected final Comparator<Enrollment> firstName
-			= new Comparator<Enrollment>() {
-
-			@Override
-			public int compare(Enrollment o1, Enrollment o2) {
-				return o1.getDeelnemers().get(0).getVoorNaam().compareTo(  o1.getDeelnemers().get(0).getVoorNaam() );
-			}
-			
-			
-		
-		};
+	@Resource
+	EnrollmentService enrollmentService;
 	
 	@Resource
-	Secretary secretariaatsMedewerker;
+	DoorMan doorMan;
 	
-	@Resource
-	DoorMan buitenWipper;
-	
-	@Resource
-	ApplicationManager intaker;
-	
-	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
-	@ResponseBody
-	public ResponseEntity<Enrollment> retrieve( @PathVariable String uuid ) {
-		
-		Enrollment inschrijving
-			= this.secretariaatsMedewerker.guard().findInschrijving( uuid );
-		
-		if ( inschrijving == null ) {
-			return response( HttpStatus.NOT_FOUND );
-		}
-		
-		logger.debug( "[{}]; retrieved by secretary", inschrijving.getUuid() );
-		//logger.debug( "[{}]; contact is [{}]", inschrijving.getUuid(), inschrijving.getContactGegevens().getName() );
-
-		return response( inschrijving, HttpStatus.OK );
-		
-	}
+	//@Resource
+	Mapper mapper;
 	
 	@RequestMapping( method = { RequestMethod.PUT } )
 	@ResponseBody
-	public ResponseEntity<Enrollment> update(
-				@RequestBody Enrollment inschrijving ) {
+	public ResponseEntity<Result<EnrollmentDTO>> update(
+				@PathVariable String applicationUuid,
+				@PathVariable String enrollmentUuid,
+				@RequestBody EnrollmentDTO enrollment, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		return response( inschrijving, HttpStatus.OK );
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
 		
+		Organisation actor
+			= this.doorMan.guard().whoHasID( pwtid );
+		
+		enrollment.setApplicationUuid( applicationUuid );
+		
+		result = this.enrollmentService.update( enrollment, actor );
+		
+		return response( result, HttpStatus.OK );
+			
 	}
 	
-	@RequestMapping( method = { RequestMethod.DELETE } )
-	public ResponseEntity<Enrollment> delete( @PathVariable String uuid ) {
-		
-		this.secretariaatsMedewerker.guard().deleteEnrollment( uuid );
-		
-		return response( HttpStatus.OK );
-		
-	}
+	/*
 	
-	@RequestMapping( value="/vakanties", method = { RequestMethod.PUT } )
+	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
 	@ResponseBody
-	public ResponseEntity<String> updateVakanties(
-				@PathVariable String uuid,
-				@RequestBody String vakanties ) {
+	public ResponseEntity<List<Enrollment>> query( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		Enrollment x 
-			= this.secretariaatsMedewerker.guard().updateVakanties( uuid, vakanties );
-		
-		return response( vakanties, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/contact", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<PersonInfo> contactUpdate(
-				@PathVariable String uuid,
-				@RequestBody PersonInfo contactGegevens ) {
-		
-		this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
-		
-		return response( contactGegevens, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/deelnemers", method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
-	@ResponseBody
-	public ResponseEntity<List<Participant>> deelnemersRetrieve(
-				@PathVariable String uuid  ) {
-		
-		ResponseEntity<Enrollment> retrieve
-			= this.retrieve( uuid );
-		
-		Enrollment inschrijving
-			= retrieve.getBody();
-		
-		return response( inschrijving.getDeelnemers(), HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/adres", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Address> adressUpdate(
-				@PathVariable String uuid,
-				@RequestBody Address adres ) {
-		
-		this.retrieve( uuid );
-		
-		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( uuid, adres );
-		
-		return response( adres, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/participant", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Participant> participantUpdate(
-			@PathVariable String uuid,
-			@RequestBody Participant participant ) {
-		
-		this.retrieve( uuid );
-		
-		this.secretariaatsMedewerker.guard().updateDeelnemer( uuid, participant );
-		
-		return response( participant, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<List<QuestionAndAnswer>> questionsUpdate(
-				@PathVariable String uuid,
-				@RequestBody List<QuestionAndAnswer> vragen ) {
-		
-		ResponseEntity<Enrollment> retrieve
-			= this.retrieve( uuid );
-		
-		Enrollment inschrijving
-			= retrieve.getBody();
-		
-		this.secretariaatsMedewerker.guard().updateVragenLijst( inschrijving.getUuid(), vragen );
-		
-		return response( vragen, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<EnrollmentStatus> updateStatus(
-				@PathVariable String uuid,
-				@RequestBody EnrollmentStatus status,
-				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		List<Enrollment> inschrijvingen
+			= new ArrayList<Enrollment>( );
 		
 		Organisation organisatie
-			= this.buitenWipper.guard().whoHasID(  pwtid  );
+			= this.organisatie( request, pwtid );
 		
-		ResponseEntity<Enrollment> retrieve
-			= this.retrieve( uuid );
+		inschrijvingen.addAll( this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie ) );
 		
-		Enrollment inschrijving
-			= retrieve.getBody();
-		
-		if ( PirlewietUtil.isPirlewiet( organisatie ) ) { 
-		
-			this.secretariaatsMedewerker.updateStatus( uuid, status );
-			
-		}
-		else {
-			
-			this.intaker.guard().updateStatus( inschrijving, status );
-			
-		}
-		
-		return response( status, HttpStatus.OK );
+		return response( inschrijvingen, HttpStatus.OK );
 		
 	}
 	
+	/*
+	
+	@RequestMapping( value="/download", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
+	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) EnrollmentStatus.Value status ) {
+		
+
+		Organisation organisatie
+			= this.buitenWipper.guard().whoHasID( pwtid  );
+		
+		// TODO: check organisatie != null
+		List<Enrollment> applications
+			= null;
+		
+		if ( EnrollmentStatus.Value.DRAFT.equals( status ) && ( PirlewietUtil.isPirlewiet( organisatie ) ) ) {
+			applications = this.secretariaatsMedewerker.guard().drafts();
+		}
+		else {
+			applications = this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+		}
+		
+		logger.info( "download; number of applications is [{}]", applications.size() );
+		
+		List<String[]> rows
+			= new LinkedList<String[]>();
+
+		for ( Enrollment application : applications ) {
+			
+			List<Enrollment> related
+				= this.secretariaatsMedewerker.guard().findRelated( application, false );
+			
+			if ( related != null ) {
+				logger.info( "[{}]; found [{}] related enrollments", application.getUuid(), related.size() );
+			}
+			else {
+				logger.info( "[{}]; found no related enrollments" );
+			}
+			
+			List<String[]> mapped
+				= this.mapper.asStrings( application, related, status );
+			
+			if ( mapped != null ) {
+				
+				rows.addAll( mapped );
+				
+			}
+		
+		}
+		
+		
+
+		byte[] result 
+			= this.mapper.asBytes( rows );
+	
+		String disp
+			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
+	
+		Map<String,String> headers
+			= new HashMap<String,String>();
+		
+		headers.put( "Content-Disposition", disp.toString() );
+	
+		return response( result, HttpStatus.OK, headers );
+		
+	}
+	
+	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
+	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		Organisation organisatie
+			= this.buitenWipper.guard().whoHasID( pwtid  );
+
+		Map<String,Object> model
+			= new HashMap<String,Object>();
+	
+		model.put( "organisation", organisatie );
+	
+		if ( PirlewietUtil.isPirlewiet( organisatie ) ) {
+			
+			List<Enrollment> inschrijvingen 
+			= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+		
+			List<Enrollment> enrollments
+				= new LinkedList<Enrollment>();
+		
+			for ( Enrollment enrollment : inschrijvingen ) {
+				
+				List<Enrollment> r
+					= new ArrayList<Enrollment>();
+				
+				r.add( enrollment );
+				
+				List<Enrollment> related
+					= this.secretariaatsMedewerker.guard().findRelated( enrollment, false );
+				
+				if ( related != null ) {
+					r.addAll( related );
+				}
+				
+				enrollments.addAll( r );
+				
+			}
+		
+		model.put( "enrollments", enrollments );
+		
+		}
+		else {
+			List<Enrollment> inschrijvingen 
+				= this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie );
+			
+			List<Enrollment> enrollments
+				= new LinkedList<Enrollment>();
+			
+			for ( Enrollment enrollment : inschrijvingen ) {
+				
+				enrollments.add( enrollment );
+				
+				List<Enrollment> related
+					= this.secretariaatsMedewerker.guard().findRelated( enrollment, false );
+				
+				if ( related != null ) {
+					enrollments.addAll( related );
+				}
+				
+			}
+			
+			model.put( "enrollments", enrollments );	
+		}
+	
+		String view
+			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijvingen_pirlewiet" : "inschrijvingen";
+		
+		return new ModelAndView( view, model );
+		
+	}
+	
+	
+	
 	@ExceptionHandler(Exception.class)
-	@ResponseBody
 	public ResponseEntity<String> handleError( Exception e ){
 		
 		logger.warn( "failure while handling request", e );
@@ -227,37 +224,18 @@ public class EnrollmentController {
 		
 	}
 	
-	@ExceptionHandler( PirlewietException.class)
-	@ResponseBody
-	public ResponseEntity<String> handleFailure( PirlewietException e ){
-		
-		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.BAD_REQUEST );
-		
-	}
+	*/
 	
-	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @PathVariable String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	protected Organisation organisatie( WebRequest request, String pwtid ) {
 		
 		Organisation organisatie
-			= this.buitenWipper.guard().whoHasID(  pwtid  );
+			= new Organisation();
+		organisatie.setUuid( pwtid );
 		
-		ResponseEntity<Enrollment> entity
-			= this.retrieve( uuid );
-		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-		
-		Enrollment enrollment
-			= entity.getBody();
-		
-		model.put( "enrollment", enrollment );
-		
-		String view
-			= PirlewietUtil.isPirlewiet( organisatie ) ? "enrollment_pirlewiet" : "error";
-
-		return new ModelAndView( view, model );
+		return organisatie;
 		
 	}
 	
+	
+
 }

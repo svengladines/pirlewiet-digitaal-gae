@@ -70,6 +70,14 @@ public class PersonManager {
     	toUpdate.setPhone( update.getPhone() );
     	toUpdate.setEmail( update.getEmail() );
     	
+    	if ( update.getBirthDay() != null ) {
+    		toUpdate.setBirthDay( update.getBirthDay() );
+    	}
+    	
+    	if ( update.getGender() != null ) {
+    		toUpdate.setGender( update.getGender() );
+    	}
+    	
     	Person updated
     		= this.personRepository.saveAndFlush( toUpdate );
     	

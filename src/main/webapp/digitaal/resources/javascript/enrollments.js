@@ -145,18 +145,18 @@ var postEnrollment = function ( applicationUuid, enrollment, callback ) {
 	
 };
 
-var putDeelnemer = function ( application, dx, button, statusElement, callback ) {
+var putEnrollment = function ( applicationUuid, enrollment, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/api/applications/" + application + "/participant",
+		url:"/api/applications/" + applicationUuid + "/enrollments/" + enrollment.uuid,
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
-		data: JSON.stringify(dx),
-		success: function( deelnemer ) {
+		data: JSON.stringify(enrollment),
+		success: function( e ) {
 				if ( callback ) {
-					callback( application );
+					callback( e );
 				}
 				else {
 					success( button, statusElement, "Opgeslagen" );

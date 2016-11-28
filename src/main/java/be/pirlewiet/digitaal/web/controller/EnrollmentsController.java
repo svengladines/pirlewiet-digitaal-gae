@@ -50,7 +50,7 @@ public class EnrollmentsController {
 			= new Result<EnrollmentDTO>();
 		
 		Organisation actor
-			= this.doorMan.whoHasID( pwtid );
+			= this.doorMan.guard().whoHasID( pwtid );
 		
 		enrollment.setApplicationUuid( applicationUuid );
 		

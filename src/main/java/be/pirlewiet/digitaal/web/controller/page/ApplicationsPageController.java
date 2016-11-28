@@ -154,11 +154,13 @@ public class ApplicationsPageController {
 			
 		for ( ApplicationDTO application : applications.getObject() ) {
 			
-			Result<List<EnrollmentDTO>> enrollments
+			Result<List<Result<EnrollmentDTO>>> enrollments
 				= this.enrollmentService.guard().query( application.getUuid(), actor );
 			
 			if ( Result.Value.OK.equals( enrollments.getValue() ) ) {
-				application.getEnrollments().addAll( enrollments.getObject() );
+				for ( Result<EnrollmentDTO> enrollmentResult : enrollments.getObject() ) {
+					application.getEnrollments().add( enrollmentResult.getObject() );
+				}
 			}
 			
 		}
