@@ -26,6 +26,7 @@ import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
+import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Controller
@@ -101,7 +102,24 @@ public class ApplicationController {
 		
 	}
 	
-	
+	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Result<ApplicationDTO>> updateStatus(
+				@PathVariable String uuid,
+				@RequestBody ApplicationStatus applicationStatus,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("application.updateStatus");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		Result<ApplicationDTO> x 
+			= this.applicationService.guard().updateStatus( uuid, applicationStatus, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
 	
 	/*
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )

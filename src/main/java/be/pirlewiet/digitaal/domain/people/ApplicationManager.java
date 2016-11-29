@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.isEmpty;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
@@ -165,6 +166,24 @@ public class ApplicationManager {
 			
 			application.setContactPersonUuid( p.getUuid() );
 			application.setContactPersonName( String.format( "%s %s", p.getGivenName(), p.getFamilyName() ) );
+			
+			application = this.applicationRepository.saveAndFlush( application );
+			
+		}
+		
+		return application;
+	}
+	
+	public Application updateStatus( String uuid, ApplicationStatus applicationStatus ) {
+		
+		logger.info("application.updateStatus");
+		
+		Application application
+			= this.findOne( uuid );
+		
+		if ( application != null ) {
+			
+			application.setStatus( applicationStatus );
 			
 			application = this.applicationRepository.saveAndFlush( application );
 			

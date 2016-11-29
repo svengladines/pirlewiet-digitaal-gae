@@ -277,11 +277,11 @@ var putOpmerking = function ( application, opmerking, formstatusElement ) {
 	
 };
 
-var putStatus = function ( application, status, button, statusElement, callback ) {
+var putStatus = function ( applicationUuid, status, button, statusElement, callback ) {
 
 	$jq.ajax( {
 		type: "put",
-		url:"/api/applications/" + application + "/status",
+		url:"/api/applications/" + applicationUuid + "/status",
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,

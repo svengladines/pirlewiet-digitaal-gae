@@ -21,6 +21,7 @@ import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
@@ -173,6 +174,24 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 		Application updated
 			= this.applicationManager.updateQList( uuid, list );
+		
+		result.setValue( Value.OK );
+		result.setObject( ApplicationDTO.from( updated ) );
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<ApplicationDTO> updateStatus ( String uuid, ApplicationStatus applicationStatus, Organisation actor ) {
+		
+		logger.info("application.updateStatus");
+		
+		Result<ApplicationDTO> result
+			= new Result<ApplicationDTO>();
+		
+		Application updated
+			= this.applicationManager.updateStatus( uuid, applicationStatus );
 		
 		result.setValue( Value.OK );
 		result.setObject( ApplicationDTO.from( updated ) );

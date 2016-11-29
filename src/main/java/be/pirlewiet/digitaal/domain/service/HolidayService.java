@@ -69,6 +69,30 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		
 	}
 	
+	public Result<List<HolidayDTO>> resolve(String holidayString, Organisation actor) {
+		
+		List<Holiday> holidays
+			= this.holidayManager.holidaysFromUUidString( holidayString );
+		
+		Result<List<HolidayDTO>> result
+			= new Result<List<HolidayDTO>>();
+		
+		List<HolidayDTO> dtos
+			= list();
+		
+		for ( Holiday holiday : holidays ) {
+			
+			dtos.add( HolidayDTO.from( holiday ) );
+			
+		}
+		
+		result.setValue( Value.OK );
+		result.setObject( dtos );
+		
+		return result;
+		
+	}
+	
 	
 	
 }

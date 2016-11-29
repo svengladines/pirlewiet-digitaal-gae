@@ -22,9 +22,12 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
+import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Tags;
@@ -44,6 +47,9 @@ public class ApplicationPageController {
 	
 	@Resource
 	DoorMan doorMan;
+	
+	@Resource
+	PersonService personService;
 	
 	@Resource
 	QuestionAndAnswerService questionAndAnswerService;
@@ -67,13 +73,26 @@ public class ApplicationPageController {
 		
 		if ( Value.OK.equals( applicationResult.getValue() ) ) {
 			
+			ApplicationDTO application
+				= applicationResult.getObject();
+			
+			Result<PersonDTO> contactResult
+				= this.personService.retrieve( application.getContactPersonUuid() );
+			
+			model.put( "contactResult", contactResult );
+			
+			Result<List<HolidayDTO>> holidaysResult
+				= this.holidayService.resolve( application.getHolidayUuids() , actor);
+			
+			model.put( "holidaysResult", holidaysResult );
+			
 			Result<List<QuestionAndAnswerDTO>> qnaResult 
 				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
 			
-			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( applicationResult.getObject(), qnaResult.getObject() ) );
+			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( application, qnaResult.getObject() ) );
 			
 			Result<List<Result<EnrollmentDTO>>> enrollmentsResult 
-				= this.enrollmentService.query( applicationResult.getObject().getUuid(), actor );
+				= this.enrollmentService.query( application.getUuid(), actor );
 			
 			model.put( "enrollmentsResult", enrollmentsResult );
 			

@@ -38,6 +38,7 @@
 		
 			<c:set var="application" value="${applicationResult.object}" />
 			<c:set var="questionList" value="${applicationQuestionListResult.object}" />
+			<c:set var="contact" value="${contactResult.object}" />
 			
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
@@ -64,7 +65,7 @@
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
-					<c:when test="${application.contactPersonName == null }">
+					<c:when test="${contactResult.value == 'NOK' }">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
 							<a href="javascript:void(0);" class="todo" data-attribute-modal="contact">Contactpersoon ingeven</a>
@@ -155,18 +156,21 @@
 					</c:otherwise>
 				</c:choose>
 					
+					<span>[${holidaysResult.value} / ${contactResult.value} / ${applicationQuestionListResult.value} / ${enrollmentsResult.value} ]</span>
 				
 			<c:choose>
-					<c:when test="${applicationStatus.value =='DRAFT'}">
+					
+					<c:when test="${application.status.value =='DRAFT'}">
 						<div class="col-sm-12 alert alert-info">
 							<i class="fa fa-2x fa-envelope pull-right"></i><h4><strong>Indienen</strong><br/></h4>
 							<c:choose>
-								<c:when test="${(applicationHolidaysResult.value == 'OK') && (applicationContactResult.value == 'OK') && (applicationQuestionListResult.value == 'OK') && (enrollmentsResult.value == 'OK') }">
+								<c:when test="${(holidaysResult.value == 'OK') && (contactResult.value == 'OK') && (applicationQuestionListResult.value == 'OK') && (enrollmentsResult.value == 'OK') }">
 									<p>
 										Je inschrijving is volledig. Je kan deze nu versturen.
 									</p>
-									<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
-									<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
+									<br/>
+									<button type="button" id="application-submit" class="btn btn-primary"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
+									<button type="button" id="application-cancel" class="btn btn-danger pull-right"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
 								</c:when>
 								<c:otherwise>
 									<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
@@ -189,7 +193,7 @@
 								<strong>Acties</strong>
 							</p>
 							<br/>
-							<button type="button" id="enrollment-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Annuleer</button>
+							<button type="button" id="application-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Annuleer</button>
 						</div>
 					</c:otherwise>
 					</c:choose>	
@@ -300,22 +304,22 @@
 			putQList ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
 		};
 		
-		var saveStatus = function( id, value ) {
+		var saveApplicationStatus = function( applicationUuid, value ) {
 			var comment = "";
 			if ( value ) {
 				var sx = new Status (value, comment ,true );
-				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
 			}
 			else {
 				var sx = new Status ( "AUTO", comment ,true );
-				putStatus ( id, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );	
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );	
 			}
 			
 			
 		};
 		
-		var cancel = function( id ) {
-			saveStatus( id, "CANCELLED", $jq("#status-comment-text").val() );
+		var cancelApplication = function( applicationUuid ) {
+			saveApplicationStatus( applicationUuid, "CANCELLED", $jq("#status-comment-text").val() );
 		};
 		
 		var deleteDraftEnrollment = function( applicationUuid, enrollmentUuid ) {
@@ -403,21 +407,21 @@
 		});
 		
 
-		$jq("#enrollment-submit").click( function( event ) {
+		$jq("#application-submit").click( function( event ) {
 			
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			saveStatus( "${application.uuid}" );
+			saveApplicationStatus( "${application.uuid}" );
 			
 		});
 		
-		$jq("#enrollment-cancel").click( function( event ) {
+		$jq("#application-cancel").click( function( event ) {
 
 			clearStatus();
 			$jq(this).button('Even geduld...');
 			
-			cancel( "${application.uuid}" );
+			cancelApplication( "${application.uuid}" );
 			
 		});
 		
