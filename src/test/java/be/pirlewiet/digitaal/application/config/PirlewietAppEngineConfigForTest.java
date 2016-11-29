@@ -41,7 +41,7 @@ public class PirlewietAppEngineConfigForTest {
 			factory.setPackagesToScan( "be.pirlewiet.digitaal.model" );
 			factory.setPersistenceProvider( persistenceProvider );
 			// factory.setDataSource(jpaDataSource);
-			factory.setPersistenceUnitName("pirlewiet-digitaal");
+			factory.setPersistenceUnitName("pirlewiet-digitaal-dev-test");
 			factory.getJpaPropertyMap().put( "datanucleus.jpa.addClassTransformer", "false" );
 			factory.getJpaPropertyMap().put( "datanucleus.appengine.datastoreEnableXGTransactions", "true" );
 			factory.getJpaPropertyMap().put( "datanucleus.metadata.allowXML", "false" );

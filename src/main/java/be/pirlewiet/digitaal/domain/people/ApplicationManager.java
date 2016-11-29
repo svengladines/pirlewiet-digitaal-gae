@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
+import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
@@ -39,6 +41,12 @@ public class ApplicationManager {
 	
 	@Resource
 	protected QuestionAndAnswerManager questionAndAnswerManager;
+	
+	@Resource
+	protected Secretary secretary;
+	
+	@Resource
+	protected EnrollmentManager enrollmentManager;
 	
 	public ApplicationManager( int currentYear ) {
 		this.currentYear = currentYear;
@@ -183,9 +191,40 @@ public class ApplicationManager {
 		
 		if ( application != null ) {
 			
-			application.setStatus( applicationStatus );
+			boolean save
+				= false;
 			
-			application = this.applicationRepository.saveAndFlush( application );
+			if ( ApplicationStatus.Value.AUTO.equals( applicationStatus.getValue() ) ) {
+				
+				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
+					logger.info( "intake");
+					// TODO, load and manager will load again. performance optimization possible
+					List<Enrollment> enrollments
+						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
+					for ( Enrollment enrollment : enrollments ) {
+						this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
+					}
+					applicationStatus.setValue( ApplicationStatus.Value.SUBMITTED );
+					save = true;
+					// TODO, send e-mails
+					logger.info( "taken in");
+				}
+				
+			}
+			else if ( ApplicationStatus.Value.CANCELLED.equals( applicationStatus.getValue() ) ) {
+				
+				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
+					logger.info( "delete draft");
+					// TODO delete all enrollments
+					this.applicationRepository.delete( application );	
+				}
+				
+			}
+			
+			if ( save ) {
+				application.setStatus( applicationStatus );
+				application = this.applicationRepository.saveAndFlush( application );
+			}
 			
 		}
 		

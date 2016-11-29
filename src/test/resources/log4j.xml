@@ -21,7 +21,7 @@
 	</logger>
 	
 	<logger name="org.datanucleus">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 	
 	<logger name="org.hibernate">
@@ -29,7 +29,7 @@
 	</logger>
 	
 	<logger name="org.springframework.orm">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 
 	<logger name="org.springframework.web">

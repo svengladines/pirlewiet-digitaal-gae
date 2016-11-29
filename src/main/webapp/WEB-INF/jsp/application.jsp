@@ -156,8 +156,6 @@
 					</c:otherwise>
 				</c:choose>
 					
-					<span>[${holidaysResult.value} / ${contactResult.value} / ${applicationQuestionListResult.value} / ${enrollmentsResult.value} ]</span>
-				
 			<c:choose>
 					
 					<c:when test="${application.status.value =='DRAFT'}">

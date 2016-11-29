@@ -7,10 +7,11 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
+
+import com.google.appengine.api.datastore.KeyFactory;
 
 /*
  * 
@@ -74,6 +75,20 @@ public class EnrollmentManager {
 	public void delete( Enrollment enrollment ) {
 		
 		this.enrollmentRepository.delete( enrollment );
+		
+	}
+	
+	public Enrollment updateStatus( String enrollmentUUid, EnrollmentStatus newStatus ) {
+		
+		Enrollment toUpdate
+			= this.findOneByUuid( enrollmentUUid );
+		
+		toUpdate.setStatus( newStatus );
+		
+		Enrollment updated
+			= this.enrollmentRepository.saveAndFlush( toUpdate );
+		
+		return updated;
 		
 	}
 	
