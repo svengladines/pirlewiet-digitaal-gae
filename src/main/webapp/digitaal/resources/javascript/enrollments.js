@@ -257,6 +257,8 @@ var putQList = function ( application, qList, button, statusElement, callback ) 
 	
 };
 
+
+
 var putOpmerking = function ( application, opmerking, formstatusElement ) {
 
 	$jq.ajax( {
@@ -289,6 +291,30 @@ var putStatus = function ( applicationUuid, status, button, statusElement, callb
 		success: function( ox ) {
 			if ( callback ) {
 				callback( ox );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( button, statusElement, jqXHR.responseText );
+		}
+	});
+	
+};
+
+var putEnrollmentQList = function ( applicationUuid, enrollmentUuid, qList, button, statusElement, callback ) {
+
+	$jq.ajax( {
+		type: "put",
+		url:"/api/applications/" + applicationUuid + "/enrollments/" + enrollmentUuid + "/qlist",
+		dataType: "json",
+		contentType: "application/json;charset=\"utf-8\"",
+	    processData: false,
+		data: JSON.stringify( qList ),
+		success: function( returned ) {
+			if ( callback ) {
+				callback( );
 			}
 			else {
 				success( button, statusElement, "Opgeslagen" );

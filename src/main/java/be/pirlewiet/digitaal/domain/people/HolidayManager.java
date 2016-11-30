@@ -60,7 +60,7 @@ public class HolidayManager {
     }
     
     @Transactional( readOnly=false )
-    public Result<HolidayType> checkSingleType( String vks ) {
+    public Result<HolidayType> checkSingleType( String holidayUUids ) {
     	
     	Result<HolidayType> result
     		= new Result<HolidayType>();
@@ -69,22 +69,12 @@ public class HolidayManager {
     	HolidayType type
     		= null;
     	
-    	if ( vks != null ) {
+    	if ( holidayUUids != null ) {
     		
-			StringTokenizer tok
-				= new StringTokenizer( vks.trim(), ",", false );
-			
-			while( tok.hasMoreTokens() ) {
-				
-				String t
-					= tok.nextToken().trim();
-				
-				if ( t.length() == 0 ) {
-					continue;
-				}
-				
-				Holiday v 
-					= this.holidayRepository.findByUuid( t.trim() ); 
+    		List<Holiday> holidays
+    			= this.holidaysFromUUidString( holidayUUids );
+    		
+    		for ( Holiday v : holidays ) {
 		
 				if ( v != null ) {
 					

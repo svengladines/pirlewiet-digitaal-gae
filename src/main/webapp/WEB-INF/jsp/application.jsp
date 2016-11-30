@@ -88,7 +88,7 @@
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst inschrijving</strong><br/></h4>
 							<span>Ingevuld</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">wijzigen</a>)
 						</div>
 					</c:otherwise>
@@ -116,12 +116,12 @@
 										<c:forEach items="${enrollmentsResult.object}" var="enrollmentResult">
 											<c:set var="enrollment" value="${enrollmentResult.object}"/>
 											<div class="row">
-												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
+												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
 													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">wijzigen</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >verwijder</a>)&nbsp;&nbsp;</c:if>
 												</div>
 												<div class="col-sm-1">
 												</div>
-												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
+												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
 													<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
 												</div>
 											</div>
@@ -139,17 +139,20 @@
 								<c:forEach items="${enrollmentsResult.object}" var="enrollmentResult">
 									<c:set var="enrollment" value="${enrollmentResult.object}"/>
 									<div class="row">
-										<div class="col-sm-4 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
+										<div class="col-sm-3 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
 										</div>
-										<div class="col-sm-2 alert alert-success">
+										<div class="col-sm-3 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_HISTORY' ) ? 'alert-danger' : 'alert-success' ) }">
+											<i class="fa fa-3 fa-question"></i>&nbsp;&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst deelnemer</a>											
+										</div>
+										<div class="col-sm-3 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
+											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche</a>
+										</div>
+										<div class="col-sm-2 alert alert-info">
 											<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
 										</div>
-										<div class="col-sm-4 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
-										</div>
 									</div>
-								</c:forEach><br/>
+								</c:forEach>
 								<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>									
 							</div>
 						</div>
@@ -177,7 +180,7 @@
 							</c:choose>
 						</div>
 					</c:when>
-					<c:when test="${applicationStatus.value =='CANCELLED'}">
+					<c:when test="${application.status.value =='CANCELLED'}">
 						<div class="col-sm-12 alert alert-info">
 							<p>
 								<h4><strong>Acties</strong></h4>
@@ -302,6 +305,21 @@
 			putQList ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
 		};
 		
+		var saveEnrollmentQList = function( applicationUuid, enrollmentUuid, tag ) {
+			var list
+				= [];
+			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			putEnrollmentQList ( applicationUuid, enrollmentUuid, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
+		};
+		
 		var saveApplicationStatus = function( applicationUuid, value ) {
 			var comment = "";
 			if ( value ) {
@@ -386,6 +404,24 @@
 					
 				});
 				
+				$jq("#q-save-medical").click( function( event ) {
+					
+					clearStatus();
+					busyButton( $jq(this) );
+					
+					saveEnrollmentQList( "${application.uuid}", $jq(this).attr("data-attribute-uuid"), "medic" );
+					
+				});
+				
+				$jq("#q-save-history").click( function( event ) {
+					
+					clearStatus();
+					busyButton( $jq(this) );
+					
+					saveEnrollmentQList( "${application.uuid}", $jq(this).attr("data-attribute-uuid"), "history" );
+					
+				});
+				
 			});
 			
 			
@@ -395,16 +431,6 @@
 		});
 		
 		
-		$jq(".btn-save-medic").click( function( event ) {
-			
-			clearStatus();
-			$jq(this).button('Even geduld...');
-			
-			saveQList( $jq(this).attr("data-uuid"), "medic" );
-			
-		});
-		
-
 		$jq("#application-submit").click( function( event ) {
 			
 			clearStatus();

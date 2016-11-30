@@ -1,14 +1,19 @@
 package be.pirlewiet.digitaal.domain.people;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import be.pirlewiet.digitaal.domain.q.QuestionSheet;
+import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
@@ -24,6 +29,9 @@ public class EnrollmentManager {
 	
 	@Resource
 	protected EnrollmentRepository enrollmentRepository;
+	
+	@Resource
+	protected QuestionAndAnswerManager questionAndAnswerManager;
 	
 	public EnrollmentManager( ) {
 	}
@@ -50,6 +58,22 @@ public class EnrollmentManager {
 		
 		created.setUuid( KeyFactory.keyToString( created.getKey() ) );
 		created = this.enrollmentRepository.saveAndFlush( created );
+		
+		List<QuestionAndAnswer> medical
+			= QuestionSheet.template().getVragen( ).get( Tags.TAG_MEDIC );
+		
+		for ( QuestionAndAnswer qna : medical ) {
+			qna.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna );
+		}
+		
+		List<QuestionAndAnswer> history
+			= QuestionSheet.template().getVragen( ).get( Tags.TAG_HISTORY );
+	
+		for ( QuestionAndAnswer qna : history ) {
+			qna.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna );
+		}
 		
 		return created;
 		
@@ -99,6 +123,31 @@ public class EnrollmentManager {
 		
 		return enrollment;
 		
+	}
+
+	public Enrollment updateQList( String uuid, List<QuestionAndAnswer> qList ) {
+		
+		logger.info("enrollment.updateQList");
+		
+		Enrollment enrollment
+			= this.findOneByUuid( uuid );
+		
+		if ( enrollment != null ) {
+			
+			for ( QuestionAndAnswer q : qList ) {
+				
+				QuestionAndAnswer one
+					= this.questionAndAnswerManager.findOneByUuid( q.getUuid() );
+				
+				if ( one != null ) {
+					this.questionAndAnswerManager.update( one,q );
+				}
+				
+			}
+						
+		}
+		
+		return enrollment;
 	}
 	
 

@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.occam.utils.spring.web.ErrorCode;
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
@@ -17,14 +18,19 @@ import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
+import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
+import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.dto.AddressDTO;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
+import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
+import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.Tags;
 
 @Service
 public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Service<EnrollmentDTO,Enrollment> {
@@ -40,6 +46,12 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	
 	@Resource
 	AddressManager addressManager;
+	
+	@Resource
+	QuestionAndAnswerManager questionAndAnswerManager;
+	
+	@Resource
+	Secretary secretary;
 	
 	@Override
 	public EnrollmentService guard() {
@@ -64,7 +76,37 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			Result<EnrollmentDTO> individualResult
 				= new Result<EnrollmentDTO>();
 			
+			StringBuilder errorCodes = new StringBuilder();
+			
+			List<QuestionAndAnswer> medicals
+				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
+			
+			Result<List<Result<QuestionAndAnswer>>> medicalResult
+				= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), medicals, Tags.TAG_MEDIC );
+			
+			// assume all good untill proven otherwise
 			individualResult.setValue( Value.OK );
+			
+			if ( ! Result.Value.OK.equals( medicalResult.getValue() ) ) {
+				individualResult.setValue( Result.Value.NOK );
+				errorCodes.append( ErrorCodes.PARTICIPANT_MEDIC_QUESTION_MISSING.getCode() ).append( "|" );
+			}
+			
+			List<QuestionAndAnswer> history
+				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_HISTORY );
+		
+			Result<List<Result<QuestionAndAnswer>>> historyResult
+				= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), history, Tags.TAG_HISTORY );
+		
+			if ( ! Result.Value.OK.equals( historyResult.getValue() ) ) {
+				individualResult.setValue( Result.Value.NOK );
+				errorCodes.append( ErrorCodes.PARTICIPANT_HISTORY_QUESTION_MISSING.getCode() ).append( "|" );
+			}
+			
+			if ( ! Value.OK.equals( individualResult.getValue() ) ) {
+				logger.info( "error codes are [{}]", errorCodes.toString() );
+				individualResult.setErrorCode( new ErrorCode( errorCodes.toString() ) );
+			}
 			
 			EnrollmentDTO dto
 				= EnrollmentDTO.from( enrollment );
@@ -286,6 +328,35 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			= this.addressManager.findOneByUuid( dto.getAddressUuid() );
 		dto.setAddress( AddressDTO.from( address ) );
 		
+		
+	}
+
+	@Transactional(readOnly=false)
+	public Result<EnrollmentDTO> updateQList ( String uuid, List<QuestionAndAnswerDTO> qList, Organisation actor ) {
+		
+		logger.info("[{}]; enrollment.updateQList", actor.getName() );
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		List<QuestionAndAnswer> list
+			= list();
+		
+		for ( QuestionAndAnswerDTO dto : qList ) {
+			
+			QuestionAndAnswer holiday 
+				=  QuestionAndAnswer.from( dto );
+			
+			list.add( holiday );
+		}
+		
+		Enrollment updated
+			= this.enrollmentManager.updateQList( uuid, list );
+		
+		result.setValue( Value.OK );
+		result.setObject( EnrollmentDTO.from( updated ) );
+		
+		return result;
 		
 	}
 	

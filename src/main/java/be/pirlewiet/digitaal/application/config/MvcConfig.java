@@ -13,12 +13,12 @@ import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.pirlewiet.digitaal.web.controller.CodesController;
-import be.pirlewiet.digitaal.web.controller.EnrollmentController;
 import be.pirlewiet.digitaal.web.controller.EnrollmentsController;
 import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.PingController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationController;
+import be.pirlewiet.digitaal.web.controller.api.EnrollmentController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageModalsController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationsPageController;

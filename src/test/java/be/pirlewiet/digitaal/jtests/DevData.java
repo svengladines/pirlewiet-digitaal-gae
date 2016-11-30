@@ -292,6 +292,23 @@ public class DevData {
 		lisaAtBernies = enrollmentRepository.saveAndFlush( lisaAtBernies );
 		lisaAtBernies.setUuid( KeyFactory.keyToString( lisaAtBernies.getKey() ) );
 		lisaAtBernies = this.enrollmentRepository.saveAndFlush( lisaAtBernies );
+		
+		QuestionAndAnswer medicalOne
+			= new QuestionAndAnswer( QuestionType.Text, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Telefoon huisdokter ?" );
+		medicalOne.setEntityUuid( lisaAtBernies.getUuid() );
+
+		medicalOne = this.questionAndAnswerRepository.saveAndFlush( medicalOne );
+		medicalOne.setUuid( KeyFactory.keyToString( medicalOne.getKey() ) );
+		medicalOne = this.questionAndAnswerRepository.saveAndFlush( medicalOne );
+		
+		QuestionAndAnswer historyOne
+			= new QuestionAndAnswer( QuestionType.Text, Tags.TAG_HISTORY, QIDs.QID_HISTORY, "Ging deze deelnemer al mee ?" );
+		
+		historyOne.setEntityUuid( lisaAtBernies.getUuid() );
+
+		historyOne = this.questionAndAnswerRepository.saveAndFlush( historyOne );
+		historyOne.setUuid( KeyFactory.keyToString( historyOne.getKey() ) );
+		historyOne = this.questionAndAnswerRepository.saveAndFlush( historyOne );
 	
 	}
 	

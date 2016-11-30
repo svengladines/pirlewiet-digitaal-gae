@@ -109,7 +109,44 @@ public class Secretary {
     	
     }
   
-  public  List<Result<QuestionAndAnswer>>  areAllMandatoryQuestionsAnswered( String reference, List<QuestionAndAnswer> list, String tag ) {
+  public Result<List<Result<QuestionAndAnswer>>> checkEnrollmentQuestionList( String enrollmentUUID, List<QuestionAndAnswer> list, String tag ) {
+  	
+	Result<List<Result<QuestionAndAnswer>>> result
+  		= new Result<List<Result<QuestionAndAnswer>>>();
+	  	
+  	result.setValue( Result.Value.OK );
+	
+  	// check list
+  	List<Result<QuestionAndAnswer>> individualResults 
+			= this.areAllMandatoryQuestionsAnswered( enrollmentUUID, list, tag );
+  	
+  	boolean allOK = true;
+		boolean allNOK = true;
+		
+  	for ( Result<QuestionAndAnswer> individualResult : individualResults ) {
+  		
+	    	if ( ! Result.Value.OK.equals( individualResult.getValue() ) ) {
+	    		allOK = false;
+	    	}
+	    	else {
+	    		allNOK = false;
+	    	}
+	    	
+  	}
+  	
+  	if ( !allOK ) {
+  		
+  		result.setValue( allNOK ? Result.Value.NOK : Result.Value.PARTIAL );
+  		
+  	}
+  	
+  	result.setObject( individualResults );
+	    	
+  	return result;
+  	
+  }
+  
+  public  List<Result<QuestionAndAnswer>>  areAllMandatoryQuestionsAnswered( String entityUuid, List<QuestionAndAnswer> list, String tag ) {
   	
 	  List<Result<QuestionAndAnswer>> individualResults
 	  	= list();
@@ -127,8 +164,7 @@ public class Secretary {
 				if ( isEmpty( questionAndAnswer.getAnswer() ) ) {
 
 					individualResult.setValue( Value.NOK );
-					individualResult.setErrorCode( ErrorCodes.APPLICATION_QLIST_INCOMPLETE );
-					logger.info( "[{}]; mandatory question [{}] was not answered", reference, questionAndAnswer.getQuestion() );
+					logger.info( "[{}]; mandatory question [{}] was not answered", entityUuid, questionAndAnswer.getQuestion() );
 					
 					
 				}

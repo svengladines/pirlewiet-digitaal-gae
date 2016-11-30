@@ -108,6 +108,22 @@ public class ApplicationPageModalsController {
 		
 			model.put( "enrollmentResult", enrollmentResult );
 			
+		} else if ( "medical".equals( q ) ) {
+			
+			Result<List<QuestionAndAnswerDTO>> medicalResult 
+				= this.questionAndAnswerService.findByEntityAndTag( enrollmentUuid, Tags.TAG_MEDIC );
+			
+			model.put( "enrollmentUuid", enrollmentUuid );
+			model.put( "medicalResult", medicalResult );
+			
+		} else if ( "history".equals( q ) ) {
+			
+			Result<List<QuestionAndAnswerDTO>> medicalResult 
+				= this.questionAndAnswerService.findByEntityAndTag( enrollmentUuid, Tags.TAG_HISTORY );
+			
+			model.put( "enrollmentUuid", enrollmentUuid );
+			model.put( "historyResult", medicalResult );
+			
 		}
 		
 		String view

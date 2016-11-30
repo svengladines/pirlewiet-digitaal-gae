@@ -218,6 +218,11 @@ public class ApplicationManager {
 					// TODO delete all enrollments
 					this.applicationRepository.delete( application );	
 				}
+				else if ( ApplicationStatus.Value.SUBMITTED.equals( application.getStatus().getValue() ) ) {
+					logger.info( "cancel submitted");
+					applicationStatus.setValue( ApplicationStatus.Value.CANCELLED );
+					save = true;	
+				}
 				
 			}
 			
