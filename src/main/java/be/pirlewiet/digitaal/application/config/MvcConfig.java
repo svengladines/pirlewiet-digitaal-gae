@@ -24,6 +24,7 @@ import be.pirlewiet.digitaal.web.controller.page.ApplicationPageModalsController
 import be.pirlewiet.digitaal.web.controller.page.ApplicationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.LogoutPageController;
 import be.pirlewiet.digitaal.web.controller.page.OrganisationPageController;
+import be.pirlewiet.digitaal.web.controller.page.OrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.StartPageController;
 
 @Configuration
@@ -100,6 +101,11 @@ public class MvcConfig {
 		@Bean
 		public ApplicationPageModalsController applicationPageModalsController() {
 			return new ApplicationPageModalsController();
+		}
+		
+		@Bean
+		public OrganisationsPageController organisationsPageController() {
+			return new OrganisationsPageController();
 		}
 		
 		@Bean

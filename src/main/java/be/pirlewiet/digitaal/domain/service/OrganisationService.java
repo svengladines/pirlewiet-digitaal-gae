@@ -1,5 +1,9 @@
 package be.pirlewiet.digitaal.domain.service;
 
+import static be.occam.utils.javax.Utils.*;
+
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
+import be.pirlewiet.digitaal.domain.Reducer;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
@@ -15,7 +20,6 @@ import be.pirlewiet.digitaal.dto.AddressDTO;
 import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 
 @Service
 public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Service<OrganisationDTO,Organisation> {
@@ -27,7 +31,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	OrganisationManager organisationManager;
 	
 	@Resource
-	OrganisationRepository organisationRepository;
+	Reducer reducer;
 	
 	@Resource
 	AddressManager addressManager;
@@ -37,6 +41,55 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		super.guard();
 		return this;
 	}
+	
+	@Override
+	public Result<List<Result<OrganisationDTO>>> query(Organisation actor) {
+		
+		List<Organisation> organisations
+			= this.organisationManager.all();
+		
+		
+		List<OrganisationDTO> dtos
+			= list();
+		
+		for ( Organisation organisation : organisations ) {
+			
+			OrganisationDTO dto
+				= OrganisationDTO.from( organisation );
+			
+			this.reducer.reduce( dto );
+			
+			dtos.add( dto );
+			
+		}
+		
+		Result<List<Result<OrganisationDTO>>> result
+			= new Result<List<Result<OrganisationDTO>>>();
+		
+		List<Result<OrganisationDTO>> individualResults
+			= list();
+		
+		for ( OrganisationDTO dto : dtos ) {
+			
+			Result<OrganisationDTO> individualResult
+				= new Result<OrganisationDTO>();
+			individualResult.setValue( Value.OK );
+			individualResult.setObject( dto );
+			
+			individualResults.add( individualResult );
+			
+			
+		}
+		
+		result.setValue( Value.OK );
+		result.setObject( individualResults );
+		
+		return result;
+			
+		
+	}
+
+
 
 	@Override
 	@Transactional(readOnly=false)

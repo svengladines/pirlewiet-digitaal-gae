@@ -1,10 +1,10 @@
 package be.pirlewiet.digitaal.domain;
 
-import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.dto.OrganisationDTO;
 
 public class Reducer {
 	
-	public void reduce( Organisation organisation ) {
+	public void reduce( OrganisationDTO organisation ) {
 		
 		String email = organisation.getEmail();
 		

@@ -38,21 +38,22 @@
 			
 			<thead>
 				<tr>
-					<th><a href="/rs/organisations.html?order=name">Naam</a></th>
-					<th><a href="/rs/organisations.html?order=street">Adres</a></th>
-					<th><a href="/rs/organisations.html?order=city">Gemeente</a></th>
+					<th><a href="/organisations.html?order=name">Naam</a></th>
+					<th><a href="/organisations.html?order=city">Gemeente</a></th>
 					<th>E-mail</th>
 				</tr>
 			</thead>
 			
+			<c:set var="organisations" value="${organisationsResult.object}"/>
 			
-			<c:forEach items="${organisations}" var="organisation">
+			
+			<c:forEach items="${organisations}" var="organisationResult">
+			
+			<c:set var="organisation" value="${organisationResult.object}"/>
 				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${organisation.updated}" var="updated"></fmt:formatDate>
 				<tr>
-					<td class="nowrap">${organisation.naam}</td>
-					<td>${organisation.adres.straat} ${organisation.adres.nummer}</td>
-					<td>${organisation.adres.gemeente}</td>
+					<td class="nowrap">${organisation.name}</td>
+					<td>${organisation.city}</td>
 					<td>${organisation.email}</td>
 				</tr>
 			</c:forEach>

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.Reducer;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.CodeMan;
@@ -159,6 +160,11 @@ public class PirlewietApplicationConfig {
 		@Bean
 		Secretary secretary() {
 			return new Secretary();
+		}
+		
+		@Bean
+		Reducer reducer() {
+			return new Reducer();
 		}
 		
 		@Bean

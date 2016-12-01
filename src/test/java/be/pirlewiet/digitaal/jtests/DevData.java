@@ -164,6 +164,7 @@ public class DevData {
 			vzwSvekke.setCode( "svk013" );
 			vzwSvekke.setEmail( "sven.gladines@foo.bar" );
 			vzwSvekke.setPhone( "016123456" );
+			vzwSvekke.setCity( "Neervelp" );
 		
 			vzwSvekke = this.organsiationRepository.saveAndFlush( vzwSvekke );
 			vzwSvekke.setUuid( KeyFactory.keyToString( vzwSvekke.getKey() ) );

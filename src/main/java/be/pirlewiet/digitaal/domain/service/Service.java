@@ -37,10 +37,10 @@ public abstract class Service<D,O> {
 		return new Result<D>( );
 	}
 	
-	public Result<List<D>> query( Organisation actor ) {
-		List<D> list
+	public Result<List<Result<D>>> query( Organisation actor ) {
+		List<Result<D>> list
 			= Arrays.asList();
-		return new Result<List<D>>( list );
+		return new Result<List<Result<D>>>( list );
 	}
 
 }

@@ -151,7 +151,6 @@ public class OrganisationManager {
     	loaded.setPhone( organisation.getPhone() );
     	loaded.setName( organisation.getName() );
     	loaded.setEmail( organisation.getEmail() );
-    	loaded.setAlternativeEmail( organisation.getAlternativeEmail() );
     	loaded.setUpdated( new Date() );
     	
     	Organisation saved
@@ -204,9 +203,16 @@ public class OrganisationManager {
     	
     	for ( Organisation organisation : all ) {
     		
-    		if ( ! PirlewietUtil.isPirlewiet( organisation ) ) {
-    			filtered.add( organisation );
+    		if ( PirlewietUtil.isPirlewiet( organisation ) ) {
+    			continue;
     		}
+    		
+    		if ( PirlewietUtil.isPD( organisation ) ) {
+    			continue;
+    		}
+    		
+    		filtered.add( organisation );
+    		
     	}
     	
     	
