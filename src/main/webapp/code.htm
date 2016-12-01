@@ -1,34 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="/resources/images/pirlewiet_icon.png" type="image/png">
 
-    <title>Pirlewiet Digitaal 2016</title>
-    
-    <!-- All theme and styling stuff -> pirlewiet.be -->
+    <title>Pirlewiet Digitaal: Aanmelden</title>
 
+	<!-- Icon -->
     <link rel="icon" href="http://www.pirlewiet.be/digitaal/resources/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
     
-    <link rel="stylesheet" href="http://www.pirlewiet.be/digitaal/resources/theme/css/bootstrap.css">
-    <link rel="stylesheet" href="http://www.pirlewiet.be/digitaal/resources/theme/css/font-awesome.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://www.pirlewiet.be/digitaal/resources/theme/css/pirlewiet.css">
-
-    <script type="text/javascript" src="/digitaal/resources/javascript/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="/digitaal/resources/javascript/underscore-1.4.3.js"></script>
-    <script type="text/javascript" src="/digitaal/resources/javascript/moment.js"></script>
-    <script type="text/javascript" src="/digitaal/resources/javascript/environment.js"></script>
-    <script type="text/javascript" src="/digitaal/resources/javascript/templates.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/bootstrap.css" rel="stylesheet">
     
-    <script type="text/javascript" src="/digitaal/resources/javascript/pirlewiet.js"></script>
-	<script type="text/javascript" src="/digitaal/resources/javascript/vakanties.js"></script>
-	<script type="text/javascript" src="/digitaal/resources/javascript/organisations.js"></script>
-	<script type="text/javascript" src="/digitaal/resources/javascript/enrollments.js"></script>
-	<script type="text/javascript" src="/digitaal/resources/theme/js/bootstrap.js"></script>	
+    <!-- Awesom, use CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="http://www.pirlewiet.be/digitaal/resources/theme/css/pirlewiet.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="/digitaal/resources/javascript/jquery-1.11.1.js"></script>
+    <script src="/digitaal/resources/theme/js/bootstrap.js?v=${timestamp}"></script>
+    <script src="/digitaal/resources/javascript/pirlewiet.js?v=${timestamp}"></script>
+    <script src="/digitaal/resources/javascript/organisations.js?v=${timestamp}"></script>
     
   </head>
 
@@ -47,9 +50,9 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class=''><a href="/index.htm">START</a></li>
-            <li class='active'><a href="/code.htm">LOGIN</a></li>
-            <li class=''><a href="/help.htm">HELP</a></li>
+            <li><a href="/index.htm">START</a></li>
+            <li><a href="/organisations.html">ORGANISATIES</a></li>
+            <li><a href="/help.htm">HELP</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -59,9 +62,9 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1>Aanmelden</h1>
+					<h1/>Hulp met aanmelden</h1>
 					<p>
-						Elke geregistreerde organisatie kan zich aanmelden met een unieke code. <br/>
+						 Heb je geen code, of vergat je ze ? Of is jouw organisatie nog niet geregistreerd als doorverwijzer ? Volg de stappen hieronder!
 					</p>
 				</div>
 			</div><!-- row -->
@@ -73,47 +76,74 @@
 			<br/>
 	
 			<div class="row">
-			<div id="codediv" class="col-md-12">
+		
+			<div id="nocodediv" class="col-md-12">
 			
-				<h3><i class="fa fa-check fa-3"></i>&nbsp; Aanmelden</h3>
-			
-				<p>
-					Geef de code in en klik op 'Aanmelden'. <br/>
-					(Een code bestaat uit drie letters gevolgd door 3 cijfers.)
-				</p>
-				
-				<form class="form-horizontal" role="form">
-				
-					<div class="form-group">
-						<label for="contact-naam" class="col-sm-0 control-label"></label>
-							<div class="col-sm-2">	
-								<input id="code" type="text" class="col-md-4 form-control" value="" placeholder="abc123"></input>
-							</div>
-					</div>
+					<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-list fa-stack-1x"></i>
+  						
+						</span>
+						Bekijk onze <a href="/organisations.html">lijst van geregistreerde doorverwijzers</a> en zoek je organisatie.
+					</p>
 					
-					<div class="form-group">
-						<label for="contact-naam" class="col-sm-0 control-label"></label>
-						<div class="col-sm-10">
-							<button id="codebtn" type="button" class="btn btn-primary" data-vakantie="1" data-loading-text="Even geduld..."><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Aanmelden</button>
-							<p id="code-error" class="error text-danger hidden">
-								De opgegeven code was niet geldig. Probeer AUB opnieuw.<br/>
-								Als je problemen blijft ondervinden, is de code waarschijnlijk niet correct. 
+					<p>
+					<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-envelope fa-stack-1x"></i>
+  						
+						</span>
+						Geef het corresponderende e-mail adres in en druk op 'Zend code'. Even later krijg je je code toegezonden op het ingegeven e-mailadres.
+					</p>
+					
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<label for="email" class="col-sm-2 control-label">E-mailadres</label>
+							<div class="col-sm-3">	
+								<input id="email" type="text" class="form-control" value="" placeholder="info@mijndienst.be"></input>
+							</div>
+						</div>
+						<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-6">
+							<button type="button" id="emailbtn" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Zend code</button>
+							<p>
+								<span id="email-ok" class="error text-success hidden"></span>
+							</p>
+							
+							<p>
+								<span id="email-unknown" class="error text-danger hidden">
+									Het e-mailadres werd niet herkend. Controleer of je het juiste e-mailadres ingaf. <br/>
+								</span>
+							</p>
+							
+							<p>
+								<span id="email-error" class="error text-danger hidden"></span>
 							</p>
 						</div>
-						
 					</div>
-				
-				</form>
-				
-				<div class="alert alert-info">
+					</form>
+					
 					<p>
-						<strong>Heb je geen code of vergat je ze ? </strong> Klik dan <a href="code-help.htm"><strong>hier</strong> </a> om je code aan te vragen.
+						<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-question fa-stack-1x"></i>
+  						
+						</span>
+						Vond je je organisatie in de lijst, maar herkende je het e-mailadres niet, of is het niet meer actief ? Contacteer dan ons secretariaat.
 					</p>
-				</div>
-			</div>
-			</div>
-			<br/>
-			<br/>
+					
+					<p>
+						<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-question fa-stack-1x"></i>
+  						
+						</span>
+						Vond je je organisatie niet terug in de lijst ? Vul dan het <a href="register.htm?v=${timestamp}">registratieformulier voor doorverwijzers</a> in.
+					</p>
+		</div>
+		</div>
+		<br/>
 	</div>
 	
 	<div id="f">
@@ -132,49 +162,55 @@
     
     	var $jq = jQuery.noConflict();
     	
-    	var submitCode = function() {
+    	var sendEmail = function() {
     		
-			$jq("#codebtn").button('loading');
+    		var button = $jq("#emailbtn");
+    		
+			busyButton( button );
 			
-			var code = $jq("#code").val();
+			var email = $jq("#email").val();
+			
+			var request = new CodeRequest( email );
 	
 	    	$jq.ajax( {
 	    		type: "post",
-	    		url:"/api/codes",
+	    		url:"/api/coderequests",
 	    		contentType: "application/json",
 	    	    processData: false,
-	    		data: JSON.stringify(code),
+	    		data: JSON.stringify(request),
 	    		success: function( ) {
-	    			window.document.location = "/start.html";
+	    			doneButton( button );
+	    			success( $jq("#emailbtn"), $jq("#email-ok"), "Een e-mail met de inlogcode werd opgestuurd naar " + email );
 	    		},
 	    		error: function(  jqXHR, textStatus, errorThrown ) {
+	    			doneButton( button );
 	    			if( jqXHR.status == 422 ) {
-	    				error( $jq("#codebtn"), $jq("#code-error") );
+	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Het opgegeven e-mailadres '" + email + "' is niet gekend. <br/>Controleer het adres en probeer opnieuw." );
 	    			}
 	    			else {
-	    				error( $jq("#codebtn"), $jq("#code-error"), "Er trad een fout op. Probeer AUB opnieuw. Indien de fout blijft optreden, contacteer dan ons secretariaat." );
+	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Er trad een fout op. Probeer AUB opnieuw. Indien het probleem blijft optreden, contacteer dan ons secretariaat." );
 	    			}
 	    		}
 	    	});
+
     		
     	};
     	
-    	$jq("#code").keypress( function(event) {
+    	$jq("#emailbtn").click( function ( event ) {
+			
+			event.preventDefault();
+			sendEmail();
+			   	
+   		});
+    	
+		$jq("#email").keypress( function(event) {
     		
 		    if(event.which == 13) {
 		       event.preventDefault();
-		       submitCode();
+		       sendEmail();
 		    }
 		    
 		});
-    	
-		$jq("#codebtn").click( function ( event ) {
-			
-			event.preventDefault();
-			submitCode();
-	    	
-		});
-		
     		
     </script>
   </body>

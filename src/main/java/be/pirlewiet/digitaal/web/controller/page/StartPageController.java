@@ -34,7 +34,7 @@ public class StartPageController {
 			= new ModelAndView();
 		
 		if ( pwtID == null ) {
-			mav.setView( new RedirectView("code.htm") );
+			mav.setView( new RedirectView("login.htm") );
 			return mav;
 		}
 		else {
@@ -42,7 +42,7 @@ public class StartPageController {
 				= this.buitenWipper.guard().whoHasID(  pwtID  );	
 		
 			if ( organisatie == null ) {
-				mav.setView( new RedirectView("/code.htm") );
+				mav.setView( new RedirectView("/login.htm") );
 			}
 			else {
 				mav.setView( new RedirectView("/organisation.html") );

@@ -117,6 +117,8 @@ public class DoorMan {
 	@Transactional(readOnly=false)
 	public void processCodeRequest( CodeRequest codeRequest, boolean sendEmail ) {
 		
+		logger.info( "code requeest for email [{}]", codeRequest.getEmail() );
+		
 		String email
 			= codeRequest.getEmail();
 		

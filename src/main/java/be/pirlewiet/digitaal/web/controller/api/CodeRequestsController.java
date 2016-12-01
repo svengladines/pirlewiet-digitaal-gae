@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller;
+package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
@@ -29,21 +29,15 @@ public class CodeRequestsController {
 	@Resource
 	protected DoorMan buitenWipper;
 	
-	@Resource
-	protected Secretary secretariaatsMedewerker;
-	
 	@RequestMapping(method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<CodeRequest> post( @RequestBody CodeRequest codeRequest, HttpServletResponse response )  {
 		
-		// Map<String, String> headers
-		// = new HashMap<String,String>();
-		
 		logger.info("code request for email [{}]", codeRequest.getEmail() );
+		
 		this.buitenWipper.guard().processCodeRequest( codeRequest, true );
 		
 		if ( CodeRequest.Status.REJECTED.equals( codeRequest.getStatus() ) ) {
-			logger.warn( "email [{}] not found in db", codeRequest.getEmail() );
 			return response( HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		

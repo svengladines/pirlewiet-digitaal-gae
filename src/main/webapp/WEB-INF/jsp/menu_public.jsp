@@ -17,8 +17,9 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class='active'><a href="http://pirlewiet-digitaal.appspot.com/index.htm">START</a></li>
-            <li class='active'><a href="http://pirlewiet-digitaal.appspot.com/help.htm">HELP</a></li>
+            <li ${param.active eq 'start' ? "class='active'" : ""}><a href="/index.htm">START</a></li>
+            <li ${param.active eq 'organisations' ? "class='active'" : ""}><a href="/index.htm">ORGANISATIES</a></li>
+            <li ${param.active eq 'help' ? "class='active'" : ""}><a href="/help.htm">HELP</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

@@ -18,6 +18,7 @@ import be.pirlewiet.digitaal.web.controller.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.PingController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationController;
+import be.pirlewiet.digitaal.web.controller.api.CodeRequestsController;
 import be.pirlewiet.digitaal.web.controller.api.EnrollmentController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageModalsController;
@@ -165,6 +166,11 @@ public class MvcConfig {
 			
 		}
 		
+		@Bean
+		public CodeRequestsController codeRequestsController() {
+			return new CodeRequestsController();
+		}
+		
 		/*
 		
 		@Bean
@@ -186,11 +192,6 @@ public class MvcConfig {
 			
 			return new ParticipantController();
 			
-		}
-		
-		@Bean
-		public CodeRequestsController codeRequestsController() {
-			return new CodeRequestsController();
 		}
 		
 		@Bean
