@@ -6,6 +6,7 @@ import be.occam.utils.spring.web.ErrorCode;
 public class PirlewietException extends RuntimeException {
 	
 	protected ErrorCode errorCode;
+	protected String actor;
 	
 	public PirlewietException( String message ) {
 		super( message );
@@ -18,6 +19,20 @@ public class PirlewietException extends RuntimeException {
 	
 	public PirlewietException( ErrorCode errorCode, String message ) {
 		super( message );
+		this.errorCode = errorCode;
+	}
+	
+	public PirlewietException( String actor, ErrorCode errorCode ) {
+		super();
+		this.actor = actor;
+		this.errorCode = errorCode;
+	}
+
+	public ErrorCode getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(ErrorCode errorCode) {
 		this.errorCode = errorCode;
 	}
 

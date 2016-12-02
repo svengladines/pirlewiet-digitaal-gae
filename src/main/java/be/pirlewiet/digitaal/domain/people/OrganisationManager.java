@@ -82,6 +82,22 @@ public class OrganisationManager {
     	String email
     		= organisation.getEmail();
     	
+    	if ( isEmpty( organisation.getName() ) ) {
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_NAME_MISSING, "Vul het veld 'naam' in." );
+    	}
+    	
+    	if ( isEmpty( email ) ) {
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'e-mail' in." );
+    	}
+    	
+    	if ( isEmpty( organisation.getPhone() ) ) {
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_PHONE_MISSING, "Vul het veld 'telefoon' in." );
+    	}
+    	
+    	if ( isEmpty( organisation.getCity() ) ) {
+    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'gemeente' in." );
+    	}
+    	
     	Organisation existing
     		= this.organisationRepository.findOneByEmail( email );
     	
@@ -105,8 +121,6 @@ public class OrganisationManager {
     	logger.info( "created organiation with uuid [{}] and code [{}]", saved.getUuid(), code );
     	
     	
-		// boolean published = publishNewList(); // SGL| no longer publish the list synchronously, it causes latency and sometimes errors
-    	// TODO, publish list asynchronously
 		this.sendCreatedEmailToOrganisation( saved );
 		this.sendCreatedEmailToPirlewiet( saved );
     	

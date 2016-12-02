@@ -14,17 +14,19 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import be.pirlewiet.digitaal.web.controller.CodesController;
 import be.pirlewiet.digitaal.web.controller.EnrollmentsController;
-import be.pirlewiet.digitaal.web.controller.OrganisationController;
-import be.pirlewiet.digitaal.web.controller.OrganisationsController;
+import be.pirlewiet.digitaal.web.controller.GlobalControllerExceptionHandler;
 import be.pirlewiet.digitaal.web.controller.PingController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationController;
 import be.pirlewiet.digitaal.web.controller.api.CodeRequestsController;
 import be.pirlewiet.digitaal.web.controller.api.EnrollmentController;
+import be.pirlewiet.digitaal.web.controller.api.OrganisationController;
+import be.pirlewiet.digitaal.web.controller.api.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageModalsController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.LogoutPageController;
 import be.pirlewiet.digitaal.web.controller.page.OrganisationPageController;
+import be.pirlewiet.digitaal.web.controller.page.OrganisationRegistrationPageController;
 import be.pirlewiet.digitaal.web.controller.page.OrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.StartPageController;
 
@@ -87,6 +89,11 @@ public class MvcConfig {
 		@Bean
 		public OrganisationPageController organisationPageController() {
 			return new OrganisationPageController();
+		}
+		
+		@Bean
+		public OrganisationRegistrationPageController organisationRegistrationPageController() {
+			return new OrganisationRegistrationPageController();
 		}
 		
 		@Bean
@@ -208,6 +215,11 @@ public class MvcConfig {
 			
 		}
 		*/
+		
+		@Bean
+		GlobalControllerExceptionHandler globalControllerExceptionHandler() {
+			return new GlobalControllerExceptionHandler();
+		}
 		
 		
 	}

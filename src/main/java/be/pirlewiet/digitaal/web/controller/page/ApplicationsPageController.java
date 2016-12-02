@@ -149,10 +149,13 @@ public class ApplicationsPageController {
 	
 		model.put( "organisation", actor );
 	
-		Result<List<ApplicationDTO>> applications 
+		Result<List<Result<ApplicationDTO>>> applicationsResult 
 				= this.applicationService.guard().query( actor );
 			
-		for ( ApplicationDTO application : applications.getObject() ) {
+		for ( Result<ApplicationDTO> applicationResult : applicationsResult.getObject() ) {
+			
+			ApplicationDTO application
+				= applicationResult.getObject();
 			
 			Result<List<Result<EnrollmentDTO>>> enrollments
 				= this.enrollmentService.guard().query( application.getUuid(), actor );
@@ -165,7 +168,7 @@ public class ApplicationsPageController {
 			
 		}
 		
-		model.put( "applications", applications );
+		model.put( "applicationsResult", applicationsResult );
 	
 		String view
 			= "applications";

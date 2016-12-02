@@ -54,26 +54,35 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 
 	@Override
 	@Transactional(readOnly=true)
-	public Result<List<ApplicationDTO>> query( Organisation actor ) {
+	public Result<List<Result<ApplicationDTO>>> query( Organisation actor ) {
 		
-		Result<List<ApplicationDTO>> result
-			= new Result<List<ApplicationDTO>>();
+		Result<List<Result<ApplicationDTO>>>result
+			= new Result<List<Result<ApplicationDTO>>>();
 		
 		List<Application> applications
 			= this.guard().applicationManager.findByOrganisation( actor );
 		
-		List<ApplicationDTO> dtos
+		List<Result<ApplicationDTO>> individualResults
 			= list();
 		
 		for ( Application application : applications ) {
+			
+			Result<ApplicationDTO> individualResult
+				= new Result<ApplicationDTO>();
+			
 			ApplicationDTO dto
 				= ApplicationDTO.from( application );
 			this.extend( dto, application );
-			dtos.add ( dto );
+			
+			individualResult.setValue( Value.OK );
+			individualResult.setObject( dto );
+			
+			individualResults.add( individualResult );
+			
 		}
 		
 		result.setValue( Value.OK );
-		result.setObject( dtos );
+		result.setObject( individualResults );
 		
 		return result;
 		

@@ -105,8 +105,7 @@
 					<label class="col-sm-4 control-label"></label>
 					<div class="col-sm-8">
 						<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-						<span id="organisation-status" class="error hidden">
-						</span>
+						<span id="organisation-status"></span>
 					</div>
 				</div>
 			</c:if>

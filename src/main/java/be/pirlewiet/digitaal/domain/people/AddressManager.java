@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.IncompleteObjectException;
+import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.repositories.AddressRepository;
 
@@ -19,7 +20,23 @@ public class AddressManager {
 	@Resource
 	AddressRepository addressRepository;
 	
-	public Address createOrUpdate( Address address ) {
+	public Address create( Address address ) {
+		
+		if ( isEmpty( address.getZipCode() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_ZIPCODE_MISSING );
+		}
+		
+		if ( isEmpty( address.getCity() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_CITY_MISSING );
+		}
+		
+		if ( isEmpty( address.getStreet() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_STREET_MISSING );
+		}
+		
+		if ( isEmpty( address.getNumber() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_NUMBER_MISSING );
+		}
 		
 		Address saved 
 			= this.addressRepository.saveAndFlush( address );
@@ -35,10 +52,22 @@ public class AddressManager {
 	
 	public Address update( Address toUpdate, Address update ) {
 		
-		toUpdate.setCity( update.getCity() );
-		toUpdate.setStreet( update.getStreet() );
-		toUpdate.setNumber( update.getNumber() );
-		toUpdate.setZipCode( update.getZipCode() );
+		// TODO, move check to protected method & reuse. prio 2
+		if ( isEmpty( update.getZipCode() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_ZIPCODE_MISSING );
+		}
+		
+		if ( isEmpty( update.getCity() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_CITY_MISSING );
+		}
+		
+		if ( isEmpty( update.getStreet() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_STREET_MISSING );
+		}
+		
+		if ( isEmpty( update.getNumber() ) ) {
+			throw new IncompleteObjectException( ErrorCodes.ADDRESS_NUMBER_MISSING );
+		}
 		
 		Address updated 
 			= this.addressRepository.saveAndFlush( toUpdate );
@@ -61,7 +90,7 @@ public class AddressManager {
 			= this.addressRepository.findByUuid( uuid );
 		
 		if ( address == null ) {
-			// TODO, throw exception
+			throw new PirlewietException( ErrorCodes.INTERNAL, String.format("no address with uuid [%s]", uuid ) );
 		}
 		
 		if ( isEmpty( address.getCity() ) ) {

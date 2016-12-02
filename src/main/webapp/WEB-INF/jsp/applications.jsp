@@ -35,7 +35,7 @@
 		
 			<br/>
 		
-			<c:if test="${ true }">
+			<c:if test="${ false }">
 				<form class="form-horizontal">
 					
 					<div class="form-group form-group-lg">
@@ -46,15 +46,23 @@
 					
 				</form>
 			</c:if>
+			
+			<c:if test="${ true }">
+					<div>
+						<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
+					</div>
+			</c:if>
 		</div>
 	
 		<div class="row mandatory">
 		
 			<c:choose>
 			
-			<c:when test="${applications.value == 'OK'}">
+			<c:when test="${applicationsResult.value == 'OK'}">
 			
-					<c:forEach items="${applications.object}" var="application">
+					<c:forEach items="${applicationsResult.object}" var="individualResult">
+					
+						<c:set var="application" value="${individualResult.object}" /> 
 					
 						<table class="table table-bordered">
 						
@@ -127,10 +135,6 @@
 
     <script>
     	var $jq = jQuery.noConflict();
-    	
-    	var inschrijving = null;
-    	
-    	retrieveInschrijving( "${inschrijving.uuid}" );
     	
 		$jq("#nieuw").click( function( event ) {
 			

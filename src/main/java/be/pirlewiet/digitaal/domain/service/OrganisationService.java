@@ -1,11 +1,12 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -148,7 +149,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			result.setValue( Value.OK );
 			
 			boolean inComplete 
-				= this.organisationManager.isInComplete( found, false );
+				= this.organisationManager.isInComplete( found, true );
 			
 			if  (found.getAddressUuid() == null ) {
 				
@@ -158,7 +159,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			}
 			else {
 				
-				inComplete |= ( ! this.addressManager.isComplete( uuid ) );
+				inComplete |= ( ! this.addressManager.isComplete( found.getAddressUuid() ) );
 				
 			}
 			
@@ -212,13 +213,22 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			result.setErrorCode( ErrorCodes.ORGANISATION_NOT_FOUND );
 		}
 		
-		Address updated
-			= this.addressManager.createOrUpdate( Address.from( address ) );
+		Address toReturn
+			= null;
 		
-		this.organisationManager.updateAddress( found, updated.getUuid() );
+		if ( found.getAddressUuid() == null ) {
+		
+			toReturn = this.addressManager.create( Address.from( address ) );
+			this.organisationManager.updateAddress( found, toReturn.getUuid() );
+		}
+		else {
+			Address toUpdate 
+				= this.addressManager.findOneByUuid( found.getAddressUuid() );
+			toReturn = this.addressManager.update( toUpdate, Address.from( address ) ) ;	
+		}
 		
 		result.setValue( Value.OK );
-		result.setObject( AddressDTO.from( updated ) );
+		result.setObject( AddressDTO.from( toReturn ) );
 		
 		return result;
 		

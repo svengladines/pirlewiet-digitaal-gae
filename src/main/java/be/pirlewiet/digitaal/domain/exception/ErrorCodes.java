@@ -27,6 +27,7 @@ public class ErrorCodes {
 	public static ErrorCode ORGANISATION_NAME_MISSING = new ErrorCode("ORGANISATION_NAME_MISSING");
 	public static ErrorCode ORGANISATION_EMAIL_MISSING = new ErrorCode("ORGANISATION_EMAIL_MISSING");
 	public static ErrorCode ORGANISATION_PHONE_MISSING = new ErrorCode("ORGANISATION_PHONE_MISSING");
+	public static ErrorCode ORGANISATION_CITY_MISSING = new ErrorCode("ORGANISATION_CITY_MISSING");
 	public static ErrorCode ORGANISATION_NOT_FOUND = new ErrorCode("ORGANISATION_NOT_FOUND");
 	public static ErrorCode ORGANISATION_EMAIL_TAKEN = new ErrorCode("ORGANISATION_EMAIL_TAKEN");
 	

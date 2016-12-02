@@ -45,20 +45,26 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 	 * Finds current holidays.
 	 */
 	@Override
-	public Result<List<HolidayDTO>> query(Organisation actor) {
+	public Result<List<Result<HolidayDTO>>> query(Organisation actor) {
 		
 		List<Holiday> currentHolidays
 			= this.holidayManager.findCurrentHolidays();
 		
-		Result<List<HolidayDTO>> result
-			= new Result<List<HolidayDTO>>();
+		Result<List<Result<HolidayDTO>>> result
+			= new Result<List<Result<HolidayDTO>>>();
 		
-		List<HolidayDTO> dtos
+		List<Result<HolidayDTO>> dtos
 			= list();
 		
 		for ( Holiday holiday : currentHolidays ) {
 			
-			dtos.add( HolidayDTO.from( holiday ) );
+			Result<HolidayDTO> individualResult
+				= new Result<HolidayDTO>();
+			
+			individualResult.setValue( Value.OK );
+			individualResult.setObject( HolidayDTO.from( holiday ) );
+			
+			dtos.add( individualResult );
 			
 		}
 		

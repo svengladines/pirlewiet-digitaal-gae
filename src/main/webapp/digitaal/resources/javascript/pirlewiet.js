@@ -23,11 +23,13 @@ function success( button, element, message ) {
 	if ( message != undefined ) {
 		element.html( message )	;
 	}
-	
-	element.removeClass("text-danger");
-	element.addClass("text-success");
+	else {
+		element.html("Gelukt");
+	}
 	
 	if ( element != undefined ) {
+		element.removeClass("text-danger");
+		element.addClass("text-success");
 		element.removeClass("hidden").addClass("show");
 	}
 	

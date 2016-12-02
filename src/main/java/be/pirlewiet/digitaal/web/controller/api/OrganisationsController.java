@@ -1,14 +1,14 @@
-package be.pirlewiet.digitaal.web.controller;
+package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,11 +31,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
 import be.occam.utils.spring.web.Result;
+import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.dto.OrganisationDTO;
-import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
@@ -60,25 +60,13 @@ public class OrganisationsController {
 	
 	@RequestMapping( method = { RequestMethod.GET} )
 	@ResponseBody
-	public ResponseEntity<Result<List<OrganisationDTO>>> query( @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
+	public ResponseEntity<Result<List<Result<OrganisationDTO>>>> query( @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
 		
 		Organisation actor 
 			= this.doorMan.whoHasID( pwtid );
 		
-		Result<List<OrganisationDTO>> created
+		Result<List<Result<OrganisationDTO>>> created
 			= this.organisationService.guard().query( actor );
-		
-		/*
-		Cookie cookie
-			= new Cookie( "pwtid", created.getUuid() );
-	
-		cookie.setMaxAge( 3600 * 24 * 30 * 12 );
-	
-		cookie.setPath( "/" );
-	
-		response.addCookie( cookie );
-		
-		*/
 		
 		return response( created, HttpStatus.OK );
 			
@@ -86,27 +74,27 @@ public class OrganisationsController {
 	
 	@RequestMapping( method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE } )
 	@ResponseBody
-	public ResponseEntity<Result<OrganisationDTO>> post( @RequestBody OrganisationDTO organisation, @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
+	public ResponseEntity<Result<OrganisationDTO>> post( @RequestBody OrganisationDTO organisation, HttpServletResponse response ) {
 		
-		Organisation actor 
-			= this.doorMan.guard().whoHasID( pwtid );
+		Result<OrganisationDTO> createdResult
+			= this.organisationService.guard().create( organisation, null );
 		
-		Result<OrganisationDTO> created
-			= this.organisationService.guard().create( organisation, actor );
+		if ( Value.OK.equals( createdResult.getValue() ) ) {
 		
-		/*
-		Cookie cookie
-			= new Cookie( "pwtid", created.getUuid() );
+			Cookie cookie
+				= new Cookie( "pwtid", createdResult.getObject().getUuid() );
 	
-		cookie.setMaxAge( 3600 * 24 * 30 * 12 );
-	
-		cookie.setPath( "/" );
-	
-		response.addCookie( cookie );
+			cookie.setMaxAge( 3600 * 24 * 30 * 12 );
 		
-		*/
+			cookie.setPath( "/" );
 		
-		return response( created, HttpStatus.OK );
+			response.addCookie( cookie );
+			
+			return response( createdResult, HttpStatus.OK );
+		
+		}
+		
+		return response( HttpStatus.INTERNAL_SERVER_ERROR );
 			
 	}
 	
@@ -264,24 +252,6 @@ public class OrganisationsController {
 	}
 	*/
 		
-	@ExceptionHandler( PirlewietException.class)
-	@ResponseBody
-	public ResponseEntity<String> handleFailure( PirlewietException e ){
-		
-		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
-		
-	}
-		
-	@ExceptionHandler(Exception.class)
-	@ResponseBody
-	public ResponseEntity<String> handleError( Exception e ){
-		
-		logger.warn( "error while handling request", e );
-		return response( "Er trad een fout op. Probeer AUB opnieuw. Indien het probleem blijft optreden, contacteer dan het secretariaat van Pirlewiet.", HttpStatus.INTERNAL_SERVER_ERROR );
-		
-	}
-	
 	protected OrganisationDTO mapTo( String[] columns ) {
 		
 		OrganisationDTO organisatie
@@ -470,59 +440,5 @@ public class OrganisationsController {
 		
 		return bos.toByteArray();
 	}
-	
-	protected final Comparator<Organisation> comparator( final String param ) {
-		
-		switch( param ) {
-		
-		case "city": 
-				return new Comparator<Organisation>() {
-					@Override
-					public int compare(Organisation o1, Organisation o2) {
-						Address a1 = o1.getAddress();
-						Address a2 = o2.getAddress();
-						if ( ( a1 == null ) || ( a1.getGemeente() == null ) ) {
-							return -1;
-						}
-						
-						if ( ( a2 == null ) || ( a2.getGemeente() == null ) ) {
-							return 1;
-						}
-						
-						return a1.getGemeente().compareTo( a2.getGemeente() );
-					} };
-		case "street": 
-			return new Comparator<Organisation>() {
-				@Override
-				public int compare(Organisation o1, Organisation o2) {
-					Address a1 = o1.getAddress();
-					Address a2 = o2.getAddress();
-					if ( ( a1 == null ) || ( a1.getStraat() == null ) ) {
-						return -1;
-					}
-					
-					if ( ( a2 == null ) || ( a2.getStraat() == null ) ) {
-						return 1;
-					}
-					return a1.getStraat().compareTo( a2.getStraat() );
-				} };
-		default:
-			return new Comparator<Organisation>() {
-				@Override
-				public int compare(Organisation o1, Organisation o2) {
-					
-					if ( ( o1.getName() == null ) ) {
-						return -1;
-					}
-					
-					if ( ( o2.getName() == null ) ) {
-						return 1;
-					}
-					
-					return o1.getName().compareTo( o2.getName() );
-				} };	
-		}
-		
-	}
-		
+			
 }

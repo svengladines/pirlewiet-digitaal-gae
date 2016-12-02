@@ -100,22 +100,6 @@ var retrieveInschrijving = function ( id ) {
 	
 };
 
-var retrieveInschrijvingen = function ( ) {
-
-	$jq.ajax( {
-		type: "get",
-		url:"/api/applications",
-		dataType: "json",
-		success: function( applications ) {
-				$jq.each( applications, viewInschrijving );
-		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			// alert( errorThrown );
-		}
-	});
-	
-};
-
 var postEnrollment = function ( applicationUuid, enrollment, callback ) {
 
 	$jq.ajax( {
