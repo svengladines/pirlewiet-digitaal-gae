@@ -20,6 +20,7 @@ import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.CodeMan;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
+import be.pirlewiet.digitaal.domain.people.Excelsior;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
@@ -33,6 +34,7 @@ import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.util.ExcelImporter;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Configuration
@@ -172,6 +174,18 @@ public class PirlewietApplicationConfig {
 			
 			return new MailMan();
 			
+		}
+		
+		@Bean
+		Excelsior excelsior() {
+			
+			return new Excelsior();
+			
+		}
+		
+		@Bean
+		ExcelImporter excelImporter() {
+			return new ExcelImporter();
 		}
 		
 		// can use 'real' javasender, it is stubbed by GAE

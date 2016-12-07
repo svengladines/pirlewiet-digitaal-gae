@@ -2,19 +2,13 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,17 +16,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.dto.OrganisationDTO;
@@ -98,347 +90,16 @@ public class OrganisationsController {
 			
 	}
 	
-	//@RequestMapping( method = { RequestMethod.POST }, consumes={"multipart/form-data"} )
-	/*
-	public ResponseEntity<Organisation[]> post( @RequestPart MultipartFile file, Locale locale ) { 
-		
-		logger.info("postfile, received file [{}]", file.getOriginalFilename() );
-		
-		try {
-			
-			List<String[]> rows 
-				= this.excelImporter.getExcelData( file, 1, 1,2,3,4,5,6,7,8,9,10 );
-		
-			if (rows.size() == 0 || rows.isEmpty()) {
-				
-				this.logger.warn( "no rows in file" );
-				
-			}
-			
-			List<Organisation> organisations
-				= new ArrayList<Organisation>( rows.size() );
-			
-			for ( String[] row : rows ) {
-				
-				try {
-				
-					Organisation organisatie 
-						= this.mapTo( row ); 
-	
-					if ( ( organisatie != null ) && ( ! isEmpty( organisatie.getEmail() ) ) ) {
-					
-						logger.info( "mapped organisation [{}], email [{}]", organisatie.getName(), organisatie.getEmail() );
-					
-						organisations.add( this.organisationManager.guard().create( organisatie ) );
-					}
-				}
-				catch( PirlewietException e ) {
-					logger.warn( "could not add organisation: [{}]", e.getMessage() );
-				}
-				catch( Exception e ) {
-					logger.warn( "could not add organisation: [{}]", e );
-				}
-					
-			}
-				
-			return response( organisations.toArray( new Organisation[] {} ), HttpStatus.OK );
-			
-		}
-		catch( Exception e ) {
-			
-			logger.warn("error", e );
-			
-			throw new RuntimeException( e );
-			
-		}
-	}
-	
 	@RequestMapping( method = { RequestMethod.POST }, consumes={"multipart/form-data"} )
-	public ResponseEntity<Organisation[]> post( HttpServletRequest request, Locale locale ) { 
+	public ResponseEntity<Result<List<Result<OrganisationDTO>>>> post( @RequestPart MultipartFile file, Locale locale,  @CookieValue(required=true, value="pwtid") String pwtid) { 
 		
-		logger.info("postfile");
+		logger.info("post, received file [{}]", file.getOriginalFilename() );
 		
-		try {
-			
-			byte[] bytes
-				= this.bytesFromRequest( request );
-			
-			ByteArrayInputStream bis
-				= new ByteArrayInputStream( bytes );
-			
-			List<String[]> rows 
-				= this.excelImporter.getExcelData( bis, 1, 1,2,3,4,5,6,7,8,9,10 );
-		
-			if (rows.size() == 0 || rows.isEmpty()) {
-				
-				this.logger.warn( "no rows in file" );
-				
-			}
-			
-			List<Organisation> organisations
-				= new ArrayList<Organisation>( rows.size() );
-			
-			for ( String[] row : rows ) {
-				
-				try {
-				
-					Organisation organisatie 
-						= this.mapTo( row ); 
+		Organisation actor 
+			= this.doorMan.guard().whoHasID( pwtid );
 	
-					if ( ( organisatie != null ) && ( ! isEmpty( organisatie.getEmail() ) ) ) {
-					
-						logger.info( "mapped organisation [{}], email [{}]", organisatie.getName(), organisatie.getEmail() );
-					
-						organisations.add( this.organisationManager.guard().create( organisatie ) );
-					}
-				}
-				catch( PirlewietException e ) {
-					logger.warn( "could not add organisation: [{}]", e.getMessage() );
-				}
-				catch( Exception e ) {
-					logger.warn( "could not add organisation: [{}]", e );
-				}
-					
-			}
-				
-			return response( organisations.toArray( new Organisation[] {} ), HttpStatus.OK );
-			
-		}
-		catch( Exception e ) {
-			
-			logger.warn("error", e );
-			
-			throw new RuntimeException( e );
-			
-		}
-	}
+		return response( this.organisationService.consume( file, actor ), HttpStatus.OK ); 
 	
-	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) String order ) {
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID( pwtid  );
-		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-	
-		List<Organisation> organisations 
-			= this.organisationManager.all( );
-		
-		String view
-			= null;
-		
-		if ( PirlewietUtil.isPirlewiet( actor) ) {
-			
-			view = "organisations_pirlewiet";
-			
-		}
-		else if ( PirlewietUtil.isPD( actor ) ) {
-			
-			for ( Organisation organisation : organisations ) {
-				this.reducer.reduce( organisation );
-			}
-			
-			view = "organisations_public";
-			
-		}
-		
-		Collections.sort( organisations, this.comparator( order != null ? order : "name" ) );
-		
-		model.put( "organisations", organisations );
-
-		return new ModelAndView( view, model );
-		
-	}
-	*/
-		
-	protected OrganisationDTO mapTo( String[] columns ) {
-		
-		OrganisationDTO organisatie
-			= new OrganisationDTO();
-		
-		if ( ! isEmpty( columns[ 0 ] ) ) {
-			
-			organisatie.setName( columns[ 0 ].trim() );
-			
-		}
-		else {
-			
-			organisatie.setName( columns[ 1 ].trim() );
-			
-		}
-		
-		/*
-		String straat
-			= columns[ 3 ];
-		
-		if ( ! isEmpty( straat ) ) {
-			
-			int space =	straat.lastIndexOf(" ");
-			
-			if ( space != -1 ) {
-				organisatie.getAddress().setStraat( straat.substring( 0, space ) );
-				logger.info( "[straat={}]", straat.substring( 0, space ) );
-				String nummer
-					= straat.substring( space + 1 ).trim();
-				organisatie.getAddress().setNummer( nummer );
-				logger.info( "[nummer={}]", straat.substring( space + 1 ) );
-			}
-			else {
-//				logger.info( "[straat={}]", straat.trim() );
-				organisatie.getAddress().setStraat( straat.trim() );
-			}
-			
-		}
-		
-		String zip
-			= columns[ 4 ];
-		
-		if ( ! isEmpty( zip ) ) {
-			zip = "" + Double.valueOf( zip.trim() ).intValue();
-			logger.info( "[zip={}]", zip );
-			organisatie.getAddress().setZipCode( zip );	
-		}
-		
-		String gemeente
-			= columns[ 5 ];
-		
-		logger.info( "[gemeente={}]", gemeente );
-		organisatie.getAddress().setGemeente( gemeente );
-		*/
-		
-		String telefoon
-			= columns[ 6 ];
-		
-		if ( ! isEmpty( telefoon ) ) {
-			
-			telefoon = telefoon.trim().replace(" ", "");
-			
-			if ( telefoon.startsWith( "04" ) ) {
-				
-				logger.info( "[telefoon is gsm = {}]", telefoon );
-				organisatie.setPhone( telefoon );
-			}
-			else {
-				logger.info( "[telefoon={}]", telefoon );
-				organisatie.setPhone( telefoon );
-			}
-			
-		}
-		
-		String gsm
-			 = columns[ 7 ];
-		
-		if ( ! isEmpty( gsm ) ) {
-			
-			gsm = gsm.trim().replace(" ", "");
-			
-			logger.info( "[gsm={}]", gsm );
-			organisatie.setPhone( gsm.trim() );	
-		}
-		
-		String email
-			= columns[ 9 ];
-		
-		if ( ! isEmpty( email ) ) {
-			logger.info( "[email={}]", email );
-			organisatie.setEmail( email.trim() );	
-		}
-		
-		return organisatie;
-		
-	}
-	
-	protected boolean isEmpty( String s ) {
-		return (s == null)  || s.isEmpty();
-	}
-	
-	protected byte[] bytesFromRequest( HttpServletRequest request ) {
-		
-		ByteArrayOutputStream bos
-			= new ByteArrayOutputStream();
-		
-		if ( false /* request instanceof DefaultMultipartHttpServletRequest */ ) {
-			
-			try {
-			
-				DefaultMultipartHttpServletRequest d
-					= (DefaultMultipartHttpServletRequest) request;
-				
-				Iterator<String> names = d.getFileNames();
-				
-				while ( names.hasNext() ) {
-					
-					String name 
-						= names.next();
-					
-					MultipartFile file 
-						= d.getFile( name );
-				
-			        // FileItemStream item = iterator.next();
-			        InputStream stream = file.getInputStream();
-			       
-			          int len;
-			          byte[] buffer 
-			          	= new byte[8192];
-			          
-			          while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-			        	  bos.write( buffer );
-			          }
-			     }
-		    } catch ( Exception e ) {
-		    	throw new RuntimeException( e );
-		    }
-		
-		}
-		else {
-			
-			try {
-			 
-				ServletFileUpload upload 
-			 		= new ServletFileUpload();
-			 
-				/*
-				List list
-					= upload.parseRequest( request );
-				
-				list.size();
-				*/ 
-				FileItemIterator iterator 
-					= upload.getItemIterator( request );
-		      while (iterator.hasNext()) {
-		    	  
-		    	  FileItemStream fi
-		    	  	= iterator.next();
-		    	  
-		    	  
-
-		          if ( fi.isFormField() ) {
-		            logger.info("Got a form field: " + fi.getFieldName());
-		          } else {
-		        	  
-		        	  InputStream stream 
-			    	  	= fi.openStream();
-		        	  
-		        	  int len;
-		              byte[] buffer = new byte[8192];
-		              while ((len = stream.read(buffer, 0, buffer.length)) != -1) {
-		            	  bos.write(buffer, 0, len);
-		              }
-		        	
-		          }
-		    	  
-		      }
-				
-		     }
-		     catch( Exception e ) {
-		    	 logger.warn( "could not parse HTTP request", e );
-		     }
-
-			
-		}
-		
-		return bos.toByteArray();
 	}
 			
 }

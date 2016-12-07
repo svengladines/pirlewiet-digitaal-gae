@@ -118,7 +118,7 @@ public class OrganisationManager {
     	saved 
 			= this.organisationRepository.saveAndFlush( saved );
     	
-    	logger.info( "created organiation with uuid [{}] and code [{}]", saved.getUuid(), code );
+    	logger.info( "created organiation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), code } );
     	
     	
 		this.sendCreatedEmailToOrganisation( saved );

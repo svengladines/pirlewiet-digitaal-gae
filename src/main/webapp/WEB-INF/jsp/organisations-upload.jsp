@@ -17,7 +17,7 @@
 	
 		<div class="row">
 		
-		<form id="multipleForm" action="rs/organisations" method="post" class="form-horizontal" enctype="multipart/form-data">
+		<form id="multipleForm" action="api/organisations" method="post" class="form-horizontal" enctype="multipart/form-data">
 	
 			<div id="upload-div" class="row">
 		
@@ -82,7 +82,7 @@
 		
 			var type = "json";
 
-			var url = "/rs/organisations";
+			var url = "/api/organisations";
 
 			var fdata = new FormData();
 

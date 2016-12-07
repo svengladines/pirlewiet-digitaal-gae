@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
+import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 
@@ -38,17 +40,15 @@ public class HolidaysController {
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json"} )
 	@ResponseBody
-	public ResponseEntity<List<Holiday>> get( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ResponseEntity<Result<List<Result<HolidayDTO>>>> get( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisation actor
 			= this.doorMan.whoHasID( pwtid );
 		
-		List<Holiday> holidays
-			= new ArrayList<Holiday>( );
+		Result<List<Result<HolidayDTO>>> holidaysResult
+			= this.holidayService.query( actor );
 		
-		holidays.addAll( this.holidayService.query( actor ) );
-		
-		return response( holidays, HttpStatus.OK );
+		return response( holidaysResult, HttpStatus.OK );
 		
 	}
 	

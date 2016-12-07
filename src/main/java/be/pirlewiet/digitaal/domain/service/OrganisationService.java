@@ -6,9 +6,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
@@ -16,11 +16,13 @@ import be.pirlewiet.digitaal.domain.Reducer;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.people.Excelsior;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.dto.AddressDTO;
 import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.util.Tuple;
 
 @Service
 public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Service<OrganisationDTO,Organisation> {
@@ -30,6 +32,9 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	
 	@Resource
 	OrganisationManager organisationManager;
+	
+	@Resource
+	Excelsior excelsior;
 	
 	@Resource
 	Reducer reducer;
@@ -170,6 +175,54 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			
 			result.setObject( dto );
 		}
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<List<Result<OrganisationDTO>>> consume( MultipartFile file, Organisation actor) {
+		
+		Result<List<Result<OrganisationDTO>>>  result
+			= new Result<List<Result<OrganisationDTO>>>();
+		
+		List<String[]> rows
+			= this.excelsior.toRows( file );
+		
+		List<Tuple<Organisation, Address>> tuples
+			= this.excelsior.toOrganisations( rows );
+		
+		List<Result<OrganisationDTO>> individualResults
+			= list();
+	
+		for ( Tuple<Organisation,Address> tuple : tuples ) {
+		
+			Result<OrganisationDTO> individualResult
+				= new Result<OrganisationDTO>();
+			
+			Organisation organisation
+				= tuple.getX();
+			
+			Address address
+				= tuple.getY();
+			
+			Address createdAddress
+				= this.addressManager.create( address );
+			
+			organisation.setAddressUuid( createdAddress.getUuid() );
+			
+			Organisation created
+				= this.organisationManager.create( organisation );
+			
+			individualResult.setValue( Value.OK );
+			individualResult.setObject( OrganisationDTO.from( created ) );
+			
+			individualResults.add( individualResult );
+		
+		}
+		
+		result.setValue( Value.OK );
+		result.setObject( individualResults );
 		
 		return result;
 		

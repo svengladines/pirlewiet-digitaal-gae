@@ -7,7 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -29,6 +33,7 @@ import be.pirlewiet.digitaal.web.controller.page.OrganisationPageController;
 import be.pirlewiet.digitaal.web.controller.page.OrganisationRegistrationPageController;
 import be.pirlewiet.digitaal.web.controller.page.OrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.StartPageController;
+import be.pirlewiet.digitaal.web.controller.page.UploadOrganisationsPageController;
 
 @Configuration
 @EnableWebMvc
@@ -119,6 +124,11 @@ public class MvcConfig {
 		@Bean
 		public LogoutPageController logOutPageController() {
 			return new LogoutPageController();
+		}
+		
+		@Bean
+		public UploadOrganisationsPageController uploadOrganisationsPageController() {
+			return new UploadOrganisationsPageController();
 		}
 		
 	}
@@ -238,6 +248,17 @@ public class MvcConfig {
 			return dateFormatter;
 			
 		}
+	}
+	
+	@Bean
+	MultipartResolver multipartResolver() {
+		
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+		
+		resolver.setMaxInMemorySize( 200240 );
+		
+		return resolver;
+		
 	}
 	
 
