@@ -7,11 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
-import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -34,6 +32,9 @@ import be.pirlewiet.digitaal.web.controller.page.OrganisationRegistrationPageCon
 import be.pirlewiet.digitaal.web.controller.page.OrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.StartPageController;
 import be.pirlewiet.digitaal.web.controller.page.UploadOrganisationsPageController;
+import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietApplicationsPageController;
+import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietOrganisationPageController;
+import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietOrganisationsPageController;
 
 @Configuration
 @EnableWebMvc
@@ -131,6 +132,24 @@ public class MvcConfig {
 			return new UploadOrganisationsPageController();
 		}
 		
+		/*
+		 * Pirlewiet
+		 * 
+		 */
+		@Bean
+		public PirlewietOrganisationsPageController pirlewietOrganisationsPageController() {
+			return new PirlewietOrganisationsPageController();
+		}
+		
+		@Bean
+		public PirlewietOrganisationPageController pirlewietOrganisationPageController() {
+			return new PirlewietOrganisationPageController();
+		}
+		
+		@Bean
+		public PirlewietApplicationsPageController pirlewietApplicationsPageController() {
+			return new PirlewietApplicationsPageController();
+		}
 	}
 	
 	@Configuration

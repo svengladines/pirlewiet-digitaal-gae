@@ -185,7 +185,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 				= Address.from( enrollment.getAddress() );
 		
 			Address createdAddress 
-				= this.addressManager.createOrUpdate( toCreateAddress );
+				= this.addressManager.create( toCreateAddress );
 			
 			toCreate.setAddressUuid( createdAddress.getUuid() );
 		

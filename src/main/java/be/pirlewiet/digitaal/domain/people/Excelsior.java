@@ -35,7 +35,7 @@ public class Excelsior {
 
 		try {
 			
-			rows = this.excelImporter.getExcelData( file,1,1,2,3,4,5,6,7,8,9 );
+			rows = this.excelImporter.getExcelData( file,1,1,2,3,4,5,6,7,8,9,10 );
 			
 		} catch ( Exception e ) {
 			
@@ -94,10 +94,6 @@ public class Excelsior {
 				address.setCity( trim( row[2] ) );
 			}
 			
-			if  (row.length > 3 ) {
-				organisation.setPhone( trim( row[3] ) );
-			}
-			
 			if  (row.length > 4 ) {
 				organisation.setName( trim( row[4] ) );
 			}
@@ -109,13 +105,32 @@ public class Excelsior {
 			if  (row.length > 6 ) {
 				address.setStreet( trim( row[6] ) );
 			}
-
+			
 			if  (row.length > 7 ) {
-				// don't set uuid
+				String mobile = trim( row[3] );
+				String fixed = trim( row[7] );
+				
+				if ( isEmpty( fixed ) ) {
+					
+					if ( isEmpty( mobile ) ) {
+						organisation.setPhone( "?" );
+					}
+					else {
+						organisation.setPhone( mobile );
+					}
+				}
+				else {
+					organisation.setPhone( fixed );
+				}
 			}
 			
 			if  (row.length > 8 ) {
-				address.setZipCode( trim( row[8] ) );
+				// don't set uuid
+				
+			}
+			
+			if  (row.length > 9 ) {
+				address.setZipCode( trim( row[9] ) );
 			}
 			
 			Tuple<Organisation,Address> tuple

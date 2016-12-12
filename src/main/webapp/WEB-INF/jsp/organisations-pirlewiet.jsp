@@ -11,7 +11,7 @@
 	
 	<body>
 
-    <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
+    <jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
     	<jsp:param name="active" value="organisations"/>
     </jsp:include>
     
@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Organisaties</h1>
 					<p>
-						Overzicht van de geregistreerde doorverwijzers.
+						Overzicht van de geregistreerde organisaties.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -38,26 +38,27 @@
 			
 			<thead>
 				<tr>
-					<th><a href="/rs/organisations.html?order=name">Naam</a></th>
-					<th><a href="/rs/organisations.html?order=city">Gemeente</a></th>
-					<th>Telefoon</th>
+					<th><a href="/organisations.html?order=name">Naam</a></th>
+					<th><a href="/organisations.html?order=city">Gemeente</a></th>
 					<th>E-mail</th>
-					<th>Code</th>
-					<th>Details</th>
+					<th>code</th>
+					<th>Acties</th>
 				</tr>
 			</thead>
 			
+			<c:set var="organisations" value="${organisationsResult.object}"/>
 			
-			<c:forEach items="${organisations}" var="organisation">
+			
+			<c:forEach items="${organisations}" var="organisationResult">
+			
+			<c:set var="organisation" value="${organisationResult.object}"/>
 				
-				<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${organisation.updated}" var="updated"></fmt:formatDate>
 				<tr>
-					<td class="nowrap">${organisation.naam}</td>
-					<td>${organisation.adres.gemeente}</td>
-					<td>${organisation.telefoonNummer}</td>
-					<td>${organisation.email}</td>
-					<td>${organisation.code}</td>
-					<td><a href="/rs/organisation/uuid.html=${organisation.uuid}"><i class="fa fa-edit"></i>Bekijk</td>
+					<td>${organisation.name}</td>
+					<td class="nowrap">${organisation.city}</td>
+					<td class="nowrap">${organisation.email}</td>
+					<td class="nowrap">${organisation.code}</td>
+					<td class="nowrap"><a href="${pageContext.servletContext.contextPath}/organisation-pirlewiet-${organisation.uuid}.html">Beheer</a></td>
 				</tr>
 			</c:forEach>
 			

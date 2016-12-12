@@ -14,6 +14,7 @@ import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.Reducer;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
+import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.Excelsior;
@@ -22,6 +23,7 @@ import be.pirlewiet.digitaal.dto.AddressDTO;
 import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import be.pirlewiet.digitaal.web.util.Tuple;
 
 @Service
@@ -63,7 +65,9 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			OrganisationDTO dto
 				= OrganisationDTO.from( organisation );
 			
-			this.reducer.reduce( dto );
+			if ( ! PirlewietUtil.isPirlewiet( actor ) ) {
+				this.reducer.reduce( dto );	
+			}
 			
 			dtos.add( dto );
 			
@@ -180,7 +184,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public Result<List<Result<OrganisationDTO>>> consume( MultipartFile file, Organisation actor) {
 		
 		Result<List<Result<OrganisationDTO>>>  result
@@ -196,28 +200,42 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			= list();
 	
 		for ( Tuple<Organisation,Address> tuple : tuples ) {
+			
+			try {
 		
-			Result<OrganisationDTO> individualResult
-				= new Result<OrganisationDTO>();
-			
-			Organisation organisation
-				= tuple.getX();
-			
-			Address address
-				= tuple.getY();
-			
-			Address createdAddress
-				= this.addressManager.create( address );
-			
-			organisation.setAddressUuid( createdAddress.getUuid() );
-			
-			Organisation created
-				= this.organisationManager.create( organisation );
-			
-			individualResult.setValue( Value.OK );
-			individualResult.setObject( OrganisationDTO.from( created ) );
-			
-			individualResults.add( individualResult );
+				Result<OrganisationDTO> individualResult
+					= new Result<OrganisationDTO>();
+				
+				Organisation organisation
+					= tuple.getX();
+				
+				Address address
+					= tuple.getY();
+				
+				Address createdAddress
+					= this.addressManager.create( address );
+				
+				organisation.setAddressUuid( createdAddress.getUuid() );
+				
+				Organisation created
+					= this.organisationManager.create( organisation, false );
+				
+				individualResult.setValue( Value.OK );
+				individualResult.setObject( OrganisationDTO.from( created ) );
+				
+				individualResults.add( individualResult );
+				
+				logger.warn("organisation [{}] successfully consumed", created.getName() );
+			}
+			catch( PirlewietException e ){
+				logger.warn("failed to consume organisation-tuple for organisation [{}], error code is [{}]", tuple.getX().getName(), e.getErrorCode().getCode() );
+				Result<OrganisationDTO> individualResult
+					= new Result<OrganisationDTO>();
+				individualResult.setValue( Value.NOK );
+				individualResult.setObject( OrganisationDTO.from( tuple.getX() ) );
+				individualResult.setErrorCode( e.getErrorCode() );
+				individualResults.add( individualResult );
+			}
 		
 		}
 		

@@ -35,7 +35,7 @@ public class TestApplicationController extends JTest {
 		
 		headers.put( "Cookie", "pwtid=001");
 		
-		postJSON( url, dto, headers );
+		// postJSON( url, dto, headers );
 		
 	}
 

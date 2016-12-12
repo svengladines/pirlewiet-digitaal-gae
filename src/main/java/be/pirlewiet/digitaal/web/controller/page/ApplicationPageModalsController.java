@@ -76,10 +76,10 @@ public class ApplicationPageModalsController {
 		
 		if ( "holidays".equals( q ) ) {
 			
-			Result<List<HolidayDTO>> holidayResult 
+			Result<List<Result<HolidayDTO>>> holidaysResult 
 				= this.holidayService.query( actor );
 			
-			model.put( "holidaysResult", holidayResult );
+			model.put( "holidaysResult", holidaysResult );
 			
 		}
 		else if ( "contact".equals( q ) ) {

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import be.pirlewiet.digitaal.domain.scenario.ReadyToRockOneScenario;
 import be.pirlewiet.digitaal.domain.scenario.ReadyToRockScenario;
-import be.pirlewiet.digitaal.domain.scenario.SetQuestionsQIDScenario;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
 @Controller
@@ -28,16 +27,10 @@ public class ScenarioController {
 		= LoggerFactory.getLogger( ScenarioController.class );
 	
 	@Resource
-	SetQuestionsQIDScenario setOrganisationsUuidScenario;
-	
-	@Resource
 	ReadyToRockScenario readyToRockScenario;
 	
 	@Resource
 	ReadyToRockOneScenario readyToRockOneScenario;
-	
-	@Resource
-	SetQuestionsQIDScenario setQuestionsQIDScenario;
 	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
@@ -68,14 +61,13 @@ public class ScenarioController {
 			else {
 				return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
 			}
-			*/
 			if ( "qid".equals( id ) ) {
 				this.setQuestionsQIDScenario.guard().execute();
 				return response( Boolean.TRUE, HttpStatus.OK );
 			}
-			else {
-				return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
-			}
+			*/
+			
+			return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
 			
 		}
 		catch( Exception e ) {

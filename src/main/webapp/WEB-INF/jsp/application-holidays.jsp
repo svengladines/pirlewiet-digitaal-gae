@@ -24,7 +24,8 @@
 							<c:if test="${empty currentHolidays}">
 								<p class="text=info">Er is momenteel geen vakantie waar men voor kan inschrijven</p>
 							</c:if>
-							<c:forEach items="${currentHolidays}" var="h">
+							<c:forEach items="${currentHolidays}" var="holidayResult">
+								<c:set var="h" value="${holidayResult.object}"/>
 								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${h.start}" var="start"></fmt:formatDate>	
 								<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${h.end}" var="end"></fmt:formatDate>
 								<c:set var="contains" value="false" />

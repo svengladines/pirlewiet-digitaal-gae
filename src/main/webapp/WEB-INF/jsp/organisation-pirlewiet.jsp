@@ -13,26 +13,24 @@
 	
 	  <c:choose>
 	  <c:when test="${isPirlewiet}">
-	  		<c:set var="zee" value="de"/>
 	      	<jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
 	    		<jsp:param name="active" value="organisation"/>
 	   		</jsp:include>
 	   </c:when>
 	   <c:otherwise>
-	   		<c:set var="zee" value="jouw"/>
-	   		<jsp:include page="/WEB-INF/jsp/menu-public.jsp">
+	   		<jsp:include page="/WEB-INF/jsp/menu.jsp">
 	    		<jsp:param name="active" value="organisation"/>
 	   		</jsp:include>
 	   </c:otherwise>
 	   </c:choose>
-	   
+
 	<div class="banner">
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1 class="capita">${zee} Organisatie</h1>
+					<h1>Mijn Organisatie</h1>
 					<p>
-						Beheer het profiel van ${zee} organisatie.
+						Beheer het profiel van jouw organisatie.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -49,7 +47,7 @@
 			<c:choose>
 			<c:when test="${incomplete == false}">
 				<div class="alert alert-success" role="alert">
-					<strong>Het profiel van ${zee} organisatie is in orde.</strong>
+					<strong>Het profiel van jouw organisatie is in orde.</strong>
 				</div>
 			</c:when>
 			<c:otherwise>
@@ -71,7 +69,7 @@
 			<input id="organisation-uuid" type="hidden" value="${organisation.uuid}"></input>
 			<div class="form-group">
 				<label for="organisation-name" class="col-sm-4 control-label">Naam organisatie (*)</label>
-				<div class="col-sm-5">	
+				<div class="col-sm-3">	
 					<input id="organisation-name" type="text" class="form-control" value="${organisation.name}"></input>
 				</div>
 			</div>
@@ -111,13 +109,15 @@
 						<input id="address-number" type="text" class="form-control" value="${address.number}"></input>
 					</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-4 control-label"></label>
-				<div class="col-sm-8">
-					<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
-					<span id="organisation-status"></span>
+			<c:if test="${!isPirlewiet}">
+				<div class="form-group">
+					<label class="col-sm-4 control-label"></label>
+					<div class="col-sm-8">
+						<button type="button" id="organisation-save" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+						<span id="organisation-status"></span>
+					</div>
 				</div>
-			</div>
+			</c:if>
 			
 		</form>
 		

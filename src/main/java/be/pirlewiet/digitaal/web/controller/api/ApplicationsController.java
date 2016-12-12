@@ -53,6 +53,8 @@ public class ApplicationsController {
 	@Resource
 	Mapper mapper;
 	
+	/*
+	
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json"} )
 	@ResponseBody
 	public ResponseEntity<List<Application>> query( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
@@ -245,6 +247,8 @@ public class ApplicationsController {
 		return organisation;
 		
 	}
+	
+	*/
 	
 	
 

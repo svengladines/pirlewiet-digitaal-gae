@@ -4,12 +4,13 @@ import javax.annotation.Resource;
 
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class ReadyToRockOneScenario extends Scenario {
 	
 	@Resource
-	OrganisatieRepository organisatieRepository;
+	OrganisationRepository organisatieRepository;
 	
 	@Resource
 	Secretary secretariaatsMedewerker;
@@ -28,7 +29,7 @@ public class ReadyToRockOneScenario extends Scenario {
 		Organisation organisation 
 			= this.organisatieRepository.findOneByEmail( parameters[ 0 ] );
 		
-		this.secretariaatsMedewerker.sendInitialCode( organisation );
+		// this.secretariaatsMedewerker.sendInitialCode( organisation );
 			
 	}
 	

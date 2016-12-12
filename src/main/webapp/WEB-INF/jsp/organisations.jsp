@@ -11,9 +11,20 @@
 	
 	<body>
 
-    <jsp:include page="/WEB-INF/jsp/menu_public.jsp">
-    	<jsp:param name="active" value="organisations"/>
-    </jsp:include>
+      <c:choose>
+	  <c:when test="${isPirlewiet}">
+	  		<c:set var="zee" value="de"/>
+	      	<jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
+	    		<jsp:param name="active" value="organisation"/>
+	   		</jsp:include>
+	   </c:when>
+	   <c:otherwise>
+	   		<c:set var="zee" value="jouw"/>
+	   		<jsp:include page="/WEB-INF/jsp/menu-public.jsp">
+	    		<jsp:param name="active" value="organisation"/>
+	   		</jsp:include>
+	   </c:otherwise>
+	   </c:choose>
     
 	<div class="banner">
 		<div class="container">
@@ -52,9 +63,9 @@
 			<c:set var="organisation" value="${organisationResult.object}"/>
 				
 				<tr>
-					<td class="nowrap">${organisation.name}</td>
-					<td>${organisation.city}</td>
-					<td>${organisation.email}</td>
+					<td>${organisation.name}</td>
+					<td class="nowrap">${organisation.city}</td>
+					<td class="nowrap">${organisation.email}</td>
 				</tr>
 			</c:forEach>
 			

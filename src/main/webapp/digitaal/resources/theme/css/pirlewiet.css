@@ -479,3 +479,7 @@ a.edit {
 .th-row {
  width: 300px;
 }
+
+.capita {
+	text-transform: capitalize;
+}

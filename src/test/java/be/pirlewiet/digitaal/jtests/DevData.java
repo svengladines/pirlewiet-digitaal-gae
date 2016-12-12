@@ -94,67 +94,6 @@ public class DevData {
 		lisaAddress = this.addressRepository.saveAndFlush( lisaAddress );
 		lisaAddress.setUuid( KeyFactory.keyToString( lisaAddress.getKey() ) );
 		lisaAddress = this.addressRepository.saveAndFlush( lisaAddress );		
-		/*
-		Organisation pirlewiet
-			= new Organisation();
-
-		pirlewiet.setNaam("Pirlewiet VZW");
-		pirlewiet.setCode( "pwt001" );
-		pirlewiet.setEmail( PirlewietUtil.PIRLEWIET_EMAIL );
-		pirlewiet.setTelefoonNummer( "09020123456" );
-		pirlewiet.setAdres( new Address() );
-		pirlewiet.setEmail( "info@pirlewiet.be");
-		pirlewiet.getAdres().setGemeente( "Gent" );
-		pirlewiet.getAdres().setZipCode( "6000" );
-		pirlewiet.getAdres().setStraat( "Sint-X" );
-		pirlewiet.getAdres().setNummer( "61" );
-		pirlewiet = this.organsiatieRepository.saveAndFlush( pirlewiet );
-		pirlewiet.setUuid( "pwt-uuid" );
-		// pirlewiet.setUuid( KeyFactory.keyToString( pirlewiet.getKey() ) );
-		this.organsiatieRepository.saveAndFlush( pirlewiet );
-		
-		{
-		Organisation ocmw
-			= new Organisation();
-	
-		ocmw.setNaam("OCMW Leuven");
-		ocmw.setCode( "abc123" );
-		ocmw.setEmail( "info@ocmw.be" );
-		ocmw.setTelefoonNummer( "016123456" );
-		ocmw.setAdres( new Address() );
-		ocmw.getAdres().setGemeente( "Leuven" );
-		ocmw.getAdres().setStraat( "Oude Markt" );
-		ocmw.getAdres().setZipCode( "3000" );
-		ocmw.getAdres().setNummer("1");
-	
-		ocmw = this.organsiatieRepository.saveAndFlush( ocmw );
-		ocmw.setUuid( KeyFactory.keyToString( ocmw.getKey() ) );
-		this.organsiatieRepository.saveAndFlush( ocmw );
-		
-		Enrollment lisaSimpson
-			= new Enrollment();
-		
-		lisaSimpson.setVks( this.configuredVakantieRepository.findAll().get( 0 ).getUuid() );
-		lisaSimpson.setOrganisatie( ocmw );
-		lisaSimpson.getStatus().setValue( EnrollmentStatus.Value.DRAFT );
-		lisaSimpson.getContactGegevens().setName( "x" );
-		lisaSimpson.getContactGegevens().setPhone( "x" );
-		lisaSimpson.getContactGegevens().setEmail( "sven@x" );
-		lisaSimpson.getAdres().setGemeente( "x");
-		lisaSimpson.getAdres().setZipCode( "6000");
-		lisaSimpson.getAdres().setStraat( "x" );
-		lisaSimpson.getAdres().setNummer( "x" );
-		lisaSimpson.setYear( 2016 );
-		
-	
-		Enrollment created 
-			= this.secretariaatsMedewerker.createEnrollment( lisaSimpson );
-		
-		this.secretariaatsMedewerker.updateDeelnemer( created.getUuid(), lisa ); 
-				
-		this.logger.info( "lisa id is [{}]", lisa.getUuid() );
-		}
-		*/
 		
 		Organisation vzwSvekke
 			= new Organisation();
@@ -183,6 +122,37 @@ public class DevData {
 			vzwSvekke = this.organsiationRepository.saveAndFlush( vzwSvekke );
 			
 			logger.info( "VZW Svekke has UUID [{}]", vzwSvekke.getUuid() );
+			
+		}
+		
+
+		Organisation vzwPirlewiet
+			= new Organisation();
+		
+		{
+			vzwPirlewiet.setName("VZW Pirlewiet");
+			vzwPirlewiet.setCode( "pwt001" );
+			vzwPirlewiet.setEmail( "info@pirlewiet.be" );
+			vzwPirlewiet.setPhone( "016123456" );
+			vzwPirlewiet.setCity( "Gent" );
+		
+			vzwPirlewiet = this.organsiationRepository.saveAndFlush( vzwPirlewiet );
+			vzwPirlewiet.setUuid( KeyFactory.keyToString( vzwPirlewiet.getKey() ) );
+			
+			Address address = new Address();
+			address.setZipCode( "3370" );
+			address.setCity("Neervelp");
+			address.setStreet( "Vertrijksestraat" );
+			address.setNumber( "33" );
+			address = this.addressRepository.saveAndFlush( address );
+			address.setUuid( KeyFactory.keyToString( address.getKey() ) );
+			address = this.addressRepository.saveAndFlush( address );
+			
+			vzwPirlewiet.setAddressUuid( address.getUuid() );
+			
+			vzwPirlewiet = this.organsiationRepository.saveAndFlush( vzwPirlewiet );
+			
+			logger.info( "VZW Pirlewiet has UUID [{}]", vzwPirlewiet.getUuid() );
 			
 		}
 		

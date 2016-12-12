@@ -11,7 +11,7 @@
 	
 	<body>
 
-      <jsp:include page="/WEB-INF/jsp/menu_public.jsp">
+      <jsp:include page="/WEB-INF/jsp/menu-public.jsp">
     	<jsp:param name="active" value="organisation"/>
     </jsp:include>
 

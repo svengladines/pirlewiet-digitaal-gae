@@ -78,6 +78,10 @@ public class OrganisationManager {
     }
     
     public Organisation create( Organisation organisation ) {
+    	return this.create( organisation, true );
+    }
+    
+    public Organisation create( Organisation organisation, boolean sendEmail ) {
     	
     	String email
     		= organisation.getEmail();
@@ -105,10 +109,14 @@ public class OrganisationManager {
     		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_TAKEN, String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
     	}
     	
-    	String code 
-    		= this.buitenWipper.guard().uniqueCode();
+    	if ( isEmpty( organisation.getCode() ) ) {
     	
-    	organisation.setCode( code );
+	    	String code 
+	    		= this.buitenWipper.guard().uniqueCode();
+	    	
+	    	organisation.setCode( code );
+	    	
+    	}
     	
     	Organisation saved 
     		= this.organisationRepository.saveAndFlush( organisation );
@@ -118,11 +126,12 @@ public class OrganisationManager {
     	saved 
 			= this.organisationRepository.saveAndFlush( saved );
     	
-    	logger.info( "created organiation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), code } );
+    	logger.info( "created organiation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), saved.getCode() } );
     	
-    	
-		this.sendCreatedEmailToOrganisation( saved );
-		this.sendCreatedEmailToPirlewiet( saved );
+    	if ( sendEmail ) {
+    		this.sendCreatedEmailToOrganisation( saved );
+    		this.sendCreatedEmailToPirlewiet( saved );
+    	}
     	
     	return saved;
     	

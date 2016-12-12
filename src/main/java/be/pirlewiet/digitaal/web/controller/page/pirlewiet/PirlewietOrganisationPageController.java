@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller.page;
+package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,10 +24,10 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping(value="/organisation.html")
-public class OrganisationPageController {
+@RequestMapping(value="/organisation-pirlewiet-{uuid}.html")
+public class PirlewietOrganisationPageController {
 	
-	private final static Logger logger = LoggerFactory.getLogger( OrganisationPageController.class );
+	private final static Logger logger = LoggerFactory.getLogger( PirlewietOrganisationPageController.class );
 	
 	@Resource
 	OrganisationService organisationService;
@@ -35,7 +36,9 @@ public class OrganisationPageController {
 	protected DoorMan doorMan;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 
-	public ModelAndView view( @CookieValue( required = true, value="pwtid" ) String pwtID )  {
+	public ModelAndView view( 
+			@CookieValue( required = true, value="pwtid" ) String pwtID,
+			@PathVariable String uuid)  {
 		
 		OrganisationDTO organisation
 			= null;
@@ -45,7 +48,7 @@ public class OrganisationPageController {
 		
 		
 		Result<OrganisationDTO> result 
-			= this.organisationService.findOneByUuid( pwtID, actor );
+			= this.organisationService.findOneByUuid( uuid, actor );
 			
 		organisation = result.getObject();
 			
@@ -72,7 +75,7 @@ public class OrganisationPageController {
 		model.put( "incomplete", organisation.getInComplete() );
 		model.put( "address", address );
 		
-		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( organisation) );
+		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( actor ) );
 
 		String view 
 			= "organisation";
