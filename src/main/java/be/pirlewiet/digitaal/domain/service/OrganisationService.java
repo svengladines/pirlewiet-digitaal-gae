@@ -280,6 +280,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			= this.organisationManager.organisation( uuid );
 	
 		if ( found == null ) {
+			logger.info( "no organisation found with uuid [{}]", uuid );
 			result.setValue( Value.NOK );
 			result.setErrorCode( ErrorCodes.ORGANISATION_NOT_FOUND );
 		}
@@ -288,13 +289,15 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			= null;
 		
 		if ( found.getAddressUuid() == null ) {
-		
+			logger.info( "[{}]; no address yet for organisation [{}], create new one", uuid );
 			toReturn = this.addressManager.create( Address.from( address ) );
 			this.organisationManager.updateAddress( found, toReturn.getUuid() );
 		}
 		else {
+			logger.info( "[{}]; organisation has address with uuid [{}]", uuid, found.getAddressUuid() );
 			Address toUpdate 
 				= this.addressManager.findOneByUuid( found.getAddressUuid() );
+			logger.info( "[{}]; found address with uuid [{}]", uuid, found.getAddressUuid() );
 			toReturn = this.addressManager.update( toUpdate, Address.from( address ) ) ;	
 		}
 		

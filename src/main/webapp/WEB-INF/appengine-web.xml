@@ -5,5 +5,6 @@
   <threadsafe>true</threadsafe>
   <system-properties>
   	<property name="spring.profiles.active" value="production" />
+  	<property name="pirlewiet.currentYear" value="2017" />
   </system-properties>
 </appengine-web-app>

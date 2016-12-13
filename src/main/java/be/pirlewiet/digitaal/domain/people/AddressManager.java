@@ -4,6 +4,9 @@ import static be.occam.utils.javax.Utils.isEmpty;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.IncompleteObjectException;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
@@ -13,6 +16,9 @@ import be.pirlewiet.digitaal.repositories.AddressRepository;
 import com.google.appengine.api.datastore.KeyFactory;
 
 public class AddressManager {
+	
+	protected final Logger logger
+		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Resource
 	protected DoorMan doorMan;
@@ -69,8 +75,15 @@ public class AddressManager {
 			throw new IncompleteObjectException( ErrorCodes.ADDRESS_NUMBER_MISSING );
 		}
 		
+		toUpdate.setZipCode( update.getZipCode() );
+		toUpdate.setCity( update.getCity() );
+		toUpdate.setStreet( update.getStreet() );
+		toUpdate.setNumber( update.getNumber() );
+		
 		Address updated 
 			= this.addressRepository.saveAndFlush( toUpdate );
+		
+		logger.info( "updated address with uuid [{}] to [{}]", toUpdate.getUuid(), update.getNumber() );
 	
 		return updated;
 		

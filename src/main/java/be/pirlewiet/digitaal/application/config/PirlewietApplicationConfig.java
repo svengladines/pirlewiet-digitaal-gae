@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -36,6 +37,7 @@ import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+import be.pirlewiet.digitaal.web.util.ProductionData;
 
 @Configuration
 @EnableTransactionManagement
@@ -62,7 +64,13 @@ public class PirlewietApplicationConfig {
 	@Profile({ConfigurationProfiles.PRODUCTION,ConfigurationProfiles.DEV})
 	// @Import( PirlewietAppEngineConfig.class )
 	static class RepositoryConfigForProduction {
-	
+		
+		@Bean
+		@Lazy( false )
+		public ProductionData productionData() {
+			return new ProductionData();
+		}
+		
 	}
 	
 	@Configuration
