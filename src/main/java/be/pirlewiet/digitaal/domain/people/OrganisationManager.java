@@ -334,29 +334,4 @@ public class OrganisationManager {
 
     }
     
-    /*
-    protected boolean publishNewList() {
-    	
-    	try {
-			String html 
-				= Client.getHTML( "http://pirlewiet-digitaal.appspot.com/rs/organisations.html", PirlewietUtil.as( pDiddy ) ).getBody();
-			
-			logger.info( "html: {}", html );
-			
-			logger.info( "sending html to FTP server...", html );
-			boolean ok 
-				= ftpClient.putTextFile("httpdocs/digitaal", "organisations.html", html );
-			logger.info( "FTP put [{}]", ok ? "succeeded" : "failed" );
-			
-			return ok;
-			
-		}
-		catch ( Exception e ) {
-			logger.error( "could publish organisations-list ", e );
-			return false;
-		}
-    	
-    }
-    */
-    
 }

@@ -19,6 +19,8 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 /*
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
  * 
@@ -71,6 +73,63 @@ public class ApplicationManager {
 		return one;
 		
 	}
+	
+	   public Application create( Application application, Organisation actor ) {
+	    	
+	    	String email
+	    		= actor.getEmail();
+	    	
+	    	/*
+	    	if ( isEmpty( application.getName() ) ) {
+	    		throw new PirlewietException( ErrorCodes.ORGANISATION_NAME_MISSING, "Vul het veld 'naam' in." );
+	    	}
+	    	
+	    	if ( isEmpty( email ) ) {
+	    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'e-mail' in." );
+	    	}
+	    	
+	    	if ( isEmpty( application.getPhone() ) ) {
+	    		throw new PirlewietException( ErrorCodes.ORGANISATION_PHONE_MISSING, "Vul het veld 'telefoon' in." );
+	    	}
+	    	
+	    	if ( isEmpty( application.getCity() ) ) {
+	    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'gemeente' in." );
+	    	}
+	    	
+	    	if ( isEmpty( organisation.getCode() ) ) {
+	    	
+		    	String code 
+		    		= this.buitenWipper.guard().uniqueCode();
+		    	
+		    	organisation.setCode( code );
+		    	
+	    	}
+	    	*/
+	    	application.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
+	    	application.setHolidayUuids( "" );
+	    	application.setHolidayNames( "" );
+	    	application.setOrganisationUuid( actor.getUuid() );
+	    	
+	    	Application saved 
+	    		= this.applicationRepository.saveAndFlush( application );
+	    	
+	    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+	    	
+	    	saved 
+				= this.applicationRepository.saveAndFlush( saved );
+	    	
+	    	logger.info( "created application with uuid [{}]", new Object[] { saved.getUuid() } );
+	    	
+	    	/*
+	    	if ( sendEmail ) {
+	    		this.sendCreatedEmailToOrganisation( saved );
+	    		this.sendCreatedEmailToPirlewiet( saved );
+	    	}
+	    	*/
+	    	
+	    	return saved;
+	    	
+	    }
 	
 	public Application updateHolidays( String uuid, List<Holiday> holidays ) {
 		

@@ -18,6 +18,7 @@ import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
+import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Application;
@@ -50,6 +51,26 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	public ApplicationService guard() {
 		super.guard();
 		return this;
+	}
+	
+	@Override
+	@Transactional(readOnly=false)
+	public Result<ApplicationDTO> create(ApplicationDTO dto, Organisation actor) {
+		
+		Result<ApplicationDTO> result
+			= new Result<ApplicationDTO>();
+		
+		Application application
+			= Application.from( dto );
+		
+		Application created
+			= this.applicationManager.create(application,actor);
+		
+		result.setValue( Value.OK );
+		result.setObject( ApplicationDTO.from( created ) );
+		
+		return result;
+		
 	}
 
 	@Override

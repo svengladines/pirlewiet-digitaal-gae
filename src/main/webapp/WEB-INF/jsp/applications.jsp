@@ -46,19 +46,19 @@
 		
 			<br/>
 		
-			<c:if test="${ false }">
+			<c:if test="${ true }">
 				<form class="form-horizontal">
 					
 					<div class="form-group form-group-lg">
 						<div>
-							<button type="button" id="nieuw" class="btn btn-primary btn-lg" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+							<button type="button" id="create" class="btn btn-primary btn"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
 						</div>
 					</div>
 					
 				</form>
 			</c:if>
 			
-			<c:if test="${ true }">
+			<c:if test="${ false }">
 					<div>
 						<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
 					</div>
@@ -81,7 +81,7 @@
 							<tr>
 								<th scope="row" class="th-row">Inschrijving</th>
 								<td colspan="2">
-									<a title="${application.uuid}" href="/application.html?uuid=${application.uuid}" class="btn btn-primary pull-right">Beheer</a>
+									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Beheer</a>
 								</td>
 							</tr>
 						</thead>
@@ -147,11 +147,11 @@
     <script>
     	var $jq = jQuery.noConflict();
     	
-		$jq("#nieuw").click( function( event ) {
+		$jq("#create").click( function( event ) {
 			
 			event.preventDefault();
 			
-			postEnrollment( new Inschrijving() );
+			postApplication( new Application(), viewApplication );
 			
     	});
 		

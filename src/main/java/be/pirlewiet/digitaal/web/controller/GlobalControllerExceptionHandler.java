@@ -83,7 +83,7 @@ public class GlobalControllerExceptionHandler {
 		result.setErrorCode( ErrorCodes.INTERNAL );
 		result.setMessage( "Er trad een fout op. Probeer AUB opnieuw. Indien het probleem aanhoudt, contacteer dan ons secretariaat." );
 		
-		return result;
+ 		return result;
 		
 	}
     

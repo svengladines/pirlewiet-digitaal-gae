@@ -20,7 +20,7 @@
 	   </c:when>
 	   <c:otherwise>
 	   		<c:set var="zee" value="jouw"/>
-	   		<jsp:include page="/WEB-INF/jsp/menu-public.jsp">
+	   		<jsp:include page="/WEB-INF/jsp/menu.jsp">
 	    		<jsp:param name="active" value="organisation"/>
 	   		</jsp:include>
 	   </c:otherwise>

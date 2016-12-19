@@ -1,9 +1,5 @@
-var Inschrijving = function ( reference ) {
+var Application = function ( ) {
 
-	if ( reference != null ) {
-		this.reference = reference;
-	}
-	
 };
 
 var Holiday = function( uuid ) {
@@ -72,18 +68,6 @@ var Enrollment = function ( applicationUuid, participant, address, uuid ) {
 	
 };
 
-
-var viewInschrijving = function( index, application ) {
-	
-	var vakantie = application.vakantie;
-	
-	var html = _.template( contemplate("application-row"), application );
-	// var html = "x";
-	
-	$jq("tbody[data-vakantie$='" + vakantie.uuid + "']" ).append( html );
-	
-};
-
 var retrieveInschrijving = function ( id ) {
 
 	$jq.ajax( {
@@ -97,6 +81,33 @@ var retrieveInschrijving = function ( id ) {
 			//alert( errorThrown );
 		}
 	});
+	
+};
+
+var postApplication = function( application,callback ) {
+
+	$jq.ajax( {
+		type: "post",
+		url:"/api/applications",
+		dataType: "json",
+		contentType: "application/json",
+	    processData: false,
+		data: JSON.stringify(application),
+		success: function( createdResult ) {
+			if ( callback ) {
+				callback( createdResult.object );
+			}
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			// alert( errorThrown );
+		}
+	});
+	
+};
+
+var viewApplication = function( application ) {
+
+	window.location.href = "/application-" + application.uuid + ".html";
 	
 };
 

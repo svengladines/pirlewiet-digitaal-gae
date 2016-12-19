@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import be.occam.utils.spring.web.Result;
@@ -33,7 +33,7 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Tags;
 
 @Controller
-@RequestMapping( {"application.html"} )
+@RequestMapping( {"application-{uuid}.html"} )
 public class ApplicationPageController {
 	
 	protected Logger logger 
@@ -58,7 +58,7 @@ public class ApplicationPageController {
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @RequestParam String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public ModelAndView view( @PathVariable String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		Organisation actor
 			= this.doorMan.guard().whoHasID(  pwtid  );

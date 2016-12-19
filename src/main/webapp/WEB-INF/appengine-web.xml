@@ -7,4 +7,13 @@
   	<property name="spring.profiles.active" value="production" />
   	<property name="pirlewiet.currentYear" value="2017" />
   </system-properties>
+  <automatic-scaling>
+    <min-idle-instances>1</min-idle-instances>
+    <!-- ‘automatic’ is the default value. -->
+    <max-idle-instances>automatic</max-idle-instances>
+    <!-- ‘automatic’ is the default value. -->
+    <min-pending-latency>10000ms</min-pending-latency>
+    <max-pending-latency>automatic</max-pending-latency>
+    <max-concurrent-requests>50</max-concurrent-requests>
+  </automatic-scaling>
 </appengine-web-app>
