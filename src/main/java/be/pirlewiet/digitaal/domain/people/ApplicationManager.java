@@ -65,6 +65,17 @@ public class ApplicationManager {
 		
 	}
 	
+	public List<Application> findByYear( ) {
+		
+		List<Application> byYear
+			= this.applicationRepository.findByYear( 2017 );//.findByYear(2017);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+		
+		// TODO, sort ...
+		
+		return byYear;
+		
+	}
+	
 	public Application findOne( String uuid ) {
 		
 		Application one

@@ -149,7 +149,14 @@
 											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche</a>
 										</div>
 										<div class="col-sm-2 alert alert-info">
-											<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
+											<c:choose>
+												<c:when test="${isPirlewiet}">
+													<a href="/enrollment-${enrollment.uuid}-pirlewiet.html"><spring:message code="enrollment.status.${enrollment.status.value}"/></a>
+												</c:when>
+												<c:otherwise>
+													<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
+												</c:otherwise>
+											</c:choose>
 										</div>
 									</div>
 								</c:forEach>

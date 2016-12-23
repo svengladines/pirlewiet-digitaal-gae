@@ -36,6 +36,9 @@ public class ErrorCodes {
 	public static ErrorCode ADDRESS_NUMBER_MISSING = new ErrorCode("ADDRESS_NUMBER_MISSING");
 	public static ErrorCode ADDRESS_ZIPCODE_MISSING = new ErrorCode("ADDRESS_ZIPCODE_MISSING");
 	
+	public static ErrorCode ENROLLMENT_HOLIDAY_NONE = new ErrorCode("ENROLLMENT_HOLIDAY_NONE");
+	public static ErrorCode ENROLLMENT_HOLIDAY_MULTPILE = new ErrorCode("ENROLLMENT_HOLIDAY_MULTPILE");
+	
 	public static ErrorCode INTERNAL = new ErrorCode("pwtInternal");
 
 }

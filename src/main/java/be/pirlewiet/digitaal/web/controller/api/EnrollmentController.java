@@ -23,6 +23,7 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 
@@ -53,6 +54,26 @@ public class EnrollmentController {
 		
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().updateQList ( uuid, qList, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
+	
+
+	@RequestMapping( value="/holidays", method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Result<EnrollmentDTO>> updateHolidays(
+				@PathVariable String uuid,
+				@RequestBody List<HolidayDTO> holidays,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("enrolment.updateHolidays");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		Result<EnrollmentDTO> x 
+			= this.enrollmentService.guard().updateHolidays( uuid, holidays, actor );
 		
 		return response( x, HttpStatus.OK );
 		

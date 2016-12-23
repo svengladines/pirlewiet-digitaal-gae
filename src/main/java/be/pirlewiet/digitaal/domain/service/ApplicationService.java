@@ -28,6 +28,7 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
+import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Service
 public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Service<ApplicationDTO,Application> {
@@ -80,8 +81,9 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		Result<List<Result<ApplicationDTO>>>result
 			= new Result<List<Result<ApplicationDTO>>>();
 		
+		// TODO, remove hardcoded year
 		List<Application> applications
-			= this.guard().applicationManager.findByOrganisation( actor );
+			= PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
 		
 		List<Result<ApplicationDTO>> individualResults
 			= list();

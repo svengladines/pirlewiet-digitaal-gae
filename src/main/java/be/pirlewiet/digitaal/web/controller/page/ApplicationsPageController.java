@@ -47,97 +47,6 @@ public class ApplicationsPageController {
 	@Resource
 	EnrollmentService enrollmentService;
 	
-	/*
-	
-	@RequestMapping( method = { RequestMethod.POST } )
-	@ResponseBody
-	public ResponseEntity<Result<ApplicationDTO>> post( @RequestBody ApplicationDTO application, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		application.setOrganisationUuid( actor.getUuid() );
-		
-		logger.info( "[{}]; request to create application", actor.getName() );
-		
-		Result<ApplicationDTO> created
-			= this.applicationService.guard().create( application , actor);
-		
-		if ( created == null ) {
-			throw new RuntimeException("create failed");
-		}
-		
-		logger.info( "created enrollment with id [{}]", created.getObject().getUuid() );
-		
-		return response( created, HttpStatus.CREATED );
-			
-	}
-	
-	@RequestMapping( value="/download", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
-	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) ApplicationStatus.Value status ) {
-		
-
-		Organisation actor
-			= this.doorMan.guard().whoHasID( pwtid  );
-		
-		// TODO: check organisation != null
-		List<Enrollment> applications
-			= null;
-		
-		if ( ApplicationStatus.Value.DRAFT.equals( status ) && ( PirlewietUtil.isPirlewiet( organisation ) ) ) {
-			applications = this.secretariaatsMedewerker.guard().drafts();
-		}
-		else {
-			applications = this.secretariaatsMedewerker.guard().applicationsOfOrganisation( organisation );
-		}
-		
-		logger.info( "download; number of applications is [{}]", applications.size() );
-		
-		List<String[]> rows
-			= new LinkedList<String[]>();
-
-		for ( Enrollment application : applications ) {
-			
-			List<Enrollment> related
-				= this.secretariaatsMedewerker.guard().findRelated( application, false );
-			
-			if ( related != null ) {
-				logger.info( "[{}]; found [{}] related enrollments", application.getUuid(), related.size() );
-			}
-			else {
-				logger.info( "[{}]; found no related enrollments" );
-			}
-			
-			List<String[]> mapped
-				= this.mapper.asStrings( application, related, status );
-			
-			if ( mapped != null ) {
-				
-				rows.addAll( mapped );
-				
-			}
-		
-		}
-		
-		
-
-		byte[] result 
-			= this.mapper.asBytes( rows );
-	
-		String disp
-			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
-	
-		Map<String,String> headers
-			= new HashMap<String,String>();
-		
-		headers.put( "Content-Disposition", disp.toString() );
-	
-		return response( result, HttpStatus.OK, headers );
-		
-	}
-	
-	*/
-	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
@@ -170,8 +79,7 @@ public class ApplicationsPageController {
 		
 		model.put( "applicationsResult", applicationsResult );
 	
-		String view
-			= "applications";
+		String view = "applications";
 		
 		return new ModelAndView( view, model );
 		

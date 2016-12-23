@@ -31,6 +31,7 @@ import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Tags;
+import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
 @RequestMapping( {"application-{uuid}.html"} )
@@ -99,21 +100,7 @@ public class ApplicationPageController {
 			
 		}
 		
-		/*
-		List<Holiday> vakanties
-			= this.secretariaatsMedewerker.guard().actueleVakanties( );
-		
-		model.put( "vakanties", vakanties );
-		model.put( "applicationHolidaysResult", this.secretariaatsMedewerker.guard().checkApplicationHolidaysStatus( application ) );
-		model.put( "applicationContactResult", this.secretariaatsMedewerker.guard().checkApplicationContactStatus( application ) );
-		model.put( "enrollmentsStatus", this.secretariaatsMedewerker.guard().checkEnrollmentsStatus( application ) );
-		model.put( "related", this.secretariaatsMedewerker.guard().findRelated( application, true) );
-		
-		EnrollmentStatus applicationStatus
-			= this.secretariaatsMedewerker.guard().whatIsTheApplicationStatus( application );
-		
-		model.put("applicationStatus", applicationStatus );
-		*/
+		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( actor ) );
 		
 		String view
 			= "application";

@@ -1,7 +1,6 @@
 package be.pirlewiet.digitaal.domain.people;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -12,6 +11,7 @@ import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
@@ -32,6 +32,9 @@ public class EnrollmentManager {
 	
 	@Resource
 	protected QuestionAndAnswerManager questionAndAnswerManager;
+	
+	@Resource
+	protected HolidayManager holidayManager;
 	
 	public EnrollmentManager( ) {
 	}
@@ -94,6 +97,51 @@ public class EnrollmentManager {
 		
 		return updated;
 		
+	}
+	
+	
+	public Enrollment updateHolidays( String uuid, List<Holiday> holidays ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Enrollment enrollment
+			= this.findOneByUuid( uuid );
+		
+		if ( enrollment != null ) {
+			
+			StringBuilder uuids
+				= new StringBuilder();
+			
+			StringBuilder names
+				= new StringBuilder();
+			
+			for ( int i=0; i < holidays.size(); i++ ) {
+				
+				Holiday holiday = holidays.get( i );
+				
+				uuids.append( holiday.getUuid() );
+				
+				Holiday one
+					= this.holidayManager.findOneByUuid( holiday.getUuid() );
+				
+				logger.info("found holiday [{}], adding...", one.getName() );
+				
+				names.append( one.getName() );
+				
+				if ( i < holidays.size() -1 ) {
+					uuids.append(",");
+					names.append(",");
+				}
+				
+			}
+			
+			enrollment.setHolidayUuid( uuids.toString() );
+			
+			enrollment = this.enrollmentRepository.saveAndFlush( enrollment );
+			
+		}
+		
+		return enrollment;
 	}
 	
 	public void delete( Enrollment enrollment ) {

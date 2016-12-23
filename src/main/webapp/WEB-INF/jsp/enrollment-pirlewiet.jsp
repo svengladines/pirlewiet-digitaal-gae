@@ -14,7 +14,7 @@
 	
 	<fmt:bundle basename="pirlewiet-messages">
 
-    <jsp:include page="/WEB-INF/jsp/menu_pirlewiet.jsp">
+    <jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
     	<jsp:param name="active" value="enrollments"/>
     </jsp:include>
 
@@ -33,30 +33,19 @@
 	
 	<div class="container">
 	
+		<c:set var="enrollment" value="${enrollmentResult.object}"/>
+	
 		<br/>
 		<div class="row">
 			
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
-					<i><spring:message code="enrollment.status.${enrollment.status.value}"/></i><br/>
-					<spring:message code="enrollment.status.${enrollment.status.value}.description"/> <br/>
+					<i><fmt:message key="enrollment.status.${enrollment.status.value}"/></i><br/>
+					<fmt:message key="enrollment.status.${enrollment.status.value}.description"/> <br/>
 				</p>
 			</div>
 			
-		</div>
-		<div class="row">
-			<div class="col-sm-12 alert alert-${ fn:length(enrollment.vakanties) == 1 ? 'success' : 'warning'}">
-				<i class="fa fa-2x fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie</strong><br/></h4>
-				<p>Selecteer vakantie(s)</p>
-					<c:forEach items="${enrollment.vakanties}" var="vakantie">	
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" name="vak" class="vakantie" value="${vakantie.uuid}" checked="checked">&nbsp;${vakantie.naam}
-							</label>
-						</div>
-					</c:forEach>
-			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12 alert alert-success">
@@ -66,16 +55,30 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-4 media-middle max-height">
-					<span>${enrollment.deelnemers[0].voorNaam}&nbsp;${enrollment.deelnemers[0].familieNaam}</span>
+					<span>${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>
 				</div>
 			</div>
 						
 			</div>
 				
 		</div>
+		<div class="row">
+			<div class="col-sm-12 alert alert-${ 'OK' == holidaysResult.value ? 'success' : 'warning'}">
+				<c:set var="holidays" value="${holidaysResult.object}"/>
+				<i class="fa fa-2x fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie</strong><br/></h4>
+				<p>Selecteer de vakantie</p>
+					<c:forEach items="${holidays}" var="holiday">	
+						<div class="checkbox">
+							<label>
+								<input type="radio" name="vak" class="vakantie" value="${holiday.uuid}" checked="checked">&nbsp;${holiday.name}
+							</label>
+						</div>
+					</c:forEach>
+			</div>
+		</div>
 		
 		<div class="row">
-			<div class="col-sm-12 alert alert-${ enrollment.status.value == 'SUBMITTED' ? 'warning' : 'success'}">
+			<div class="col-sm-12 alert alert-${ enrollment.status.value == 'TRANSIT' ? 'warning' : 'success'}">
 				<div class="row">
 					<div class="col-sm-12"><i class="fa fa-2x fa-check pull-right"></i><h4><strong>Beslissing</strong></h4>
 					<p>Neem een beslissing over de inschrijving</p>
@@ -84,22 +87,22 @@
 			<div class="row">
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="decision" value="ACCEPTED" ${ enrollment.status.value == 'ACCEPTED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.ACCEPTED"/><br/>
+						<input type="radio" name="decision" value="ACCEPTED" ${ enrollment.status.value == 'ACCEPTED' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.ACCEPTED"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="decision" value="REJECTED" ${ enrollment.status.value == 'REJECTED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.REJECTED"/><br/>
+						<input type="radio" name="decision" value="REJECTED" ${ enrollment.status.value == 'REJECTED' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.REJECTED"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="decision" value="WAITINGLIST" ${ enrollment.status.value == 'WAITINGLIST' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.WAITINGLIST"/><br/>
+						<input type="radio" name="decision" value="WAITINGLIST" ${ enrollment.status.value == 'WAITINGLIST' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.WAITINGLIST"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="decision" value="CANCELLED" ${ enrollment.status.value == 'CANCELLED' ? "checked=\"checked\"" : ""}><spring:message code="enrollment.status.CANCELLED"/><br/>
+						<input type="radio" name="decision" value="CANCELLED" ${ enrollment.status.value == 'CANCELLED' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.CANCELLED"/><br/>
 					</label>
 				</div>
 			</div>
@@ -160,16 +163,13 @@
     		$jq("#" + id ).removeClass("hidden").addClass("show");
     	};
     	
-		var saveVakanties = function( id ) {
-			var list
-				= "";
-			$jq( ".vakantie:checked" ).each( function( index, element ) {
-				if ( list.length > 0 ) {
-					list = list.concat(",");
-				}
-				list = list.concat( element.value );	
+    	var saveHolidays = function( id ) {
+			var holidays
+				= new Array();
+			$jq( ".holiday:checked" ).each( function( index, element ) {
+				holidays.push( new Holiday( element.value ) );
 			});
-			putVakanties ( id, list, $jq("#enrollment-submit"),$jq("#enrollment-status" ), saveStatus );
+			putEnrollmentHolidays ( "${enrollment.applicationUuid}", id, holidays, $jq("#enrollment-submit"),$jq("#enrollment-status" ), refresh );
 		};
 		
 		var saveStatus = function( id ) {
@@ -186,7 +186,7 @@
 		$jq("#enrollment-submit").click( function( event ) {
 			
 			clearStatus();
-			saveVakanties( "${enrollment.uuid}" );
+			saveHolidays( "${enrollment.uuid}" );
 			
 		});
 		

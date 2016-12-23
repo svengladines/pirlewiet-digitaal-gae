@@ -80,10 +80,8 @@ public class PirlewietApplicationsPageController {
 		
 		model.put( "applicationsResult", applicationsResult );
 		
-		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( actor ) );
-	
 		String view
-			= "applications";
+			= "applications-pirlewiet";
 		
 		return new ModelAndView( view, model );
 		

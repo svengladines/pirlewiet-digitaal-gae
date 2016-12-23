@@ -11,20 +11,9 @@
 	
 	<body>
 
- 	<c:choose>
-    <c:when test="${isPirlewiet}">
-	  		<c:set var="zee" value="de"/>
-	      	<jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
-	    		<jsp:param name="active" value="organisation"/>
-	   		</jsp:include>
-	   </c:when>
-	   <c:otherwise>
-	   		<c:set var="zee" value="jouw"/>
-	   		<jsp:include page="/WEB-INF/jsp/menu.jsp">
-	    		<jsp:param name="active" value="organisation"/>
-	   		</jsp:include>
-	   </c:otherwise>
-	   </c:choose>
+	<jsp:include page="/WEB-INF/jsp/menu.jsp">
+		<jsp:param name="active" value="application"/>
+	</jsp:include>
     
 	<div class="banner">
 		<div class="container">
@@ -81,7 +70,7 @@
 							<tr>
 								<th scope="row" class="th-row">Inschrijving</th>
 								<td colspan="2">
-									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Beheer</a>
+									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
 								</td>
 							</tr>
 						</thead>

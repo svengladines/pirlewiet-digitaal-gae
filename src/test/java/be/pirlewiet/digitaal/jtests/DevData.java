@@ -253,7 +253,7 @@ public class DevData {
 		Enrollment lisaAtBernies
 			= new Enrollment();
 		
-		lisaAtBernies.setHolidayName( weekendAtBernies.getName() );
+		lisaAtBernies.setHolidayUuid( applicationOne.getHolidayUuids() );
 		lisaAtBernies.setStatus( new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
 		lisaAtBernies.setParticipantName( "Lisa" );
 		lisaAtBernies.setApplicationUuid( applicationOne.getUuid() );

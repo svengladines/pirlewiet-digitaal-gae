@@ -34,6 +34,7 @@ import be.pirlewiet.digitaal.web.controller.page.OrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.StartPageController;
 import be.pirlewiet.digitaal.web.controller.page.UploadOrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietApplicationsPageController;
+import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietEnrollmentPageController;
 import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietOrganisationPageController;
 import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietOrganisationsPageController;
 
@@ -150,6 +151,11 @@ public class MvcConfig {
 		@Bean
 		public PirlewietApplicationsPageController pirlewietApplicationsPageController() {
 			return new PirlewietApplicationsPageController();
+		}
+		
+		@Bean
+		public PirlewietEnrollmentPageController pirlewietEnrollmentPageController() {
+			return new PirlewietEnrollmentPageController();
 		}
 	}
 	

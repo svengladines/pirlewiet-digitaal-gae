@@ -15,18 +15,23 @@ import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
+import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.dto.AddressDTO;
+import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Address;
+import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
+import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
@@ -46,6 +51,9 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	
 	@Resource
 	AddressManager addressManager;
+	
+	@Resource
+	ApplicationManager applicationManager;
 	
 	@Resource
 	QuestionAndAnswerManager questionAndAnswerManager;
@@ -188,7 +196,12 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 				= this.addressManager.create( toCreateAddress );
 			
 			toCreate.setAddressUuid( createdAddress.getUuid() );
-		
+			
+			Application application
+				= this.applicationManager.findOne( enrollment.getApplicationUuid() );
+			
+			toCreate.setHolidayUuid( application.getHolidayUuids() );
+			
 			Enrollment created
 				= this.enrollmentManager.create( toCreate );
 			
@@ -268,6 +281,35 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			result.setErrorCode( ErrorCodes.INTERNAL );	
 			logger.warn("bugger", e);
 		}
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<EnrollmentDTO> updateHolidays ( String uuid, List<HolidayDTO> holidays, Organisation actor ) {
+		
+		logger.info("enrollment.updateHolidays");
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		List<Holiday> holidayz
+			= list();
+		
+		for ( HolidayDTO dto : holidays ) {
+			
+			Holiday holiday 
+				=  Holiday.from( dto );
+			
+			holidayz.add( holiday );
+		}
+		
+		Enrollment updated
+			= this.enrollmentManager.updateHolidays( uuid, holidayz );
+		
+		result.setValue( Value.OK );
+		result.setObject( EnrollmentDTO.from( updated ) );
 		
 		return result;
 		

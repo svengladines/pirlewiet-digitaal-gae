@@ -11,7 +11,7 @@
 	
 	<body>
 
-    <jsp:include page="/WEB-INF/jsp/menu.jsp">
+    <jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
     	<jsp:param name="active" value="enrollments"/>
     </jsp:include>
     
@@ -68,9 +68,9 @@
 						
 						<thead>
 							<tr>
-								<th scope="row" class="th-row">Inschrijving</th>
+								<th scope="row" class="th-row">Dossier</th>
 								<td colspan="2">
-									<a title="${application.uuid}" href="/application.html?uuid=${application.uuid}" class="btn btn-primary pull-right">Beheer</a>
+									<a title="${application.uuid}" href="/application.html?uuid=${application.uuid}" class="btn btn-primary pull-right">Wijzig</a>
 								</td>
 							</tr>
 						</thead>
@@ -103,8 +103,11 @@
 							<tr>
 								<th scope="row" class="th-row">Deelnemer</th>
 								<td colspan="2">
-								<span>${enrollment.participantName}</span>
-								<span class="pull-right text-success"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
+									<span>${enrollment.participantName}</span>
+									<div class="pull-right">
+										<span class="text-info"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>&nbsp;&nbsp;
+										<a title="${application.uuid}" href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="btn btn-default">Beheer</a>
+									</div>
 								</td>
 							</tr>
 							
