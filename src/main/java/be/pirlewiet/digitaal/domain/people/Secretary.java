@@ -777,76 +777,7 @@ public class Secretary {
     	
     }
     
-    protected MimeMessage formatUpdateMessageToOrganisation( Enrollment enrollment, Status.Value oldStatus ) {
-		
-		MimeMessage message
-			= null;
-		
-		Configuration cfg 
-			= new Configuration();
-	
-		try {
-			
-			Status newStatus
-				= enrollment.getStatus();
-			
-			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/to-organisation/enrollment-status-update.tmpl" );
-			
-			Template template 
-				= new Template("code", new InputStreamReader( tis ), cfg );
-			
-			Map<String, Object> model = new HashMap<String, Object>();
-			
-			String oldStatusMessage
-				= this.messageSource.getMessage( String.format( "enrollment.status.%s",  oldStatus) , new Object[] {}, localeResolver.resolveLocale( null ) );
-			
-			String newStatusMessage
-				= this.messageSource.getMessage( String.format( "enrollment.status.%s",  newStatus.getValue() ) , new Object[] {}, localeResolver.resolveLocale( null ) );
-			
-			String newStatusDescription
-				= this.messageSource.getMessage( String.format( "enrollment.status.%s.description",  newStatus.getValue() ) , new Object[] {}, localeResolver.resolveLocale( null ) );
-					
-			model.put( "enrollment", enrollment );
-			model.put( "vakanties", vakantieDetails( enrollment ) );
-			model.put( "oldStatusMessage", oldStatusMessage );
-			model.put( "newStatusMessage", newStatusMessage );
-			model.put( "newStatusDescription", newStatusDescription );
-			model.put( "newStatusComment", newStatus.getComment() );
-			model.put( "uuid", enrollment.getUuid() );
-			
-			StringWriter bodyWriter 
-				= new StringWriter();
-			
-			template.process( model , bodyWriter );
-			
-			bodyWriter.flush();
-				
-			message = this.javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper( message,"utf-8" );
-				
-			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( enrollment.getContactGegevens().getEmail() );
-			helper.setBcc( "sven.gladines@gmail.com" );
-			helper.setReplyTo( "info@pirlewiet.be" );
-			helper.setSubject( "Uw inschrijving bij Pirlewiet" );
-				
-			String text
-				= bodyWriter.toString();
-				
-			logger.info( "email text is [{}]", text );
-				
-			helper.setText(text, true);
-				
-		}
-		catch( Exception e ) {
-			logger.warn( "could not write e-mail", e );
-			throw new RuntimeException( e );
-		}
-		
-		return message;
-    	
-    }
+    
     
     protected MimeMessage formatReadyToRockMessage( Organisation organisation ) {
 		

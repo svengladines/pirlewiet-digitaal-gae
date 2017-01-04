@@ -35,23 +35,25 @@
 		
 			<br/>
 		
-			<c:if test="${ true }">
-				<form class="form-horizontal">
-					
-					<div class="form-group form-group-lg">
-						<div>
-							<button type="button" id="create" class="btn btn-primary btn"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+			<c:choose>
+				<c:when test="${'test' == param.mode}">
+					<form class="form-horizontal">
+						
+						<div class="form-group form-group-lg">
+							<div>
+								<button type="button" id="create" class="btn btn-primary btn"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+							</div>
 						</div>
-					</div>
-					
-				</form>
-			</c:if>
-			
-			<c:if test="${ false }">
-					<div>
-						<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
-					</div>
-			</c:if>
+						
+					</form>
+				</c:when>
+				
+				<c:otherwise>
+						<div>
+							<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
+						</div>
+				</c:otherwise>
+			</c:choose>
 		</div>
 	
 		<div class="row mandatory">
@@ -68,7 +70,7 @@
 						
 						<thead>
 							<tr>
-								<th scope="row" class="th-row">Inschrijving</th>
+								<th scope="row" class="th-row">Dossier</th>
 								<td colspan="2">
 									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
 								</td>
@@ -76,6 +78,13 @@
 						</thead>
 							
 						<tbody>
+						
+							<tr>
+								<th scope="row" class="bg-info">Status</th>
+								<td colspan="2" class="bg-info">
+									<fmt:message key="application.status.${application.status.value}"/>
+								</td>
+							</tr>
 						
 							<tr>
 								<th scope="row" class="th-row">Referentie</th>
@@ -104,7 +113,9 @@
 								<th scope="row" class="th-row">Deelnemer</th>
 								<td colspan="2">
 								<span>${enrollment.participantName}</span>
-								<span class="pull-right text-success"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
+								<c:if test="${application.status.value != 'DRAFT'}">
+									<span class="pull-right text-success"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>
+								</c:if>
 								</td>
 							</tr>
 							

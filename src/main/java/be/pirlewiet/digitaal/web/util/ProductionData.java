@@ -55,7 +55,7 @@ public class ProductionData {
 	@Transactional(readOnly=false)
 	public void injectData() {
 		
-		logger.info( "xxx, productiondata" );
+		logger.info( "verify/inject productiondata" );
 		
 		Organisation vzwPirlewiet
 			= this.organsiationRepository.findOneByEmail( "info@pirlewiet.be" );
@@ -94,6 +94,180 @@ public class ProductionData {
 		else {
 			logger.info( "xxx, productiondata, pirlewiet existed" );
 		}
+		
+		/**
+		 * PaasKIKA 1	3/4 - 8/4	--- 4/4 - 8/4
+			PaasKIKA 2	9/4 - 15/4	--- 10/4 - 14/4
+			PaasGEZINS	10/4 - 15/4	--- 11/4 - 15/4
+			VOV 1	15/5 - 19/5	--- 15/5 - 19/5
+
+		 */
+		
+		// PaasKIKA 1	4/4 - 8/4
+		{
+			String name = "PaasKIKA 1";
+			Holiday holiday
+				= this.holidayRepository.findOneByName( name );
+			
+			if ( holiday == null ) {
+				
+				holiday = new Holiday();
+		
+				GregorianCalendar start
+					= new GregorianCalendar();
+				
+				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.DAY_OF_MONTH, 4 );
+				
+				GregorianCalendar end
+					= new GregorianCalendar();
+				
+				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.DAY_OF_MONTH, 8 );
+				
+				holiday.setName( name );
+				holiday.setPeriod( Period.Spring );
+				holiday.setType( HolidayType.Kika );
+				holiday.setStart( start.getTime() );
+				holiday.setEnd( end.getTime() );
+				holiday.setDeadLine( new Date() );
+				
+				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday = holidayRepository.saveAndFlush( holiday );
+				
+				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+			
+			}
+			
+		}
+		
+		// PaasKIKA 2 --- 10/4 - 14/4
+		{
+			String name = "PaasKIKA 2";
+			Holiday holiday
+				= this.holidayRepository.findOneByName( name );
+			
+			if ( holiday == null ) {
+				
+				holiday = new Holiday();
+		
+				GregorianCalendar start
+					= new GregorianCalendar();
+				
+				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.DAY_OF_MONTH, 10 );
+				
+				GregorianCalendar end
+					= new GregorianCalendar();
+				
+				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.DAY_OF_MONTH, 14 );
+				
+				holiday.setName( name );
+				holiday.setPeriod( Period.Spring );
+				holiday.setType( HolidayType.Kika );
+				holiday.setStart( start.getTime() );
+				holiday.setEnd( end.getTime() );
+				holiday.setDeadLine( new Date() );
+				
+				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday = holidayRepository.saveAndFlush( holiday );
+				
+				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+			
+			}
+			
+		}
+		
+		// PaasGezins --- 11/4 - 15/4
+		{
+			String name = "PaasGezins";
+			Holiday holiday
+				= this.holidayRepository.findOneByName( name );
+			
+			if ( holiday == null ) {
+				
+				holiday = new Holiday();
+		
+				GregorianCalendar start
+					= new GregorianCalendar();
+				
+				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.DAY_OF_MONTH, 11 );
+				
+				GregorianCalendar end
+					= new GregorianCalendar();
+				
+				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.DAY_OF_MONTH, 15 );
+				
+				holiday.setName( name );
+				holiday.setPeriod( Period.Spring );
+				holiday.setType( HolidayType.Gezin );
+				holiday.setStart( start.getTime() );
+				holiday.setEnd( end.getTime() );
+				holiday.setDeadLine( new Date() );
+				
+				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday = holidayRepository.saveAndFlush( holiday );
+				
+				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+			
+			}
+			
+		}
+		
+		// VOV 1 --- 15/5 - 19/5
+		{
+			String name = "VOV 1";
+			Holiday holiday
+				= this.holidayRepository.findOneByName( name );
+			
+			if ( holiday == null ) {
+				
+				holiday = new Holiday();
+		
+				GregorianCalendar start
+					= new GregorianCalendar();
+				
+				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.DAY_OF_MONTH, 11 );
+				
+				GregorianCalendar end
+					= new GregorianCalendar();
+				
+				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.DAY_OF_MONTH, 15 );
+				
+				holiday.setName( name );
+				holiday.setPeriod( Period.Spring );
+				holiday.setType( HolidayType.Vov );
+				holiday.setStart( start.getTime() );
+				holiday.setEnd( end.getTime() );
+				holiday.setDeadLine( new Date() );
+				
+				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday = holidayRepository.saveAndFlush( holiday );
+				
+				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+			
+			}
+			
+		}
+		
+		
 		
 	}
 	

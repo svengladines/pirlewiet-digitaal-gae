@@ -216,6 +216,10 @@ public class OrganisationManager {
     	
     }
     
+    public Organisation findOneByUuid( String uuid ) {
+    	return this.organisation( uuid );
+    }
+    
     public List<Organisation> all( ) {
     	
     	List<Organisation> all

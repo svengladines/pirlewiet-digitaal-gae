@@ -25,7 +25,7 @@
 	</logger>
 	
 	<logger name="org.hibernate">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 	
 	<logger name="org.springframework.orm">
@@ -33,7 +33,7 @@
 	</logger>
 
 	<logger name="org.springframework.web">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 	
 	<logger name="be.pirlewiet">
@@ -41,17 +41,12 @@
 	</logger>
 	
 	<logger name="org.springframework">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.eclipse">
-		<level value="info" />
+		<level value="debug" />
 	</logger>
 	
 	<logger name="org.springframework.orm.jpa.EntityManagerFactoryUtils">
 		<level value="error" />
 	</logger>
-	
 
 
 	<!-- Root Logger -->

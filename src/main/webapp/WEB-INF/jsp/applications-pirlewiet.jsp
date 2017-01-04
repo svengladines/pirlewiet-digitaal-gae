@@ -21,7 +21,7 @@
 				<div class="col-lg-12">
 					<h1>Inschrijvingen</h1>
 					<p>
-						Beheer hier de inschrijvingen van jouw organisatie.
+						Beheer hier de inschrijvingen.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -34,20 +34,8 @@
 		<div class="row">
 		
 			<br/>
-		
+					
 			<c:if test="${ false }">
-				<form class="form-horizontal">
-					
-					<div class="form-group form-group-lg">
-						<div>
-							<button type="button" id="nieuw" class="btn btn-primary btn-lg" data-vakantie="1"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
-						</div>
-					</div>
-					
-				</form>
-			</c:if>
-			
-			<c:if test="${ true }">
 					<div>
 						<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
 					</div>
@@ -59,6 +47,10 @@
 			<c:choose>
 			
 			<c:when test="${applicationsResult.value == 'OK'}">
+			
+					<c:if test="${fn:length(applicationsResult.object) == 0}">
+						Er zijn nog geen dossiers ingediend.
+					</c:if>
 			
 					<c:forEach items="${applicationsResult.object}" var="individualResult">
 					

@@ -38,6 +38,13 @@
 		<br/>
 		<div class="row">
 			
+			<div class="col-sm-2 col-sm-offset-10 right-wing">
+				<a href="/application-${enrollment.applicationUuid}.html">Naar het dossier</a>
+			</div>
+			<br/>
+		</div>
+		<div class="row">
+			
 			<div class="col-sm-12 alert alert-info">
 				<h4><strong>Status</strong><br/></h4>
 				<p>
@@ -70,7 +77,7 @@
 					<c:forEach items="${holidays}" var="holiday">	
 						<div class="checkbox">
 							<label>
-								<input type="radio" name="vak" class="vakantie" value="${holiday.uuid}" checked="checked">&nbsp;${holiday.name}
+								<input type="radio" class="holiday" value="${holiday.uuid}" checked="checked">&nbsp;${holiday.name}
 							</label>
 						</div>
 					</c:forEach>
@@ -81,7 +88,7 @@
 			<div class="col-sm-12 alert alert-${ enrollment.status.value == 'TRANSIT' ? 'warning' : 'success'}">
 				<div class="row">
 					<div class="col-sm-12"><i class="fa fa-2x fa-check pull-right"></i><h4><strong>Beslissing</strong></h4>
-					<p>Neem een beslissing over de inschrijving</p>
+					<p>Neem een beslissing over de inschrijving of wijzig de beslissing</p>
 				</div>
 			</div>
 			<div class="row">
@@ -92,12 +99,22 @@
 				</div>
 				<div class="radio col-sm-12">
 					<label>
-						<input type="radio" name="decision" value="REJECTED" ${ enrollment.status.value == 'REJECTED' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.REJECTED"/><br/>
+						<input type="radio" name="decision" value="CONFIRMED" ${ enrollment.status.value == 'CONFIRMED' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.CONFIRMED"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
 					<label>
 						<input type="radio" name="decision" value="WAITINGLIST" ${ enrollment.status.value == 'WAITINGLIST' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.WAITINGLIST"/><br/>
+					</label>
+				</div>
+				<div class="radio col-sm-12">
+					<label>
+						<input type="radio" name="decision" value="VISIT" ${ enrollment.status.value == 'VISIT' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.VISIT"/><br/>
+					</label>
+				</div>
+				<div class="radio col-sm-12">
+					<label>
+						<input type="radio" name="decision" value="REJECTED" ${ enrollment.status.value == 'REJECTED' ? "checked=\"checked\"" : ""}><fmt:message key="enrollment.status.REJECTED"/><br/>
 					</label>
 				</div>
 				<div class="radio col-sm-12">
@@ -111,17 +128,17 @@
 				
 		</div>
 		
-		<div class="row">
+		<div id="comment" class="row hidden">
 			<div class="col-sm-12 alert alert-info">
 				<div class="row">
 					<div class="col-sm-12"><h4><strong>Uitleg bij beslissing</strong></h4>
-						<p>Voorzie enige uitleg bij de beslissing.<br/>
-						<strong>Opgelet:</strong> De doorverwijzer kan deze uitleg zien.</p>
+						<p>Voorzie eventueel enige uitleg bij de beslissing.<br/>
+						<strong>Opgelet:</strong> De doorverwijzer krijgt een e-mail met deze uitleg.</p>
 					</div>
 				</div>
 				<div class="row">
 					<div class="radio col-sm-12">
-						<textarea id="decision-comment-text" class="form-control" rows="10" cols="64"></textarea>
+						<textarea id="decision-comment-text" class="form-control" rows="8" cols="64"></textarea>
 					</div>
 				</div>
 			</div>
@@ -130,20 +147,14 @@
 		<div class="row">
 			<div class="col-sm-12 alert alert-info">
 				<div class="row">
-					<div class="col-sm-12"><h4><strong>Opslaan</strong><br/></h4>
+					<div class="col-sm-12"><h4><strong>Versturen</strong><br/></h4>
 				</div>
 			</div>
-				<div class="row">
-					<div class="checkbox col-sm-12">
-						<label>
-							<input type="checkbox" name="send-email" checked="checked">&nbsp;Verstuur e-mail naar doorverwijzer.
-						</label>
-					</div>
-				</div>
-				<div id="enrollment-status" class="col-sm-12 alert alert-warning hidden"></div>
+				
+			<div id="enrollment-status" class="col-sm-12 alert alert-warning hidden"></div>
 			<div class="row">
 				<div class="radio col-sm-12">
-					<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+					<button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verstuur</button>
 				</div>
 			</div>
 		</div>	
@@ -169,17 +180,16 @@
 			$jq( ".holiday:checked" ).each( function( index, element ) {
 				holidays.push( new Holiday( element.value ) );
 			});
-			putEnrollmentHolidays ( "${enrollment.applicationUuid}", id, holidays, $jq("#enrollment-submit"),$jq("#enrollment-status" ), refresh );
+			putEnrollmentHolidays ( "${enrollment.applicationUuid}", id, holidays, $jq("#enrollment-submit"),$jq("#enrollment-status" ), saveStatus );
 		};
 		
 		var saveStatus = function( id ) {
 			var comment = $jq("#decision-comment-text").val();
 			var decision = $jq( "input[name=decision]:checked" ).val();
-			if ( ! decision ) {
-				decision = "SUBMITTED";	
+			if ( decision != null ) {
+				var sx = new Status (decision, comment ,true );
+				putEnrollmentStatus ( "${enrollment.applicationUuid}", id, sx, $jq("#enrollment-submit" ),$jq("#enrollment-status" ), refresh );		
 			}
-			var sx = new Status (decision, comment ,true );
-			putStatus ( id, sx, $jq("#enrollment-submit" ),$jq("#enrollment-status" ), refresh );
 			
 		};
 		
@@ -187,6 +197,12 @@
 			
 			clearStatus();
 			saveHolidays( "${enrollment.uuid}" );
+			
+		});
+		
+		$jq("input[name='decision']").change( function( event ) {
+			
+			$jq("#comment").removeClass("hidden").addClass("show");
 			
 		});
 		

@@ -83,7 +83,7 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 		// TODO, remove hardcoded year
 		List<Application> applications
-			= PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
+			= PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findActiveByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
 		
 		List<Result<ApplicationDTO>> individualResults
 			= list();

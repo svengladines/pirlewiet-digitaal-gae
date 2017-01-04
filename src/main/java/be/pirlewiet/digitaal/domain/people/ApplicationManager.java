@@ -1,7 +1,11 @@
 package be.pirlewiet.digitaal.domain.people;
 
 import static be.occam.utils.javax.Utils.isEmpty;
+import static be.occam.utils.javax.Utils.list;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -29,6 +33,52 @@ public class ApplicationManager {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
+
+	protected final Comparator<Application> mostRecentlySubmitted
+		= new Comparator<Application>() {
+		
+		@Override
+		public int compare(Application o1, Application o2) {
+			
+			Date d1 = o1.getSubmitted();
+			Date d2 = o2.getSubmitted();
+			
+			if ( d1 == null ) {
+				return 1;
+			}
+			else if ( d2 == null ) {
+				return -1;
+			}
+			else {
+				return  ( 0- d1.compareTo( d2 ) );
+			}
+			
+		}
+		
+	};
+	
+	protected final Comparator<Application> mostRecentlyCreated
+		= new Comparator<Application>() {
+	
+	@Override
+	public int compare(Application o1, Application o2) {
+		
+		Date d1 = o1.getCreated();
+		Date d2 = o2.getCreated();
+		
+		if ( d1 == null ) {
+			return 1;
+		}
+		else if ( d2 == null ) {
+			return -1;
+		}
+		else {
+			return  ( 0- d1.compareTo( d2 ) );
+		}
+		
+	}
+	
+};
 	
 	protected final int currentYear;
 	
@@ -59,20 +109,32 @@ public class ApplicationManager {
 		List<Application> byOrganisationAndYear
 			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2017 );//.findByYear(2017);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
-		// TODO, sort ...
+		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
 		
 		return byOrganisationAndYear;
 		
 	}
 	
-	public List<Application> findByYear( ) {
+	public List<Application> findActiveByYear( ) {
 		
 		List<Application> byYear
 			= this.applicationRepository.findByYear( 2017 );//.findByYear(2017);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
-		// TODO, sort ...
+		List<Application> filtered
+			= list();
 		
-		return byYear;
+		for ( Application application : byYear ) {
+			
+			if ( ( ! ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) && ( ! ApplicationStatus.Value.CANCELLED.equals( application.getStatus().getValue() ) ) ) {
+				filtered.add( application );
+			}
+		
+			
+		}
+		
+		Collections.sort( filtered, this.mostRecentlySubmitted );
+		
+		return filtered;
 		
 	}
 	
@@ -272,9 +334,10 @@ public class ApplicationManager {
 					List<Enrollment> enrollments
 						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
-						this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
+						this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), false );
 					}
 					applicationStatus.setValue( ApplicationStatus.Value.SUBMITTED );
+					application.setSubmitted( new Date() );
 					save = true;
 					// TODO, send e-mails
 					logger.info( "taken in");

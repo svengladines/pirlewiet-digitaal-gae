@@ -22,9 +22,9 @@
 		<div class="container">
 			<div class="row centered">
 				<div class="col-lg-12">
-					<h1>Inschrijving</h1>
+					<h1>Dossier</h1>
 					<p>
-						Beheer een inschrijving.
+						Beheer een inschrijvingsdossier.
 					</p>
 				</div>
 			</div><!-- row -->
@@ -135,20 +135,29 @@
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 							<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-							<div class="container">
+							<br/>
+							<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Deelnemer</th>
+									<th><i class="fa fa-3 fa-question"></i>&nbsp;&nbsp;Vragenlijst deelnemer</th>
+									<th><i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;Medische fiche</th>
+									<th>Status</th>
+								</tr>
+							</thead>
 								<c:forEach items="${enrollmentsResult.object}" var="enrollmentResult">
 									<c:set var="enrollment" value="${enrollmentResult.object}"/>
-									<div class="row">
-										<div class="col-sm-3 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
+									<tr>
+										<td class="${enrollmentResult.value == 'OK' ? 'bg-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' ) ? 'bg-danger' : 'bg-success' ) }">
 											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
-										</div>
-										<div class="col-sm-3 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_HISTORY' ) ? 'alert-danger' : 'alert-success' ) }">
-											<i class="fa fa-3 fa-question"></i>&nbsp;&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst deelnemer</a>											
-										</div>
-										<div class="col-sm-3 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
-											<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche</a>
-										</div>
-										<div class="col-sm-2 alert alert-info">
+										</td>
+										<td class="${enrollmentResult.value == 'OK' ? 'bg-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_HISTORY' ) ? 'bg-danger' : 'bg-success' ) }">
+											<a href="javascript:void(0);" class="todo" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst</a>											
+										</td>
+										<td class="${enrollmentResult.value == 'OK' ? 'bg-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'bg-success' ) }">
+											<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Fiche</a>
+										</td>
+										<td>
 											<c:choose>
 												<c:when test="${isPirlewiet}">
 													<a href="/enrollment-${enrollment.uuid}-pirlewiet.html"><spring:message code="enrollment.status.${enrollment.status.value}"/></a>
@@ -157,9 +166,10 @@
 													<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
 												</c:otherwise>
 											</c:choose>
-										</div>
-									</div>
+										</td>
+									</tr>
 								</c:forEach>
+							</table>
 								<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>									
 							</div>
 						</div>

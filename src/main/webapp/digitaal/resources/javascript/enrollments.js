@@ -252,6 +252,30 @@ var putEnrollmentHolidays = function ( applicationUuid, enrollmentUuid, holidays
 	
 };
 
+var putEnrollmentStatus = function ( applicationUuid, enrollmentUuid, status, button, statusElement, callback ) {
+
+	$jq.ajax( {
+		type: "put",
+		url:"/api/applications/" + applicationUuid + "/enrollments/" + enrollmentUuid + "/status",
+		dataType: "json",
+		contentType: "application/json;charset=\"utf-8\"",
+	    processData: false,
+		data: JSON.stringify( status ),
+		success: function( returned ) {
+			if ( callback ) {
+				callback( enrollmentUuid );
+			}
+			else {
+				success( button, statusElement, "Opgeslagen" );
+			}
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( button, statusElement, jqXHR.responseText );
+		}
+	});
+	
+};
+
 var putQList = function ( application, qList, button, statusElement, callback ) {
 
 	$jq.ajax( {

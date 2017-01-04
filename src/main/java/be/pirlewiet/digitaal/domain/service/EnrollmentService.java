@@ -29,6 +29,7 @@ import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
@@ -281,6 +282,24 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			result.setErrorCode( ErrorCodes.INTERNAL );	
 			logger.warn("bugger", e);
 		}
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=false)
+	public Result<EnrollmentDTO> updateStatus ( String uuid, EnrollmentStatus enrollmentStatus, Organisation actor ) {
+		
+		logger.info("application.updateStatus");
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		Enrollment updated
+			= this.enrollmentManager.updateStatus( uuid, enrollmentStatus, true );
+		
+		result.setValue( Value.OK );
+		result.setObject( EnrollmentDTO.from( updated ) );
 		
 		return result;
 		
