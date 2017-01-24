@@ -77,7 +77,7 @@
 					<c:forEach items="${holidays}" var="holiday">	
 						<div class="checkbox">
 							<label>
-								<input type="radio" class="holiday" value="${holiday.uuid}" checked="checked">&nbsp;${holiday.name}
+								<input type="checkbox" class="holiday" value="${holiday.uuid}" checked="checked">&nbsp;${holiday.name}
 							</label>
 						</div>
 					</c:forEach>

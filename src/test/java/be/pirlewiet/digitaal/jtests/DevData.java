@@ -101,7 +101,7 @@ public class DevData {
 		{
 			vzwSvekke.setName("VZW Svekke");
 			vzwSvekke.setCode( "svk013" );
-			vzwSvekke.setEmail( "sven.gladines@foo.bar" );
+			vzwSvekke.setEmail( "sven.gladines@gmail.com" );
 			vzwSvekke.setPhone( "016123456" );
 			vzwSvekke.setCity( "Neervelp" );
 		
@@ -131,7 +131,7 @@ public class DevData {
 		
 		{
 			vzwPirlewiet.setName("VZW Pirlewiet");
-			vzwPirlewiet.setCode( "pwt001" );
+			vzwPirlewiet.setCode( "dig151" );
 			vzwPirlewiet.setEmail( "info@pirlewiet.be" );
 			vzwPirlewiet.setPhone( "016123456" );
 			vzwPirlewiet.setCity( "Gent" );
@@ -225,6 +225,7 @@ public class DevData {
 			= new Application();
 	
 		applicationOne.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
+		// applicationOne.setStatus( new ApplicationStatus( ApplicationStatus.Value.SUBMITTED ) );
 		applicationOne.setOrganisationUuid( vzwSvekke.getUuid() );
 		applicationOne.setYear( 2017 );
 		applicationOne.setReference( "APP123" );
@@ -243,7 +244,7 @@ public class DevData {
 		logger.info( "Application One has Year [{}]", applicationOne.getYear() );
 		
 		QuestionAndAnswer qnaOne
-			= new QuestionAndAnswer( QuestionType.Text, Tags.TAG_APPLICATION, QIDs.QID_SHARED_BILL, "Wie betaalt de factuur ?" );
+			= new QuestionAndAnswer( 1, QuestionType.Text, Tags.TAG_APPLICATION, QIDs.QID_SHARED_BILL, "Wie betaalt de factuur ?" );
 		qnaOne.setEntityUuid( applicationOne.getUuid() );
 	
 		qnaOne = this.questionAndAnswerRepository.saveAndFlush( qnaOne );
@@ -265,7 +266,7 @@ public class DevData {
 		lisaAtBernies = this.enrollmentRepository.saveAndFlush( lisaAtBernies );
 		
 		QuestionAndAnswer medicalOne
-			= new QuestionAndAnswer( QuestionType.Text, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Telefoon huisdokter ?" );
+			= new QuestionAndAnswer( 2, QuestionType.Text, Tags.TAG_MEDIC, QIDs.QID_MEDIC_MEDIC_TEL, "Telefoon huisdokter ?" );
 		medicalOne.setEntityUuid( lisaAtBernies.getUuid() );
 
 		medicalOne = this.questionAndAnswerRepository.saveAndFlush( medicalOne );
@@ -273,7 +274,7 @@ public class DevData {
 		medicalOne = this.questionAndAnswerRepository.saveAndFlush( medicalOne );
 		
 		QuestionAndAnswer historyOne
-			= new QuestionAndAnswer( QuestionType.Text, Tags.TAG_HISTORY, QIDs.QID_HISTORY, "Ging deze deelnemer al mee ?" );
+			= new QuestionAndAnswer( 3, QuestionType.Text, Tags.TAG_HISTORY, QIDs.QID_HISTORY, "Ging deze deelnemer al mee ?" );
 		
 		historyOne.setEntityUuid( lisaAtBernies.getUuid() );
 

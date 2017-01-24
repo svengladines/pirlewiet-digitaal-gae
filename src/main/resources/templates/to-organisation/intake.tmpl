@@ -15,24 +15,25 @@ Via deze e-mail bevestigen we graag dat we je aanvraag tot inschrijving goed ont
 		<tbody>
 		<tr>
 			<th scope="row">Vakantie(s)</th>
-			<td>${vakanties}</td>
+			<td>
+				<ul>
+				<#list holidays as h>
+					<li>${h.name}</li>
+				</#list>
+				</ul>
+			</td>
 		</tr>
 		<tr>
 			<th scope="row">Deelnemer(s)</th>
 			<td>
 				<ul>
-					<li>${enrollment.deelnemers[0].voorNaam} ${enrollment.deelnemers[0].familieNaam}</li>
-					<#list related as r>
-					<li>${r.deelnemers[0].voorNaam} ${r.deelnemers[0].familieNaam}</li>
+					<#list participants as p>
+					<li>${p.givenName} ${p.familyName}</li>
 					</#list>
 				</ul>
 			</td>
 		</tr>
 	</table>
-</p>
-
-<p>
-<a href="http://pirlewiet-digitaal.appspot.com/rs/inschrijvingen/${enrollment.uuid}.html">Beheer</a> deze inschrijving. 
 </p>
 
 <p>

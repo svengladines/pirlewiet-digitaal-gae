@@ -39,7 +39,7 @@
 			</div>
 			
 			<div id="done" class="well hidden">
-				Je bent nu uitgelogd. Ga naar de <a href="/login.htm">inlogpagina</a> om opnieuw in te loggen.
+				Je bent nu uitgelogd. Ga naar de <a href="/login.htm" class="todo">inlogpagina</a> om opnieuw in te loggen.
 			</div>
 		</div>
 			

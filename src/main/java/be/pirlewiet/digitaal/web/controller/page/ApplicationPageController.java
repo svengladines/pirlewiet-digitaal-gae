@@ -83,8 +83,8 @@ public class ApplicationPageController {
 			model.put( "contactResult", contactResult );
 			
 			Result<List<HolidayDTO>> holidaysResult
-				= this.holidayService.resolve( application.getHolidayUuids() , actor);
-			
+				= this.holidayService.resolve( application.getHolidayUuids(), "", true, false, true, actor);
+		
 			model.put( "holidaysResult", holidaysResult );
 			
 			Result<List<QuestionAndAnswerDTO>> qnaResult 

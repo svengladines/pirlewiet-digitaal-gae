@@ -62,24 +62,24 @@
 									<c:when test="${enrollment.participant.gender eq 'M'}">
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-gender" value="F">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-gender" value="F" required>&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-gender" value="M" checked="checked">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-gender" value="M" checked="checked" required>&nbsp;Man
 											</label>
 										</div>
 									</c:when>
 									<c:otherwise>
 									<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-gender" value="F">&nbsp;Vrouw
+												<input type="radio" name="participant-gender" class="participant-gender" value="F" checked="checked" required>&nbsp;Vrouw
 											</label>
 										</div>
 										<div class="checkbox">
 											<label>
-												<input type="radio" name="participant-gender" class="participant-gender" value="M">&nbsp;Man
+												<input type="radio" name="participant-gender" class="participant-gender" value="M" required>&nbsp;Man
 											</label>
 										</div>
 									</c:otherwise>
@@ -163,7 +163,7 @@
 						</c:forEach>
 						<div class="form-group">
 							<label for="participant-save" class="col-sm-4 control-label"></label>
-							<div class="col-sm-4">
+							<div class="col-sm-6">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
 								<button type="button" id="participant-save" class="btn btn-primary participant-save" data-attribute-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 								<span id ="participant-status"></span>

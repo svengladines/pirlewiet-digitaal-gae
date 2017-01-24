@@ -41,7 +41,7 @@
 	</logger>
 	
 	<logger name="org.springframework">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 	
 	<logger name="org.springframework.orm.jpa.EntityManagerFactoryUtils">

@@ -15,6 +15,7 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 
 @Service
@@ -76,36 +77,55 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		
 	}
 	
-	public Result<List<HolidayDTO>> resolve(String holidayString, Organisation actor) {
-		return this.resolve(holidayString, false, actor);
-	}
-	
-	public Result<List<HolidayDTO>> resolve(String holidayString, boolean checkSingle, Organisation actor) {
-		
-		List<Holiday> holidays
-			= this.holidayManager.holidaysFromUUidString( holidayString );
+	public Result<List<HolidayDTO>> resolve(String holidayString, String alternativeString, boolean checkNotEmpty, boolean checkSingle, boolean checkSingleType, Organisation actor) {
 		
 		Result<List<HolidayDTO>> result
 			= new Result<List<HolidayDTO>>();
 		
+		result.setValue( Value.OK );
+		
 		List<HolidayDTO> dtos
 			= list();
 		
-		for ( Holiday holiday : holidays ) {
+		List<Holiday> holidays
+			= list();
+		
+		if ( holidayString != null ) {
+		
+			holidays.addAll( this.holidayManager.holidaysFromUUidString( holidayString ) );
 			
-			dtos.add( HolidayDTO.from( holiday ) );
+			for ( Holiday holiday : holidays ) {
+				
+				dtos.add( HolidayDTO.from( holiday ) );
+				
+			}
 			
 		}
+		else {
+			holidays.addAll( this.holidayManager.holidaysFromUUidString( alternativeString ) );
+			
+			for ( Holiday holiday : holidays ) {
+				
+				dtos.add( HolidayDTO.from( holiday ) );
+				
+			}
+		}
 		
-		result.setValue( Value.OK );
 		result.setObject( dtos );
 		
-		if ( checkSingle ) {
+		if ( checkNotEmpty) {
+			
+			if ( holidays.size() == 0 ) {
+				
+				result.setValue( Value.NOK );
+				
+			}
+		}
 		
-			if ( holidays.size() == 1 ) {
-				
-				result.setValue( Value.OK );
-				
+		if ( checkSingle ) {
+			
+			if ( holidays.size() == 1 ) { 
+				// no need to change status
 			} else if ( holidays.size() == 0 ) {
 			
 				result.setValue( Value.NOK );
@@ -118,6 +138,19 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 				
 			}
 		}
+		
+		if ( checkSingleType ) {
+			
+			Result<HolidayType> r 
+				= this.holidayManager.checkSingleType( holidayString );
+			
+			if ( ! Value.OK.equals( r.getValue() ) ) {
+				logger.info( "selected holidays [{}] not compatible", holidayString );
+				result.setValue( r.getValue() );
+				result.setErrorCode( r.getErrorCode() );
+			}
+		}
+		
 		
 		return result;
 		

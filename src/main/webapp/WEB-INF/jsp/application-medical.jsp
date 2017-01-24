@@ -37,7 +37,7 @@
 												</div>
 											</c:when>
 											<c:when test="${question.type eq 'Text'}">
-												<div class="col-sm-3">
+												<div class="col-sm-4">
 													<input id="${question.uuid}" type="text" class="form-control q" data-tag="${question.tag}" value="${question.answer}"></input>
 												</div>
 											</c:when>

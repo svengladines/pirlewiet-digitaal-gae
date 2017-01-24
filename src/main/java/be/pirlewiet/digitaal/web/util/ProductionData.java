@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.pirlewiet.digitaal.domain.people.ScenarioRunner;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
@@ -50,6 +51,9 @@ public class ProductionData {
 	
 	@Resource
 	HolidayRepository holidayRepository;
+	
+	@Resource
+	ScenarioRunner scenarioRunner;
 		
 	@PostConstruct
 	@Transactional(readOnly=false)
@@ -117,14 +121,14 @@ public class ProductionData {
 					= new GregorianCalendar();
 				
 				start.set( Calendar.YEAR, 2017 );
-				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.MONTH, 3 );
 				start.set( Calendar.DAY_OF_MONTH, 4 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
 				end.set( Calendar.YEAR, 2017 );
-				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.MONTH, 3 );
 				end.set( Calendar.DAY_OF_MONTH, 8 );
 				
 				holiday.setName( name );
@@ -158,14 +162,14 @@ public class ProductionData {
 					= new GregorianCalendar();
 				
 				start.set( Calendar.YEAR, 2017 );
-				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.MONTH, 3 );
 				start.set( Calendar.DAY_OF_MONTH, 10 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
 				end.set( Calendar.YEAR, 2017 );
-				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.MONTH, 3 );
 				end.set( Calendar.DAY_OF_MONTH, 14 );
 				
 				holiday.setName( name );
@@ -187,7 +191,7 @@ public class ProductionData {
 		
 		// PaasGezins --- 11/4 - 15/4
 		{
-			String name = "PaasGezins";
+			String name = "PaasGEZINS";
 			Holiday holiday
 				= this.holidayRepository.findOneByName( name );
 			
@@ -199,14 +203,14 @@ public class ProductionData {
 					= new GregorianCalendar();
 				
 				start.set( Calendar.YEAR, 2017 );
-				start.set( Calendar.MONTH, 4 );
+				start.set( Calendar.MONTH, 3 );
 				start.set( Calendar.DAY_OF_MONTH, 11 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
 				end.set( Calendar.YEAR, 2017 );
-				end.set( Calendar.MONTH, 4 );
+				end.set( Calendar.MONTH, 3 );
 				end.set( Calendar.DAY_OF_MONTH, 15 );
 				
 				holiday.setName( name );
@@ -241,14 +245,14 @@ public class ProductionData {
 				
 				start.set( Calendar.YEAR, 2017 );
 				start.set( Calendar.MONTH, 4 );
-				start.set( Calendar.DAY_OF_MONTH, 11 );
+				start.set( Calendar.DAY_OF_MONTH, 15 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
 				end.set( Calendar.YEAR, 2017 );
 				end.set( Calendar.MONTH, 4 );
-				end.set( Calendar.DAY_OF_MONTH, 15 );
+				end.set( Calendar.DAY_OF_MONTH, 19 );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -268,6 +272,12 @@ public class ProductionData {
 		}
 		
 		
+	}
+	
+	@PostConstruct
+	public void runScenarios() {
+		
+		this.scenarioRunner.runThem();
 		
 	}
 	

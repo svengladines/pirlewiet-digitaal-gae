@@ -36,7 +36,7 @@
 			<br/>
 		
 			<c:choose>
-				<c:when test="${'test' == param.mode}">
+				<c:when test="${true || ('sven.gladines@gmail.comx' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">
 					<form class="form-horizontal">
 						
 						<div class="form-group form-group-lg">
@@ -69,7 +69,7 @@
 						<table class="table table-bordered">
 						
 						<thead>
-							<tr>
+							<tr class="bg-success">
 								<th scope="row" class="th-row">Dossier</th>
 								<td colspan="2">
 									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
@@ -86,13 +86,14 @@
 								</td>
 							</tr>
 						
+						<!-- 
 							<tr>
 								<th scope="row" class="th-row">Referentie</th>
 								<td colspan="2">
 									${application.reference}
 								</td>
 							</tr>
-							
+						-->
 							<tr>
 								<th scope="row" class="th-row">Vakantie(s)</th>
 								<td colspan="2">
@@ -150,6 +151,8 @@
 		$jq("#create").click( function( event ) {
 			
 			event.preventDefault();
+			
+			busyButton( $jq("#create") );
 			
 			postApplication( new Application(), viewApplication );
 			

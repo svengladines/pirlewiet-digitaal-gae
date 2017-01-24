@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.Reducer;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
@@ -27,7 +28,9 @@ import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
+import be.pirlewiet.digitaal.domain.people.ScenarioRunner;
 import be.pirlewiet.digitaal.domain.people.Secretary;
+import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
@@ -192,6 +195,13 @@ public class PirlewietApplicationConfig {
 		}
 		
 		@Bean
+		Mapper mapper() {
+			
+			return new Mapper();
+			
+		}
+		
+		@Bean
 		ExcelImporter excelImporter() {
 			return new ExcelImporter();
 		}
@@ -217,6 +227,11 @@ public class PirlewietApplicationConfig {
 			return pDiddy;
 		}
 		
+		@Bean
+		public ScenarioRunner scenarioRunner( SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario ) {
+			return new ScenarioRunner( setEnrollmentHolidayNamesScenario );
+		}
+		
 		/*
 		@Bean
 		Secretary secretary( ) {
@@ -236,13 +251,6 @@ public class PirlewietApplicationConfig {
 		Detacher detacher() {
 			
 			return new Detacher();
-			
-		}
-		
-		@Bean
-		Mapper mapper() {
-			
-			return new Mapper();
 			
 		}
 		
@@ -288,6 +296,16 @@ public class PirlewietApplicationConfig {
 		}
 		
 		*/
+		
+	}
+	
+	@Configuration
+	public static class ScenarioConfig {
+		
+		@Bean 
+		SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario() {
+			return new SetEnrollmentHolidayNamesScenario();
+		}
 		
 	}
 	

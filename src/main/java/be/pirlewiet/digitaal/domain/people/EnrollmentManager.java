@@ -100,7 +100,7 @@ public class EnrollmentManager {
 		created = this.enrollmentRepository.saveAndFlush( created );
 		
 		List<QuestionAndAnswer> medical
-			= QuestionSheet.template().getVragen( ).get( Tags.TAG_MEDIC );
+			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_MEDIC );
 		
 		for ( QuestionAndAnswer qna : medical ) {
 			qna.setEntityUuid( created.getUuid() );
@@ -108,7 +108,7 @@ public class EnrollmentManager {
 		}
 		
 		List<QuestionAndAnswer> history
-			= QuestionSheet.template().getVragen( ).get( Tags.TAG_HISTORY );
+			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_HISTORY );
 	
 		for ( QuestionAndAnswer qna : history ) {
 			qna.setEntityUuid( created.getUuid() );
@@ -173,6 +173,25 @@ public class EnrollmentManager {
 			}
 			
 			enrollment.setHolidayUuid( uuids.toString() );
+			enrollment.setHolidayName( names.toString() );
+			
+			enrollment = this.enrollmentRepository.saveAndFlush( enrollment );
+			
+		}
+		
+		return enrollment;
+	}
+	
+public Enrollment updateHolidays( String uuid, String holidayUuids ) {
+		
+		logger.info("application.updateHolidays");
+		
+		Enrollment enrollment
+			= this.findOneByUuid( uuid );
+		
+		if ( enrollment != null ) {
+			
+			enrollment.setHolidayUuid( holidayUuids );
 			
 			enrollment = this.enrollmentRepository.saveAndFlush( enrollment );
 			
@@ -301,7 +320,7 @@ public class EnrollmentManager {
 						
 				model.put( "enrollment", enrollment );
 				model.put( "participant", participant );
-				model.put( "holidays", holidays );
+				model.put( "holiday", holidays.isEmpty() ? "" : holidays.get( 0 ) );
 				model.put( "oldStatusMessage", oldStatusMessage );
 				model.put( "newStatusMessage", newStatusMessage );
 				model.put( "newStatusDescription", newStatusDescription );

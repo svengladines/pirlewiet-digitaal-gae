@@ -209,23 +209,32 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 				Organisation organisation
 					= tuple.getX();
 				
-				Address address
-					= tuple.getY();
+				String code
+					= organisation.getCode();
 				
-				Address createdAddress
-					= this.addressManager.create( address );
+				Organisation loaded
+					= this.doorMan.whoHasCode( code );
 				
-				organisation.setAddressUuid( createdAddress.getUuid() );
+				if ( loaded == null ) {
 				
-				Organisation created
-					= this.organisationManager.create( organisation, false );
-				
-				individualResult.setValue( Value.OK );
-				individualResult.setObject( OrganisationDTO.from( created ) );
-				
-				individualResults.add( individualResult );
-				
-				logger.warn("organisation [{}] successfully consumed", created.getName() );
+					Address address
+						= tuple.getY();
+					
+					Address createdAddress
+						= this.addressManager.create( address );
+					
+					organisation.setAddressUuid( createdAddress.getUuid() );
+					
+					Organisation created
+						= this.organisationManager.create( organisation, false );
+					
+					individualResult.setValue( Value.OK );
+					individualResult.setObject( OrganisationDTO.from( created ) );
+					
+					individualResults.add( individualResult );
+					
+					logger.warn("organisation [{}] successfully consumed and created", created.getName() );
+				}
 			}
 			catch( PirlewietException e ){
 				logger.warn("failed to consume organisation-tuple for organisation [{}], error code is [{}]", tuple.getX().getName(), e.getErrorCode().getCode() );

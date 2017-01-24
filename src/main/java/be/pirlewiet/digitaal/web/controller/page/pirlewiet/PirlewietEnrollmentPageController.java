@@ -18,8 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
+import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Organisation;
@@ -38,6 +40,9 @@ public class PirlewietEnrollmentPageController {
 	HolidayService holidayService;
 	
 	@Resource
+	ApplicationService applicationService;
+	
+	@Resource
 	protected DoorMan doorMan;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 
@@ -54,8 +59,17 @@ public class PirlewietEnrollmentPageController {
 		Result<EnrollmentDTO> enrollmentResult 
 			= this.enrollmentService.findOneByUuid( uuid );
 		
+		EnrollmentDTO enrollment
+			= enrollmentResult.getObject();
+		
+		Result<ApplicationDTO> applicationResult
+			= this.applicationService.findOne( enrollment.getApplicationUuid(), actor);
+		
+		ApplicationDTO application
+			= applicationResult.getObject();
+		
 		Result<List<HolidayDTO>> holidaysResult
-			= this.holidayService.resolve( enrollmentResult.getObject().getHolidayUuid(), true, actor);
+			= this.holidayService.resolve( enrollmentResult.getObject().getHolidayUuid(), application.getHolidayUuids(), true, true, false, actor);
 	
 		model.put( "holidaysResult", holidaysResult );
 			

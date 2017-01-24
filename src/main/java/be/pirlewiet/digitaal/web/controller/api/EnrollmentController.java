@@ -41,6 +41,29 @@ public class EnrollmentController {
 	@Resource
 	DoorMan doorMan;
 	
+
+	@RequestMapping( method = { RequestMethod.PUT } )
+	@ResponseBody
+	public ResponseEntity<Result<EnrollmentDTO>> update(
+				@PathVariable String uuid,
+				@RequestBody EnrollmentDTO enrollment,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("application.updateStatus");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		// TODO, think about this ... securitywize ... iz ok for now
+		enrollment.setUuid( uuid );
+		
+		Result<EnrollmentDTO> x 
+			= this.enrollmentService.guard().update( enrollment, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
+	
 	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
 	@ResponseBody
 	public ResponseEntity<Result<EnrollmentDTO>> updateStatus(
@@ -93,6 +116,28 @@ public class EnrollmentController {
 		
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().updateHolidays( uuid, holidays, actor );
+		
+		return response( x, HttpStatus.OK );
+		
+	}
+	
+	@RequestMapping( method = { RequestMethod.DELETE } )
+	@ResponseBody
+	public ResponseEntity<Result<EnrollmentDTO>> delete(
+				@PathVariable String uuid,
+				@RequestBody EnrollmentDTO enrollment,
+				@CookieValue(required=true, value="pwtid") String pwtid ) {
+		
+		logger.info("application.updateStatus");
+		
+		Organisation actor
+			= this.doorMan.guard().whoHasID(  pwtid  );
+		
+		// TODO, think about this ... securitywize ... iz ok for now
+		enrollment.setUuid( uuid );
+		
+		Result<EnrollmentDTO> x 
+			= this.enrollmentService.guard().update( enrollment, actor );
 		
 		return response( x, HttpStatus.OK );
 		

@@ -35,10 +35,16 @@
 		
 			<br/>
 					
-			<c:if test="${ false }">
-					<div>
-						<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
-					</div>
+			<c:if test="${ true }">
+					<form class="form-horizontal">
+						
+						<div class="form-group form-group-lg">
+							<div>
+								<button type="button" id="download" class="btn btn-primary btn"><i class="fa fa-download"></i>&nbsp;&nbsp;Download inschrijvingen</button>
+							</div>
+						</div>
+						
+					</form>
 			</c:if>
 		</div>
 	
@@ -60,22 +66,26 @@
 						
 						<thead>
 							<tr>
-								<th scope="row" class="th-row">Dossier</th>
-								<td colspan="2">
-									<a title="${application.uuid}" href="/application.html?uuid=${application.uuid}" class="btn btn-primary pull-right">Wijzig</a>
-								</td>
+								<th scope="row" class="th-row">
+								Dossier
+								</th>
+								<th colspan="2">
+									<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${application.submitted}" var="submitted"></fmt:formatDate>
+									<span><strong>${submitted}</strong></span>
+									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
+								</th>
 							</tr>
 						</thead>
 							
 						<tbody>
-						
+							<!-- 
 							<tr>
 								<th scope="row" class="th-row">Referentie</th>
 								<td colspan="2">
 									${application.reference}
 								</td>
 							</tr>
-							
+							 -->
 							<tr>
 								<th scope="row" class="th-row">Vakantie(s)</th>
 								<td colspan="2">
@@ -131,11 +141,13 @@
     <script>
     	var $jq = jQuery.noConflict();
     	
-		$jq("#nieuw").click( function( event ) {
+		$jq("#download").click( function( event ) {
 			
 			event.preventDefault();
 			
-			postEnrollment( new Inschrijving() );
+			busyButton( $jq( this ) );
+			
+			window.location.href = "/api/applications/pirlewiet/enrollments/download";
 			
     	});
 		

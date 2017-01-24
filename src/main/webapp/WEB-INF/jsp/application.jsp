@@ -14,9 +14,18 @@
 	
 	<fmt:bundle basename="pirlewiet-messages">
 
-    <jsp:include page="/WEB-INF/jsp/menu.jsp">
-    	<jsp:param name="active" value="enrollments"/>
-    </jsp:include>
+	<c:choose>
+		<c:when test="${isPirlewiet}">
+	    <jsp:include page="/WEB-INF/jsp/menu-pirlewiet.jsp">
+	    	<jsp:param name="active" value="enrollments"/>
+	    </jsp:include>
+		</c:when>
+		<c:otherwise>
+			<jsp:include page="/WEB-INF/jsp/menu.jsp">
+		    	<jsp:param name="active" value="enrollments"/>
+		    </jsp:include>
+		</c:otherwise>
+	</c:choose>
 
 	<div class="banner">
 		<div class="container">
@@ -51,16 +60,22 @@
 		</div>
 			<div class="row">
 				<c:choose>
-					<c:when test="${application.holidayNames == null }">
+					<c:when test="${holidaysResult.value == 'NOK' }">
 						<div class="col-sm-12 alert alert-warning">
 							<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
-							<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">Vakantie(s) selecteren</a>
+							Opgelet:
+							<ul>
+								<li>minstens 1 vakantie selecteren</li>
+								<li>enkel vakanties selecteren van hetzelfde type (KIKA, TIKA of GEZINS)</li>
+								<br/>
+							</ul> 
+							Geen geldige vakantie(s)&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">invullen/wijzigen</a>)
 						</div>
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
-							<span>${application.holidayNames}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">Wijzigen</a>)<br/>
+							<span>${application.holidayNames}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">wijzigen</a>)<br/>
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -74,7 +89,7 @@
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
 						<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
-						<span>${application.contactPersonName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="contact">Wijzigen</a>)
+						<span>${application.contactPersonName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="contact">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
@@ -88,94 +103,90 @@
 					</c:when>
 					<c:otherwise>
 						<div class="col-sm-12 alert alert-success">
-							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst inschrijving</strong><br/></h4>
+							<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst dossier</strong><br/></h4>
 							<span>Ingevuld</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">wijzigen</a>)
 						</div>
 					</c:otherwise>
 				</c:choose>
-				<c:choose>
-					<c:when test="${ enrollmentsResult.value == 'NOK' }">
-						<c:choose>
-							<c:when test="${ enrollmentsResult.errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
-								<div class="col-sm-12 alert alert-warning">
-									<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-									<span class="">Nog geen deelnemers toegevoegd</span><br/>
-									<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>
-								</div>
-							</c:when>
-							<c:otherwise>
-								<div class="col-sm-12 alert alert-warning">
-									<i class="fa fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-									<p>
-										Er ontbreken nog gegevens van minstens 1 deelnemer. Kijk AUB de gegevens na. <br/>
-									</p>
-									<p>
-										<strong>Opgelet</strong>: voor KIKA, TIKA en VOV-vakanties moet ook de medische fiche <strong>volledig</strong> ingevuld zijn voordat je de inschrijving kan doorsturen. <br/> <br/>
-									</p>
-									<div class="container">
-										<c:forEach items="${enrollmentsResult.object}" var="enrollmentResult">
-											<c:set var="enrollment" value="${enrollmentResult.object}"/>
-											<div class="row">
-												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' ) ? 'alert-danger' : 'alert-success' ) }">
-													<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">wijzigen</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >verwijder</a>)&nbsp;&nbsp;</c:if>
-												</div>
-												<div class="col-sm-1">
-												</div>
-												<div class="col-sm-5 alert ${enrollmentResult.value == 'OK' ? 'alert-success' : ( fn:startsWith( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'alert-success' ) }">
-													<i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;<a href="#modal-participant-${enrollment.uuid}-medical" class="todo" data-toggle="modal" data-target="#modal-participant-${enrollment.uuid}-medical">Medische fiche invullen/aanpassen</a>
-												</div>
-											</div>
-										</c:forEach><br/>
-										<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>									
-									</div>
-								</div>
-							</c:otherwise>
-						</c:choose>
-					</c:when>
-					<c:otherwise>
-						<div class="col-sm-12 alert alert-success">
-							<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
-							<br/>
-							<table class="table table-bordered">
-							<thead>
-								<tr>
-									<th>Deelnemer</th>
-									<th><i class="fa fa-3 fa-question"></i>&nbsp;&nbsp;Vragenlijst deelnemer</th>
-									<th><i class="fa fa-3 fa-medkit"></i>&nbsp;&nbsp;Medische fiche</th>
-									<th>Status</th>
-								</tr>
-							</thead>
-								<c:forEach items="${enrollmentsResult.object}" var="enrollmentResult">
-									<c:set var="enrollment" value="${enrollmentResult.object}"/>
-									<tr>
-										<td class="${enrollmentResult.value == 'OK' ? 'bg-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' ) ? 'bg-danger' : 'bg-success' ) }">
-											<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;
-										</td>
-										<td class="${enrollmentResult.value == 'OK' ? 'bg-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_HISTORY' ) ? 'bg-danger' : 'bg-success' ) }">
-											<a href="javascript:void(0);" class="todo" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst</a>											
-										</td>
-										<td class="${enrollmentResult.value == 'OK' ? 'bg-success' : ( fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' ) ? 'alert-danger' : 'bg-success' ) }">
-											<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Fiche</a>
-										</td>
-										<td>
-											<c:choose>
-												<c:when test="${isPirlewiet}">
-													<a href="/enrollment-${enrollment.uuid}-pirlewiet.html"><spring:message code="enrollment.status.${enrollment.status.value}"/></a>
-												</c:when>
-												<c:otherwise>
-													<strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong>
-												</c:otherwise>
-											</c:choose>
-										</td>
-									</tr>
-								</c:forEach>
-							</table>
-								<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>									
-							</div>
-						</div>
-					</c:otherwise>
-				</c:choose>
+			<c:choose>
+				<c:when test="${ enrollmentsResult.errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
+					<div class="col-sm-12 alert alert-warning">
+						<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+						<span class="">Nog geen deelnemers toegevoegd</span><br/>
+						<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="col-sm-12 alert ${enrollmentsResult.value == 'OK' ? 'alert-success' : 'alert-warning' }">
 					
+						<i class="fa fa-2x fa-users pull-right"></i><h4><strong>Deelnemer(s)</strong><br/></h4>
+						<c:if test="${enrollmentsResult.value == 'NOK'}">
+						<p>
+							Er ontbreken nog gegevens van minstens 1 deelnemer. Kijk AUB de gegevens na. <br/>
+						</p>
+						</c:if>
+						<p>
+							<strong>Opgelet</strong>: voor KIKA, TIKA en VOV-vakanties moet de medische fiche <strong>volledig</strong> ingevuld zijn van alle deelnemers voordat je het dossier kan doorsturen. <br/> <br/>
+						</p>
+						
+						<div class="container">
+							<c:forEach items="${enrollmentsResult.object}" var="enrollmentResult">
+								<c:set var="enrollment" value="${enrollmentResult.object}"/>
+								<div class="row">
+									<div class="col-sm-5 alert alert-info">
+										<strong>Deelnemer</strong>
+										<c:choose>
+											<c:when test="${isPirlewiet}">
+												<a href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="pull-right"><spring:message code="enrollment.status.${enrollment.status.value}"/></a>
+											</c:when>
+											<c:otherwise>
+												<span class="pull-right"><strong><spring:message code="enrollment.status.${enrollment.status.value}"/></strong></span>
+											</c:otherwise>
+										</c:choose>
+										<br/><br/>
+										<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;<br/>
+										<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst</a><br/>													
+										<i class="fa fa-medkit"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche</a>											
+													
+										
+									</div>
+									<div class="col-sm-1">
+									</div>
+									<c:choose>
+										<c:when test="${enrollmentResult.value == 'NOK'}">
+											<div class="col-sm-5 alert alert-danger">
+												<strong>Te doen</strong><br/>
+												<ul>
+												<c:if test="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' )}">
+													<li>
+														&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;((<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;&nbsp;
+													</li>
+												</c:if>
+												<c:if test="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_HISTORY' )}">
+													<li>
+														<a href="javascript:void(0);" class="todo" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst invullen</a>											
+													</li>
+												</c:if>
+												<c:if test="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' )}">
+													<li>
+														<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche invullen</a><br/>
+														Opgelet: alle vragen uit de lijst moeten beantwoord worden. Vul eventueel "niet van toepassing" (NVT) in.											
+													</li>
+												</c:if>
+												</ul>
+											</div>
+										</c:when>
+										<c:otherwise>
+											
+										</c:otherwise>
+									</c:choose>
+								</div>
+							</c:forEach><br/>
+							<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Deelnemer toevoegen</a>									
+						</div>
+					</div>
+				</c:otherwise>
+			</c:choose>
 			<c:choose>
 					
 					<c:when test="${application.status.value =='DRAFT'}">
@@ -341,11 +352,15 @@
 			var comment = "";
 			if ( value ) {
 				var sx = new Status (value, comment ,true );
+				busyButton( $jq("#enrollment-save" ) );
 				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				doneButton( $jq("#enrollment-save" ) );
 			}
 			else {
 				var sx = new Status ( "AUTO", comment ,true );
-				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );	
+				busyButton( $jq("#enrollment-save" ) );
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				doneButton( $jq("#enrollment-save" ) );
 			}
 			
 			
@@ -375,7 +390,7 @@
 			window.location.reload();
 		};
     	
-		$jq(".todo").click( function( event ) {
+		$jq(".todo,.dam").click( function( event ) {
 			
 			$jq("#modal").load( "/application-modals.html?uuid=${application.uuid}&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-uuid"),
 					function() {
@@ -383,7 +398,7 @@
 				$jq("#holiday-save").click( function( event ) {
 					
 					clearStatus();
-					$jq(this).button('Even geduld...');
+					busyButton( $jq(this) );
 					
 					saveHolidays( "${application.uuid}" );
 					
@@ -392,7 +407,7 @@
 				$jq("#contact-save").click( function( event ) {
 					
 					clearStatus();
-					$jq(this).button('Even geduld...');
+					busyButton( $jq(this) );
 					
 					saveContact( "${application.uuid}" );
 					
@@ -401,7 +416,7 @@
 				$jq("#participant-save").click( function( event ) {
 					
 					clearStatus();
-					$jq(this).button('Even geduld...');
+					busyButton( $jq(this) );
 					
 					if ( ( $jq(this).attr("data-attribute-uuid") != null ) && ( $jq(this).attr("data-attribute-uuid") != "" ) ) {
 						saveParticipant( "${application.uuid}", $jq(this).attr("data-attribute-uuid") );	
@@ -415,7 +430,7 @@
 				$jq("#q-save-application").click( function( event ) {
 					
 					clearStatus();
-					$jq(this).button('Even geduld...');
+					busyButton( $jq(this) );
 					
 					saveQList( "${application.uuid}", "application" );
 					

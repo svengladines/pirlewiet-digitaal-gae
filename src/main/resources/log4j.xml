@@ -12,28 +12,28 @@
 	
 	<!-- Application Loggers -->
 	<logger name="org.application">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	
 	<logger name="org.springframework.beans">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	
 	<logger name="org.hibernate">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 
 	<logger name="org.springframework.web">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 	
 	<logger name="org.hibernate">
-		<level value="DEBUG" />
+		<level value="WARN" />
 	</logger>
 	
 	<logger name="be.pirlewiet">
@@ -41,13 +41,13 @@
 	</logger>
 	
 	<logger name="org.springframework.security">
-		<level value="INFO" />
+		<level value="WARN" />
 	</logger>
 
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="info" />
+		<priority value="WARN" />
 		<appender-ref ref="console" />
 	</root>
 	

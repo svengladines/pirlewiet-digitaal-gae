@@ -3,16 +3,26 @@ package be.pirlewiet.digitaal.domain.people;
 import static be.occam.utils.javax.Utils.isEmpty;
 import static be.occam.utils.javax.Utils.list;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
+import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
+import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Enrollment;
@@ -21,9 +31,13 @@ import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
 
 import com.google.appengine.api.datastore.KeyFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /*
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
@@ -33,6 +47,15 @@ public class ApplicationManager {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
+	
+	@Resource
+	MailMan mailMan;
+	
+	@Resource
+	HeadQuarters headQuarters;
+	
+	@Resource
+	OrganisationManager organisationManager;
 
 	protected final Comparator<Application> mostRecentlySubmitted
 		= new Comparator<Application>() {
@@ -178,6 +201,7 @@ public class ApplicationManager {
 		    	
 	    	}
 	    	*/
+	    	application.setYear( this.currentYear );
 	    	application.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
 	    	application.setHolidayUuids( "" );
 	    	application.setHolidayNames( "" );
@@ -192,6 +216,14 @@ public class ApplicationManager {
 				= this.applicationRepository.saveAndFlush( saved );
 	    	
 	    	logger.info( "created application with uuid [{}]", new Object[] { saved.getUuid() } );
+	    	
+	    	List<QuestionAndAnswer> appQList
+				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
+		
+			for ( QuestionAndAnswer qna : appQList ) {
+				qna.setEntityUuid( saved.getUuid() );
+				this.questionAndAnswerManager.create( qna );
+			}
 	    	
 	    	/*
 	    	if ( sendEmail ) {
@@ -334,13 +366,41 @@ public class ApplicationManager {
 					List<Enrollment> enrollments
 						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
+						if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) ) {
+							this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids() );
+						}
 						this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), false );
 					}
 					applicationStatus.setValue( ApplicationStatus.Value.SUBMITTED );
 					application.setSubmitted( new Date() );
 					save = true;
-					// TODO, send e-mails
+					
+					Organisation organisation
+						= this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+					
+					Person contact
+						= this.personManager.findOneByUuid( application.getContactPersonUuid() );
+					
+					List<Holiday> holidays
+						= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
+					
+					List<Person> participants
+						= list();
+					
+					for ( Enrollment enrollment : enrollments ) {
+						
+						Person participant
+							= this.personManager.findOneByUuid( enrollment.getParticipantUuid() );
+						
+						participants.add( participant );
+						
+					}
+					
+					this.sendIntakeMessageToOrganisation(application, participants, holidays, contact);
+					// TODO, email to pwt
+					this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
 					logger.info( "taken in");
+					
 				}
 				
 			}
@@ -368,6 +428,150 @@ public class ApplicationManager {
 		
 		return application;
 	}
+	
+	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, List<Holiday> holidays, Person contact ) {
+	    	
+			MimeMessage message
+				= this.formatIntakeMessageOrganisation( application, participants, holidays, contact );
+
+			if ( message != null ) {
+				
+				return mailMan.deliver( message );
+				
+			}
+			
+			return false;
+		
+	 }
+	 
+	 protected MimeMessage formatIntakeMessageOrganisation( Application application, List<Person> participants, List<Holiday> holidays, Person recipient ) {
+			
+			MimeMessage message
+				= null;
+			
+			Configuration cfg 
+				= new Configuration();
+		
+			try {
+				
+				InputStream tis
+					= this.getClass().getResourceAsStream( "/templates/to-organisation/intake.tmpl" );
+				
+				Template template 
+					= new Template("intake", new InputStreamReader( tis ), cfg );
+				
+				Map<String, Object> model = new HashMap<String, Object>();
+				
+				model.put( "application", application );
+				model.put( "participants", participants );
+				model.put( "holidays", holidays );
+				model.put( "uuid", application.getUuid() );
+				
+				StringWriter bodyWriter 
+					= new StringWriter();
+				
+				template.process( model , bodyWriter );
+				
+				bodyWriter.flush();
+					
+				message = this.mailMan.message();
+				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
+				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
+			
+				helper.setTo( recipient.getEmail() );
+				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+				helper.setReplyTo( headQuarters.getEmail() );
+				helper.setSubject( "Uw inschrijving bij Pirlewiet werd aangepast" );
+					
+				String text
+					= bodyWriter.toString();
+					
+				logger.info( "email text is [{}]", text );
+					
+				helper.setText(text, true);
+					
+			}
+			catch( Exception e ) {
+				logger.warn( "could not write e-mail", e );
+				throw new RuntimeException( e );
+			}
+			
+			return message;
+	    	
+	    }
+	 
+	 protected boolean sendIntakeMessageToPirlewiet( Application application,  List<Person> participants, List<Holiday> holidays, Person contact, Organisation organisation ) {
+	    	
+			MimeMessage message
+				= this.formatIntakeMessagePirlewiet( application, participants, holidays, contact, organisation );
+
+			if ( message != null ) {
+				
+				return mailMan.deliver( message );
+				
+			}
+			
+			return false;
+		
+	 }
+	 
+	 protected MimeMessage formatIntakeMessagePirlewiet( Application application, List<Person> participants, List<Holiday> holidays, Person contact, Organisation organisation ) {
+			
+			MimeMessage message
+				= null;
+			
+			Configuration cfg 
+				= new Configuration();
+		
+			try {
+				
+				InputStream tis
+					= this.getClass().getResourceAsStream( "/templates/to-pirlewiet/intake.tmpl" );
+				
+				Template template 
+					= new Template("intake", new InputStreamReader( tis ), cfg );
+				
+				Map<String, Object> model = new HashMap<String, Object>();
+				
+				model.put( "application", application );
+				model.put( "participants", participants );
+				model.put( "holidays", holidays );
+				model.put( "uuid", application.getUuid() );
+				model.put( "organisation", organisation );
+				model.put( "contact", contact );
+				
+				StringWriter bodyWriter 
+					= new StringWriter();
+				
+				template.process( model , bodyWriter );
+				
+				bodyWriter.flush();
+					
+				message = this.mailMan.message();
+				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
+				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
+			
+				helper.setTo( this.headQuarters.getEmail() );
+				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
+				helper.setReplyTo( headQuarters.getEmail() );
+				helper.setSubject( "Nieuw dossier ingediend" );
+					
+				String text
+					= bodyWriter.toString();
+					
+				logger.info( "email text is [{}]", text );
+					
+				helper.setText(text, true);
+					
+			}
+			catch( Exception e ) {
+				logger.warn( "could not write e-mail", e );
+				throw new RuntimeException( e );
+			}
+			
+			return message;
+	    	
+	    }
 	
 
 }
