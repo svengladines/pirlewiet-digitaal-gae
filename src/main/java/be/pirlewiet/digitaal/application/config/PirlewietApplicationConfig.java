@@ -229,7 +229,8 @@ public class PirlewietApplicationConfig {
 		
 		@Bean
 		public ScenarioRunner scenarioRunner( SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario ) {
-			return new ScenarioRunner( setEnrollmentHolidayNamesScenario );
+			// return new ScenarioRunner( setEnrollmentHolidayNamesScenario );
+			return new ScenarioRunner( );
 		}
 		
 		/*
