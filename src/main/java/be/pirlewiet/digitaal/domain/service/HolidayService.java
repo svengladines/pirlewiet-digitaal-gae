@@ -2,6 +2,8 @@ package be.pirlewiet.digitaal.domain.service;
 
 import static be.occam.utils.javax.Utils.list;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -26,6 +28,16 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 	
 	@Resource
 	HolidayManager holidayManager;
+	
+	protected final Comparator<Holiday> chronological = new Comparator<Holiday>() {
+
+		@Override
+		public int compare(Holiday o1, Holiday o2) {
+			return o1.getStart().compareTo( o2.getStart() );
+			
+		}
+		
+	};
 	
 	public Holiday retrieve( String id, Organisation actor ) {
 		return new Holiday();
@@ -52,6 +64,8 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		List<Holiday> currentHolidays
 			= this.holidayManager.findCurrentHolidays();
 		
+		Collections.sort( currentHolidays, this.chronological );
+		
 		Result<List<Result<HolidayDTO>>> result
 			= new Result<List<Result<HolidayDTO>>>();
 		
@@ -77,7 +91,7 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		
 	}
 	
-	public Result<List<HolidayDTO>> resolve(String holidayString, String alternativeString, boolean checkNotEmpty, boolean checkSingle, boolean checkSingleType, Organisation actor) {
+	public Result<List<HolidayDTO>> resolve(String enrollmentHolidayString, String applicationHolidayString, boolean checkNotEmpty, boolean checkSingle, boolean checkSingleType, Organisation actor) {
 		
 		Result<List<HolidayDTO>> result
 			= new Result<List<HolidayDTO>>();
@@ -90,9 +104,9 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		List<Holiday> holidays
 			= list();
 		
-		if ( holidayString != null ) {
+		if ( enrollmentHolidayString != null ) {
 		
-			holidays.addAll( this.holidayManager.holidaysFromUUidString( holidayString ) );
+			holidays.addAll( this.holidayManager.holidaysFromUUidString( enrollmentHolidayString ) );
 			
 			for ( Holiday holiday : holidays ) {
 				
@@ -101,12 +115,14 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 			}
 			
 		}
-		else {
-			holidays.addAll( this.holidayManager.holidaysFromUUidString( alternativeString ) );
+		
+		if ( applicationHolidayString != null ) {
+			
+			holidays.addAll( this.holidayManager.holidaysFromUUidString( applicationHolidayString ) );
 			
 			for ( Holiday holiday : holidays ) {
 				
-				dtos.add( HolidayDTO.from( holiday ) );
+				dtos.add( HolidayDTO.from( holiday ).setIsApplicationHoliday( true ) );
 				
 			}
 		}
@@ -142,10 +158,10 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		if ( checkSingleType ) {
 			
 			Result<HolidayType> r 
-				= this.holidayManager.checkSingleType( holidayString );
+				= this.holidayManager.checkSingleType( enrollmentHolidayString );
 			
 			if ( ! Value.OK.equals( r.getValue() ) ) {
-				logger.info( "selected holidays [{}] not compatible", holidayString );
+				logger.info( "selected holidays [{}] not compatible", enrollmentHolidayString );
 				result.setValue( r.getValue() );
 				result.setErrorCode( r.getErrorCode() );
 			}

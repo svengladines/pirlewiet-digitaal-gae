@@ -62,7 +62,17 @@
 			</c:otherwise>
 			</c:choose>
 		
-			<h2>Gegevens</h2>
+			<div class="col-sm-6">
+				<h2>Gegevens</h2>
+			</div>
+			<div class="col-sm-6">
+			
+				 <c:if test="${isPirlewiet}">
+				 	<button id="organisation-delete" class="btn btn-default pull-right"><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Verwijder</button>
+				 </c:if>
+				 <span>&nbsp;</span>
+				
+			</div>
 			
 			<p>
 				Velden met een (*) moet je zeker invullen.
@@ -145,7 +155,7 @@
 			putOrganisation( organisation, $jq("#organisation-save" ),$jq("#organisation-status" ), saveAddress );	
 			
 		};
-		
+				
 		var saveAddress = function( organisation ) {
 			
 			var a = new Address( $jq("#address-zipcode").val(), $jq("#address-city").val(), $jq("#address-street").val(), $jq("#address-number").val() );
@@ -154,10 +164,26 @@
 			
 		};
 		
+		var gotoOrganisations = function() {
+			window.location.href = base() + "/organisations-pirlewiet.html";
+		};
+		
+		var removeOrganisation = function( organisationUuid ) {
+			
+			deleteOrganisation( organisationUuid, $jq("#organisation-delete" ),$jq("#organisation-status" ), gotoOrganisations );	
+			
+		};
+		
 		    	
 		$jq("#organisation-save").click( function( event ) {
 			
 			saveOrganisation();
+			
+		});
+		
+		$jq("#organisation-delete").click( function( event ) {
+			
+			removeOrganisation( $jq("#organisation-uuid").val() );
 			
 		});
     	

@@ -2,6 +2,8 @@ package be.pirlewiet.digitaal.domain.people;
 
 import static be.occam.utils.javax.Utils.isEmpty;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -91,6 +93,10 @@ public class AddressManager {
 	
 	public Address findOneByUuid( String uuid ) {
 		return this.addressRepository.findByUuid( uuid );
+	}
+	
+	public List<Address> findAll() {
+		return this.addressRepository.findAll();
 	}
 	
 	public void delete( Address address ) {

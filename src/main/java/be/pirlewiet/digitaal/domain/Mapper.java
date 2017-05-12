@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import be.occam.utils.javax.Utils;
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
@@ -45,7 +47,7 @@ public class Mapper {
 	PersonManager personManager;
 	
 	@Resource
-	AddressManager adderssManager;
+	AddressManager addressManager;
 	
 	@Resource
 	OrganisationManager organisationManager;
@@ -53,7 +55,15 @@ public class Mapper {
 	@Resource
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
-	public List<String[]> asStrings( Application application, Collection<Enrollment> enrollments, EnrollmentStatus.Value status ) {
+	public List<String[]> asStrings( 
+			Application application, 
+			Collection<Enrollment> enrollments,
+			EnrollmentStatus.Value status,
+			Map<String,Address> addressMap,
+			Map<String,Person> personMap,
+			Map<String,Organisation> organisationMap,
+			Map<String,Map<String,List<QuestionAndAnswer>>> qnaMap
+			) {
 		
 		List<String[]> mapped
 			= new ArrayList<String[]>( enrollments.size() );
@@ -71,6 +81,32 @@ public class Mapper {
 				}
 			}
 			
+			/*
+			Map<String,QuestionAndAnswer> questionMap
+				= Utils.map();
+			*/
+			
+			Map<String,List<QuestionAndAnswer>> applicationQuestionsMap
+				= qnaMap.get( application.getUuid() );
+			
+			List<QuestionAndAnswer> applicationQuestions
+				= applicationQuestionsMap.get( Tags.TAG_APPLICATION );
+				
+				
+			//= this.questionAndAnswerManager.findByEntityAndTag( , Tags.TAG_APPLICATION );
+		
+			// List<QuestionAndAnswer> enrollmentQuestions
+			//	= this.questionAndAnswerManager.findByEntityAndTag( application.getUuid(), Tags.TAG_VARIOUS );
+			
+			//Organisation organisation
+				// = this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+			Organisation organisation
+				= organisationMap.get( application.getOrganisationUuid() );
+			
+			Person contact
+				// = this.personManager.findOneByUuid( application.getContactPersonUuid() );
+				= personMap.get( application.getContactPersonUuid() );
+			
 			for ( Enrollment enrollment : all ) {
 				
 				try {
@@ -86,10 +122,7 @@ public class Mapper {
 					columns.add( enrollment.getHolidayName() );
 					
 					Person participant
-						= this.personManager.findOneByUuid( enrollment.getParticipantUuid() );
-					
-					Organisation organisation
-						= this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+						= personMap.get( enrollment.getParticipantUuid() );
 					
 					if ( application.getSubmitted() != null ) {
 						//  DATUM ÌNSCHRIJVING 
@@ -111,7 +144,7 @@ public class Mapper {
 					}
 					
 					Address address
-						= this.adderssManager.findOneByUuid( enrollment.getAddressUuid() );
+						= addressMap.get( enrollment.getAddressUuid() );
 					
 					if ( address != null ) {
 						
@@ -137,9 +170,6 @@ public class Mapper {
 					// NAAM DIENST
 					columns.add( organisation.getName());
 					
-					Person contact
-						= this.personManager.findOneByUuid( application.getContactPersonUuid() );
-					
 					if ( contact != null ) {
 						// CONTACTPERSOON DIENST
 						columns.add( String.format( "%s %s", contact.getGivenName(), contact.getFamilyName() ) );
@@ -147,7 +177,7 @@ public class Mapper {
 					}
 					
 					Address organisationAddress
-						= this.adderssManager.findOneByUuid( organisation.getAddressUuid() );
+						= addressMap.get( organisation.getAddressUuid() );
 				
 					StringBuilder b 
 						= new StringBuilder()
@@ -168,20 +198,23 @@ public class Mapper {
 					
 					// SPORT	SPEL	WANDELEN	FIETSEN	ZWEMMEN	ROKEN	AANDACHTSPUNTEN	GENEESMIDDELEN	FOTO'S	NAAM GEZIN	KEUZE VAKANTIE
 					
-					List<QuestionAndAnswer> applicationQuestions
-						= this.questionAndAnswerManager.findByEntityAndTag( application.getUuid(), Tags.TAG_APPLICATION );
+					Map<String,List<QuestionAndAnswer>> enrollmentQuestionsMap
+						= qnaMap.get( enrollment.getUuid() );
 					
-					List<QuestionAndAnswer> enrollmentQuestions
-						= this.questionAndAnswerManager.findByEntityAndTag( application.getUuid(), Tags.TAG_VARIOUS );
-					
+					if ( enrollmentQuestionsMap == null ) {
+						logger.warn( "no enrollment qna found for enrollment [{}], stopped mapping", enrollment.getUuid() );
+						continue;
+					}
+				
 					List<QuestionAndAnswer> medicQuestions
-						= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
+						// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
+						= enrollmentQuestionsMap.get( Tags.TAG_MEDIC );
 					
 					QuestionSheet appQList
 						= new QuestionSheet( applicationQuestions );
 					
-					QuestionSheet eQList
-						= new QuestionSheet( enrollmentQuestions );
+					// QuestionSheet eQList
+						// = new QuestionSheet( enrollmentQuestions );
 					
 					QuestionSheet mQList
 						= new QuestionSheet( medicQuestions );

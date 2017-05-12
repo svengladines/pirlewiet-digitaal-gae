@@ -33,104 +33,106 @@
 	
 		<div class="row">
 		
-			<br/>
+			<div class="col-xs-12">
+			
+				<br/>
 					
-			<c:if test="${ true }">
-					<form class="form-horizontal">
-						
-						<div class="form-group form-group-lg">
-							<div>
-								<button type="button" id="download" class="btn btn-primary btn"><i class="fa fa-download"></i>&nbsp;&nbsp;Download inschrijvingen</button>
-							</div>
-						</div>
-						
-					</form>
-			</c:if>
+				<c:if test="${ true }">
+						<button type="button" id="download" class="btn btn-primary btn"><i class="fa fa-download"></i>&nbsp;&nbsp;Download inschrijvingen</button>
+				</c:if>
+				
+				<br/>
+				<br/>
+				
+			</div>
 		</div>
 	
-		<div class="row mandatory">
+		<div class="row">
 		
-			<c:choose>
-			
-			<c:when test="${applicationsResult.value == 'OK'}">
-			
-					<c:if test="${fn:length(applicationsResult.object) == 0}">
-						Er zijn nog geen dossiers ingediend.
-					</c:if>
-			
-					<c:forEach items="${applicationsResult.object}" var="individualResult">
-					
-						<c:set var="application" value="${individualResult.object}" /> 
-					
-						<table class="table table-bordered">
-						
-						<thead>
-							<tr>
-								<th scope="row" class="th-row">
-								Dossier
-								</th>
-								<th colspan="2">
-									<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${application.submitted}" var="submitted"></fmt:formatDate>
-									<span><strong>${submitted}</strong></span>
-									<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
-								</th>
-							</tr>
-						</thead>
-							
-						<tbody>
-							<!-- 
-							<tr>
-								<th scope="row" class="th-row">Referentie</th>
-								<td colspan="2">
-									${application.reference}
-								</td>
-							</tr>
-							 -->
-							<tr>
-								<th scope="row" class="th-row">Vakantie(s)</th>
-								<td colspan="2">
-									${application.holidayNames}
-								</td>
-							</tr>
-							
-							<tr>
-								<th scope="row" class="th-row">Contactpersoon</th>
-								<td colspan="2">
-									${application.contactPersonName}
-								</td>
-							</tr>
-							
-							<c:forEach items="${application.enrollments}" var="enrollment">
-							
-							<tr>
-								<th scope="row" class="th-row">Deelnemer</th>
-								<td colspan="2">
-									<span>${enrollment.participantName}</span>
-									<div class="pull-right">
-										<span class="text-info"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>&nbsp;&nbsp;
-										<a title="${application.uuid}" href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="btn btn-default">Beheer</a>
-									</div>
-								</td>
-							</tr>
-							
-							</c:forEach>
-							
-						</tbody>
-						</table>			
-					</c:forEach>
-			
+			<div class="col-xs-12">
+		
+				<c:choose>
 				
-			</c:when>
-			
-			<c:otherwise>
-			
-				<span>${applications.result.errorCode}</span>
-			
-			</c:otherwise>
-			
-			</c:choose>
-			
-		</div>	
+				<c:when test="${applicationsResult.value == 'OK'}">
+				
+						<c:if test="${fn:length(applicationsResult.object) == 0}">
+							Er zijn nog geen dossiers ingediend.
+						</c:if>
+				
+						<c:forEach items="${applicationsResult.object}" var="individualResult">
+						
+							<c:set var="application" value="${individualResult.object}" /> 
+						
+							<table class="table table-bordered">
+							
+							<thead>
+								<tr>
+									<th scope="row" class="th-row">
+									Dossier
+									</th>
+									<th colspan="2">
+										<fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${application.submitted}" var="submitted"></fmt:formatDate>
+										<span><strong>${submitted}</strong></span>
+										<a title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
+									</th>
+								</tr>
+							</thead>
+								
+							<tbody>
+								<!-- 
+								<tr>
+									<th scope="row" class="th-row">Referentie</th>
+									<td colspan="2">
+										${application.reference}
+									</td>
+								</tr>
+								 -->
+								<tr>
+									<th scope="row" class="th-row">Vakantie(s)</th>
+									<td colspan="2">
+										${application.holidayNames}
+									</td>
+								</tr>
+								
+								<tr>
+									<th scope="row" class="th-row">Contactpersoon</th>
+									<td colspan="2">
+										${application.contactPersonName}
+									</td>
+								</tr>
+								
+								<c:forEach items="${application.enrollments}" var="enrollment">
+								
+								<tr>
+									<th scope="row" class="th-row">Deelnemer</th>
+									<td colspan="2">
+										<span>${enrollment.participantName}</span>
+										<div class="pull-right">
+											<span class="text-info"><strong><fmt:message key="enrollment.status.${enrollment.status.value}"/></strong></span>&nbsp;&nbsp;
+											<a title="${application.uuid}" href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="btn btn-default">Beheer</a>
+										</div>
+									</td>
+								</tr>
+								
+								</c:forEach>
+								
+							</tbody>
+							</table>			
+						</c:forEach>
+				
+					
+				</c:when>
+				
+				<c:otherwise>
+				
+					<span>${applications.result.errorCode}</span>
+				
+				</c:otherwise>
+				
+				</c:choose>
+				
+			</div>	
+		</div>
 		
 	</div><!-- container -->
 	

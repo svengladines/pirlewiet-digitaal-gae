@@ -66,7 +66,7 @@ public class ProductionData {
 		
 		if ( vzwPirlewiet == null ) {
 			
-			logger.info( "xxx, productiondata, building pirlewiet" );
+			logger.info( "productiondata, building pirlewiet" );
 
 			vzwPirlewiet = new Organisation();
 		
@@ -96,7 +96,7 @@ public class ProductionData {
 			
 		}
 		else {
-			logger.info( "xxx, productiondata, pirlewiet existed" );
+			logger.info( "productiondata, pirlewiet existed, do not inject" );
 		}
 		
 		/**
@@ -271,6 +271,330 @@ public class ProductionData {
 			
 		}
 		
+		/**
+		 * Summer 2017
+		 */
+		
+		// KIKA 1	12/7 > 18/7
+		{
+			String name = "KIKA 1";
+			Holiday holiday
+				= this.holidayRepository.findOneByName( name );
+			
+			if ( holiday == null ) {
+				
+				holiday = new Holiday();
+		
+				GregorianCalendar start
+					= new GregorianCalendar();
+				
+				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.MONTH, 6 );
+				start.set( Calendar.DAY_OF_MONTH, 12 );
+				
+				GregorianCalendar end
+					= new GregorianCalendar();
+				
+				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.MONTH, 6 );
+				end.set( Calendar.DAY_OF_MONTH, 18 );
+				
+				holiday.setName( name );
+				holiday.setPeriod( Period.Summer );
+				holiday.setType( HolidayType.Kika );
+				holiday.setStart( start.getTime() );
+				holiday.setEnd( end.getTime() );
+				holiday.setDeadLine( new Date() );
+				
+				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday = holidayRepository.saveAndFlush( holiday );
+				
+				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+			
+			}
+			
+		}
+		
+		// KIKA 2	20/7 > 27/7
+		{
+			String name = "KIKA 2";
+			Holiday holiday
+				= this.holidayRepository.findOneByName( name );
+			
+			if ( holiday == null ) {
+				
+				holiday = new Holiday();
+		
+				GregorianCalendar start
+					= new GregorianCalendar();
+				
+				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.MONTH, 6 );
+				start.set( Calendar.DAY_OF_MONTH, 20 );
+				
+				GregorianCalendar end
+					= new GregorianCalendar();
+				
+				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.MONTH, 6 );
+				end.set( Calendar.DAY_OF_MONTH, 27 );
+				
+				holiday.setName( name );
+				holiday.setPeriod( Period.Summer );
+				holiday.setType( HolidayType.Kika );
+				holiday.setStart( start.getTime() );
+				holiday.setEnd( end.getTime() );
+				holiday.setDeadLine( new Date() );
+				
+				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday = holidayRepository.saveAndFlush( holiday );
+				
+				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+			
+			}
+		}
+		
+			// TIKA	23/7 > 30/7
+			{
+				String name = "TIKA";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.MONTH, 6 );
+					start.set( Calendar.DAY_OF_MONTH, 23 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.MONTH, 6 );
+					end.set( Calendar.DAY_OF_MONTH, 30 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.Tika );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
+			
+			// Gezins 1	01/08 > 30/7
+			{
+				String name = "Gezins 1";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.MONTH, 7 );
+					start.set( Calendar.DAY_OF_MONTH, 1 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.MONTH, 7 );
+					end.set( Calendar.DAY_OF_MONTH, 8 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.Gezin );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
+			
+			// Gezins 2	13/08 > 20/8
+			{
+				String name = "Gezins 2";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.MONTH, 7 );
+					start.set( Calendar.DAY_OF_MONTH, 13 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.MONTH, 7 );
+					end.set( Calendar.DAY_OF_MONTH, 20 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.Gezin );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
+
+			// Driedaagse 8/7 > 10/7
+			{
+				String name = "Driedaagse";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.MONTH, 6 );
+					start.set( Calendar.DAY_OF_MONTH, 8 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.MONTH, 6 );
+					end.set( Calendar.DAY_OF_MONTH, 10 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.DrieDaagse );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
+			
+			// VOV 2 15/7 > 21/7
+			{
+				String name = "VOV 2";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.MONTH, 6 );
+					start.set( Calendar.DAY_OF_MONTH, 15 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.MONTH, 6 );
+					end.set( Calendar.DAY_OF_MONTH, 21 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.Vov );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
+		
+			// Cava 10/7 > 14/7
+			{
+				String name = "CAVA";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.MONTH, 6 );
+					start.set( Calendar.DAY_OF_MONTH, 10 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.MONTH, 6 );
+					end.set( Calendar.DAY_OF_MONTH, 14 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.Cava );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
 		
 	}
 	

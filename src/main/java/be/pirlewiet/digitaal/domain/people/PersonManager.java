@@ -1,16 +1,18 @@
 package be.pirlewiet.digitaal.domain.people;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.repositories.PersonRepository;
+
+import com.google.appengine.api.datastore.KeyFactory;
 
 public class PersonManager {
 	
@@ -47,6 +49,12 @@ public class PersonManager {
     		= this.personRepository.findByUuid( uuid );
     	
     	return person;
+    	
+    }
+    
+    public List<Person> findAll() {
+    	
+    	return this.personRepository.findAll();
     	
     }
     

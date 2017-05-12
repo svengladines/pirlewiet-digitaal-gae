@@ -77,7 +77,15 @@
 					<c:forEach items="${holidays}" var="holiday">	
 						<div class="checkbox">
 							<label>
-								<input type="checkbox" class="holiday" value="${holiday.uuid}" checked="checked">&nbsp;${holiday.name}
+								<input type="checkbox" class="holiday" value="${holiday.uuid}" checked="checked">
+									<c:choose>
+									<c:when test="${holiday.isApplicationHoliday}">
+										<strong>&nbsp;${holiday.name}</strong>
+									</c:when>
+									<c:otherwise>
+										&nbsp;${holiday.name}
+									</c:otherwise>
+									</c:choose>
 							</label>
 						</div>
 					</c:forEach>

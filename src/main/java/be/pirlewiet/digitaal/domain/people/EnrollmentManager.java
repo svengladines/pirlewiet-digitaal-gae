@@ -91,6 +91,10 @@ public class EnrollmentManager {
 		return this.enrollmentRepository.findByUuid( uuid );
 	}
 	
+	public List<Enrollment> findAll( ) {
+		return this.enrollmentRepository.findAll();
+	}
+	
 	public Enrollment create( Enrollment toCreate ) {
 		
 		Enrollment created

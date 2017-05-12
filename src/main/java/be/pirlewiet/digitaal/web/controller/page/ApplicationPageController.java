@@ -83,7 +83,7 @@ public class ApplicationPageController {
 			model.put( "contactResult", contactResult );
 			
 			Result<List<HolidayDTO>> holidaysResult
-				= this.holidayService.resolve( application.getHolidayUuids(), "", true, false, true, actor);
+				= this.holidayService.resolve( null , application.getHolidayUuids(), true, false, true, actor);
 		
 			model.put( "holidaysResult", holidaysResult );
 			

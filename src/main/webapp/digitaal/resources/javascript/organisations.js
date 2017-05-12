@@ -90,3 +90,23 @@ var putOrganisationAddress = function ( organisation, adres, button, statusEleme
 	});
 	
 };
+
+var deleteOrganisation = function ( organisationUuid, button, statusElement, callback ) {
+
+	$jq.ajax( {
+		type: "delete",
+		url: base() + "/api/organisations/" + organisationUuid,
+		success: function( ) {
+			if ( callback ) {
+				callback( );
+			}
+			else {
+				success( button, statusElement, "Verwijderd" );
+			}
+		},
+		error: function(  jqXHR, textStatus, errorThrown ) {
+			error( button, statusElement, jqXHR.responseText );
+		}
+	});
+	
+};

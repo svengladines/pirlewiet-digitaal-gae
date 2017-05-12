@@ -268,7 +268,7 @@
 				= new Participant( 
 					$jq("#participant-given-name").val(),
 					$jq("#participant-family-name").val(),
-					$jq("#participant-gender").val(),
+					$jq(".participant-gender:checked").val(),
 					$jq("#participant-birth-day").val(),
 					$jq("#participant-phone").val(),
 					$jq("#participant-email").val()

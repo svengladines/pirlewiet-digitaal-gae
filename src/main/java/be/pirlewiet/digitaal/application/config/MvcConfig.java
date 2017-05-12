@@ -22,6 +22,7 @@ import be.pirlewiet.digitaal.web.controller.api.ApplicationsController;
 import be.pirlewiet.digitaal.web.controller.api.CodeRequestsController;
 import be.pirlewiet.digitaal.web.controller.api.EnrollmentController;
 import be.pirlewiet.digitaal.web.controller.api.EnrollmentsController;
+import be.pirlewiet.digitaal.web.controller.api.MyOrganisationController;
 import be.pirlewiet.digitaal.web.controller.api.OrganisationController;
 import be.pirlewiet.digitaal.web.controller.api.OrganisationsController;
 import be.pirlewiet.digitaal.web.controller.page.ApplicationPageController;
@@ -166,6 +167,13 @@ public class MvcConfig {
 		public OrganisationsController organisationsController() {
 			
 			return new OrganisationsController();
+			
+		}
+		
+		@Bean
+		public MyOrganisationController myOrganisationController() {
+			
+			return new MyOrganisationController();
 			
 		}
 		

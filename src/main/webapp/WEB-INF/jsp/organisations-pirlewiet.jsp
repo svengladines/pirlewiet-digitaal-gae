@@ -38,8 +38,8 @@
 			
 			<thead>
 				<tr>
-					<th><a href="/organisations.html?order=name">Naam</a></th>
-					<th><a href="/organisations.html?order=city">Gemeente</a></th>
+					<th><a href="/organisations-pirlewiet.html?order=name">Naam</a></th>
+					<th><a href="/organisations-pirlewiet.html?order=city">Gemeente</a></th>
 					<th>E-mail</th>
 					<th>code</th>
 					<th>Acties</th>

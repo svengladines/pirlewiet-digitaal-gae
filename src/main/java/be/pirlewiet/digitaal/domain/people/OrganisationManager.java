@@ -126,7 +126,7 @@ public class OrganisationManager {
     	saved 
 			= this.organisationRepository.saveAndFlush( saved );
     	
-    	logger.info( "created organiation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), saved.getCode() } );
+    	logger.info( "created organisation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), saved.getCode() } );
     	
     	if ( sendEmail ) {
     		this.sendCreatedEmailToOrganisation( saved );
@@ -185,6 +185,23 @@ public class OrganisationManager {
     	
     }
     
+  public Organisation delete( String uuid ) {
+    	
+    	Organisation loaded 
+    		= organisation( uuid );
+    	
+    	if ( loaded == null ) {
+    		return null;
+    	}
+    	
+    	this.organisationRepository.delete( loaded );
+    	
+    	logger.info( "deleted organisation with uiid [{}]", uuid );
+    	
+    	return loaded;
+    	
+    }
+    
     public boolean isInComplete( Organisation organisation, boolean checkAddress ) {
     	
     	boolean incomplete 
@@ -209,7 +226,7 @@ public class OrganisationManager {
     		= this.organisationRepository.findByUuid( id );
     	
     	if ( organisatie != null ) {
-    		logger.info( "found organsiatiion with id [{}]", id );
+    		logger.debug( "found organisation with id [{}]", id );
     	}
     	
     	return organisatie;

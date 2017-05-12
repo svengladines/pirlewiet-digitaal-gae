@@ -67,20 +67,23 @@ public class QuestionSheet {
 		
 		this.vragen = new HashMap<String, List<QuestionAndAnswer>>();
 		
-		for ( QuestionAndAnswer v : vragen ) {
-			
-			List<QuestionAndAnswer> list
-				= this.vragen.get( v.getTag() );
-			
-			if ( list == null ) {
+		if ( vragen != null ) {
+		
+			for ( QuestionAndAnswer v : vragen ) {
 				
-				list = new LinkedList<QuestionAndAnswer>();
-				this.vragen.put( v.getTag(), list );
+				List<QuestionAndAnswer> list
+					= this.vragen.get( v.getTag() );
+				
+				if ( list == null ) {
+					
+					list = new LinkedList<QuestionAndAnswer>();
+					this.vragen.put( v.getTag(), list );
+					
+				}
+				
+				list.add( v );
 				
 			}
-			
-			list.add( v );
-			
 		}
 		
 	}

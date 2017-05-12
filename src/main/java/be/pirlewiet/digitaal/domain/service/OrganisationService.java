@@ -141,6 +141,32 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
+	@Override
+	@Transactional(readOnly=false)
+	public Result<OrganisationDTO> delete(String organisationUuid, Organisation actor) {
+		
+		Result<OrganisationDTO> result
+			= new Result<OrganisationDTO>();
+		
+		result.setValue( Value.OK );
+		
+		if ( PirlewietUtil.isPirlewiet( actor ) ) {
+			
+			Organisation deleted
+				= this.organisationManager.delete( organisationUuid );
+			
+			if ( deleted != null ) {
+			
+				result.setObject( OrganisationDTO.from( deleted ) );
+				
+			}
+			
+		}
+		
+		return result;
+		
+	}
+	
 	@Transactional(readOnly=true)
 	public Result<OrganisationDTO> findOneByUuid( String uuid, Organisation actor ) {
 		

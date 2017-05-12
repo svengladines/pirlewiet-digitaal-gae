@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.list;
+import static be.occam.utils.javax.Utils.*;
 import static be.occam.utils.spring.web.Controller.response;
 
 import java.util.Date;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.occam.utils.javax.Utils;
 import be.occam.utils.spring.web.ErrorCode;
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
@@ -25,6 +26,7 @@ import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
+import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
@@ -61,6 +63,9 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	
 	@Resource
 	ApplicationManager applicationManager;
+	
+	@Resource
+	OrganisationManager organisationManager;
 	
 	@Resource
 	QuestionAndAnswerManager questionAndAnswerManager;
@@ -159,6 +164,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 	}
 	
+	@Transactional(readOnly=true)
 	public byte[] download( Organisation actor ) {
 		
 		byte[] bytes
@@ -169,29 +175,132 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 		if ( PirlewietUtil.isPirlewiet( actor ) ) {
 			
+			logger.info( "start download...");
+			
 			List<Application> applications
 				= this.applicationManager.findActiveByYear();
 			
+			logger.info( "download - applications loaded");
+			
+			List<Enrollment> allEnrollments
+				= this.enrollmentManager.findAll();
+			
+			logger.info( "download - enrollments loaded");
+			
+			Map<String, List<Enrollment>> enrollmentMap
+				= map();
+			
+			for ( Enrollment enrollment : allEnrollments ) {
+				
+				List<Enrollment> appedEnrollments
+					= enrollmentMap.get( enrollment.getApplicationUuid() );
+				
+				if ( appedEnrollments == null ) {
+					appedEnrollments = list();
+					enrollmentMap.put( enrollment.getApplicationUuid(), appedEnrollments );
+				}
+				
+				appedEnrollments.add( enrollment );
+				
+			}
+			
+			logger.info( "download - application/enrollment mapping done" );
+			
+			Map<String,Address> addressMap
+				= Utils.map();
+		
+			List<Address> allAddresses
+				= this.addressManager.findAll();
+			
+			for ( Address address : allAddresses ) {
+				
+				addressMap.put( address.getUuid(), address );
+				
+			}
+			
+			logger.info( "download - address mapping done" );
+		
+			Map<String,Person> personMap
+				= Utils.map();
+		
+			List<Person> allPersons
+				= this.personManager.findAll();
+			
+			for ( Person person : allPersons ) {
+				
+				personMap.put( person.getUuid(), person );
+				
+			}
+			
+			logger.info( "download - address mapping done" );
+			
+			Map<String,Organisation> organisationMap
+				= Utils.map();
+		
+			List<Organisation> allOrganisations
+				= this.organisationManager.all();
+			
+			for ( Organisation organisation : allOrganisations ) {
+				
+				organisationMap.put( organisation.getUuid(), organisation );
+				
+			}
+			
+			logger.info( "download - organisation mapping done" );
+			
+			Map<String,Map<String,List<QuestionAndAnswer>>> qnaMap
+				= Utils.map();
+			
+			List<QuestionAndAnswer> allQna 
+				= this.questionAndAnswerManager.findAll();
+			
+			for ( QuestionAndAnswer qna : allQna ) {
+				
+				String entity
+					 = qna.getEntityUuid();
+				
+				String tag 
+					= qna.getTag();
+				
+				Map<String,List<QuestionAndAnswer>> entityMap
+					= qna
+				
+			}
+			
+			
 			for ( Application application : applications ) {
 				
+				logger.info( "download - application [{}]", application.getUuid() );
+				
 				List<Enrollment> enrollments
-					= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
+					= enrollmentMap.get( application.getUuid() );
 				
 				if ( enrollments != null ) {
-					logger.info( "[{}]; found [{}] enrollments for thie application", application.getUuid(), enrollments.size() );
+					logger.info( "[{}]; found [{}] enrollments for this application", application.getUuid(), enrollments.size() );
 				}
 				else {
 					logger.info( "[{}]; found no related enrollments" );
+					continue;
 				}
 				
+				logger.info( "download - application [{}], now map", application.getUuid() );
+				
 				List<String[]> mapped
-					= this.mapper.asStrings( application, enrollments, null );
+					= this.mapper.asStrings( 
+							application, 
+							enrollments,
+							null,
+							addressMap,
+							personMap,
+							organisationMap );
 				
 				if ( mapped != null ) {
 					
 					rows.addAll( mapped );
 					
 				}
+				
+				logger.info( "download - application [{}], mapped", application.getUuid() );
 			
 			}
 			
