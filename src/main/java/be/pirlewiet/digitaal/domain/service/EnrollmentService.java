@@ -248,7 +248,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 			logger.info( "download - organisation mapping done" );
 			
-			Map<String,Map<String,List<QuestionAndAnswer>>> qnaMap
+			Map<String,Map<String,List<QuestionAndAnswer>>> allMap
 				= Utils.map();
 			
 			List<QuestionAndAnswer> allQna 
@@ -256,14 +256,28 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 			for ( QuestionAndAnswer qna : allQna ) {
 				
-				String entity
+				String entityUuid
 					 = qna.getEntityUuid();
 				
 				String tag 
 					= qna.getTag();
 				
 				Map<String,List<QuestionAndAnswer>> entityMap
-					= qna
+					= allMap.get( entityUuid );
+				
+				if ( entityMap == null ) {
+					entityMap = map();
+					allMap.put( entityUuid, entityMap );
+				}
+				
+				List<QuestionAndAnswer> tagList
+					= entityMap.get( tag );
+				
+				if ( tagList == null ) {
+					
+					tagList = list();
+					entityMap.put( tag, tagList );
+				}
 				
 			}
 			
@@ -292,7 +306,8 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 							null,
 							addressMap,
 							personMap,
-							organisationMap );
+							organisationMap,
+							allMap );
 				
 				if ( mapped != null ) {
 					

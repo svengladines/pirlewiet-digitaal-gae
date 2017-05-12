@@ -38,6 +38,10 @@ public class QuestionAndAnswerManager {
     	
     }
     
+    public List<QuestionAndAnswer> findAll( ) {
+    	return this.questionAndAnswerRepository.findAll();
+    }
+    
     public QuestionAndAnswer findOneByUuid( String uuid ) {
     	return this.questionAndAnswerRepository.findOneByUuid( uuid );
     }
