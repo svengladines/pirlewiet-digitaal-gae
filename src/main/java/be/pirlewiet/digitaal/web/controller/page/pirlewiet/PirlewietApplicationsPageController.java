@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 
 import static be.occam.utils.spring.web.Controller.response;
+import static be.occam.utils.javax.Utils.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -61,19 +62,20 @@ public class PirlewietApplicationsPageController {
 	
 		Result<List<Result<ApplicationDTO>>> applicationsResult 
 				= this.applicationService.guard().query( actor );
-			
+		
+		Result<Map<String, List<Result<EnrollmentDTO>>>> mappedResult
+			= this.enrollmentService.guard().mapped(applicationsResult.getObject(), actor );
+		
 		for ( Result<ApplicationDTO> applicationResult : applicationsResult.getObject() ) {
 			
-			ApplicationDTO application
-				= applicationResult.getObject();
+			String applicationUuid
+				= applicationResult.getObject().getUuid();
 			
-			Result<List<Result<EnrollmentDTO>>> enrollments
-				= this.enrollmentService.guard().query( application.getUuid(), actor );
+			List<Result<EnrollmentDTO>> appEnrollments
+				= mappedResult.getObject().get( applicationUuid );
 			
-			if ( Result.Value.OK.equals( enrollments.getValue() ) ) {
-				for ( Result<EnrollmentDTO> enrollmentResult : enrollments.getObject() ) {
-					application.getEnrollments().add( enrollmentResult.getObject() );
-				}
+			for ( Result<EnrollmentDTO> enrollmentResult : appEnrollments ) {
+				applicationResult.getObject().getEnrollments().add( enrollmentResult.getObject() );
 			}
 			
 		}

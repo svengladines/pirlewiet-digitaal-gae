@@ -31,6 +31,7 @@ import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.dto.AddressDTO;
+import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
@@ -165,6 +166,57 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	}
 	
 	@Transactional(readOnly=true)
+	public Result<Map<String,List<Result<EnrollmentDTO>>>> mapped( List<Result<ApplicationDTO>> apps, Organisation actor ) {
+		
+		Result<Map<String,List<Result<EnrollmentDTO>>>>  result
+			= new Result<Map<String,List<Result<EnrollmentDTO>>>>();
+		
+		Map<String,List<Result<EnrollmentDTO>>> map
+			= map();
+		
+		List<Enrollment> enrollments
+			= this.guard().enrollmentManager.findAll();
+		
+		boolean allOK 
+			= true;
+		
+		for ( Enrollment enrollment : enrollments ) {
+			
+			Result<EnrollmentDTO> individualResult
+				= new Result<EnrollmentDTO>();
+			
+			String applicationUuid
+				= enrollment.getApplicationUuid();
+			
+			List<Result<EnrollmentDTO>> applicationEnrollments
+				= map.get( applicationUuid );
+			
+			if ( applicationEnrollments == null ) {
+				
+				applicationEnrollments = list();
+				map.put( applicationUuid, applicationEnrollments );
+				
+			}
+			
+			individualResult.setValue( Value.OK );
+			individualResult.setObject( EnrollmentDTO.from( enrollment ) );
+			
+			applicationEnrollments.add( individualResult );
+			
+			if ( Result.Value.NOK.equals( individualResult.getValue() ) ) {
+				allOK = false;
+			}
+			
+		}
+		
+		result.setValue( allOK ? Value.OK : Value.NOK );
+		result.setObject( map );
+		
+		return result;
+		
+	}
+	
+	@Transactional(readOnly=true)
 	public byte[] download( Organisation actor ) {
 		
 		byte[] bytes
@@ -279,7 +331,11 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 					entityMap.put( tag, tagList );
 				}
 				
+				tagList.add( qna );
+				
 			}
+			
+			logger.info( "download - qna mapping done" );
 			
 			
 			for ( Application application : applications ) {
