@@ -51,13 +51,20 @@ public class QuestionSheet {
 		
 		QuestionAndAnswer[] history
 			= new QuestionAndAnswer[] {
-			new QuestionAndAnswer( 16, QuestionType.YesNo, Tags.TAG_HISTORY, QIDs.QID_HISTORY, "Ging deze deelnemer reeds eerder mee op een Pirlewietvakantie ?" ),
+			new QuestionAndAnswer( 16, QuestionType.YesNo, Tags.TAG_HISTORY, QIDs.QID_HISTORY, "Ging deze deelnemer reeds eerder mee op een Pirlewietvakantie ?" )
+		};
+		
+		QuestionAndAnswer[] adultery
+			= new QuestionAndAnswer[] {
+					new QuestionAndAnswer( 17, QuestionType.MC, Tags.TAG_ADULTERY, QIDs.QID_ADULTERY_WITH, "Komt deze persoon:", "Alleen", "Met partner", "Met vriend(in)" ),
+					new QuestionAndAnswer( 18,QuestionType.Text, Tags.TAG_ADULTERY, QIDs.QID_ADULTERY_WITH_WHO, "Indien met partner/vriend(in), naam:" )
 		};
 		
 		templateVragen.addAll( Arrays.asList( medics ) );
 		templateVragen.addAll( Arrays.asList( fotos ) );
 		templateVragen.addAll( Arrays.asList( various ) );
 		templateVragen.addAll( Arrays.asList( history ) );
+		templateVragen.addAll( Arrays.asList( adultery ) );
 		
 		return new QuestionSheet( templateVragen );
 		

@@ -5,7 +5,7 @@
   <threadsafe>true</threadsafe>
   <system-properties>
   	<property name="spring.profiles.active" value="production" />
-  	<property name="pirlewiet.currentYear" value="2017" />
+  	<property name="pirlewiet.currentYear" value="2018" />
   </system-properties>
   <automatic-scaling>
     <min-idle-instances>1</min-idle-instances>

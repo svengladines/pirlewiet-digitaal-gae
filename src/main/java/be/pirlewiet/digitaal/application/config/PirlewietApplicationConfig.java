@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
@@ -28,8 +29,9 @@ import be.pirlewiet.digitaal.domain.people.MailMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
-import be.pirlewiet.digitaal.domain.people.ScenarioRunner;
 import be.pirlewiet.digitaal.domain.people.Secretary;
+import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
+import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
 import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
@@ -40,7 +42,6 @@ import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-import be.pirlewiet.digitaal.web.util.ProductionData;
 
 @Configuration
 @EnableTransactionManagement
@@ -67,12 +68,6 @@ public class PirlewietApplicationConfig {
 	@Profile({ConfigurationProfiles.PRODUCTION,ConfigurationProfiles.DEV})
 	// @Import( PirlewietAppEngineConfig.class )
 	static class RepositoryConfigForProduction {
-		
-		@Bean
-		@Lazy( false )
-		public ProductionData productionData() {
-			return new ProductionData();
-		}
 		
 	}
 	
@@ -227,75 +222,12 @@ public class PirlewietApplicationConfig {
 			return pDiddy;
 		}
 		
+		/*
 		@Bean
 		public ScenarioRunner scenarioRunner( SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario ) {
 			// return new ScenarioRunner( setEnrollmentHolidayNamesScenario );
 			return new ScenarioRunner( );
 		}
-		
-		/*
-		@Bean
-		Secretary secretary( ) {
-			
-			return new Secretary(  );
-			
-		}
-		
-		@Bean
-		ApplicationManager intaker() {
-			
-			return new ApplicationManager();
-			
-		}
-		
-		@Bean
-		Detacher detacher() {
-			
-			return new Detacher();
-			
-		}
-		
-		@Bean
-		Viewer viewer() {
-			
-			return new Viewer();
-			
-		}
-		
-		@Bean
-		Reducer reducer() {
-			
-			return new Reducer();
-			
-		}
-		
-		@Bean
-		HolidayManager holidayManager() {
-			
-			return new HolidayManager();
-			
-		}
-		
-		@Bean
-		public FTPClient ftpClient() {
-			return new FTPClient( "94.198.164.46", "pirlewietbe", "d;giTaal.15");
-		}
-		
-		@Bean
-		public SetQuestionsQIDScenario setOrganisationsUuidScenario() {
-			return new SetQuestionsQIDScenario();
-		}
-		
-		@Bean
-		public ReadyToRockScenario readyToRockScenario() {
-			return new ReadyToRockScenario();
-		}
-		
-		@Bean
-		public ReadyToRockOneScenario readyToRockOneScenario() {
-			return new ReadyToRockOneScenario();
-		}
-		
 		*/
 		
 	}
@@ -306,6 +238,16 @@ public class PirlewietApplicationConfig {
 		@Bean 
 		SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario() {
 			return new SetEnrollmentHolidayNamesScenario();
+		}
+		
+		@Bean
+		InjectProductionDataScenario injectProductionDataScenario() {
+			return new InjectProductionDataScenario();
+		}
+		
+		@Bean
+		DeleteOldEntitiesScenario deleteOldEntitiesScenario() {
+			return new DeleteOldEntitiesScenario();
 		}
 		
 	}
@@ -324,20 +266,9 @@ public class PirlewietApplicationConfig {
 		
 	}
 	
-	/*
-	@Configuration
-	@Profile( { ConfigurationProfiles.PRODUCTION } ) 
-	public static class DataConfig {
-		@Bean
-		@Lazy(false)
-		public ProductionData productionData( LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean ) {
-			
-			return new ProductionData();
-			
-		}
-	}
-	*/
 	
+	//@Configuration
+	//@Profile( { ConfigurationProfiles.PRODUCTION } ) 
 	/*
 	@Configuration
 	@ImportResource( "classpath:/META-INF/applicationContext-security.xml" )

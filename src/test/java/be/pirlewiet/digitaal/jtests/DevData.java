@@ -161,13 +161,13 @@ public class DevData {
 		
 		GregorianCalendar bernieStart
 			= new GregorianCalendar();
-		bernieStart.set( Calendar.YEAR, 2017 );
+		bernieStart.set( Calendar.YEAR, 2018 );
 		bernieStart.set( Calendar.MONTH, 7 );
 		bernieStart.set( Calendar.DAY_OF_MONTH, 1 );
 		
 		GregorianCalendar bernieEnd
 			= new GregorianCalendar();
-		bernieStart.set( Calendar.YEAR, 2017 );
+		bernieStart.set( Calendar.YEAR, 2018 );
 		bernieStart.set( Calendar.MONTH, 7 );
 		bernieStart.set( Calendar.DAY_OF_MONTH, 15 );
 		
@@ -188,13 +188,13 @@ public class DevData {
 		
 		GregorianCalendar vernieStart
 			= new GregorianCalendar();
-		vernieStart.set( Calendar.YEAR, 2017 );
+		vernieStart.set( Calendar.YEAR, 2018 );
 		vernieStart.set( Calendar.MONTH, 7 );
 		vernieStart.set( Calendar.DAY_OF_MONTH, 1 );
 		
 		GregorianCalendar vernieEnd
 			= new GregorianCalendar();
-		vernieStart.set( Calendar.YEAR, 2017 );
+		vernieStart.set( Calendar.YEAR, 2018 );
 		vernieStart.set( Calendar.MONTH, 7 );
 		vernieStart.set( Calendar.DAY_OF_MONTH, 15 );
 		
@@ -227,7 +227,7 @@ public class DevData {
 		applicationOne.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
 		// applicationOne.setStatus( new ApplicationStatus( ApplicationStatus.Value.SUBMITTED ) );
 		applicationOne.setOrganisationUuid( vzwSvekke.getUuid() );
-		applicationOne.setYear( 2017 );
+		applicationOne.setYear( 2018 );
 		applicationOne.setReference( "APP123" );
 		applicationOne.setContactPersonName( "Svekke" );
 		applicationOne.setHolidayUuids( weekendAtBernies.getUuid() );

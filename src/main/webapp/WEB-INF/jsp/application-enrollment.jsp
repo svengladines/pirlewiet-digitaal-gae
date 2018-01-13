@@ -130,37 +130,37 @@
 						</div>
 						
 								<c:forEach items="${qnaResult.object}" var="qna">
-								<c:if test="${qna.tag eq 'history'}">
-									<div class="form-group">
-										<label class="col-sm-6 control-label">${qna.question} (*)</label>
-										<c:choose>
-											<c:when test="${qna.type eq 'YesNo'}">
-												<div class="col-sm-6">
-													<div class="checkbox">
-														<label>
-															<input type="radio" name="${qna.uuid}" class="q" data-tag="${qna.tag}" value="Y" ${qna.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
-														</label>
-														&nbsp;&nbsp;&nbsp;
-														<label>
-															<input type="radio" name="${qna.uuid}" class="q" data-tag="${qna.tag}" value="N" ${qna.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
-														</label>
+									<c:if test="${qna.tag eq 'history'}">
+										<div class="form-group">
+											<label class="col-sm-6 control-label">${qna.question} (*)</label>
+											<c:choose>
+												<c:when test="${qna.type eq 'YesNo'}">
+													<div class="col-sm-6">
+														<div class="checkbox">
+															<label>
+																<input type="radio" name="${qna.uuid}" class="q" data-tag="${qna.tag}" value="Y" ${qna.antwoord eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+															</label>
+															&nbsp;&nbsp;&nbsp;
+															<label>
+																<input type="radio" name="${qna.uuid}" class="q" data-tag="${qna.tag}" value="N" ${qna.antwoord eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+															</label>
+														</div>
 													</div>
-												</div>
-											</c:when>
-											<c:when test="${qna.type eq 'Text'}">
-												<div class="col-sm-3">
-													<input id="${qna.uuid}" type="text" class="form-control q" data-tag="${qna.tag}" value="${qna.antwoord}"></input>
-												</div>
-											</c:when>
-											<c:when test="${qna.type eq 'Area'}">
-												<div class="col-sm-6">
-													<textarea id="${qna.uuid}" class="form-control q" rows="10" cols="64" data-tag="${qna.tag}">${qna.antwoord}</textarea>
-												</div>
-											</c:when>
-										</c:choose>
-										</div>
-								</c:if>
-						</c:forEach>
+												</c:when>
+												<c:when test="${qna.type eq 'Text'}">
+													<div class="col-sm-3">
+														<input id="${qna.uuid}" type="text" class="form-control q" data-tag="${qna.tag}" value="${qna.antwoord}"></input>
+													</div>
+												</c:when>
+												<c:when test="${qna.type eq 'Area'}">
+													<div class="col-sm-6">
+														<textarea id="${qna.uuid}" class="form-control q" rows="10" cols="64" data-tag="${qna.tag}">${qna.antwoord}</textarea>
+													</div>
+												</c:when>
+											</c:choose>
+											</div>
+									</c:if>
+							</c:forEach>
 						<div class="form-group">
 							<label for="participant-save" class="col-sm-4 control-label"></label>
 							<div class="col-sm-6">

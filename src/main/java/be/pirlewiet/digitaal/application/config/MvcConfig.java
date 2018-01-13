@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import be.pirlewiet.digitaal.web.controller.CodesController;
 import be.pirlewiet.digitaal.web.controller.GlobalControllerExceptionHandler;
 import be.pirlewiet.digitaal.web.controller.PingController;
+import be.pirlewiet.digitaal.web.controller.ScenarioController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationsController;
 import be.pirlewiet.digitaal.web.controller.api.CodeRequestsController;
@@ -225,6 +226,13 @@ public class MvcConfig {
 		@Bean
 		public CodeRequestsController codeRequestsController() {
 			return new CodeRequestsController();
+		}
+		
+		@Bean
+		public ScenarioController scenarioController() {
+			
+			return new ScenarioController();
+			
 		}
 		
 		/*

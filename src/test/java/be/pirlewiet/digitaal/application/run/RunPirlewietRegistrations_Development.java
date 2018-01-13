@@ -10,7 +10,7 @@ public class RunPirlewietRegistrations_Development extends JTest {
 	public RunPirlewietRegistrations_Development() {
 		super( "/", 8068, ConfigurationProfiles.DEV );
 		
-		System.setProperty( "pirlewiet.currentYear", "2017" );
+		System.setProperty( "pirlewiet.currentYear", "2018" );
 	}
 	
 	@Test

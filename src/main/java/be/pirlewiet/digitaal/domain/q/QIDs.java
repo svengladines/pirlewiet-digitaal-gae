@@ -20,5 +20,7 @@ public class QIDs {
 	public static String QID_MEDIC_MEDICINS_DETAIL = "medicins-detail";
 	
 	public static String QID_HISTORY = "history";
+	public static String QID_ADULTERY_WITH = "adultery-with";
+	public static String QID_ADULTERY_WITH_WHO = "adultery-with-who";
 	
 }

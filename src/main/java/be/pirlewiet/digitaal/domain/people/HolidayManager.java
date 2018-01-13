@@ -180,5 +180,25 @@ public class HolidayManager {
     	return this.holidayRepository.findByUuid( uuid );
 	
     }
+    
+    public boolean hasType( List<Holiday> holidays, HolidayType type ) {
+    	
+    	boolean has 
+    		= false;
+    	
+    		for ( Holiday holiday : holidays ) {
+    			
+    			if ( type.equals( holiday.getType() ) ) {
+    				has = true;
+    				break;
+    			}
+    			
+    		}
+		
+				    	
+    	return has;
+    	
+    }
+
 
 }

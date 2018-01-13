@@ -4,12 +4,14 @@ import static be.occam.utils.javax.Utils.*;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import be.occam.utils.javax.Utils;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
@@ -39,32 +41,49 @@ public class QuestionAndAnswerManager {
     }
     
     public List<QuestionAndAnswer> findAll( ) {
-    	return this.questionAndAnswerRepository.findAll();
+    	List<QuestionAndAnswer> found 
+    		= this.questionAndAnswerRepository.findAll();
+    	for ( QuestionAndAnswer questionAndAnswer : found ) {
+    		deserialize( questionAndAnswer );
+    	}
+    	return found;
     }
     
     public QuestionAndAnswer findOneByUuid( String uuid ) {
-    	return this.questionAndAnswerRepository.findOneByUuid( uuid );
+    	QuestionAndAnswer found = this.questionAndAnswerRepository.findOneByUuid( uuid );
+    	if ( found != null ) {
+    		deserialize( found );
+    	}
+    	return found;
     }
     
     public List<QuestionAndAnswer> findByEntityAndTag( String entityUuid, String tag ) {
+
+    	List<QuestionAndAnswer> found 
+			= this.questionAndAnswerRepository.findByEntityUuidAndTag( entityUuid, tag );
+		for ( QuestionAndAnswer questionAndAnswer : found ) {
+			deserialize( questionAndAnswer );
+		}
     	
-    	List<QuestionAndAnswer> l 
-    		= this.questionAndAnswerRepository.findByEntityUuidAndTag( entityUuid, tag );
+    	Collections.sort( found, this.orderById );
     	
-    	Collections.sort( l, this.orderById );
-    	
-    	return l;
+    	return found;
     	
     }
     
   public QuestionAndAnswer create( QuestionAndAnswer toCreate ) {
     	
+	  serialize( toCreate );
+	  
 	  QuestionAndAnswer created 
 	  	= this.questionAndAnswerRepository.saveAndFlush( toCreate );
 	  
 	  created.setUuid( KeyFactory.keyToString( created.getKey() ) );
 	  created = this.questionAndAnswerRepository.saveAndFlush( created );
-    	
+	  
+	  if ( QuestionType.MC.equals( created.getType() ) ) {
+		  logger.info( "created MC question with [{}] options", created.getOptions() );
+	  }
 	  return created;
     	
     }
@@ -83,6 +102,60 @@ public class QuestionAndAnswerManager {
     	toUpdate = this.questionAndAnswerRepository.saveAndFlush( toUpdate );
     	
     	return toUpdate;
+    	
+    }
+    
+    protected void deserialize( QuestionAndAnswer questionAndAnswer ) {
+    	
+    	if ( QuestionType.MC.equals( questionAndAnswer.getType() ) ) {
+    		
+    		if ( ! Utils.isEmpty( questionAndAnswer.getOptionString() ) ) {
+    			
+    			StringTokenizer tok
+    				= new StringTokenizer( questionAndAnswer.getOptionString() , "," );
+    			
+    			while (tok.hasMoreTokens() ) {
+    				
+    				String option 
+    					= tok.nextToken();
+    				
+    				questionAndAnswer.getOptions().add( option );
+    				
+    			}
+    			
+    		}
+    		
+    	}
+    	
+    }
+    
+    protected void serialize( QuestionAndAnswer questionAndAnswer ) {
+    	
+    	if ( QuestionType.MC.equals( questionAndAnswer.getType() ) ) {
+    		
+    		List<String> options
+    			= questionAndAnswer.getOptions();
+    		
+    		if ( ! options.isEmpty() ) {
+    			
+    			StringBuilder b
+    				= new StringBuilder();
+    			
+    			int index = 0;
+    			for ( String option : options ) {
+    				
+    				b.append( option );
+    				if ( index < options.size() - 1 ) {
+    					b.append( "," );
+    				}
+    				index++;
+    				
+    			}
+    			questionAndAnswer.setOptionString( b.toString() );
+    			
+    		}
+    		
+    	}
     	
     }
     

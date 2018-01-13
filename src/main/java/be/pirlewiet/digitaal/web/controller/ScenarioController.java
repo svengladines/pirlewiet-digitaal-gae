@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
+import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
 import be.pirlewiet.digitaal.domain.scenario.ReadyToRockOneScenario;
 import be.pirlewiet.digitaal.domain.scenario.ReadyToRockScenario;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
@@ -26,11 +28,19 @@ public class ScenarioController {
 	private final Logger logger 
 		= LoggerFactory.getLogger( ScenarioController.class );
 	
+	/*
 	@Resource
 	ReadyToRockScenario readyToRockScenario;
 	
 	@Resource
 	ReadyToRockOneScenario readyToRockOneScenario;
+	*/
+	
+	@Resource
+	InjectProductionDataScenario injectProductionDataScenario;
+	
+	@Resource
+	DeleteOldEntitiesScenario deleteOldEntitiesScenario;
 	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
@@ -40,6 +50,15 @@ public class ScenarioController {
 	public ResponseEntity<Boolean> get( @PathVariable("id") String id, @RequestParam(required=false) String q ) {
 		
 		try {
+			
+			if ( "injectProductionDataScenario".equals( id ) ) {
+				this.injectProductionDataScenario.guard().execute();
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
+			else if ( "deleteOldEntitiesScenario".equals( id ) ) {
+				this.deleteOldEntitiesScenario.guard().execute();
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
 		
 			/*
 			if ( "uuid".equals( id ) ) {

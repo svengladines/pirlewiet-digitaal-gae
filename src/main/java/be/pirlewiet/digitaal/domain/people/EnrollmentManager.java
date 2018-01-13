@@ -23,6 +23,7 @@ import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
@@ -117,6 +118,25 @@ public class EnrollmentManager {
 		for ( QuestionAndAnswer qna : history ) {
 			qna.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna );
+		}
+		
+		Application application
+			= this.applicationManager.findOne( created.getApplicationUuid() );
+		
+		List<Holiday> holidays
+			= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
+		
+		// for VOV, add questions about partner (2018)
+		if ( this.holidayManager.hasType( holidays, HolidayType.Vov ) ) {
+			logger.info( "VOV; add questions...");
+			List<QuestionAndAnswer> adultery
+				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_ADULTERY );
+			logger.info( "VOV; adultery question list size is {}", adultery.size() );
+			for ( QuestionAndAnswer qna : adultery ) {
+				qna.setTag( Tags.TAG_HISTORY );
+				qna.setEntityUuid( created.getUuid() );
+				this.questionAndAnswerManager.create( qna );
+			}
 		}
 		
 		return created;

@@ -46,6 +46,17 @@
 													<textarea id="${question.uuid}" class="form-control q" rows="10" cols="64" data-tag="${question.tag}">${question.answer}</textarea>
 												</div>
 											</c:when>
+											<c:when test="${question.type eq 'MC'}">
+													<div class="col-sm-6">
+														<c:forEach items="${question.options}" var="option">
+															<div class="checkbox">
+																<label>
+																	<input type="radio" name="${question.uuid}" class="q" data-tag="${question.tag}" value="${option}" ${question.answer eq option ? "checked='checked'" : ""}>&nbsp;${option}
+																</label>
+															</div>
+														</c:forEach> 
+													</div>
+												</c:when>
 										</c:choose>
 										</div>
 								</c:if>

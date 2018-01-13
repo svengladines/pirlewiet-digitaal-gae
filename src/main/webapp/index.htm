@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Pirlewiet Digitaal 2017</title>
+    <title>Pirlewiet Digitaal 2018</title>
     
     <!-- All theme and styling stuff -> pirlewiet.be -->
 
@@ -63,48 +63,35 @@
 		<div class="row centered">
 	
 			<i class="fa fa-calendar"></i>
-			<h1>Onze vakanties voor 2017</h1>
-			<img src="/digitaal/resources/images/holidays-2017.jpg"/>
+			<h1>Onze vakanties voor 2018</h1>
+			<img src="/digitaal/resources/images/holidays-2018.jpg"/>
 			<br/>
 		</div>
 		
 		<div class="row centered">
 			<br/>
 			<i class="fa fa-leaf"></i>
-			<h3>Voorjaar 2017</h1>
+			<h3>Voorjaar 2018</h1>
 			<br/>
-			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 15 januari 2017 </p>
+			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 15 januari 2018 </p>
 
 		</div>
 		<br>
 		
 		<div class="row centered">
-			<i class="fa fa-sun-o"></i><h3>Zomer 2017</h3>
+			<i class="fa fa-sun-o"></i><h3>Zomer 2018</h3>
 			<br/>
-			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 1 maart 2017 </p>
+			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 1 maart 2018 </p>
 		</div>
 		
 		<div class="row centered">
 		
-		<!-- 
-			<p class="alert-info">
-				Beste bezoeker, 
-				<br/>
-					Onze webtoepassing is terug online. <br/>
-					Je kan pas inschrijven vanaf 15 januari, maar je kan al wel het profiel van je organisatie up-to-date brengen of je organisatie registreren als doorverwijzer.<br/>
-				<br/>  
-			</p>
- 		-->
-				<div>
-					<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even Geduld...</span></button>
-				</div>
-				<br/>
-				
-				<p id="whyslow">
-					<small><strong>Waarom je even moet wachten:</strong> we maken momenteel gebruik van een gratis webdienst die af en toe 'in slaap valt' en we eerst even wakker moeten schudden. Op deze manier besparen we geld dat we aan de vakanties en de deelnemers kunnen spenderen! Je geduld wordt beloond dus :o)</small> 
-				</p>
-
-	</div>
+			<div>
+				<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even Geduld...</span></button>
+			</div>
+			<br/>
+			
+		</div>
 		
 	</div>
 	
@@ -136,7 +123,6 @@
    			success: function( ix ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-success");
    				$jq("#goontext").html("Ga verder");
-   				$jq("#whyslow").addClass("hidden");
    			},
    			error: function(  jqXHR, textStatus, errorThrown ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-error");

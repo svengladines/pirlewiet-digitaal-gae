@@ -36,7 +36,7 @@
 			<br/>
 		
 			<c:choose>
-				<c:when test="${true || ('sven.gladines@gmail.comx' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">
+				<c:when test="${false || ('sven.gladines@gmail.com' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">
 					<form class="form-horizontal">
 						
 						<div class="form-group form-group-lg">
@@ -50,7 +50,7 @@
 				
 				<c:otherwise>
 						<div>
-							<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2017. Nog even geduld!</strong> <br/><br/>
+							<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2018. Nog even geduld!</strong> <br/><br/>
 						</div>
 				</c:otherwise>
 			</c:choose>

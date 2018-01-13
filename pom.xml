@@ -328,6 +328,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>gmultipart</groupId>
+			<artifactId>gmultipart</artifactId>
+			<version>0.4</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>be.occam.test</groupId>
 			<artifactId>occam-jtest</artifactId>
 			<version>1.0-LATEST-SNAPSHOT</version>

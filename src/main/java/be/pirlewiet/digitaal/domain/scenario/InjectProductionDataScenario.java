@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.util;
+package be.pirlewiet.digitaal.domain.scenario;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,11 +34,12 @@ import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.repositories.OrganisationRepository;
 import be.pirlewiet.digitaal.repositories.PersonRepository;
 import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
+import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
-public class ProductionData {
+public class InjectProductionDataScenario extends Scenario {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
@@ -53,11 +54,16 @@ public class ProductionData {
 	HolidayRepository holidayRepository;
 	
 	@Resource
-	ScenarioRunner scenarioRunner;
-		
-	@PostConstruct
+	DataGuard dataGuard;
+	
+	public InjectProductionDataScenario guard() {
+    	this.dataGuard.guard();
+    	return this;
+    }
+	
 	@Transactional(readOnly=false)
-	public void injectData() {
+	@Override
+	public void execute( String... parameters ) {
 		
 		logger.info( "verify/inject productiondata" );
 		
@@ -120,14 +126,14 @@ public class ProductionData {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 3 );
 				start.set( Calendar.DAY_OF_MONTH, 4 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 3 );
 				end.set( Calendar.DAY_OF_MONTH, 8 );
 				
@@ -161,14 +167,14 @@ public class ProductionData {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 3 );
 				start.set( Calendar.DAY_OF_MONTH, 10 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 3 );
 				end.set( Calendar.DAY_OF_MONTH, 14 );
 				
@@ -202,14 +208,14 @@ public class ProductionData {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 3 );
 				start.set( Calendar.DAY_OF_MONTH, 11 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 3 );
 				end.set( Calendar.DAY_OF_MONTH, 15 );
 				
@@ -243,14 +249,14 @@ public class ProductionData {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 4 );
 				start.set( Calendar.DAY_OF_MONTH, 15 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 4 );
 				end.set( Calendar.DAY_OF_MONTH, 19 );
 				
@@ -272,8 +278,7 @@ public class ProductionData {
 		}
 		
 		/**
-		 * Summer 2017
-		 */
+		 * Summer 2018
 		
 		// KIKA 1	12/7 > 18/7
 		{
@@ -288,14 +293,14 @@ public class ProductionData {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 6 );
 				start.set( Calendar.DAY_OF_MONTH, 12 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 6 );
 				end.set( Calendar.DAY_OF_MONTH, 18 );
 				
@@ -329,14 +334,14 @@ public class ProductionData {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2017 );
+				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 6 );
 				start.set( Calendar.DAY_OF_MONTH, 20 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2017 );
+				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 6 );
 				end.set( Calendar.DAY_OF_MONTH, 27 );
 				
@@ -369,14 +374,14 @@ public class ProductionData {
 					GregorianCalendar start
 						= new GregorianCalendar();
 					
-					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
 					start.set( Calendar.DAY_OF_MONTH, 23 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
-					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
 					end.set( Calendar.DAY_OF_MONTH, 30 );
 					
@@ -409,14 +414,14 @@ public class ProductionData {
 					GregorianCalendar start
 						= new GregorianCalendar();
 					
-					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 7 );
 					start.set( Calendar.DAY_OF_MONTH, 1 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
-					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 7 );
 					end.set( Calendar.DAY_OF_MONTH, 8 );
 					
@@ -449,14 +454,14 @@ public class ProductionData {
 					GregorianCalendar start
 						= new GregorianCalendar();
 					
-					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 7 );
 					start.set( Calendar.DAY_OF_MONTH, 13 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
-					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 7 );
 					end.set( Calendar.DAY_OF_MONTH, 20 );
 					
@@ -489,14 +494,14 @@ public class ProductionData {
 					GregorianCalendar start
 						= new GregorianCalendar();
 					
-					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
 					start.set( Calendar.DAY_OF_MONTH, 8 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
-					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
 					end.set( Calendar.DAY_OF_MONTH, 10 );
 					
@@ -529,14 +534,14 @@ public class ProductionData {
 					GregorianCalendar start
 						= new GregorianCalendar();
 					
-					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
 					start.set( Calendar.DAY_OF_MONTH, 15 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
-					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
 					end.set( Calendar.DAY_OF_MONTH, 21 );
 					
@@ -569,14 +574,14 @@ public class ProductionData {
 					GregorianCalendar start
 						= new GregorianCalendar();
 					
-					start.set( Calendar.YEAR, 2017 );
+					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
 					start.set( Calendar.DAY_OF_MONTH, 10 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
-					end.set( Calendar.YEAR, 2017 );
+					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
 					end.set( Calendar.DAY_OF_MONTH, 14 );
 					
@@ -595,13 +600,7 @@ public class ProductionData {
 				
 				}
 			}
-		
-	}
-	
-	@PostConstruct
-	public void runScenarios() {
-		
-		this.scenarioRunner.runThem();
+			*/
 		
 	}
 	

@@ -18,14 +18,19 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import be.occam.utils.javax.Utils;
+import be.occam.utils.spring.web.Result;
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
+import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
+import be.pirlewiet.digitaal.domain.service.HolidayService;
+import be.pirlewiet.digitaal.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
@@ -54,6 +59,15 @@ public class Mapper {
 	
 	@Resource
 	QuestionAndAnswerManager questionAndAnswerManager;
+	
+	@Resource
+	HolidayService holidayService;
+	
+	@Resource
+	EnrollmentService enrollmentService;
+	
+	@Resource
+	DoorMan doorMan;
 	
 	public List<String[]> asStrings( 
 			Application application, 
@@ -107,6 +121,9 @@ public class Mapper {
 				// = this.personManager.findOneByUuid( application.getContactPersonUuid() );
 				= personMap.get( application.getContactPersonUuid() );
 			
+			Organisation pirlewiet
+				= this.doorMan.whoHasCode( "dig151" );
+			
 			for ( Enrollment enrollment : all ) {
 				
 				try {
@@ -118,6 +135,25 @@ public class Mapper {
 
 					List<String> columns
 						= new ArrayList<String>( 16 );
+					
+					/**
+					 *  Really bad!!!! TODO, fix this, but it's urgent!
+					 */
+					
+					if ( isEmpty( enrollment.getHolidayName() ) ) {
+						
+						Result<List<HolidayDTO>> holidaysResult
+							= this.holidayService.resolve( enrollment.getHolidayUuid(), application.getHolidayUuids(), false, false, false, pirlewiet );
+						
+						List<HolidayDTO> holidays
+							= holidaysResult.getObject();
+						
+						Result<EnrollmentDTO> updatedEnrollment 
+							= this.enrollmentService.updateHolidays( enrollment.getUuid(), holidays, pirlewiet );
+						
+						enrollment.setHolidayName( updatedEnrollment.getObject().getHolidayName() );
+						
+					}
 					
 					columns.add( enrollment.getHolidayName() );
 					
