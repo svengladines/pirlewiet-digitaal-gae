@@ -134,7 +134,7 @@ public class Mapper {
 					 */
 
 					List<String> columns
-						= new ArrayList<String>( 16 );
+						= new ArrayList<String>( 20 );
 					
 					/**
 					 *  Really bad!!!! TODO, fix this, but it's urgent!
@@ -246,11 +246,15 @@ public class Mapper {
 						// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
 						= enrollmentQuestionsMap.get( Tags.TAG_MEDIC );
 					
+					List<QuestionAndAnswer> enrollmentVariousQuestions
+					// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
+						= enrollmentQuestionsMap.get( Tags.TAG_HISTORY );
+					
 					QuestionSheet appQList
 						= new QuestionSheet( applicationQuestions );
 					
-					// QuestionSheet eQList
-						// = new QuestionSheet( enrollmentQuestions );
+					QuestionSheet eQList
+						 = new QuestionSheet( enrollmentVariousQuestions );
 					
 					QuestionSheet mQList
 						= new QuestionSheet( medicQuestions );
@@ -281,13 +285,14 @@ public class Mapper {
 					// AB = medicijnen = 11
 					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDICINS ) ) );
 					// AC = foto's = 0
-					
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_PHOTO ) ) );
-					// AD = naam gezin = ?
-					// columns.add( "/" );
-					// AE = eerder meegeweest ?
-					// columns.add( answer( eQList.getQuestion( QIDs.QID_HISTORY ) ) );
-										
+					// AD = eerder meegeweest ?
+					columns.add( answer( eQList.getQuestion( QIDs.QID_HISTORY ) ) );
+					// AE = VOV Partner
+					columns.add( answer( eQList.getQuestion( QIDs.QID_ADULTERY_WITH ) ) );
+					// AF = VOV Partner
+					columns.add( answer( eQList.getQuestion( QIDs.QID_ADULTERY_WITH_WHO ) ) );
+					// AG = comment					
 					columns.add( enrollment.getStatus().getComment() );
 					
 					mapped.add( columns.toArray( new String[] {} ) );
@@ -454,6 +459,16 @@ public class Mapper {
 		else if ( QuestionType.Area.equals( qna.getType() ) ) {
 			
 			antwoord = isEmpty( qna.getAnswer() ) ? "?" : qna.getAnswer().trim();
+			
+		}
+		else if ( QuestionType.MC.equals( qna.getType() ) ) {
+			
+			if ( isEmpty( qna.getAnswer() ) ) {
+				antwoord = "/";
+			}
+			else {
+				antwoord = qna.getAnswer().trim();
+			}
 			
 		}
 		else {

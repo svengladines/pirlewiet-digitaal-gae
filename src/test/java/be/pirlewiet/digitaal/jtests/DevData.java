@@ -173,7 +173,7 @@ public class DevData {
 		
 		weekendAtBernies.setName( "Weekend at Bernie's");
 		weekendAtBernies.setPeriod( Period.Spring );
-		weekendAtBernies.setType( HolidayType.Kika );
+		weekendAtBernies.setType( HolidayType.Vov );
 		weekendAtBernies.setStart( bernieStart.getTime() );
 		weekendAtBernies.setEnd( bernieEnd.getTime() );
 		weekendAtBernies.setDeadLine( new Date() );
@@ -200,7 +200,7 @@ public class DevData {
 		
 		weekendAtVernies.setName( "Weekend at Vernie's");
 		weekendAtVernies.setPeriod( Period.Spring );
-		weekendAtVernies.setType( HolidayType.Tika );
+		weekendAtVernies.setType( HolidayType.Vov );
 		weekendAtVernies.setStart( vernieStart.getTime() );
 		weekendAtVernies.setEnd( vernieEnd.getTime() );
 		weekendAtVernies.setDeadLine( new Date() );

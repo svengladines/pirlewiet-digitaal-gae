@@ -36,7 +36,7 @@
 			<br/>
 		
 			<c:choose>
-				<c:when test="${false || ('sven.gladines@gmail.com' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">
+				<c:when test="${true || ('sven.gladines@gmail.com' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">
 					<form class="form-horizontal">
 						
 						<div class="form-group form-group-lg">
