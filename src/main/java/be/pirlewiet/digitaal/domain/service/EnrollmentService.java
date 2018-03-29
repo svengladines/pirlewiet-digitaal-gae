@@ -576,6 +576,24 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 	}
 	
+	@Transactional(readOnly=false)
+	public Result<EnrollmentDTO> updateHolidays ( String uuid, String holidayUuids, Organisation actor ) {
+		
+		logger.info("enrollment.updateHolidays");
+		
+		Result<EnrollmentDTO> result
+			= new Result<EnrollmentDTO>();
+		
+		Enrollment updated
+			= this.enrollmentManager.updateHolidays( uuid, holidayUuids, true );
+		
+		result.setValue( Value.OK );
+		result.setObject( EnrollmentDTO.from( updated ) );
+		
+		return result;
+		
+	}
+	
 	
 	@Override
 	@Transactional(readOnly=false)

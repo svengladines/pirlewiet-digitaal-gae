@@ -142,6 +142,8 @@ public class Mapper {
 					
 					if ( isEmpty( enrollment.getHolidayName() ) ) {
 						
+						logger.warn( "enrollment [{}] does not have a holiday name", enrollment.getUuid() );
+						/*
 						Result<List<HolidayDTO>> holidaysResult
 							= this.holidayService.resolve( enrollment.getHolidayUuid(), application.getHolidayUuids(), false, false, false, pirlewiet );
 						
@@ -152,7 +154,7 @@ public class Mapper {
 							= this.enrollmentService.updateHolidays( enrollment.getUuid(), holidays, pirlewiet );
 						
 						enrollment.setHolidayName( updatedEnrollment.getObject().getHolidayName() );
-						
+						*/
 					}
 					
 					columns.add( enrollment.getHolidayName() );

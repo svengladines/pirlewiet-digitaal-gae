@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -19,6 +20,8 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
+
+import com.google.appengine.api.datastore.KeyFactory;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
@@ -33,9 +36,6 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repositories.ApplicationRepository;
-
-import com.google.appengine.api.datastore.KeyFactory;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -367,7 +367,7 @@ public class ApplicationManager {
 						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
 						if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) ) {
-							this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids() );
+							this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids(), true );
 						}
 						this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), false );
 					}
@@ -381,7 +381,7 @@ public class ApplicationManager {
 					Person contact
 						= this.personManager.findOneByUuid( application.getContactPersonUuid() );
 					
-					List<Holiday> holidays
+					Set<Holiday> holidays
 						= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 					
 					List<Person> participants
@@ -429,7 +429,7 @@ public class ApplicationManager {
 		return application;
 	}
 	
-	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, List<Holiday> holidays, Person contact ) {
+	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact ) {
 	    	
 			MimeMessage message
 				= this.formatIntakeMessageOrganisation( application, participants, holidays, contact );
@@ -444,7 +444,7 @@ public class ApplicationManager {
 		
 	 }
 	 
-	 protected MimeMessage formatIntakeMessageOrganisation( Application application, List<Person> participants, List<Holiday> holidays, Person recipient ) {
+	 protected MimeMessage formatIntakeMessageOrganisation( Application application, List<Person> participants, Set<Holiday> holidays, Person recipient ) {
 			
 			MimeMessage message
 				= null;
@@ -500,7 +500,7 @@ public class ApplicationManager {
 	    	
 	    }
 	 
-	 protected boolean sendIntakeMessageToPirlewiet( Application application,  List<Person> participants, List<Holiday> holidays, Person contact, Organisation organisation ) {
+	 protected boolean sendIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
 	    	
 			MimeMessage message
 				= this.formatIntakeMessagePirlewiet( application, participants, holidays, contact, organisation );
@@ -515,7 +515,7 @@ public class ApplicationManager {
 		
 	 }
 	 
-	 protected MimeMessage formatIntakeMessagePirlewiet( Application application, List<Person> participants, List<Holiday> holidays, Person contact, Organisation organisation ) {
+	 protected MimeMessage formatIntakeMessagePirlewiet( Application application, List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
 			
 			MimeMessage message
 				= null;

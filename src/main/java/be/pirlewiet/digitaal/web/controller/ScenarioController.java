@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
 import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
-import be.pirlewiet.digitaal.domain.scenario.ReadyToRockOneScenario;
-import be.pirlewiet.digitaal.domain.scenario.ReadyToRockScenario;
+import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
+import be.pirlewiet.digitaal.domain.scenario.UnifyEnrollmentHolidaysScenario;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
 @Controller
@@ -42,6 +42,12 @@ public class ScenarioController {
 	@Resource
 	DeleteOldEntitiesScenario deleteOldEntitiesScenario;
 	
+	@Resource
+	SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario;
+	
+	@Resource
+	UnifyEnrollmentHolidaysScenario unifyEnrollmentHolidaysScenario;
+	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
 	
@@ -57,6 +63,14 @@ public class ScenarioController {
 			}
 			else if ( "deleteOldEntitiesScenario".equals( id ) ) {
 				this.deleteOldEntitiesScenario.guard().execute();
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
+			else if ( "setEnrollmentHolidayNamesScenario".equals( id ) ) {
+				this.setEnrollmentHolidayNamesScenario.guard().execute();
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
+			else if ( "unifyEnrollmentHolidaysScenario".equals( id ) ) {
+				this.unifyEnrollmentHolidaysScenario.guard().execute();
 				return response( Boolean.TRUE, HttpStatus.OK );
 			}
 		

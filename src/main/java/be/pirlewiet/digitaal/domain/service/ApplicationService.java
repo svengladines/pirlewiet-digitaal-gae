@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.service;
 import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -18,7 +19,6 @@ import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Application;
@@ -278,7 +278,7 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		String holidayString
 			= application.getHolidayUuids();
 		
-		List<Holiday> holidays
+		Set<Holiday> holidays
 			= this.holidayManager.holidaysFromUUidString( holidayString );
 		
 		for ( Holiday holiday : holidays ) {

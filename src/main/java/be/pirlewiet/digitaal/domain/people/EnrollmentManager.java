@@ -4,8 +4,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -16,6 +18,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
@@ -24,14 +28,10 @@ import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-
-import com.google.appengine.api.datastore.KeyFactory;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -123,7 +123,7 @@ public class EnrollmentManager {
 		Application application
 			= this.applicationManager.findOne( created.getApplicationUuid() );
 		
-		List<Holiday> holidays
+		Set<Holiday> holidays
 			= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 		
 		// for VOV, add questions about partner (2018)
@@ -206,9 +206,9 @@ public class EnrollmentManager {
 		return enrollment;
 	}
 	
-public Enrollment updateHolidays( String uuid, String holidayUuids ) {
+	public Enrollment updateHolidays( String uuid, String holidayUuids, boolean resolveNames ) {
 		
-		logger.info("application.updateHolidays");
+		logger.info("enrollment.updateHolidays");
 		
 		Enrollment enrollment
 			= this.findOneByUuid( uuid );
@@ -216,6 +216,29 @@ public Enrollment updateHolidays( String uuid, String holidayUuids ) {
 		if ( enrollment != null ) {
 			
 			enrollment.setHolidayUuid( holidayUuids );
+			
+			if ( resolveNames ) {
+				
+				Set<Holiday> holidays 
+					= this.holidayManager.holidaysFromUUidString( holidayUuids );
+				
+				StringBuilder b
+					= new StringBuilder();
+				
+				Iterator<Holiday> it
+					= holidays.iterator();
+				
+				while ( it.hasNext() ) {
+					Holiday holiday 
+						= it.next();
+					b.append( holiday.getName() );
+					if ( it.hasNext() ) {
+						b.append( "," );
+					}
+				}
+				
+				enrollment.setHolidayName( b.toString() );
+			}
 			
 			enrollment = this.enrollmentRepository.saveAndFlush( enrollment );
 			
@@ -249,7 +272,7 @@ public Enrollment updateHolidays( String uuid, String holidayUuids ) {
 		Person contact
 			= this.personManager.findOneByUuid( application.getContactPersonUuid() );
 		
-		List<Holiday> holidays
+		Set<Holiday> holidays
 			= this.holidayManager.holidaysFromUUidString( updated.getHolidayUuid() );
 		
 		Person participant
@@ -297,7 +320,7 @@ public Enrollment updateHolidays( String uuid, String holidayUuids ) {
 		return enrollment;
 	}
 	
-	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, List<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person contact ) {
+	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person contact ) {
 	    	
 			MimeMessage message
 				= this.formatUpdateMessageToOrganisation( enrollment, participant, holidays, oldStatus, contact );
@@ -312,7 +335,7 @@ public Enrollment updateHolidays( String uuid, String holidayUuids ) {
 		
 	 }
 	 
-	 protected MimeMessage formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, List<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
+	 protected MimeMessage formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
 			
 			MimeMessage message
 				= null;
@@ -344,7 +367,7 @@ public Enrollment updateHolidays( String uuid, String holidayUuids ) {
 						
 				model.put( "enrollment", enrollment );
 				model.put( "participant", participant );
-				model.put( "holiday", holidays.isEmpty() ? "" : holidays.get( 0 ) );
+				model.put( "holiday", enrollment.getHolidayName() );
 				model.put( "oldStatusMessage", oldStatusMessage );
 				model.put( "newStatusMessage", newStatusMessage );
 				model.put( "newStatusDescription", newStatusDescription );

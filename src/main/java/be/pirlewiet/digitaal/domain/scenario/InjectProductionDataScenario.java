@@ -278,9 +278,9 @@ public class InjectProductionDataScenario extends Scenario {
 		}
 		
 		/**
-		 * Summer 2018
+		 * Summer 2018 **/
 		
-		// KIKA 1	12/7 > 18/7
+		// KIKA 1	11/7 > 18/7
 		{
 			String name = "KIKA 1";
 			Holiday holiday
@@ -295,7 +295,7 @@ public class InjectProductionDataScenario extends Scenario {
 				
 				start.set( Calendar.YEAR, 2018 );
 				start.set( Calendar.MONTH, 6 );
-				start.set( Calendar.DAY_OF_MONTH, 12 );
+				start.set( Calendar.DAY_OF_MONTH, 11 );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
@@ -318,10 +318,13 @@ public class InjectProductionDataScenario extends Scenario {
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
 			
 			}
+			else {
+				logger.info( "holiday [{}] already existed, did not inject", holiday.getName() );
+			}
 			
 		}
 		
-		// KIKA 2	20/7 > 27/7
+		// KIKA 2	20/7 > 26/7
 		{
 			String name = "KIKA 2";
 			Holiday holiday
@@ -343,7 +346,7 @@ public class InjectProductionDataScenario extends Scenario {
 				
 				end.set( Calendar.YEAR, 2018 );
 				end.set( Calendar.MONTH, 6 );
-				end.set( Calendar.DAY_OF_MONTH, 27 );
+				end.set( Calendar.DAY_OF_MONTH, 26 );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Summer );
@@ -361,7 +364,7 @@ public class InjectProductionDataScenario extends Scenario {
 			}
 		}
 		
-			// TIKA	23/7 > 30/7
+			// TIKA	22/7 > 28/7
 			{
 				String name = "TIKA";
 				Holiday holiday
@@ -376,14 +379,14 @@ public class InjectProductionDataScenario extends Scenario {
 					
 					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 23 );
+					start.set( Calendar.DAY_OF_MONTH, 22 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
 					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 30 );
+					end.set( Calendar.DAY_OF_MONTH, 28 );
 					
 					holiday.setName( name );
 					holiday.setPeriod( Period.Summer );
@@ -401,7 +404,7 @@ public class InjectProductionDataScenario extends Scenario {
 				}
 			}
 			
-			// Gezins 1	01/08 > 30/7
+			// Gezins 1	31/7 > 7/8
 			{
 				String name = "Gezins 1";
 				Holiday holiday
@@ -415,15 +418,15 @@ public class InjectProductionDataScenario extends Scenario {
 						= new GregorianCalendar();
 					
 					start.set( Calendar.YEAR, 2018 );
-					start.set( Calendar.MONTH, 7 );
-					start.set( Calendar.DAY_OF_MONTH, 1 );
+					start.set( Calendar.MONTH, 6 );
+					start.set( Calendar.DAY_OF_MONTH, 31 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
 					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 7 );
-					end.set( Calendar.DAY_OF_MONTH, 8 );
+					end.set( Calendar.DAY_OF_MONTH, 7 );
 					
 					holiday.setName( name );
 					holiday.setPeriod( Period.Summer );
@@ -441,7 +444,7 @@ public class InjectProductionDataScenario extends Scenario {
 				}
 			}
 			
-			// Gezins 2	13/08 > 20/8
+			// Gezins 2	8/08 > 15/8
 			{
 				String name = "Gezins 2";
 				Holiday holiday
@@ -456,14 +459,14 @@ public class InjectProductionDataScenario extends Scenario {
 					
 					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 7 );
-					start.set( Calendar.DAY_OF_MONTH, 13 );
+					start.set( Calendar.DAY_OF_MONTH, 8 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
 					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 7 );
-					end.set( Calendar.DAY_OF_MONTH, 20 );
+					end.set( Calendar.DAY_OF_MONTH, 15 );
 					
 					holiday.setName( name );
 					holiday.setPeriod( Period.Summer );
@@ -481,7 +484,7 @@ public class InjectProductionDataScenario extends Scenario {
 				}
 			}
 
-			// Driedaagse 8/7 > 10/7
+			// Driedaagse 7/7 > 9/7
 			{
 				String name = "Driedaagse";
 				Holiday holiday
@@ -496,14 +499,14 @@ public class InjectProductionDataScenario extends Scenario {
 					
 					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 8 );
+					start.set( Calendar.DAY_OF_MONTH, 7 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
 					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 10 );
+					end.set( Calendar.DAY_OF_MONTH, 9 );
 					
 					holiday.setName( name );
 					holiday.setPeriod( Period.Summer );
@@ -521,7 +524,7 @@ public class InjectProductionDataScenario extends Scenario {
 				}
 			}
 			
-			// VOV 2 15/7 > 21/7
+			// VOV 2 7/7 > 13/7
 			{
 				String name = "VOV 2";
 				Holiday holiday
@@ -536,14 +539,14 @@ public class InjectProductionDataScenario extends Scenario {
 					
 					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 15 );
+					start.set( Calendar.DAY_OF_MONTH, 7 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
 					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 21 );
+					end.set( Calendar.DAY_OF_MONTH, 13 );
 					
 					holiday.setName( name );
 					holiday.setPeriod( Period.Summer );
@@ -561,7 +564,7 @@ public class InjectProductionDataScenario extends Scenario {
 				}
 			}
 		
-			// Cava 10/7 > 14/7
+			// Cava 9/7 -> 13/7
 			{
 				String name = "CAVA";
 				Holiday holiday
@@ -576,14 +579,14 @@ public class InjectProductionDataScenario extends Scenario {
 					
 					start.set( Calendar.YEAR, 2018 );
 					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 10 );
+					start.set( Calendar.DAY_OF_MONTH, 9 );
 					
 					GregorianCalendar end
 						= new GregorianCalendar();
 					
 					end.set( Calendar.YEAR, 2018 );
 					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 14 );
+					end.set( Calendar.DAY_OF_MONTH, 13 );
 					
 					holiday.setName( name );
 					holiday.setPeriod( Period.Summer );
@@ -600,7 +603,6 @@ public class InjectProductionDataScenario extends Scenario {
 				
 				}
 			}
-			*/
 		
 	}
 	

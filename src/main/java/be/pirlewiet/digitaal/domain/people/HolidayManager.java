@@ -1,11 +1,13 @@
 package be.pirlewiet.digitaal.domain.people;
 
 import static be.occam.utils.javax.Utils.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
@@ -20,7 +22,6 @@ import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repositories.HolidayRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
@@ -71,7 +72,7 @@ public class HolidayManager {
     	
     	if ( holidayUUids != null ) {
     		
-    		List<Holiday> holidays
+    		Set<Holiday> holidays
     			= this.holidaysFromUUidString( holidayUUids );
     		
     		for ( Holiday v : holidays ) {
@@ -142,10 +143,10 @@ public class HolidayManager {
     	
     }
     
-    public List<Holiday> holidaysFromUUidString( String uuidString ) {
+    public Set<Holiday> holidaysFromUUidString( String uuidString ) {
     	
-    	List<Holiday> holidays
-    		= list();
+    	Set<Holiday> holidays
+    		= set();
     	
         StringTokenizer tok
     		= new StringTokenizer( uuidString.trim(), ",", false );
@@ -166,7 +167,7 @@ public class HolidayManager {
 	    		holidays.add ( v );
 	    	}
 	    	else {
-	    		throw new RuntimeException( "no vakantie with id [" + t.trim() + "]" );
+	    		throw new RuntimeException( "no holiday with id [" + t.trim() + "]" );
 	    	}
 	    	
 	    }
@@ -181,7 +182,7 @@ public class HolidayManager {
 	
     }
     
-    public boolean hasType( List<Holiday> holidays, HolidayType type ) {
+    public boolean hasType( Set<Holiday> holidays, HolidayType type ) {
     	
     	boolean has 
     		= false;
