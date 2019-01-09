@@ -130,7 +130,7 @@ public class ApplicationManager {
 	public List<Application> findByOrganisation( Organisation actor ) {
 		
 		List<Application> byOrganisationAndYear
-			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2018 );//.findByYear(2018);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2019 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
 		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
 		
@@ -141,7 +141,7 @@ public class ApplicationManager {
 	public List<Application> findActiveByYear( ) {
 		
 		List<Application> byYear
-			= this.applicationRepository.findByYear( 2018 );//.findByYear(2018);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+			= this.applicationRepository.findByYear( 2019 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
 		List<Application> filtered
 			= list();

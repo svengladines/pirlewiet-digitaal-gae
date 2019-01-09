@@ -15,7 +15,7 @@ public class ModelViewHelper {
 		
 		if ( ConfigurationProfiles.isActive( ConfigurationProfiles.PRODUCTION ) ) {
 			
-			model.put( ATTR_FRONTEND, "http://pirlewiet-digitaal.appspot.com/digitaal" );
+			model.put( ATTR_FRONTEND, "https://pirlewiet-digitaal.appspot.com" );
 			
 		}
 		else {

@@ -67,7 +67,7 @@ public class CodesController {
 	// TODO, move to cookiescontroller or such
 	@RequestMapping(method=RequestMethod.DELETE)
 	@ResponseBody
-	public ResponseEntity<String> delete( @RequestBody String code, @CookieValue(required=false, value="pwtid") String pwtid, HttpServletResponse response )  {
+	public ResponseEntity<String> delete( @CookieValue(required=false, value="pwtid") String pwtid, HttpServletResponse response )  {
 		
 		if ( pwtid != null ) {
 		

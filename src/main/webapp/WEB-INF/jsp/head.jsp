@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="pirlewiet vzw, vakantie, armen, digitale inschrijvingen, doorverwijzers">
     <meta name="author" content="pirlewiet vzw">
-    <link rel="icon" href="http://www.pirlewiet.be/resources/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="https://www.pirlewiet.be/resources/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
 
     <title>Pirlewiet-Inschrijvingen</title>
 

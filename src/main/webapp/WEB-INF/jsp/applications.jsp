@@ -50,7 +50,7 @@
 				
 				<c:otherwise>
 						<div>
-							<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari 2018. Nog even geduld!</strong> <br/><br/>
+							<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari. Nog even geduld!</strong> <br/><br/>
 						</div>
 				</c:otherwise>
 			</c:choose>

@@ -5,12 +5,12 @@ import org.junit.Test;
 import be.occam.test.jtest.JTest;
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 
-public class RunPirlewietRegistrations_Development extends JTest {
+public class RunPirlewietDigitaal_Development extends JTest {
 	
-	public RunPirlewietRegistrations_Development() {
+	public RunPirlewietDigitaal_Development() {
 		super( "/", 8068, ConfigurationProfiles.DEV );
 		
-		System.setProperty( "pirlewiet.currentYear", "2018" );
+		System.setProperty( "pirlewiet.currentYear", "2019" );
 	}
 	
 	@Test

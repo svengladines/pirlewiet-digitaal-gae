@@ -21,7 +21,7 @@
             <li ${param.active eq 'organisation' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/organisation.html">PROFIEL</a></li>
           	<li ${param.active eq 'enrollments' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/applications.html">INSCHRIJVINGEN</a>
             </li>
-            <li><a href="http://pirlewiet-digitaal.appspot.com/help.htm">HELP</a></li>
+            <li><a href="https://pirlewiet-digitaal.appspot.com/help.htm">HELP</a></li>
             <li><a id="logout" title="Uitloggen" href="${pageContext.request.contextPath}/logout.html"><i class="fa fa-sign-out"></i>&nbsp;Uitloggen</a></li>
           </ul>
         </div><!--/.nav-collapse -->
