@@ -1,10 +1,12 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.list;
+import static be.occam.utils.javax.Utils.*;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -98,36 +100,56 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 		
 		result.setValue( Value.OK );
 		
-		List<HolidayDTO> dtos
-			= list();
-		
 		List<Holiday> holidays
 			= list();
 		
+		List<HolidayDTO> dtos
+			= list();
+		
+		Set<Holiday> enrollmentHolidays 
+			= set();
+		
+		Set<Holiday> applicationHolidays
+			= set();
+		
 		if ( enrollmentHolidayString != null ) {
 		
-			holidays.addAll( this.holidayManager.holidaysFromUUidString( enrollmentHolidayString ) );
-			
-			for ( Holiday holiday : holidays ) {
-				
-				dtos.add( HolidayDTO.from( holiday ) );
-				
-			}
+			enrollmentHolidays.addAll( this.holidayManager.holidaysFromUUidString( enrollmentHolidayString ) );
 			
 		}
 		
 		if ( applicationHolidayString != null ) {
 			
-			holidays.addAll( this.holidayManager.holidaysFromUUidString( applicationHolidayString ) );
+			applicationHolidays.addAll( this.holidayManager.holidaysFromUUidString( applicationHolidayString ) );
 			
-			for ( Holiday holiday : holidays ) {
-				
-				dtos.add( HolidayDTO.from( holiday ).setIsApplicationHoliday( true ) );
-				
-			}
 		}
 		
-		result.setObject( dtos );
+		for ( Holiday applicationHoliday : applicationHolidays ) {
+		
+			String auuid
+				= applicationHoliday.getUuid();
+			
+			boolean isApplicationOnly 
+				= true;
+			
+			for ( Holiday enrollmentHoliday : enrollmentHolidays ) {
+				
+				String euuid
+					= enrollmentHoliday.getUuid();
+				
+				if ( euuid.equals( auuid ) ) {
+					isApplicationOnly = false;
+					break;
+				}
+				
+			}
+			
+			holidays.add( applicationHoliday );
+			HolidayDTO dto = HolidayDTO.from( applicationHoliday );
+			
+			dto.setIsApplicationHoliday( isApplicationOnly );
+			dtos.add( dto );
+		}
 		
 		if ( checkNotEmpty) {
 			
@@ -167,6 +189,7 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 			}
 		}
 		
+		result.setObject( dtos );
 		
 		return result;
 		

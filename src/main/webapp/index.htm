@@ -87,7 +87,7 @@
 		<div class="row centered">
 		
 			<div>
-				<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg hidden" data-vakantie="1"><span id="goontext">Even Geduld...</span></button>
+				<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even Geduld...</span></button>
 			</div>
 			<br/>
 			
@@ -112,7 +112,7 @@
     <script>
     	var $jq = jQuery.noConflict();
     	
-    	/* $jq("#goon").click( function () {
+    	$jq("#goon").click( function () {
     		window.document.location = "/start.html";
     	});
 
@@ -127,7 +127,7 @@
    			error: function(  jqXHR, textStatus, errorThrown ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-error");
    			}
-   		}); */
+   		});
     		
     </script>
   </body>
