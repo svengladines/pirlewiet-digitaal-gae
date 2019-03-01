@@ -21,6 +21,11 @@ import be.pirlewiet.digitaal.dto.HolidayDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
+/**
+ * Resolve LIMBO state where enrolmment holiday names are not set. Cause uncertain ? Was the application holiday changed after adding participants ?
+ * @author psychox
+ *
+ */
 public class SetEnrollmentHolidayNamesScenario extends Scenario {
 	
 	protected final Logger logger 

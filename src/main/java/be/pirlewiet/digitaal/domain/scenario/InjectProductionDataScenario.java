@@ -111,7 +111,6 @@ public class InjectProductionDataScenario extends Scenario {
 			PaasGEZINS	10/4 - 15/4	--- 11/4 - 15/4
 			VOV 1	15/5 - 19/5	--- 15/5 - 19/5
 
-		 */
 		
 		// PaasKIKA 1	8/4 - 13/4
 		{
@@ -276,6 +275,7 @@ public class InjectProductionDataScenario extends Scenario {
 			}
 			
 		}
+		**/
 		
 		/**
 		 * Summer 2019 **/
@@ -524,47 +524,45 @@ public class InjectProductionDataScenario extends Scenario {
 				}
 			}
 			
-			/*
 			// APi TODO
-						{
-							String name = "APi";
-							Holiday holiday
-								= this.holidayRepository.findOneByName( name );
-							
-							if ( holiday == null ) {
-								
-								holiday = new Holiday();
-						
-								GregorianCalendar start
-									= new GregorianCalendar();
-								
-								start.set( Calendar.YEAR, 2019 );
-								start.set( Calendar.MONTH, 7 );
-								start.set( Calendar.DAY_OF_MONTH, 8 );
-								
-								GregorianCalendar end
-									= new GregorianCalendar();
-								
-								end.set( Calendar.YEAR, 2019 );
-								end.set( Calendar.MONTH, 7 );
-								end.set( Calendar.DAY_OF_MONTH, 15 );
-								
-								holiday.setName( name );
-								holiday.setPeriod( Period.Summer );
-								holiday.setType( HolidayType.Gezin );
-								holiday.setStart( start.getTime() );
-								holiday.setEnd( end.getTime() );
-								holiday.setDeadLine( new Date() );
-								
-								holiday = holidayRepository.saveAndFlush( holiday );
-								holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
-								holiday = holidayRepository.saveAndFlush( holiday );
-								
-								logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-							
-							}
-						}
-			*/
+			{
+				String name = "APi";
+				Holiday holiday
+					= this.holidayRepository.findOneByName( name );
+				
+				if ( holiday == null ) {
+					
+					holiday = new Holiday();
+			
+					GregorianCalendar start
+						= new GregorianCalendar();
+					
+					start.set( Calendar.YEAR, 2019 );
+					start.set( Calendar.MONTH, 7 );
+					start.set( Calendar.DAY_OF_MONTH, 19 );
+					
+					GregorianCalendar end
+						= new GregorianCalendar();
+					
+					end.set( Calendar.YEAR, 2019 );
+					end.set( Calendar.MONTH, 7 );
+					end.set( Calendar.DAY_OF_MONTH, 23 );
+					
+					holiday.setName( name );
+					holiday.setPeriod( Period.Summer );
+					holiday.setType( HolidayType.Api );
+					holiday.setStart( start.getTime() );
+					holiday.setEnd( end.getTime() );
+					holiday.setDeadLine( new Date() );
+					
+					holiday = holidayRepository.saveAndFlush( holiday );
+					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					holiday = holidayRepository.saveAndFlush( holiday );
+					
+					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+				
+				}
+			}
 			
 			/* Driedaagse niet via PD
 			{

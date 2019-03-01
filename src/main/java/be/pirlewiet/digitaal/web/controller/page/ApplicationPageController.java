@@ -77,15 +77,23 @@ public class ApplicationPageController {
 			ApplicationDTO application
 				= applicationResult.getObject();
 			
+			logger.info( "application [{}], contact uuid is [{}]", application.getUuid(), application.getContactPersonUuid() );
+			
 			Result<PersonDTO> contactResult
 				= this.personService.retrieve( application.getContactPersonUuid() );
 			
+			logger.info( "application [{}], contact result is [{}]", application.getUuid(), contactResult.getValue() );
+			
 			model.put( "contactResult", contactResult );
+			
+			logger.info( "application [{}], holiday uuids are [{}]", application.getUuid(), application.getHolidayUuids() );
 			
 			Result<List<HolidayDTO>> holidaysResult
 				= this.holidayService.resolve( null , application.getHolidayUuids(), true, false, true, actor);
-		
+			
 			model.put( "holidaysResult", holidaysResult );
+			
+			logger.info( "application [{}], holidays result is [{}]", application.getUuid(), holidaysResult.getValue() );
 			
 			Result<List<QuestionAndAnswerDTO>> qnaResult 
 				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
