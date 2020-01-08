@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.people;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -94,6 +95,10 @@ public class EnrollmentManager {
 	
 	public List<Enrollment> findAll( ) {
 		return this.enrollmentRepository.findAll();
+	}
+	
+	public List<Enrollment> findMostRecent( ) {
+		return Arrays.asList( );// this.enrollmentRepository.findFirst100ByOrderByCreatedDateDesc();
 	}
 	
 	public Enrollment create( Enrollment toCreate ) {

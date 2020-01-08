@@ -383,6 +383,194 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 	}
 	
+	@Transactional(readOnly=true)
+	public byte[] downloadOneHundred( Organisation actor ) {
+		
+		byte[] bytes
+			= new byte[] {};
+		
+		List<String[]> rows
+			= list();
+		
+		if ( PirlewietUtil.isPirlewiet( actor ) ) {
+			
+			logger.info( "start download-100...");
+			
+			List<Application> applications
+				= this.applicationManager.findActiveByYear();
+			
+			logger.info( "download - applications loaded");
+			
+			List<Enrollment> mostRecentEnrollments
+				= this.enrollmentManager.findMostRecent();
+			
+			logger.info( "download - enrollments loaded");
+			
+			Map<String, List<Enrollment>> enrollmentMap
+				= map();
+			
+			for ( Enrollment enrollment : mostRecentEnrollments ) {
+				
+				List<Enrollment> appedEnrollments
+					= enrollmentMap.get( enrollment.getApplicationUuid() );
+				
+				if ( appedEnrollments == null ) {
+					appedEnrollments = list();
+					enrollmentMap.put( enrollment.getApplicationUuid(), appedEnrollments );
+				}
+				
+				appedEnrollments.add( enrollment );
+				
+			}
+			
+			logger.info( "download - application/enrollment mapping done" );
+			
+			Map<String,Address> addressMap
+				= Utils.map();
+		
+			List<Address> allAddresses
+				= this.addressManager.findAll();
+			
+			for ( Address address : allAddresses ) {
+				
+				addressMap.put( address.getUuid(), address );
+				
+			}
+			
+			logger.info( "download - address mapping done" );
+		
+			Map<String,Person> personMap
+				= Utils.map();
+		
+			List<Person> allPersons
+				= this.personManager.findAll();
+			
+			for ( Person person : allPersons ) {
+				
+				personMap.put( person.getUuid(), person );
+				
+			}
+			
+			logger.info( "download - address mapping done" );
+			
+			Map<String,Organisation> organisationMap
+				= Utils.map();
+		
+			List<Organisation> allOrganisations
+				= this.organisationManager.all();
+			
+			for ( Organisation organisation : allOrganisations ) {
+				
+				organisationMap.put( organisation.getUuid(), organisation );
+				
+			}
+			
+			logger.info( "download - organisation mapping done" );
+			
+			Map<String,Map<String,List<QuestionAndAnswer>>> allMap
+				= Utils.map();
+			
+			List<QuestionAndAnswer> qnaList 
+				 = list();
+			
+			for ( String applicationUuid : enrollmentMap.keySet() ) {
+				
+				List<QuestionAndAnswer> forApplication
+					= this.questionAndAnswerManager.findByEntity( applicationUuid );
+				
+				qnaList.addAll( forApplication );
+				
+				List<Enrollment> enrollments
+					= enrollmentMap.get( applicationUuid );
+				
+				if ( enrollments != null ) {
+					
+					
+					
+				}
+				
+			}
+			
+			List<QuestionAndAnswer> allQna 
+				= this.questionAndAnswerManager.findAll();
+			
+			for ( QuestionAndAnswer qna : allQna ) {
+				
+				String entityUuid
+					 = qna.getEntityUuid();
+				
+				String tag 
+					= qna.getTag();
+				
+				Map<String,List<QuestionAndAnswer>> entityMap
+					= allMap.get( entityUuid );
+				
+				if ( entityMap == null ) {
+					entityMap = map();
+					allMap.put( entityUuid, entityMap );
+				}
+				
+				List<QuestionAndAnswer> tagList
+					= entityMap.get( tag );
+				
+				if ( tagList == null ) {
+					
+					tagList = list();
+					entityMap.put( tag, tagList );
+				}
+				
+				tagList.add( qna );
+				
+			}
+			
+			logger.info( "download - qna mapping done" );
+			
+			
+			for ( Application application : applications ) {
+				
+				logger.info( "download - application [{}]", application.getUuid() );
+				
+				List<Enrollment> enrollments
+					= enrollmentMap.get( application.getUuid() );
+				
+				if ( enrollments != null ) {
+					logger.info( "[{}]; found [{}] enrollments for this application", application.getUuid(), enrollments.size() );
+				}
+				else {
+					logger.info( "[{}]; found no related enrollments" );
+					continue;
+				}
+				
+				logger.info( "download - application [{}], now map", application.getUuid() );
+				
+				List<String[]> mapped
+					= this.mapper.asStrings( 
+							application, 
+							enrollments,
+							null,
+							addressMap,
+							personMap,
+							organisationMap,
+							allMap );
+				
+				if ( mapped != null ) {
+					
+					rows.addAll( mapped );
+					
+				}
+				
+				logger.info( "download - application [{}], mapped", application.getUuid() );
+			
+			}
+			
+		}
+		
+		bytes = this.mapper.asBytes( rows );
+		
+		return bytes;
+		
+	}
+	
 	public Result<EnrollmentDTO> findOneByUuid( String uuid ) {
 		
 		Result<EnrollmentDTO> result

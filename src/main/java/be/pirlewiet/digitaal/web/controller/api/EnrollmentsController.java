@@ -118,4 +118,27 @@ public class EnrollmentsController {
 		
 	}
 	
+	@RequestMapping( value="/download-100", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
+	public ResponseEntity<byte[]> downloadOneUndred( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) EnrollmentStatus.Value status ) {
+		
+
+		Organisation actor
+			= this.doorMan.guard().whoHasID( pwtid  );
+		
+
+		byte[] result 
+			= this.enrollmentService.downloadOneHundred( actor );
+	
+		String disp
+			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
+	
+		Map<String,String> headers
+			= new HashMap<String,String>();
+		
+		headers.put( "Content-Disposition", disp.toString() );
+	
+		return response( result, HttpStatus.OK, headers );
+		
+	}
+	
 }

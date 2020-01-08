@@ -13,6 +13,10 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.ReadPolicy;
+import com.google.appengine.api.datastore.ReadPolicy.Consistency;
+
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.NoopGuard;
@@ -39,6 +43,7 @@ public class PirlewietAppEngineConfig {
 			factory.getJpaPropertyMap().put( "datanucleus.jpa.addClassTransformer", "false" );
 			factory.getJpaPropertyMap().put( "datanucleus.appengine.datastoreEnableXGTransactions", "true" );
 			factory.getJpaPropertyMap().put( "datanucleus.metadata.allowXML", "false" );
+			factory.getJpaPropertyMap().put( "datanucleus.query.fetchSize", "100");
 			factory.afterPropertiesSet();
 			return factory;
 		}
@@ -76,6 +81,12 @@ public class PirlewietAppEngineConfig {
 			return new NoopGuard();
 			
 		}
+		
+		@Bean
+		DatastoreServiceConfig datastoreServiceConfig() {
+			return DatastoreServiceConfig.Builder.withReadPolicy(new ReadPolicy(Consistency.STRONG));	
+		}
+		
 		
 	}
 	

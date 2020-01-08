@@ -71,6 +71,20 @@ public class QuestionAndAnswerManager {
     	
     }
     
+    public List<QuestionAndAnswer> findByEntity( String entityUuid ) {
+
+    	List<QuestionAndAnswer> found 
+			= this.questionAndAnswerRepository.findByEntityUuid( entityUuid );
+		for ( QuestionAndAnswer questionAndAnswer : found ) {
+			deserialize( questionAndAnswer );
+		}
+    	
+    	Collections.sort( found, this.orderById );
+    	
+    	return found;
+    	
+    }
+    
   public QuestionAndAnswer create( QuestionAndAnswer toCreate ) {
     	
 	  serialize( toCreate );
