@@ -7,12 +7,12 @@
 	<version>1.0-LATEST-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>PirlewietRegistrations</name>
+	<name>pirlewiet-digitaal-gae</name>
 	<url>http://pirlewiet-digitaal.appspot.com</url>
 	
 	<parent>
-		<artifactId>colloseum-parent-pom</artifactId>
-		<groupId>be.occam.colloseum</groupId>
+		<artifactId>occam-parent-pom</artifactId>
+		<groupId>be.occam</groupId>
 		<version>1.0-LATEST-SNAPSHOT</version>
 	</parent>
 	
@@ -206,14 +206,14 @@
 			<version>${cglib.version}</version>
 		</dependency>
 		
-		<!-- enable-jsp -->
+		<!-- enable-jsp 
 		
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-jsp</artifactId>
 			<version>${jetty-version}</version>
 		</dependency>
-		
+		-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -360,15 +360,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					 <source>1.8</source>
-                     <target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins
 				</groupId>
 				<artifactId>maven-surefire-plugin
@@ -397,6 +388,15 @@
 	          		</webResources>
         		</configuration>
         	</plugin>
+        	<plugin>
+	            <groupId>com.google.cloud.tools</groupId>
+	            <artifactId>appengine-maven-plugin</artifactId>
+	            <version>2.2.0</version>
+	            <configuration>
+	                <projectId>pirlewiet-digitaal</projectId>
+	                <version>2020</version>
+	            </configuration>
+	        </plugin>
 		</plugins>
 	</build>
 </project>
