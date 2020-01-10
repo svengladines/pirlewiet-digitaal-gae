@@ -1,16 +1,13 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.*;
-import static be.occam.utils.spring.web.Controller.response;
+import static be.occam.utils.javax.Utils.list;
+import static be.occam.utils.javax.Utils.map;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +15,6 @@ import be.occam.utils.javax.Utils;
 import be.occam.utils.spring.web.ErrorCode;
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
-import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
@@ -30,12 +26,6 @@ import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.dto.AddressDTO;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.EnrollmentDTO;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.dto.PersonDTO;
-import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
@@ -45,6 +35,12 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
+import be.pirlewiet.digitaal.web.dto.AddressDTO;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.web.dto.HolidayDTO;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
+import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Service

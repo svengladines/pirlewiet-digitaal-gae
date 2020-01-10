@@ -1,0 +1,123 @@
+package be.pirlewiet.digitaal.model;
+
+import static be.occam.utils.javax.Utils.isEmpty;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+
+import be.occam.utils.timing.Timing;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
+
+@Entity 
+public class Person {
+	
+    private Key key;
+
+    @Id
+	private String uuid;
+	
+	protected String givenName;
+	
+	protected String familyName;
+	
+	private String phone;
+	
+	private String email;
+	
+	@DateTimeFormat(pattern="dd/MM/yyyy")
+	private Date birthDay;
+	
+	private Gender gender;
+	
+	public Person() {
+	}
+
+	public Key getKey() {
+		return key;
+	}
+	
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getGivenName() {
+		return givenName;
+	}
+
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
+	}
+
+	public String getFamilyName() {
+		return familyName;
+	}
+
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getBirthDay() {
+		return birthDay;
+	}
+
+	public void setBirthDay(Date birthDay) {
+		this.birthDay = birthDay;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
+	}
+	
+	public static Person from( PersonDTO f ) {
+		
+		Person t
+			= new Person();
+		
+		t.setUuid( f.getUuid() );
+		t.setGivenName( f.getGivenName() );
+		t.setFamilyName( f.getFamilyName() );
+		t.setPhone( f.getPhone() );
+		t.setEmail( f.getEmail() );
+		t.setGender( f.getGender() );	
+		if ( ! isEmpty( f.getBirthDay() ) ) {
+			t.setBirthDay( Timing.date( f.getBirthDay() ));
+		}
+		
+		return t;
+		
+	}
+	
+}

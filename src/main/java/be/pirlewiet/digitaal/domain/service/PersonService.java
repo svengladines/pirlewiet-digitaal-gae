@@ -9,8 +9,8 @@ import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
-import be.pirlewiet.digitaal.dto.PersonDTO;
 import be.pirlewiet.digitaal.model.Person;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
 
 @Service
 public class PersonService extends be.pirlewiet.digitaal.domain.service.Service<PersonDTO,Person> {

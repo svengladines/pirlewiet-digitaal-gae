@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.domain;
 
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 
 public class Reducer {
 	

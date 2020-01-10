@@ -32,7 +32,7 @@ import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
-import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
+import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -106,7 +106,7 @@ public class EnrollmentManager {
 		Enrollment created
 			= this.enrollmentRepository.saveAndFlush( toCreate );
 		
-		created.setUuid( KeyFactory.keyToString( created.getKey() ) );
+		// TODO, set uuid
 		created = this.enrollmentRepository.saveAndFlush( created );
 		
 		List<QuestionAndAnswer> medical

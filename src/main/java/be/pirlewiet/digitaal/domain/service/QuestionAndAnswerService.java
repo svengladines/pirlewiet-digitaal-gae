@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.list;
+
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,9 +13,8 @@ import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
-import be.pirlewiet.digitaal.dto.PersonDTO;
-import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Service
 public class QuestionAndAnswerService extends be.pirlewiet.digitaal.domain.service.Service<QuestionAndAnswerDTO,QuestionAndAnswer> {

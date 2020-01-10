@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 
 @Controller
 @RequestMapping( {"/organisations.html"} )

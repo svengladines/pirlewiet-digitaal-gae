@@ -18,9 +18,9 @@ import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class UnifyEnrollmentHolidaysScenario extends Scenario {

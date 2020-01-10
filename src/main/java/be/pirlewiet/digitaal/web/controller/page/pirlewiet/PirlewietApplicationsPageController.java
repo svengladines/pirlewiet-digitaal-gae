@@ -1,10 +1,8 @@
 package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 
 import static be.occam.utils.spring.web.Controller.response;
-import static be.occam.utils.javax.Utils.*;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +25,9 @@ import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.EnrollmentDTO;
-import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 
 @Controller
 @RequestMapping( {"/applications-pirlewiet.html"} )

@@ -21,12 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.EnrollmentDTO;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.web.dto.HolidayDTO;
+import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Controller
 @RequestMapping( {"/applications/{applicationUuid}/enrollments/{uuid}"} )

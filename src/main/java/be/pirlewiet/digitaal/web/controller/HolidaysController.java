@@ -2,7 +2,6 @@ package be.pirlewiet.digitaal.web.controller;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -21,9 +20,8 @@ import org.springframework.web.context.request.WebRequest;
 import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 
 @Controller
 @RequestMapping( {"/holidays"} )

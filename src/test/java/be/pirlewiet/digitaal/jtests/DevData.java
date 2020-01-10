@@ -61,7 +61,7 @@ public class DevData {
 	PersonRepository personRepository;
 	
 	@Resource
-	QuestionAndAnswerRepository questionAndAnswerRepository;
+	QuestionAndAnswerRepositoryObjectify questionAndAnswerRepository;
 	
 	@PostConstruct
 	@Transactional(readOnly=false)

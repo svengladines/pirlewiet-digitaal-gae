@@ -24,13 +24,13 @@ import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
 import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.EnrollmentDTO;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.dto.PersonDTO;
-import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Tags;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
+import be.pirlewiet.digitaal.web.dto.HolidayDTO;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
+import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller

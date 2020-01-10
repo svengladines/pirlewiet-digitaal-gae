@@ -27,8 +27,8 @@ import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
 @Controller

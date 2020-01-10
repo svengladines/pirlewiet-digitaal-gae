@@ -19,10 +19,10 @@ import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.Excelsior;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
-import be.pirlewiet.digitaal.dto.AddressDTO;
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.AddressDTO;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import be.pirlewiet.digitaal.web.util.Tuple;
 

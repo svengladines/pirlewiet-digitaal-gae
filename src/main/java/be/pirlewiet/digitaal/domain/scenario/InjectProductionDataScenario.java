@@ -4,40 +4,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import be.pirlewiet.digitaal.domain.people.ScenarioRunner;
-import be.pirlewiet.digitaal.domain.q.QIDs;
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.ApplicationStatus;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Gender;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Period;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.QuestionType;
-import be.pirlewiet.digitaal.model.Tags;
-import be.pirlewiet.digitaal.repositories.AddressRepository;
-import be.pirlewiet.digitaal.repositories.ApplicationRepository;
-import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-import be.pirlewiet.digitaal.repositories.HolidayRepository;
-import be.pirlewiet.digitaal.repositories.OrganisationRepository;
-import be.pirlewiet.digitaal.repositories.PersonRepository;
-import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
+import be.pirlewiet.digitaal.repository.AddressRepository;
+import be.pirlewiet.digitaal.repository.HolidayRepository;
+import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-
-import com.google.appengine.api.datastore.KeyFactory;
 
 public class InjectProductionDataScenario extends Scenario {
 	

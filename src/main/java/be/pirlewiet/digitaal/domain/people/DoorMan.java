@@ -15,17 +15,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.CodeRequest;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.OrganisationRepository;
+import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-
-import com.google.appengine.api.datastore.KeyFactory;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -138,7 +137,7 @@ public class DoorMan {
 			code = organisatie.getCode();
 			logger.info( "code exists, code is [{}]", code );
 			if ( ( organisatie.getUuid() == null ) || ( organisatie.getUuid().isEmpty() ) ) {
-				organisatie.setUuid( KeyFactory.keyToString( organisatie.getKey() ) );
+				// TODO, set uuid
 				organisatie = this.organisationRepository.saveAndFlush( organisatie );
 			}
 		}

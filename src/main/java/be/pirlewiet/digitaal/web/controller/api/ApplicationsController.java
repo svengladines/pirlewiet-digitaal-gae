@@ -3,7 +3,6 @@ package be.pirlewiet.digitaal.web.controller.api;
 import static be.occam.utils.spring.web.Controller.response;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import be.occam.utils.spring.web.Result;
-import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 
 @Controller
 @RequestMapping( {"/applications"} )

@@ -17,10 +17,6 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.dto.PersonDTO;
-import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Holiday;
@@ -28,6 +24,10 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.HolidayDTO;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
+import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Service

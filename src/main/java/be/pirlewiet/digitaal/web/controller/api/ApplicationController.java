@@ -22,12 +22,12 @@ import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.dto.HolidayDTO;
-import be.pirlewiet.digitaal.dto.PersonDTO;
-import be.pirlewiet.digitaal.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.HolidayDTO;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
+import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Controller
 @RequestMapping( {"/applications/{uuid}"} )

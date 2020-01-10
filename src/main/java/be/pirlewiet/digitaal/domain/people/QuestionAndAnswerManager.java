@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.isEmpty;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -11,12 +12,12 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.occam.utils.javax.Utils;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.QuestionType;
-import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
-
-import com.google.appengine.api.datastore.KeyFactory;
+import be.pirlewiet.digitaal.repository.impl.QuestionAndAnswerRepositoryObjectify;
 
 public class QuestionAndAnswerManager {
 	
@@ -27,13 +28,13 @@ public class QuestionAndAnswerManager {
 
 		@Override
 		public int compare(QuestionAndAnswer o1, QuestionAndAnswer o2) {
-			return Long.valueOf( o1.getId() ).compareTo( Long.valueOf( o2.getId() ) );
+			return Long.valueOf( o1.getUuid() ).compareTo( Long.valueOf( o2.getUuid() ) );
 		}
 		
 	};
 	
 	@Resource
-	protected QuestionAndAnswerRepository questionAndAnswerRepository;
+	protected QuestionAndAnswerRepositoryObjectify questionAndAnswerRepository;
 	
     public QuestionAndAnswerManager() {
     	
@@ -92,7 +93,7 @@ public class QuestionAndAnswerManager {
 	  QuestionAndAnswer created 
 	  	= this.questionAndAnswerRepository.saveAndFlush( toCreate );
 	  
-	  created.setUuid( KeyFactory.keyToString( created.getKey() ) );
+	  // TODO set uuid
 	  created = this.questionAndAnswerRepository.saveAndFlush( created );
 	  
 	  if ( QuestionType.MC.equals( created.getType() ) ) {

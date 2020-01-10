@@ -7,12 +7,12 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.repositories.PersonRepository;
-
-import com.google.appengine.api.datastore.KeyFactory;
+import be.pirlewiet.digitaal.repository.PersonRepository;
 
 public class PersonManager {
 	

@@ -20,16 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.OrganisationRepository;
+import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-
-import com.google.appengine.api.datastore.KeyFactory;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -121,7 +120,7 @@ public class OrganisationManager {
     	Organisation saved 
     		= this.organisationRepository.saveAndFlush( organisation );
     	
-    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+    	// TODO set uuid
     	
     	saved 
 			= this.organisationRepository.saveAndFlush( saved );

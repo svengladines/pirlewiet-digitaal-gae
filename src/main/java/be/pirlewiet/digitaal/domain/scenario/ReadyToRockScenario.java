@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repositories.OrganisationRepository;
+import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class ReadyToRockScenario extends Scenario {

@@ -35,7 +35,7 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
-import be.pirlewiet.digitaal.repositories.ApplicationRepository;
+import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -210,7 +210,7 @@ public class ApplicationManager {
 	    	Application saved 
 	    		= this.applicationRepository.saveAndFlush( application );
 	    	
-	    	saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+	    	// TODO set uuid
 	    	
 	    	saved 
 				= this.applicationRepository.saveAndFlush( saved );

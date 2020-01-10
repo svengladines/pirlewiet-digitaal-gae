@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import static be.occam.utils.javax.Utils.*;
+import static be.occam.utils.javax.Utils.set;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.repositories.HolidayRepository;
+import be.pirlewiet.digitaal.repository.HolidayRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class HolidayManager {

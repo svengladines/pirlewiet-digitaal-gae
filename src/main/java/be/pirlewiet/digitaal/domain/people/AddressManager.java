@@ -9,13 +9,13 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.IncompleteObjectException;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.repositories.AddressRepository;
-
-import com.google.appengine.api.datastore.KeyFactory;
+import be.pirlewiet.digitaal.repository.AddressRepository;
 
 public class AddressManager {
 	
@@ -49,7 +49,7 @@ public class AddressManager {
 		Address saved 
 			= this.addressRepository.saveAndFlush( address );
 	
-		saved.setUuid( KeyFactory.keyToString( saved.getKey() ) );
+		// TODO, set uuid
 	
 		saved 
 			= this.addressRepository.saveAndFlush( saved );

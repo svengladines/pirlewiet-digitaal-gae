@@ -14,12 +14,10 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
-import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.model.Tags;
-import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
+import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 
 public class Secretary {
 	

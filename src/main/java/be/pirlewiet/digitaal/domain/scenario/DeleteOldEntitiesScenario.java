@@ -7,15 +7,15 @@ import javax.annotation.Resource;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.repositories.ApplicationRepository;
-import be.pirlewiet.digitaal.repositories.EnrollmentRepository;
-import be.pirlewiet.digitaal.repositories.QuestionAndAnswerRepository;
+import be.pirlewiet.digitaal.repository.ApplicationRepository;
+import be.pirlewiet.digitaal.repository.EnrollmentRepository;
+import be.pirlewiet.digitaal.repository.impl.QuestionAndAnswerRepositoryObjectify;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class DeleteOldEntitiesScenario extends Scenario {
 	
 	@Resource
-	QuestionAndAnswerRepository questionAndAnswerRepository;
+	QuestionAndAnswerRepositoryObjectify questionAndAnswerRepository;
 	
 	@Resource
 	EnrollmentRepository enrollmentRepository;
@@ -41,7 +41,7 @@ public class DeleteOldEntitiesScenario extends Scenario {
 			
 			logger.info( "about to delete [{}] qnas", qnas.size() );
 			
-			this.questionAndAnswerRepository.deleteAllInBatch();
+			this.questionAndAnswerRepository.deleteAll();
 		}
 		catch( Exception e ) {
 			logger.warn( "exception while removing old qnas", e  );
@@ -53,7 +53,7 @@ public class DeleteOldEntitiesScenario extends Scenario {
 			
 			logger.info( "about to delete [{}] enrollments", all.size() );
 			
-			this.enrollmentRepository.deleteAllInBatch();
+			this.enrollmentRepository.deleteAll();
 		}
 		
 		catch( Exception e ) {
@@ -66,7 +66,7 @@ public class DeleteOldEntitiesScenario extends Scenario {
 			
 			logger.info( "about to delete [{}] applications", all.size() );
 			
-			this.applicationRepository.deleteAllInBatch();
+			this.applicationRepository.deleteAll();
 		}
 		
 		catch( Exception e ) {
