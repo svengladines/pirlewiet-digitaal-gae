@@ -1,14 +1,7 @@
 package be.pirlewiet.digitaal.web.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Transient;
-
-import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
 
 public class EnrollmentDTO {
 	

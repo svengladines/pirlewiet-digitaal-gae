@@ -2,13 +2,11 @@ package be.pirlewiet.digitaal.application.config;
 
 import java.util.Locale;
 
-import org.gmr.web.multipart.GMultipartResolver;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.datetime.DateFormatter;
-import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
@@ -297,6 +295,7 @@ public class MvcConfig {
 		}
 	}
 	
+	/*
 	@Bean
 	MultipartResolver multipartResolver() {
 		
@@ -304,12 +303,14 @@ public class MvcConfig {
 		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
 		
 		resolver.setMaxInMemorySize( 2002400 );
-		*/
+		
+		
 		GMultipartResolver resolver
 			= new GMultipartResolver();
 		
 		return resolver;
 		
 	}
+	*/
 	
 }

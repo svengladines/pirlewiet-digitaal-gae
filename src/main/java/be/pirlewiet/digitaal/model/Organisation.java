@@ -2,12 +2,12 @@ package be.pirlewiet.digitaal.model;
 
 import java.util.Date;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 
+@Entity
 public class Organisation {
 
 	@Id

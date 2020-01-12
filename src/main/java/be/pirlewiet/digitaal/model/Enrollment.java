@@ -2,9 +2,7 @@ package be.pirlewiet.digitaal.model;
 
 import java.util.Date;
 
-import javax.persistence.Id;
-
-import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.annotation.Id;
 
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 

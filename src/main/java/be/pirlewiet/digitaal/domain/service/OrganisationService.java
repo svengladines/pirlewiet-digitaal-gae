@@ -102,7 +102,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 
 
 	@Override
-	@Transactional(readOnly=false)
+	////@Transactional(readOnly=false)
 	public Result<OrganisationDTO> create(OrganisationDTO dto, Organisation actor) {
 		
 		Result<OrganisationDTO> result
@@ -122,7 +122,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	}
 	
 	@Override
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public Result<OrganisationDTO> update(OrganisationDTO dto, Organisation actor) {
 		
 		Result<OrganisationDTO> result
@@ -142,7 +142,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	}
 	
 	@Override
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public Result<OrganisationDTO> delete(String organisationUuid, Organisation actor) {
 		
 		Result<OrganisationDTO> result
@@ -167,7 +167,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
-	@Transactional(readOnly=true)
+	//@Transactional(readOnly=true)
 	public Result<OrganisationDTO> findOneByUuid( String uuid, Organisation actor ) {
 		
 		Result<OrganisationDTO> result
@@ -210,7 +210,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
-	//@Transactional(readOnly=false)
+	////@Transactional(readOnly=false)
 	public Result<List<Result<OrganisationDTO>>> consume( MultipartFile file, Organisation actor) {
 		
 		Result<List<Result<OrganisationDTO>>>  result
@@ -281,7 +281,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public Result<AddressDTO> getAddress( String addressUuid, Organisation actor ) {
 		
 		Result<AddressDTO> result
@@ -305,7 +305,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public Result<AddressDTO> updateAddress( String uuid, AddressDTO address, Organisation actor ) {
 		
 		Result<AddressDTO> result

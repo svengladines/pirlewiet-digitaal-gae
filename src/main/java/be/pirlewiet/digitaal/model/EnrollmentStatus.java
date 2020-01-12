@@ -1,10 +1,5 @@
 package be.pirlewiet.digitaal.model;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-@Embeddable
 public class EnrollmentStatus {
 
 	public enum Value {
@@ -13,7 +8,6 @@ public class EnrollmentStatus {
 		
 	}
 	
-	@Enumerated(value=EnumType.STRING)
 	protected Value value;
 	
 	protected String comment;

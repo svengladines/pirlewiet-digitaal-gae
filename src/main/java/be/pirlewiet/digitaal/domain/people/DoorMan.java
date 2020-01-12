@@ -13,9 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.google.appengine.api.datastore.KeyFactory;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
@@ -67,7 +64,7 @@ public class DoorMan {
 		return this.organisationRepository.findOneByCode( code );
 	}
 	
-	@Transactional(readOnly=true)
+	//@Transactional(readOnly=true)
 	public Organisation actor( String uuid ) {
 		
 		if ( PirlewietUtil.PDIDDY_ID.equals( uuid ) ) {
@@ -86,7 +83,7 @@ public class DoorMan {
 		
 	}
 	
-	@Transactional(readOnly=true)
+	//@Transactional(readOnly=true)
 	public Organisation whoHasID( String uuid ) {
 		
 		if ( PirlewietUtil.PDIDDY_ID.equals( uuid ) ) {
@@ -106,14 +103,14 @@ public class DoorMan {
 		
 	}
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public void processCodeRequest( CodeRequest codeRequest ) {
 		
 		this.processCodeRequest( codeRequest, false );
 		
 	}
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public void processCodeRequest( CodeRequest codeRequest, boolean sendEmail ) {
 		
 		logger.info( "code requeest for email [{}]", codeRequest.getEmail() );
@@ -175,7 +172,7 @@ public class DoorMan {
 		
 	}
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	public String uniqueCode( ) {
 		
 		String code

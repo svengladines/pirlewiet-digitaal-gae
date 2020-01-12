@@ -4,7 +4,6 @@
  */
 package be.pirlewiet.digitaal.model;
 
-import com.google.appengine.api.datastore.Key;
 import com.googlecode.objectify.annotation.Id;
 
 import be.pirlewiet.digitaal.web.dto.AddressDTO;

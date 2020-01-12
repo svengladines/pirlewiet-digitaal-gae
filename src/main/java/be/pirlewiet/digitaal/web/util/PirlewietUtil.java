@@ -3,8 +3,8 @@ package be.pirlewiet.digitaal.web.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 
 public class PirlewietUtil {
 	

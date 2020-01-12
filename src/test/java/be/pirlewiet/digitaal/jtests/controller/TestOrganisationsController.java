@@ -9,7 +9,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import be.occam.test.jtest.JTest;
-import be.pirlewiet.digitaal.dto.OrganisationDTO;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 
 /**
  * end-2-end tests of the atomic operations of the organisationscontroller.

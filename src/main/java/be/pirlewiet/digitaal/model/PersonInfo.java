@@ -1,8 +1,5 @@
 package be.pirlewiet.digitaal.model;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class PersonInfo {
 	
 	protected String name;

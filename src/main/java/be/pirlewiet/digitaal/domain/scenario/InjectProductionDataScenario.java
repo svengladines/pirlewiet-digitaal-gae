@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
@@ -66,7 +64,7 @@ public class InjectProductionDataScenario extends Scenario {
 			vzwPirlewiet.setCity( "Gent" );
 		
 			vzwPirlewiet = this.organsiationRepository.saveAndFlush( vzwPirlewiet );
-			vzwPirlewiet.setUuid( KeyFactory.keyToString( vzwPirlewiet.getKey() ) );
+			// TODO
 			
 			Address address = new Address();
 			address.setZipCode( "3370" );
@@ -74,7 +72,7 @@ public class InjectProductionDataScenario extends Scenario {
 			address.setStreet( "Vertrijksestraat" );
 			address.setNumber( "33" );
 			address = this.addressRepository.saveAndFlush( address );
-			address.setUuid( KeyFactory.keyToString( address.getKey() ) );
+			// TODO
 			address = this.addressRepository.saveAndFlush( address );
 			
 			vzwPirlewiet.setAddressUuid( address.getUuid() );
@@ -295,7 +293,7 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setDeadLine( new Date() );
 				
 				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				// TODO
 				holiday = holidayRepository.saveAndFlush( holiday );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -339,7 +337,7 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setDeadLine( new Date() );
 				
 				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				// TODO
 				holiday = holidayRepository.saveAndFlush( holiday );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -379,7 +377,7 @@ public class InjectProductionDataScenario extends Scenario {
 					holiday.setDeadLine( new Date() );
 					
 					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					// TODO
 					holiday = holidayRepository.saveAndFlush( holiday );
 					
 					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -419,7 +417,7 @@ public class InjectProductionDataScenario extends Scenario {
 					holiday.setDeadLine( new Date() );
 					
 					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					// TODO
 					holiday = holidayRepository.saveAndFlush( holiday );
 					
 					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -459,7 +457,7 @@ public class InjectProductionDataScenario extends Scenario {
 					holiday.setDeadLine( new Date() );
 					
 					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					// TODO
 					holiday = holidayRepository.saveAndFlush( holiday );
 					
 					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -499,7 +497,7 @@ public class InjectProductionDataScenario extends Scenario {
 					holiday.setDeadLine( new Date() );
 					
 					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					// TODO
 					holiday = holidayRepository.saveAndFlush( holiday );
 					
 					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -539,7 +537,7 @@ public class InjectProductionDataScenario extends Scenario {
 					holiday.setDeadLine( new Date() );
 					
 					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+					// TODO
 					holiday = holidayRepository.saveAndFlush( holiday );
 					
 					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );

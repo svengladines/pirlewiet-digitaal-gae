@@ -4,16 +4,14 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.googlecode.objectify.Key;
 
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.repository.QuestionAndAnswerRepository;
 
+@Repository
 public class QuestionAndAnswerRepositoryObjectify implements QuestionAndAnswerRepository {
 
 	@Override
@@ -33,6 +31,30 @@ public class QuestionAndAnswerRepositoryObjectify implements QuestionAndAnswerRe
 	@Override
 	public QuestionAndAnswer findOneByUuid(String uuid) {
 		return ofy().load().key(Key.create(QuestionAndAnswer.class, uuid)).now();
+	}
+
+	@Override
+	public List<QuestionAndAnswer> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public QuestionAndAnswer saveAndFlush(QuestionAndAnswer qna) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(QuestionAndAnswer qna) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteAll() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

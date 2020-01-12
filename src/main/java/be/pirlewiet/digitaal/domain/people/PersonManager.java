@@ -7,8 +7,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
@@ -63,7 +61,7 @@ public class PersonManager {
     	Person created
     		= this.personRepository.saveAndFlush( toCreate );
     	
-    	created.setUuid( KeyFactory.keyToString( created.getKey() ) );
+    	// TODO
     	created = this.personRepository.saveAndFlush( created );
     		
     	return created;
@@ -91,7 +89,7 @@ public class PersonManager {
     	
     	if ( toUpdate.getUuid() == null ) {
     	
-    		updated.setUuid( KeyFactory.keyToString( updated.getKey() ) );
+    		// TODO updated.setUuid( KeyFactory.keyToString( updated.getKey() ) );
     		updated = this.personRepository.saveAndFlush( updated );
     		
     	}

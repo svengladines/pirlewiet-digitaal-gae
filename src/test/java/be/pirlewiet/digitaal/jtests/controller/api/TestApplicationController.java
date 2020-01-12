@@ -2,7 +2,6 @@ package be.pirlewiet.digitaal.jtests.controller.api;
 
 import static be.occam.utils.javax.Utils.map;
 import static be.occam.utils.spring.web.Client.getJSON;
-import static be.occam.utils.spring.web.Client.postJSON;
 
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 import be.occam.test.jtest.JTest;
 import be.occam.utils.spring.web.Result;
-import be.pirlewiet.digitaal.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 
 public class TestApplicationController extends JTest {
 	

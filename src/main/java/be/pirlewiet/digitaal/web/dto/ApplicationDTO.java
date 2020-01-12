@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
-import be.pirlewiet.digitaal.model.Holiday;
 
 public class ApplicationDTO {
 	

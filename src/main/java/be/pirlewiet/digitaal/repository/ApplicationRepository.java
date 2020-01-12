@@ -15,6 +15,7 @@ public interface ApplicationRepository {
 	public List<Application> findByYear( int year );
 	public List<Application> findByOrganisationUuid( String organisationUuid );
 	public List<Application> findByOrganisationUuidAndYear( String organisationUuid, int year );
+	public List<Application> findAll();
 	
 	public Application saveAndFlush( Application application );
 	

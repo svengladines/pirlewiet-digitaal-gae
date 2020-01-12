@@ -6,18 +6,15 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.google.appengine.api.datastore.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.web.dto.PersonDTO;
 
-@Entity 
+@Entity
 public class Person {
 	
-    private Key key;
-
     @Id
 	private String uuid;
 	
@@ -37,10 +34,6 @@ public class Person {
 	public Person() {
 	}
 
-	public Key getKey() {
-		return key;
-	}
-	
 	public String getUuid() {
 		return uuid;
 	}
@@ -97,10 +90,6 @@ public class Person {
 		this.gender = gender;
 	}
 
-	public void setKey(Key key) {
-		this.key = key;
-	}
-	
 	public static Person from( PersonDTO f ) {
 		
 		Person t

@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.googlecode.objectify.ObjectifyService;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
@@ -41,11 +41,27 @@ import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.domain.service.PersonService;
 import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repository.AddressRepository;
+import be.pirlewiet.digitaal.repository.ApplicationRepository;
+import be.pirlewiet.digitaal.repository.EnrollmentRepository;
+import be.pirlewiet.digitaal.repository.HolidayRepository;
+import be.pirlewiet.digitaal.repository.OrganisationRepository;
+import be.pirlewiet.digitaal.repository.PersonRepository;
+import be.pirlewiet.digitaal.repository.QuestionAndAnswerRepository;
+import be.pirlewiet.digitaal.repository.impl.AddressRepositoryObjectify;
+import be.pirlewiet.digitaal.repository.impl.ApplicationRepositoryObjectify;
+import be.pirlewiet.digitaal.repository.impl.EnrollmentRepositoryObjectify;
+import be.pirlewiet.digitaal.repository.impl.HolidayRepositoryObjectify;
+import be.pirlewiet.digitaal.repository.impl.Objectify;
+import be.pirlewiet.digitaal.repository.impl.OrganisationRepositoryObjectify;
+import be.pirlewiet.digitaal.repository.impl.PersonRepositoryObjectify;
+import be.pirlewiet.digitaal.repository.impl.QuestionAndAnswerRepositoryObjectify;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
+
 @Configuration
-@EnableTransactionManagement
+//@EnableTransactionManagement
 public class PirlewietApplicationConfig {
 	
 	final static Logger logger
@@ -256,6 +272,53 @@ public class PirlewietApplicationConfig {
 			return new UnifyEnrollmentHolidaysScenario();
 		}
 		
+	}
+	
+	@Configuration
+	public static class RepositoryConfig {
+		
+		@Bean
+		@Lazy(false)
+		public Objectify objectify() {
+			ObjectifyService.init();
+			logger.info( "objectify service initialized");
+			return new Objectify();
+		}
+		
+		@Bean
+		PersonRepository personRepository() {
+			return new PersonRepositoryObjectify();
+		}
+		
+		@Bean
+		AddressRepository addressRepository() {
+			return new AddressRepositoryObjectify();
+		}
+		
+		@Bean
+		ApplicationRepository applicationRepository() {
+			return new ApplicationRepositoryObjectify();
+		}
+		
+		@Bean
+		EnrollmentRepository enrollmentRepository() {
+			return new EnrollmentRepositoryObjectify();
+		}
+		
+		@Bean
+		HolidayRepository holidayRepository() {
+			return new HolidayRepositoryObjectify();
+		}
+		
+		@Bean
+		OrganisationRepository organisationRepository() {
+			return new OrganisationRepositoryObjectify();
+		}
+		
+		@Bean
+		QuestionAndAnswerRepository questionAndAnswerRepository() {
+			return new QuestionAndAnswerRepositoryObjectify();
+		}
 	}
 	
 	@Configuration
