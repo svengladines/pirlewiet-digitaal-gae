@@ -11,6 +11,8 @@ import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 public class Organisation {
 
 	@Id
+	private long kee;
+	
 	private String uuid;
 	
 	protected String name;

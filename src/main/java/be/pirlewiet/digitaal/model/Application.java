@@ -20,6 +20,8 @@ import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 public class Application {
 	
 	@Id
+	private Long id;
+	
 	private String uuid;
     
     protected String reference;

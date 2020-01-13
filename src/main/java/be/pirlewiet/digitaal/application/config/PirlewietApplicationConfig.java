@@ -12,6 +12,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 
 import be.occam.utils.spring.configuration.ConfigurationProfiles;
@@ -83,8 +84,13 @@ public class PirlewietApplicationConfig {
 	
 	@Configuration
 	@Profile({ConfigurationProfiles.PRODUCTION,ConfigurationProfiles.DEV})
-	// @Import( PirlewietAppEngineConfig.class )
 	static class RepositoryConfigForProduction {
+		
+		@Bean
+		@Lazy(false)
+		public Objectify objectify() { 
+			return new Objectify();
+		}
 		
 	}
 	
