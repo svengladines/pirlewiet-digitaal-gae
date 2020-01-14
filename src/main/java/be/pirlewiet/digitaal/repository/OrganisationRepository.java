@@ -15,5 +15,6 @@ public interface OrganisationRepository {
 	public Organisation saveAndFlush( Organisation organisation );
 	
 	public void delete( Organisation organisation );
+	public List<Organisation> findOld();
 
 }

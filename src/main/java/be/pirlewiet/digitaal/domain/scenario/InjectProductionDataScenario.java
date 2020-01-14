@@ -26,7 +26,7 @@ public class InjectProductionDataScenario extends Scenario {
 		= LoggerFactory.getLogger( this.getClass() );
 
 	@Resource
-	OrganisationRepository organsiationRepository;
+	OrganisationRepository organisationRepository;
 	
 	@Resource
 	AddressRepository addressRepository;
@@ -42,14 +42,14 @@ public class InjectProductionDataScenario extends Scenario {
     	return this;
     }
 	
-	@Transactional(readOnly=false)
+	//@Transactional(readOnly=false)
 	@Override
 	public void execute( String... parameters ) {
 		
 		logger.info( "verify/inject productiondata" );
 		
 		Organisation vzwPirlewiet
-			= this.organsiationRepository.findOneByEmail( "info@pirlewiet.be" );
+			= this.organisationRepository.findOneByEmail( "info@pirlewiet.be" );
 		
 		if ( vzwPirlewiet == null ) {
 			
@@ -61,29 +61,39 @@ public class InjectProductionDataScenario extends Scenario {
 			vzwPirlewiet.setCode( "dig151" );
 			vzwPirlewiet.setEmail( "info@pirlewiet.be" );
 			vzwPirlewiet.setPhone( "016123456" );
-			vzwPirlewiet.setCity( "Gent" );
+			vzwPirlewiet.setUuid( "pwt" );
 		
-			vzwPirlewiet = this.organsiationRepository.saveAndFlush( vzwPirlewiet );
-			// TODO
 			
 			Address address = new Address();
 			address.setZipCode( "3370" );
-			address.setCity("Neervelp");
+			address.setCity("Brecht");
 			address.setStreet( "Vertrijksestraat" );
 			address.setNumber( "33" );
+			address.setUuid( "pwt-address" );
 			address = this.addressRepository.saveAndFlush( address );
-			// TODO
-			address = this.addressRepository.saveAndFlush( address );
+			
+			logger.info( "Pirlewiet address has UUID [{}]", address.getUuid() );
 			
 			vzwPirlewiet.setAddressUuid( address.getUuid() );
 			
-			vzwPirlewiet = this.organsiationRepository.saveAndFlush( vzwPirlewiet );
+			vzwPirlewiet = this.organisationRepository.saveAndFlush( vzwPirlewiet );
 			
-			logger.info( "VZW Pirlewiet has UUID [{}]", vzwPirlewiet.getUuid() );
+			logger.info( "VZW Pirlewiet has been saved" );
+			
+			Organisation organisation
+				= this.organisationRepository.findByUuid( "pwt" );
+			
+			if ( organisation != null ) {
+				logger.info( "VZW Pirlewiet has been loaded, and his uuid [{}]" );
+			}
+			else {
+				logger.info( "VZW Pirlewiet could not be loaded" );
+			}
 			
 		}
 		else {
-			logger.info( "productiondata, pirlewiet existed, do not inject" );
+			logger.info( "productiondata, pirlewiet existed, rename id field" );
+			this.organisationRepository.saveAndFlush( vzwPirlewiet );
 		}
 		
 		/**
@@ -259,7 +269,7 @@ public class InjectProductionDataScenario extends Scenario {
 		**/
 		
 		/**
-		 * Summer 2019 **/
+		 * Summer 2019
 		
 		// KIKA 1	10/7 > 17/7
 		{

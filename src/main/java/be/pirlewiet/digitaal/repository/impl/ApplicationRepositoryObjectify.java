@@ -14,6 +14,7 @@ import com.googlecode.objectify.Key;
 
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 @Repository
 public class ApplicationRepositoryObjectify implements ApplicationRepository {
@@ -66,8 +67,7 @@ public class ApplicationRepositoryObjectify implements ApplicationRepository {
 
 	@Override
 	public List<Application> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return ofy().load().type(Application.class).list();
 	}
 
 }

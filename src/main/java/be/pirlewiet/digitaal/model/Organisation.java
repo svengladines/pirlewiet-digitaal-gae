@@ -2,8 +2,10 @@ package be.pirlewiet.digitaal.model;
 
 import java.util.Date;
 
+import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 
@@ -11,21 +13,30 @@ import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 public class Organisation {
 
 	@Id
-	private long kee;
+	private Long key;
 	
+	@Index
 	private String uuid;
 	
+	@Index
 	protected String name;
 	
-	protected String addressUuid;
+	protected String address;
 	
 	protected String phone;
 	protected String cellPhone;
+	
+	@Index
 	protected String code;
+	
+	@Index
 	protected String email;
 	protected String city;
 	
 	protected Date updated;
+	
+	@AlsoLoad("id")
+	protected Long oldId;
 
 	public String getName() {
 		return name;
@@ -60,11 +71,11 @@ public class Organisation {
 	}
 
 	public String getAddressUuid() {
-		return this.addressUuid;
+		return this.address;
 	}
 
 	public void setAddressUuid(String uuid) {
-		this.addressUuid = uuid;
+		this.address = uuid;
 	}
 
 	public String getPhone() {

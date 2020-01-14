@@ -50,10 +50,6 @@
 		<url-pattern>*.html</url-pattern>
 	</servlet-mapping>
 	
-	<listener>
-		<listener-class>be.pirlewiet.digitaal.web.listener.ObjectifyListener</listener-class>
-	</listener>
-	
 	<!--
 	 
 	<servlet-mapping>

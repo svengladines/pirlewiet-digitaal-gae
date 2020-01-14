@@ -136,6 +136,15 @@ public class ApplicationManager {
 		
 	}
 	
+	public List<Application> findAll( ) {
+		
+		List<Application> all
+			= this.applicationRepository.findAll();
+	
+		return all;
+		
+	}
+	
 	public List<Application> findActiveByYear( ) {
 		
 		List<Application> byYear

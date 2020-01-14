@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.googlecode.objectify.ObjectifyService;
+
 import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
 import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
+import be.pirlewiet.digitaal.domain.scenario.ObjectifyScenario;
 import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
 import be.pirlewiet.digitaal.domain.scenario.UnifyEnrollmentHolidaysScenario;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
@@ -48,6 +51,9 @@ public class ScenarioController {
 	@Resource
 	UnifyEnrollmentHolidaysScenario unifyEnrollmentHolidaysScenario;
 	
+	@Resource
+	ObjectifyScenario objectifyScenario;
+	
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
 	
@@ -71,6 +77,10 @@ public class ScenarioController {
 			}
 			else if ( "unifyEnrollmentHolidaysScenario".equals( id ) ) {
 				this.unifyEnrollmentHolidaysScenario.guard().execute();
+				return response( Boolean.TRUE, HttpStatus.OK );
+			}
+			else if ( "objectifyScenario".equals( id ) ) {
+				this.objectifyScenario.guard().execute();
 				return response( Boolean.TRUE, HttpStatus.OK );
 			}
 		

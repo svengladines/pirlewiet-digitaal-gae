@@ -14,4 +14,6 @@ public interface AddressRepository {
 	
 	public void delete( Address enrollment );
 
+	public List<Address> findOld();
+
 }

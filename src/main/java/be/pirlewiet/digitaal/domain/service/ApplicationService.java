@@ -73,6 +73,22 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		return result;
 		
 	}
+	
+	public List<ApplicationDTO> findAll() {
+		
+		List<Application> all
+			= this.applicationManager.findAll();
+		
+		List<ApplicationDTO> result
+			= list();
+		
+		for ( Application application : all ) {
+			result.add( ApplicationDTO.from( application ) );
+		}
+		
+		return result;
+		
+	}
 
 	@Override
 	@Transactional(readOnly=true)

@@ -2,15 +2,22 @@ package be.pirlewiet.digitaal.model;
 
 import java.util.Date;
 
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 
+@Entity
 public class Enrollment {
 
 	@Id
+	private String id;
+
+	@Index
     private String uuid;
     
+	@Index
     protected String applicationUuid;
     
     protected String participantUuid;

@@ -4,18 +4,29 @@
  */
 package be.pirlewiet.digitaal.model;
 
+import com.googlecode.objectify.annotation.AlsoLoad;
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.pirlewiet.digitaal.web.dto.AddressDTO;
 
+@Entity
 public class Address {
 
 	@Id
+	private Long key;
+	
+	@Index
 	private String uuid;
 	private String street;
 	private String number;
 	private String zipCode;
 	private String city;
+	
+	//@AlsoLoad("id")
+	protected Long oldId;
+	// protected Long id;
 	
 	public String getZipCode() {
 		return zipCode;

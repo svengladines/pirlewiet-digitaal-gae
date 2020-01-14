@@ -2,6 +2,8 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -48,6 +50,17 @@ public class ApplicationsController {
 			= this.applicationService.guard().create( application, actor );
 		
 		return response( createdResult, HttpStatus.OK );
+		
+	}
+	
+	@RequestMapping( method = { RequestMethod.GET }, produces = { MediaType.APPLICATION_JSON_VALUE } )
+	@ResponseBody
+	public ResponseEntity<List<ApplicationDTO>> get( @CookieValue(required=true, value="pwtid") String pwtid  ) {
+		
+		List<ApplicationDTO> applications
+			= this.applicationService.guard().findAll();
+		
+		return response( applications, HttpStatus.OK );
 		
 	}
 	

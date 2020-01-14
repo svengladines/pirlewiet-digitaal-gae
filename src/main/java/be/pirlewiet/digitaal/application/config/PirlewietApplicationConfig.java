@@ -33,6 +33,7 @@ import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
 import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
+import be.pirlewiet.digitaal.domain.scenario.ObjectifyScenario;
 import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
 import be.pirlewiet.digitaal.domain.scenario.UnifyEnrollmentHolidaysScenario;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
@@ -276,6 +277,11 @@ public class PirlewietApplicationConfig {
 		@Bean
 		UnifyEnrollmentHolidaysScenario unifyEnrollmentHolidaysScenario() {
 			return new UnifyEnrollmentHolidaysScenario();
+		}
+		
+		@Bean
+		ObjectifyScenario objectifyScenario() {
+			return new ObjectifyScenario();
 		}
 		
 	}

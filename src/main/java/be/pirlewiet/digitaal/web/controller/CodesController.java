@@ -47,7 +47,7 @@ public class CodesController {
 			= this.buitenWipper.guard().whoHasCode( code );
 		
 		if ( organisatie == null ) {
-			logger.warn( "invalid code [{}] presented!", code );
+			logger.warn( "unknown code [{}] presented!", code );
 			return response( "De opgegeven code werd niet herkend. Probeer opnieuw of vraag je code opnieuw aan.", HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		

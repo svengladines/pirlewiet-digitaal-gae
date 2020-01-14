@@ -148,6 +148,8 @@ public class OrganisationManager {
     
     public Organisation update( String uuid, Organisation organisation ) {
     	
+    	logger.info( "update organisation with uuid [{}]", uuid );
+    	
     	Organisation loaded 
     		= organisation( uuid );
     	
@@ -176,7 +178,7 @@ public class OrganisationManager {
     	Organisation saved
     		= this.organisationRepository.saveAndFlush( loaded );
     	
-    	logger.info( "updated organisation with uiid [{}]", saved.getUuid() );
+    	logger.info( "updated organisation with uuid [{}]", saved.getUuid() );
     	
     	return saved;
     	
