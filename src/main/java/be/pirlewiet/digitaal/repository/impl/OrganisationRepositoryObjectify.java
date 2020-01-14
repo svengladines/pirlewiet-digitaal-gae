@@ -60,7 +60,6 @@ public class OrganisationRepositoryObjectify implements OrganisationRepository {
 
 	@Override
 	public Organisation saveAndFlush(Organisation organisation) {
-		// TODO new ?
 		logger.info( "store organisation with uuid [{}], email [{}] and code [{}]", new Object[] { organisation.getUuid(), organisation.getEmail(), organisation.getCode() } );
 		Key<Organisation> key = ofy().save().entity( organisation ).now();
 		Organisation stored = ofy().load().key( key ).now();

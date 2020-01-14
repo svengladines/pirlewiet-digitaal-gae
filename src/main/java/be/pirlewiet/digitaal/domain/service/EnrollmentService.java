@@ -839,7 +839,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	@Transactional(readOnly=false)
 	public Result<EnrollmentDTO> updateQList ( String uuid, List<QuestionAndAnswerDTO> qList, Organisation actor ) {
 		
-		logger.info("[{}]; enrollment.updateQList", actor.getName() );
+		logger.info("[{}]; enrollment.updateQList", uuid );
 		
 		Result<EnrollmentDTO> result
 			= new Result<EnrollmentDTO>();

@@ -23,11 +23,11 @@ public class QuestionAndAnswerManager {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	protected final Comparator<QuestionAndAnswer> orderById = new Comparator<QuestionAndAnswer> () {
+	protected final Comparator<QuestionAndAnswer> orderByOrder = new Comparator<QuestionAndAnswer> () {
 
 		@Override
 		public int compare(QuestionAndAnswer o1, QuestionAndAnswer o2) {
-			return Long.valueOf( o1.getUuid() ).compareTo( Long.valueOf( o2.getUuid() ) );
+			return o1.getOrder().compareTo( o2.getOrder() );
 		}
 		
 	};
@@ -65,7 +65,7 @@ public class QuestionAndAnswerManager {
 			deserialize( questionAndAnswer );
 		}
     	
-    	Collections.sort( found, this.orderById );
+    	Collections.sort( found, this.orderByOrder );
     	
     	return found;
     	
@@ -79,7 +79,7 @@ public class QuestionAndAnswerManager {
 			deserialize( questionAndAnswer );
 		}
     	
-    	Collections.sort( found, this.orderById );
+    	Collections.sort( found, this.orderByOrder );
     	
     	return found;
     	

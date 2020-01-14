@@ -48,9 +48,8 @@ public class AddressRepositoryObjectify implements AddressRepository {
 	}
 
 	@Override
-	public void delete(Address enrollment) {
-		// TODO Auto-generated method stub
-		
+	public void delete(Address address) {
+		ofy().delete().entity(address).now();
 	}
 
 }

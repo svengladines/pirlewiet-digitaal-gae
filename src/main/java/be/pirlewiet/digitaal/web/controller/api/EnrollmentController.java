@@ -124,19 +124,15 @@ public class EnrollmentController {
 	@ResponseBody
 	public ResponseEntity<Result<EnrollmentDTO>> delete(
 				@PathVariable String uuid,
-				@RequestBody EnrollmentDTO enrollment,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
 		logger.info("application.updateStatus");
 		
 		Organisation actor
 			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		// TODO, think about this ... securitywize ... iz ok for now
-		enrollment.setUuid( uuid );
-		
+
 		Result<EnrollmentDTO> x 
-			= this.enrollmentService.guard().update( enrollment, actor );
+			= this.enrollmentService.guard().delete( uuid, actor );
 		
 		return response( x, HttpStatus.OK );
 		

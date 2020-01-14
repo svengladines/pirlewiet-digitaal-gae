@@ -4,9 +4,9 @@ import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
-import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
@@ -15,15 +15,21 @@ public class QuestionAndAnswer {
 	
 	@Id
 	private Long id;
+	
+	@Index
+	private Integer order;
 
+	@Index
 	private String uuid;
 	
+	@Index
 	protected String tag;
 	
 	protected String question;
 	
 	protected String answer;
 	
+	@Index
 	protected String entityUuid;
 	
 	private String qid;
@@ -42,8 +48,8 @@ public class QuestionAndAnswer {
 	private QuestionAndAnswer ( ) {
 	}
 	
-	public QuestionAndAnswer ( String uuid, QuestionType type, String tag, String qid, String question, String... options ) {
-		this.uuid = uuid;
+	public QuestionAndAnswer ( Integer order, QuestionType type, String tag, String qid, String question, String... options ) {
+		this.order = order;
 		this.type = type;
 		this.tag = tag;
 		this.qid = qid;
@@ -119,6 +125,18 @@ public class QuestionAndAnswer {
 
 	public void setOptionString(String optionString) {
 		this.optionString = optionString;
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	public void setOptions(List<String> options) {
+		this.options = options;
 	}
 
 	public static QuestionAndAnswer from( QuestionAndAnswerDTO f ) {

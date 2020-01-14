@@ -10,6 +10,7 @@ import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 
 public class Objectify {
@@ -25,6 +26,7 @@ public class Objectify {
 		ObjectifyService.register( QuestionAndAnswer.class );
 		ObjectifyService.register( Enrollment.class );
 		ObjectifyService.register( Holiday.class );
+		ObjectifyService.register( Person.class );
 		logger.info( "objectify@pwt initialized");
 	}
 

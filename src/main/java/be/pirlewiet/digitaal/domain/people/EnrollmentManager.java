@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -101,16 +102,16 @@ public class EnrollmentManager {
 	
 	public Enrollment create( Enrollment toCreate ) {
 		
+		toCreate.setUuid( UUID.randomUUID().toString() );
+		
 		Enrollment created
 			= this.enrollmentRepository.saveAndFlush( toCreate );
-		
-		// TODO, set uuid
-		created = this.enrollmentRepository.saveAndFlush( created );
 		
 		List<QuestionAndAnswer> medical
 			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_MEDIC );
 		
 		for ( QuestionAndAnswer qna : medical ) {
+			qna.setUuid( UUID.randomUUID().toString() );
 			qna.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna );
 		}
@@ -119,6 +120,7 @@ public class EnrollmentManager {
 			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_HISTORY );
 	
 		for ( QuestionAndAnswer qna : history ) {
+			qna.setUuid( UUID.randomUUID().toString() );
 			qna.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna );
 		}
@@ -136,6 +138,7 @@ public class EnrollmentManager {
 				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_ADULTERY );
 			logger.info( "VOV; adultery question list size is {}", adultery.size() );
 			for ( QuestionAndAnswer qna : adultery ) {
+				qna.setUuid( UUID.randomUUID().toString() );
 				qna.setTag( Tags.TAG_HISTORY );
 				qna.setEntityUuid( created.getUuid() );
 				this.questionAndAnswerManager.create( qna );

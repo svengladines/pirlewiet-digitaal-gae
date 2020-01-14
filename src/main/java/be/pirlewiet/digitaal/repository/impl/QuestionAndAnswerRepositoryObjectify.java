@@ -37,7 +37,7 @@ public class QuestionAndAnswerRepositoryObjectify implements QuestionAndAnswerRe
 
 	@Override
 	public QuestionAndAnswer findOneByUuid(String uuid) {
-		return ofy().load().key(Key.create(QuestionAndAnswer.class, uuid)).now();
+		return ofy().load().type(QuestionAndAnswer.class).filter("uuid", uuid).first().now();
 	}
 
 	@Override

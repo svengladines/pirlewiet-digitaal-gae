@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.web.dto.PersonDTO;
@@ -16,6 +17,9 @@ import be.pirlewiet.digitaal.web.dto.PersonDTO;
 public class Person {
 	
     @Id
+    private Long id;
+    
+    @Index
 	private String uuid;
 	
 	protected String givenName;
@@ -24,6 +28,7 @@ public class Person {
 	
 	private String phone;
 	
+	@Index
 	private String email;
 	
 	@DateTimeFormat(pattern="dd/MM/yyyy")

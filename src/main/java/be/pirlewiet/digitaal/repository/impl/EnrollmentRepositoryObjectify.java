@@ -44,8 +44,11 @@ public class EnrollmentRepositoryObjectify implements EnrollmentRepository {
 
 	@Override
 	public Enrollment saveAndFlush(Enrollment enrollment) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info( "store enrollment with uuid [{}]", new Object[] { enrollment.getUuid() } );
+		Key<Enrollment> key = ofy().save().entity( enrollment ).now();
+		Enrollment stored = ofy().load().key( key ).now();
+		logger.info( "stored enrollment has id [{}] and uuid [{}]", key.getId(), stored.getUuid() );
+		return stored;
 	}
 
 	@Override

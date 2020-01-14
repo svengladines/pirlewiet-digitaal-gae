@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.domain.people;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -57,13 +58,12 @@ public class PersonManager {
     }
     
   public Person create( Person toCreate ) {
+	  
+	  	toCreate.setUuid( UUID.randomUUID().toString() );
     	
     	Person created
     		= this.personRepository.saveAndFlush( toCreate );
     	
-    	// TODO
-    	created = this.personRepository.saveAndFlush( created );
-    		
     	return created;
     		
     	
@@ -88,8 +88,8 @@ public class PersonManager {
     		= this.personRepository.saveAndFlush( toUpdate );
     	
     	if ( toUpdate.getUuid() == null ) {
-    	
-    		// TODO updated.setUuid( KeyFactory.keyToString( updated.getKey() ) );
+
+    		toUpdate.setUuid( UUID.randomUUID().toString() );
     		updated = this.personRepository.saveAndFlush( updated );
     		
     	}
