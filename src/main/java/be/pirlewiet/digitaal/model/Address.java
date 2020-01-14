@@ -24,9 +24,9 @@ public class Address {
 	private String zipCode;
 	private String city;
 	
-	//@AlsoLoad("id")
+	@Index
+	@AlsoLoad("id")
 	protected Long oldId;
-	// protected Long id;
 	
 	public String getZipCode() {
 		return zipCode;

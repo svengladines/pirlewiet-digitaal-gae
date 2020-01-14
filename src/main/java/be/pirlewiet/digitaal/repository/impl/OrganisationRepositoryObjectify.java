@@ -81,8 +81,7 @@ public class OrganisationRepositoryObjectify implements OrganisationRepository {
 
 	@Override
 	public void delete(Organisation organisation) {
-		// TODO Auto-generated method stub
-		
+		ofy().delete().entity( organisation );
 	}
 
 }

@@ -55,11 +55,15 @@ public class ObjectifyScenario extends Scenario {
 		logger.info( "objectify addresses" );
 		
 		List<Address> all
-			= this.addressRepository.findOld();
+			= this.addressRepository.findAll();
+		
+		//logger.info( "found [{}] old addresses", all.size() );
 
 		for ( Address address : all ) {
+			//address.setId( null );
 			this.addressRepository.saveAndFlush( address );
 			logger.info( "objectified [{}]", address.getUuid() );
+			//break;
 		}
 				
 	}

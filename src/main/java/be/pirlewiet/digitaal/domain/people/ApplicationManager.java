@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -127,8 +128,9 @@ public class ApplicationManager {
 	
 	public List<Application> findByOrganisation( Organisation actor ) {
 		
+		logger.info( "find applications for organisation [{}] and year 2020", actor.getUuid() );
 		List<Application> byOrganisationAndYear
-			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2019 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2020 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
 		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
 		
@@ -213,22 +215,18 @@ public class ApplicationManager {
 	    	application.setHolidayUuids( "" );
 	    	application.setHolidayNames( "" );
 	    	application.setOrganisationUuid( actor.getUuid() );
+	    	application.setUuid( UUID.randomUUID().toString() );
 	    	
-	    	Application saved 
+	    	Application created 
 	    		= this.applicationRepository.saveAndFlush( application );
 	    	
-	    	// TODO set uuid
-	    	
-	    	saved 
-				= this.applicationRepository.saveAndFlush( saved );
-	    	
-	    	logger.info( "created application with uuid [{}]", new Object[] { saved.getUuid() } );
+	    	logger.info( "created application with uuid [{}]", new Object[] { created.getUuid() } );
 	    	
 	    	List<QuestionAndAnswer> appQList
 				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
 		
 			for ( QuestionAndAnswer qna : appQList ) {
-				qna.setEntityUuid( saved.getUuid() );
+				qna.setEntityUuid( created.getUuid() );
 				this.questionAndAnswerManager.create( qna );
 			}
 	    	
@@ -239,7 +237,7 @@ public class ApplicationManager {
 	    	}
 	    	*/
 	    	
-	    	return saved;
+	    	return created;
 	    	
 	    }
 	

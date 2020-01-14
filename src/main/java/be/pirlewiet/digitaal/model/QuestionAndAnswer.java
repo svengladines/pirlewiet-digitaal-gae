@@ -4,6 +4,7 @@ import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
+import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
@@ -13,6 +14,8 @@ import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 public class QuestionAndAnswer {
 	
 	@Id
+	private Long id;
+
 	private String uuid;
 	
 	protected String tag;
@@ -28,6 +31,9 @@ public class QuestionAndAnswer {
 	protected QuestionType type;
 	
 	private String optionString;
+	
+	//@AlsoLoad("id")
+	//protected String oldId;
 		
 	protected List<String> options
 		= list();

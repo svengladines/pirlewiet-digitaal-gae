@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -88,11 +89,10 @@ public class QuestionAndAnswerManager {
     	
 	  serialize( toCreate );
 	  
+	  toCreate.setUuid( UUID.randomUUID().toString() );
+	  
 	  QuestionAndAnswer created 
 	  	= this.questionAndAnswerRepository.saveAndFlush( toCreate );
-	  
-	  // TODO set uuid
-	  created = this.questionAndAnswerRepository.saveAndFlush( created );
 	  
 	  if ( QuestionType.MC.equals( created.getType() ) ) {
 		  logger.info( "created MC question with [{}] options", created.getOptions() );

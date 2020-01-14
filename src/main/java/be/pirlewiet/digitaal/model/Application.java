@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 
@@ -22,6 +23,7 @@ public class Application {
 	@Id
 	private Long id;
 	
+	@Index
 	private String uuid;
     
     protected String reference;
@@ -30,14 +32,17 @@ public class Application {
     
     protected String contactPersonName;
     
+    @Index
     protected String organisationUuid;
     
     protected String description;
     
     private String holidayNames = "";
     
+    @Index
     private String holidayUuids = "";
     
+    @Index
     private int year;
     
     private Date submitted;

@@ -13,7 +13,7 @@ import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 public class Organisation {
 
 	@Id
-	private Long key;
+	private Long id;
 	
 	@Index
 	private String uuid;
@@ -35,7 +35,7 @@ public class Organisation {
 	
 	protected Date updated;
 	
-	@AlsoLoad("id")
+	//@AlsoLoad("id")
 	protected Long oldId;
 
 	public String getName() {

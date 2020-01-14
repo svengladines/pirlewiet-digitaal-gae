@@ -4,20 +4,19 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.List;
 
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.core.ResolvableType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.googlecode.objectify.Key;
 
-import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 @Repository
 public class ApplicationRepositoryObjectify implements ApplicationRepository {
+	
+	protected final Logger logger 
+		= LoggerFactory.getLogger( this.getClass() );
 	
 	@Override
 	public Application findByUuid(String uuid) {
@@ -43,26 +42,26 @@ public class ApplicationRepositoryObjectify implements ApplicationRepository {
 	@Override
 	public List<Application> findByOrganisationUuidAndYear(String organisationUuid, int year) {
 
-		return ofy().load().type(Application.class).filter("organisationuuid", organisationUuid).filter("year", year).list();
+		return ofy().load().type(Application.class).filter("organisationUuid", organisationUuid).filter("year", year).list();
 		
 	}
 
 	@Override
-	public Application saveAndFlush(Application application) {
-		// TODO Auto-generated method stub
-		return null;
+	public Application saveAndFlush( Application application ) {
+		logger.info( "store application with uuid [{}]", new Object[] { application.getUuid() } );
+		Key<Application> key = ofy().save().entity( application ).now();
+		Application stored = ofy().load().key( key ).now();
+		return stored;
 	}
 
 	@Override
-	public void delete(Application application) {
-		// TODO Auto-generated method stub
-		
+	public void delete( Application application ) {
+		ofy().delete().entity( application ).now();
 	}
 
 	@Override
 	public void deleteAll() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

@@ -48,14 +48,12 @@ public class EnrollmentRepositoryObjectify implements EnrollmentRepository {
 
 	@Override
 	public void delete(Enrollment enrollment) {
-		// TODO Auto-generated method stub
-		
+		ofy().delete().entity( enrollment ).now();
 	}
 
 	@Override
 	public void deleteAll() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

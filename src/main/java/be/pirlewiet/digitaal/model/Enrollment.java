@@ -12,7 +12,7 @@ import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 public class Enrollment {
 
 	@Id
-	private String id;
+	private Long id;
 
 	@Index
     private String uuid;
@@ -20,6 +20,7 @@ public class Enrollment {
 	@Index
     protected String applicationUuid;
     
+	@Index
     protected String participantUuid;
     
     protected String participantName;

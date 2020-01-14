@@ -35,30 +35,39 @@ public class DeleteOldEntitiesScenario extends Scenario {
 	//@Transactional
 	public void execute( String... parameters ) {
 
+		/*
 		try {
 			List<QuestionAndAnswer> qnas
 				= this.questionAndAnswerRepository.findAll();
 			
 			logger.info( "about to delete [{}] qnas", qnas.size() );
 			
-			this.questionAndAnswerRepository.deleteAll();
+			for ( QuestionAndAnswer qna : qnas ) {
+				this.questionAndAnswerRepository.delete( qna );
+			}
+			
 		}
 		catch( Exception e ) {
 			logger.warn( "exception while removing old qnas", e  );
 		}
+		*/
 		
+		/*
 		try {
 			List<Enrollment> all
 				= this.enrollmentRepository.findAll();
 			
 			logger.info( "about to delete [{}] enrollments", all.size() );
 			
-			this.enrollmentRepository.deleteAll();
+			for ( Enrollment enrollment : all ) {
+				this.enrollmentRepository.delete( enrollment );
+			}
 		}
 		
 		catch( Exception e ) {
 			logger.warn( "exception while removing old enrollments", e  );
 		}
+		*/
 		
 		try {
 			List<Application> all
@@ -66,7 +75,9 @@ public class DeleteOldEntitiesScenario extends Scenario {
 			
 			logger.info( "about to delete [{}] applications", all.size() );
 			
-			this.applicationRepository.deleteAll();
+			for ( Application application : all ) {
+				this.applicationRepository.delete( application );
+			}
 		}
 		
 		catch( Exception e ) {
