@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.scenario;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.HolidayType;
@@ -47,6 +49,8 @@ public class InjectProductionDataScenario extends Scenario {
 	public void execute( String... parameters ) {
 		
 		logger.info( "verify/inject productiondata" );
+		
+		/*
 		
 		Organisation vzwPirlewiet
 			= this.organisationRepository.findOneByEmail( "info@pirlewiet.be" );
@@ -96,14 +100,9 @@ public class InjectProductionDataScenario extends Scenario {
 			this.organisationRepository.saveAndFlush( vzwPirlewiet );
 		}
 		
-		/**
-		 * PaasKIKA 1	3/4 - 8/4	--- 4/4 - 8/4
-			PaasKIKA 2	9/4 - 15/4	--- 10/4 - 14/4
-			PaasGEZINS	10/4 - 15/4	--- 11/4 - 15/4
-			VOV 1	15/5 - 19/5	--- 15/5 - 19/5
-
+		*/
 		
-		// PaasKIKA 1	8/4 - 13/4
+		// PaasKIKA 1	6/4/2020 - 11/04/2020
 		{
 			String name = "PaasKIKA 1";
 			Holiday holiday
@@ -116,16 +115,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2019 );
-				start.set( Calendar.MONTH, 3 );
-				start.set( Calendar.DAY_OF_MONTH, 8 );
+				start.setTime( Timing.date( "06/04/2020" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2019 );
-				end.set( Calendar.MONTH, 3 );
-				end.set( Calendar.DAY_OF_MONTH, 13 );
+				end.setTime( Timing.date( "11/04/2020" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -135,8 +130,7 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setDeadLine( new Date() );
 				
 				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
-				holiday = holidayRepository.saveAndFlush( holiday );
+				holiday.setUuid( UUID.randomUUID().toString() );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
 			
@@ -144,7 +138,7 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 		
-		// PaasKIKA 2 --- 15/4 - 19/4
+		// PaasKIKA 2	13/4/2020 - 18/04/2020
 		{
 			String name = "PaasKIKA 2";
 			Holiday holiday
@@ -157,16 +151,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2019 );
-				start.set( Calendar.MONTH, 3 );
-				start.set( Calendar.DAY_OF_MONTH, 15 );
+				start.setTime( Timing.date( "13/04/2020" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2019 );
-				end.set( Calendar.MONTH, 3 );
-				end.set( Calendar.DAY_OF_MONTH, 19 );
+				end.setTime( Timing.date( "18/04/2020" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -174,9 +164,7 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setStart( start.getTime() );
 				holiday.setEnd( end.getTime() );
 				holiday.setDeadLine( new Date() );
-				
-				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday.setUuid( UUID.randomUUID().toString() );
 				holiday = holidayRepository.saveAndFlush( holiday );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -185,7 +173,7 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 		
-		// PaasGezins --- 16/4 - 20/4
+		// PaasGezins --- 14/04/2020 - 18/04/2020
 		{
 			String name = "PaasGEZINS";
 			Holiday holiday
@@ -198,16 +186,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2019 );
-				start.set( Calendar.MONTH, 3 );
-				start.set( Calendar.DAY_OF_MONTH, 16 );
+				start.setTime( Timing.date( "14/04/2020" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2019 );
-				end.set( Calendar.MONTH, 3 );
-				end.set( Calendar.DAY_OF_MONTH, 20 );
+				end.setTime( Timing.date( "18/04/2020" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -215,9 +199,7 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setStart( start.getTime() );
 				holiday.setEnd( end.getTime() );
 				holiday.setDeadLine( new Date() );
-				
-				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday.setUuid( UUID.randomUUID().toString() );
 				holiday = holidayRepository.saveAndFlush( holiday );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -226,7 +208,7 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 		
-		// VOV 1 --- 3/6 - 7/6
+		// VOV 1 --- 11/5 - 15/5
 		{
 			String name = "VOV 1";
 			Holiday holiday
@@ -239,16 +221,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.set( Calendar.YEAR, 2019 );
-				start.set( Calendar.MONTH, 5 );
-				start.set( Calendar.DAY_OF_MONTH, 3 );
+				start.setTime( Timing.date( "11/05/2020" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.set( Calendar.YEAR, 2019 );
-				end.set( Calendar.MONTH, 5 );
-				end.set( Calendar.DAY_OF_MONTH, 7 );
+				end.setTime( Timing.date( "15/05/2020" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -256,9 +234,7 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setStart( start.getTime() );
 				holiday.setEnd( end.getTime() );
 				holiday.setDeadLine( new Date() );
-				
-				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
+				holiday.setUuid( UUID.randomUUID().toString() );
 				holiday = holidayRepository.saveAndFlush( holiday );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -266,7 +242,6 @@ public class InjectProductionDataScenario extends Scenario {
 			}
 			
 		}
-		**/
 		
 		/**
 		 * Summer 2019

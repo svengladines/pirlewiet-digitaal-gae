@@ -8,6 +8,7 @@ import com.googlecode.objectify.ObjectifyService;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 
@@ -23,7 +24,7 @@ public class Objectify {
 		ObjectifyService.register( Application.class );
 		ObjectifyService.register( QuestionAndAnswer.class );
 		ObjectifyService.register( Enrollment.class );
-		//ObjectifyService.register( Holiday.class );
+		ObjectifyService.register( Holiday.class );
 		logger.info( "objectify@pwt initialized");
 	}
 

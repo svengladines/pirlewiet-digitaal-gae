@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.googlecode.objectify.Key;
 
 import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 
@@ -23,7 +24,8 @@ public class EnrollmentRepositoryObjectify implements EnrollmentRepository {
 	@Override
 	public Enrollment findByUuid(String uuid) {
 		
-		return ofy().load().key(Key.create(Enrollment.class, uuid)).now();
+		logger.info( "load enrollment with uuid [{}]", uuid );
+		return ofy().load().type(Enrollment.class).filter("uuid", uuid).first().now();
 		
 	}
 

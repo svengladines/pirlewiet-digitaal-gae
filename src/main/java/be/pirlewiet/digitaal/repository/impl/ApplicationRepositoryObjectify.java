@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.googlecode.objectify.Key;
 
 import be.pirlewiet.digitaal.model.Application;
+import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 @Repository
 public class ApplicationRepositoryObjectify implements ApplicationRepository {
@@ -21,7 +22,8 @@ public class ApplicationRepositoryObjectify implements ApplicationRepository {
 	@Override
 	public Application findByUuid(String uuid) {
 		
-		return ofy().load().key(Key.create(Application.class, uuid)).now();
+		logger.info( "load application with uuid [{}]", uuid );
+		return ofy().load().type(Application.class).filter("uuid", uuid).first().now();
 		
 	}
 

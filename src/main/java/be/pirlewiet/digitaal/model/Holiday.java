@@ -2,15 +2,22 @@ package be.pirlewiet.digitaal.model;
 
 import java.util.Date;
 
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 
+@Entity
 public class Holiday {
 	
 	@Id
+	private Long id;
+	
+	@Index
 	private String uuid;
     
+	@Index
     private int year;
     
     protected String name;
