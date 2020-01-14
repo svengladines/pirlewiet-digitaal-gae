@@ -24,6 +24,7 @@
 		<hibernate.version>4.1.9.Final</hibernate.version>
 		<servlet-api.version>3.0.1</servlet-api.version>
   	 	<timestamp>${maven.build.timestamp}</timestamp>
+  	 	<appengine-api-version>1.9.68</appengine-api-version>
 	</properties>
 	
 	<dependencyManagement>
@@ -61,7 +62,19 @@
       		<groupId>com.google.cloud</groupId>
       		<artifactId>google-cloud-core-http</artifactId>
     	</dependency>
-	
+    	
+    	<dependency>
+    		<groupId>com.google.cloud</groupId>
+    		<artifactId>google-cloud-core</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-1.0-sdk</artifactId>
+			<version>${appengine-api-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
 		<!-- Spring framework -->
 		
 		<dependency>
@@ -106,12 +119,13 @@
 			<version>${org.springframework.version}</version>
 		</dependency>
 		
+		<!-- 
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
-			<version>1.4.3</version>
+			<version>1.4.7</version>
 		</dependency>
-
+ 		-->
 		<!-- Spring security modules -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
