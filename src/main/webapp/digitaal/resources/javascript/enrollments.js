@@ -25,7 +25,7 @@ var Address = function ( zipcode, city, street, number ) {
 	
 };
 
-var Participant = function ( givenName, familyName, gender, birthDay, phone, email, id ) {
+var Participant = function ( givenName, familyName, gender, birthDay, phone, email, stateNumber, id ) {
 	
 	this.uuid = id;
 	
@@ -35,6 +35,7 @@ var Participant = function ( givenName, familyName, gender, birthDay, phone, ema
 	this.birthDay = birthDay;
 	this.phone = phone;
 	this.email = email;
+	this.stateNumber = stateNumber;
 	
 };
 

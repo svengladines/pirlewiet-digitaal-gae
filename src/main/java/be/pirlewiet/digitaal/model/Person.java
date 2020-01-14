@@ -36,6 +36,8 @@ public class Person {
 	
 	private Gender gender;
 	
+	private String stateNumber;
+	
 	public Person() {
 	}
 
@@ -94,6 +96,14 @@ public class Person {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
+	
+	public String getStateNumber() {
+		return stateNumber;
+	}
+
+	public void setStateNumber(String stateNumber) {
+		this.stateNumber = stateNumber;
+	}
 
 	public static Person from( PersonDTO f ) {
 		
@@ -106,6 +116,7 @@ public class Person {
 		t.setPhone( f.getPhone() );
 		t.setEmail( f.getEmail() );
 		t.setGender( f.getGender() );	
+		t.setStateNumber( f.getStateNumber() );
 		if ( ! isEmpty( f.getBirthDay() ) ) {
 			t.setBirthDay( Timing.date( f.getBirthDay() ));
 		}

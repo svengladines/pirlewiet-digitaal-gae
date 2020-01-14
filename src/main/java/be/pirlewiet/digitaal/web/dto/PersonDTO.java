@@ -18,6 +18,7 @@ public class PersonDTO {
 	private String email;
 	private String birthDay;
 	private Gender gender;
+	private String stateNumber;
 	
 	public String getUuid() {
 		return uuid;
@@ -80,6 +81,14 @@ public class PersonDTO {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
+	
+	public String getStateNumber() {
+		return stateNumber;
+	}
+
+	public void setStateNumber(String stateNumber) {
+		this.stateNumber = stateNumber;
+	}
 
 	public static PersonDTO from( Person f ) {
 		
@@ -91,6 +100,7 @@ public class PersonDTO {
 		t.setFamilyName( f.getFamilyName() );
 		t.setPhone( f.getPhone() );
 		t.setEmail( f.getEmail() );
+		t.setStateNumber( f.getStateNumber() );
 		
 		if ( f.getBirthDay() != null ) {
 			t.setBirthDay( Timing.date( f.getBirthDay() ));
