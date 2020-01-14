@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.people;
 import static be.occam.utils.javax.Utils.isEmpty;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -44,15 +45,12 @@ public class AddressManager {
 			throw new IncompleteObjectException( ErrorCodes.ADDRESS_NUMBER_MISSING );
 		}
 		
-		Address saved 
+		address.setUuid( UUID.randomUUID().toString() );
+		
+		Address created 
 			= this.addressRepository.saveAndFlush( address );
 	
-		// TODO, set uuid
-	
-		saved 
-			= this.addressRepository.saveAndFlush( saved );
-		
-		return saved;
+		return created;
 		
 	}
 	

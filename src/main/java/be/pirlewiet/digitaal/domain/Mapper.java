@@ -131,7 +131,7 @@ public class Mapper {
 					 */
 
 					List<String> columns
-						= new ArrayList<String>( 20 );
+						= new ArrayList<String>( 21 );
 					
 					/**
 					 *  Really bad!!!! TODO, fix this, but it's urgent!
@@ -200,6 +200,7 @@ public class Mapper {
 						columns.add( isEmpty( participant.getPhone() ) ? "?"  : participant.getPhone() );
 						// E-MAIL
 						columns.add( participant.getEmail());
+						columns.add( isEmpty( participant.getStateNumber() ) ? "?"  : participant.getStateNumber() );
 					}
 					
 					// NAAM DIENST

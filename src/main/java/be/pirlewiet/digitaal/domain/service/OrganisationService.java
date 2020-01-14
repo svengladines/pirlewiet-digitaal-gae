@@ -324,7 +324,7 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			= null;
 		
 		if ( found.getAddressUuid() == null ) {
-			logger.info( "[{}]; no address yet for organisation [{}], create new one", uuid );
+			logger.info( "[{}]; no address yet for organisation [{}], create new one", uuid, actor.getName() );
 			toReturn = this.addressManager.create( Address.from( address ) );
 			this.organisationManager.updateAddress( found, toReturn.getUuid() );
 		}
