@@ -22,7 +22,7 @@ public class ApplicationRepositoryObjectify implements ApplicationRepository {
 	@Override
 	public Application findByUuid(String uuid) {
 		
-		logger.info( "load application with uuid [{}]", uuid );
+		//logger.info( "load application with uuid [{}]", uuid );
 		return ofy().load().type(Application.class).filter("uuid", uuid).first().now();
 		
 	}

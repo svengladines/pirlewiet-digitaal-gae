@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -134,7 +135,7 @@ public class DoorMan {
 			code = organisatie.getCode();
 			logger.info( "code exists, code is [{}]", code );
 			if ( ( organisatie.getUuid() == null ) || ( organisatie.getUuid().isEmpty() ) ) {
-				// TODO, set uuid
+				organisatie.setUuid( UUID.randomUUID().toString() );
 				organisatie = this.organisationRepository.saveAndFlush( organisatie );
 			}
 		}

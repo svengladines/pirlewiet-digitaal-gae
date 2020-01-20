@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
@@ -115,13 +116,10 @@ public class OrganisationManager {
 	    	
     	}
     	
+    	organisation.setUuid( UUID.randomUUID().toString() );
+    	
     	Organisation saved 
     		= this.organisationRepository.saveAndFlush( organisation );
-    	
-    	// TODO set uuid
-    	
-    	saved 
-			= this.organisationRepository.saveAndFlush( saved );
     	
     	logger.info( "created organisation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), saved.getCode() } );
     	

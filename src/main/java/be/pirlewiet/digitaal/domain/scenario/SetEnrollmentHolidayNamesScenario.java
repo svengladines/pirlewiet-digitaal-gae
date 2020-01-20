@@ -74,6 +74,8 @@ public class SetEnrollmentHolidayNamesScenario extends Scenario {
 				ApplicationDTO application
 					= applicationResult.getObject();
 				
+				logger.info( "load enrollments for application with uuid [{}]", application.getUuid() );
+				
 				Result<List<Result<EnrollmentDTO>>> enrollmentsResult
 					= this.enrollmentService.guard().query( application.getUuid(), pirlewiet );
 		
@@ -82,18 +84,21 @@ public class SetEnrollmentHolidayNamesScenario extends Scenario {
 					
 		
 				for ( Result<EnrollmentDTO> enrollmentResult : enrollmentResults ) {
-			
+					
 					EnrollmentDTO enrollment
 						= enrollmentResult.getObject();
+					
+					logger.info( "check enrollment with uuid [{}] for missing holiday name(s)", enrollment.getUuid() );
 			
 					if ( isEmpty( enrollment.getHolidayName() ) ) {
+						
+						logger.info( "enrollment with uuid [{}] has missing holiday name(s)", enrollment.getUuid() );
 						
 						Result<List<HolidayDTO>> holidaysResult
 							= this.holidayService.resolve( enrollment.getHolidayUuid(), application.getHolidayUuids(), false, false, false, pirlewiet );
 						
 						List<HolidayDTO> holidays
 							= holidaysResult.getObject();
-						
 						
 						this.enrollmentService.updateHolidays( enrollment.getUuid(), holidays, pirlewiet );
 					}

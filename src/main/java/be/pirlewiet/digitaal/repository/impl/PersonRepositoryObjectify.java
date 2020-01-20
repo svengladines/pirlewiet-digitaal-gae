@@ -20,7 +20,7 @@ public class PersonRepositoryObjectify implements PersonRepository {
 
 	@Override
 	public Person findByUuid(String uuid) {
-		logger.info( "load person with uuid [{}]", uuid );
+		//logger.info( "load person with uuid [{}]", uuid );
 		return ofy().load().type(Person.class).filter("uuid", uuid).first().now();
 	}
 
@@ -31,7 +31,7 @@ public class PersonRepositoryObjectify implements PersonRepository {
 
 	@Override
 	public Person saveAndFlush(Person person) {
-		logger.info( "store person with uuid [{}]", new Object[] { person.getUuid() } );
+		//logger.info( "store person with uuid [{}]", new Object[] { person.getUuid() } );
 		Key<Person> key = ofy().save().entity( person ).now();
 		Person stored = ofy().load().key( key ).now();
 		return stored;
