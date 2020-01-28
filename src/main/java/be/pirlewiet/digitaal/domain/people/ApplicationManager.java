@@ -371,7 +371,7 @@ public class ApplicationManager {
 					List<Enrollment> enrollments
 						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
-						if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) ) {
+						if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) || ( isEmpty( enrollment.getHolidayName() ) ) ) {
 							this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids(), true );
 						}
 						this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), false );
