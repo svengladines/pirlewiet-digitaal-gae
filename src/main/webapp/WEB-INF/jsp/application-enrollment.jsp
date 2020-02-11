@@ -172,7 +172,8 @@
 							<div class="col-sm-6">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
 								<button type="button" id="participant-save" class="btn btn-primary participant-save" data-attribute-uuid="${enrollment.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
-								<span id ="participant-status"></span>
+								<span id ="participant-status"></span><br/>
+								<span id="error"></span>
 							</div>
 						</div>
 						

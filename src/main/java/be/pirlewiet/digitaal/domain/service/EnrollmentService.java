@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.domain.service;
 
+import static be.occam.utils.javax.Utils.isEmpty;
 import static be.occam.utils.javax.Utils.list;
 import static be.occam.utils.javax.Utils.map;
 
@@ -15,6 +16,7 @@ import be.occam.utils.javax.Utils;
 import be.occam.utils.spring.web.ErrorCode;
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
+import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.Mapper;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
@@ -32,6 +34,7 @@ import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.Participant;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
@@ -610,6 +613,8 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			Person toCreateParticipant
 				= Person.from( participant );
 			
+			this.setBirthDay( participant, toCreateParticipant );
+			
 			Person createdParticipant
 				= this.personManager.create( toCreateParticipant );
 			
@@ -640,8 +645,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		
 		}
 		catch( PirlewietException e ) {
-			result.setValue( Value.NOK );
-			//result.setErrorCode(  );
+			throw e;
 		}
 		catch( Exception e ) {
 			result.setValue( Value.NOK );
@@ -862,6 +866,19 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		result.setObject( EnrollmentDTO.from( updated ) );
 		
 		return result;
+		
+	}
+	
+	protected void setBirthDay( PersonDTO from, Person to ) {
+		
+		if ( ! isEmpty( from.getBirthDay() ) ) {
+			try {
+				to.setBirthDay( Timing.date( from.getBirthDay() ));
+			}
+			catch( Exception e ) {
+				throw new PirlewietException( ErrorCodes.PARTICIPANT_DATA_BIRTHDAY_BAD_FORMAT );
+			}
+		}
 		
 	}
 	

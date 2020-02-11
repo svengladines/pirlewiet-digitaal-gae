@@ -2,9 +2,6 @@ function error( button, element, message ) {
 	
 	doneButton( button );
 	
-	button.removeClass("btn-success");
-	button.addClass("btn-danger");
-	
 	if ( message != undefined ) {
 		element.html( message )	;
 	}

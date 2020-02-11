@@ -121,13 +121,17 @@ var postEnrollment = function ( applicationUuid, enrollment, callback ) {
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify(enrollment),
-		success: function( application ) {
-				if ( callback ) {
-					callback( );
+		success: function( result ) {
+				if ( result.value == "OK") {
+					if ( callback ) {
+						callback( );
+					}
+				}
+				else {
+					error( $jq(".btn-primary"), $jq("#error"), result.message );
 				}
 		},
-		error: function(  jqXHR, textStatus, errorThrown ) {
-			// alert( errorThrown );
+		error: function( jqXHR, textStatus, errorThrown ) {
 		}
 	});
 	
