@@ -102,6 +102,7 @@ public class InjectProductionDataScenario extends Scenario {
 		
 		*/
 		
+		/*
 		// PaasKIKA 1	6/4/2020 - 11/04/2020
 		{
 			String name = "PaasKIKA 1";
@@ -242,375 +243,219 @@ public class InjectProductionDataScenario extends Scenario {
 			}
 			
 		}
+		*/
 		
-		/**
-		 * Summer 2019
+		// Zomer 2020 
 		
-		// KIKA 1	10/7 > 17/7
-		{
-			String name = "KIKA 1";
-			Holiday holiday
-				= this.holidayRepository.findOneByName( name );
-			
-			if ( holiday == null ) {
-				
-				holiday = new Holiday();
-		
-				GregorianCalendar start
-					= new GregorianCalendar();
-				
-				start.set( Calendar.YEAR, 2019 );
-				start.set( Calendar.MONTH, 6 );
-				start.set( Calendar.DAY_OF_MONTH, 10 );
-				
-				GregorianCalendar end
-					= new GregorianCalendar();
-				
-				end.set( Calendar.YEAR, 2019 );
-				end.set( Calendar.MONTH, 6 );
-				end.set( Calendar.DAY_OF_MONTH, 17 );
-				
-				holiday.setName( name );
-				holiday.setPeriod( Period.Summer );
-				holiday.setType( HolidayType.Kika );
-				holiday.setStart( start.getTime() );
-				holiday.setEnd( end.getTime() );
-				holiday.setDeadLine( new Date() );
-				
-				holiday = holidayRepository.saveAndFlush( holiday );
-				// TODO
-				holiday = holidayRepository.saveAndFlush( holiday );
-				
-				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-			
-			}
-			else {
-				logger.info( "holiday [{}] already existed, did not inject", holiday.getName() );
-			}
-			
-		}
-		
-		// KIKA 2	19/7 > 26/7
-		{
-			String name = "KIKA 2";
-			Holiday holiday
-				= this.holidayRepository.findOneByName( name );
-			
-			if ( holiday == null ) {
-				
-				holiday = new Holiday();
-		
-				GregorianCalendar start
-					= new GregorianCalendar();
-				
-				start.set( Calendar.YEAR, 2019 );
-				start.set( Calendar.MONTH, 6 );
-				start.set( Calendar.DAY_OF_MONTH, 19 );
-				
-				GregorianCalendar end
-					= new GregorianCalendar();
-				
-				end.set( Calendar.YEAR, 2019 );
-				end.set( Calendar.MONTH, 6 );
-				end.set( Calendar.DAY_OF_MONTH, 26 );
-				
-				holiday.setName( name );
-				holiday.setPeriod( Period.Summer );
-				holiday.setType( HolidayType.Kika );
-				holiday.setStart( start.getTime() );
-				holiday.setEnd( end.getTime() );
-				holiday.setDeadLine( new Date() );
-				
-				holiday = holidayRepository.saveAndFlush( holiday );
-				// TODO
-				holiday = holidayRepository.saveAndFlush( holiday );
-				
-				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-			
-			}
-		}
-		
-			// TIKA	21/7 > 27/7
-			{
-				String name = "TIKA";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
-				
-				if ( holiday == null ) {
+				// VOV 2 04/07/2020 - 10/07/2020
+				{
+					String name = "VOV 2";
+					Holiday holiday
+						= this.holidayRepository.findOneByName( name );
 					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 21 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 27 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.Tika );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					// TODO
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					if ( holiday == null ) {
+						
+						holiday = new Holiday();
 				
+						GregorianCalendar start
+							= new GregorianCalendar();
+						
+						start.setTime( Timing.date( "04/07/2020" ) );
+						
+						GregorianCalendar end
+							= new GregorianCalendar();
+						
+						end.setTime( Timing.date( "10/07/2020" ) );
+						
+						holiday.setName( name );
+						holiday.setPeriod( Period.Summer );
+						holiday.setType( HolidayType.Vov );
+						holiday.setStart( start.getTime() );
+						holiday.setEnd( end.getTime() );
+						holiday.setDeadLine( new Date() );
+						holiday.setUuid( UUID.randomUUID().toString() );
+						holiday = holidayRepository.saveAndFlush( holiday );
+						
+						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					
+					}
+					
 				}
-			}
-			
-			// Gezins 1	2/8 > 9/8
-			{
-				String name = "Gezins 1";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
 				
-				if ( holiday == null ) {
+				// KIKA 22/07/2020 - 29/07/2020
+				{
+					String name = "Kika";
+					Holiday holiday
+						= this.holidayRepository.findOneByName( name );
 					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 7 );
-					start.set( Calendar.DAY_OF_MONTH, 2 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 7 );
-					end.set( Calendar.DAY_OF_MONTH, 9 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.Gezin );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					// TODO
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					if ( holiday == null ) {
+						
+						holiday = new Holiday();
 				
+						GregorianCalendar start
+							= new GregorianCalendar();
+						
+						start.setTime( Timing.date( "22/07/2020" ) );
+						
+						GregorianCalendar end
+							= new GregorianCalendar();
+						
+						end.setTime( Timing.date( "29/07/2020" ) );
+						
+						holiday.setName( name );
+						holiday.setPeriod( Period.Summer );
+						holiday.setType( HolidayType.Kika );
+						holiday.setStart( start.getTime() );
+						holiday.setEnd( end.getTime() );
+						holiday.setDeadLine( new Date() );
+						holiday.setUuid( UUID.randomUUID().toString() );
+						holiday = holidayRepository.saveAndFlush( holiday );
+						
+						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					
+					}
+					
 				}
-			}
-			
-			// Gezins 2	10/08 > 17/8
-			{
-				String name = "Gezins 2";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
 				
-				if ( holiday == null ) {
+				// Tika 12/07/2020 - 18/07/2020
+				{
+					String name = "Tika";
+					Holiday holiday
+						= this.holidayRepository.findOneByName( name );
 					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 7 );
-					start.set( Calendar.DAY_OF_MONTH, 10 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 7 );
-					end.set( Calendar.DAY_OF_MONTH, 17 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.Gezin );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					// TODO
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					if ( holiday == null ) {
+						
+						holiday = new Holiday();
 				
+						GregorianCalendar start
+							= new GregorianCalendar();
+						
+						start.setTime( Timing.date( "12/07/2020" ) );
+						
+						GregorianCalendar end
+							= new GregorianCalendar();
+						
+						end.setTime( Timing.date( "18/07/2020" ) );
+						
+						holiday.setName( name );
+						holiday.setPeriod( Period.Summer );
+						holiday.setType( HolidayType.Tika );
+						holiday.setStart( start.getTime() );
+						holiday.setEnd( end.getTime() );
+						holiday.setDeadLine( new Date() );
+						holiday.setUuid( UUID.randomUUID().toString() );
+						holiday = holidayRepository.saveAndFlush( holiday );
+						
+						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					
+					}
+					
 				}
-			}
-			
-			// VOV 2 6/7 > 12/7
-			{
-				String name = "VOV 2";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
 				
-				if ( holiday == null ) {
+				// Gezins 1 01/08/2020 - 08/08/2020
+				{
+					String name = "Gezins 1";
+					Holiday holiday
+						= this.holidayRepository.findOneByName( name );
 					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 7 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 12 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.Vov );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					// TODO
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					if ( holiday == null ) {
+						
+						holiday = new Holiday();
 				
+						GregorianCalendar start
+							= new GregorianCalendar();
+						
+						start.setTime( Timing.date( "01/08/2020" ) );
+						
+						GregorianCalendar end
+							= new GregorianCalendar();
+						
+						end.setTime( Timing.date( "08/08/2020" ) );
+						
+						holiday.setName( name );
+						holiday.setPeriod( Period.Summer );
+						holiday.setType( HolidayType.Gezin );
+						holiday.setStart( start.getTime() );
+						holiday.setEnd( end.getTime() );
+						holiday.setDeadLine( new Date() );
+						holiday.setUuid( UUID.randomUUID().toString() );
+						holiday = holidayRepository.saveAndFlush( holiday );
+						
+						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					
+					}
+					
 				}
-			}
-			
-			// APi TODO
-			{
-				String name = "APi";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
 				
-				if ( holiday == null ) {
+				// Gezins 2 09/08/2020 - 16/08/2020
+				{
+					String name = "Gezins 2";
+					Holiday holiday
+						= this.holidayRepository.findOneByName( name );
 					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 7 );
-					start.set( Calendar.DAY_OF_MONTH, 19 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 7 );
-					end.set( Calendar.DAY_OF_MONTH, 23 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.Api );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					// TODO
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					if ( holiday == null ) {
+						
+						holiday = new Holiday();
 				
+						GregorianCalendar start
+							= new GregorianCalendar();
+						
+						start.setTime( Timing.date( "09/08/2020" ) );
+						
+						GregorianCalendar end
+							= new GregorianCalendar();
+						
+						end.setTime( Timing.date( "16/08/2020" ) );
+						
+						holiday.setName( name );
+						holiday.setPeriod( Period.Summer );
+						holiday.setType( HolidayType.Gezin );
+						holiday.setStart( start.getTime() );
+						holiday.setEnd( end.getTime() );
+						holiday.setDeadLine( new Date() );
+						holiday.setUuid( UUID.randomUUID().toString() );
+						holiday = holidayRepository.saveAndFlush( holiday );
+						
+						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					
+					}
+					
 				}
-			}
-			
-			/* Driedaagse niet via PD
-			{
-				String name = "Driedaagse";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
 				
-				if ( holiday == null ) {
+				// APi 17/08/2020 - 20/08/2020
+				{
+					String name = "APi";
+					Holiday holiday
+						= this.holidayRepository.findOneByName( name );
 					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 7 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 9 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.DrieDaagse );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					if ( holiday == null ) {
+						
+						holiday = new Holiday();
 				
+						GregorianCalendar start
+							= new GregorianCalendar();
+						
+						start.setTime( Timing.date( "17/08/2020" ) );
+						
+						GregorianCalendar end
+							= new GregorianCalendar();
+						
+						end.setTime( Timing.date( "20/08/2020" ) );
+						
+						holiday.setName( name );
+						holiday.setPeriod( Period.Summer );
+						holiday.setType( HolidayType.Api );
+						holiday.setStart( start.getTime() );
+						holiday.setEnd( end.getTime() );
+						holiday.setDeadLine( new Date() );
+						holiday.setUuid( UUID.randomUUID().toString() );
+						holiday = holidayRepository.saveAndFlush( holiday );
+						
+						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
+					
+					}
+					
 				}
-			}
-			*/
-			
-			/* Cava niet via PD
-			{
-				String name = "CAVA";
-				Holiday holiday
-					= this.holidayRepository.findOneByName( name );
-				
-				if ( holiday == null ) {
-					
-					holiday = new Holiday();
-			
-					GregorianCalendar start
-						= new GregorianCalendar();
-					
-					start.set( Calendar.YEAR, 2019 );
-					start.set( Calendar.MONTH, 6 );
-					start.set( Calendar.DAY_OF_MONTH, 9 );
-					
-					GregorianCalendar end
-						= new GregorianCalendar();
-					
-					end.set( Calendar.YEAR, 2019 );
-					end.set( Calendar.MONTH, 6 );
-					end.set( Calendar.DAY_OF_MONTH, 13 );
-					
-					holiday.setName( name );
-					holiday.setPeriod( Period.Summer );
-					holiday.setType( HolidayType.Cava );
-					holiday.setStart( start.getTime() );
-					holiday.setEnd( end.getTime() );
-					holiday.setDeadLine( new Date() );
-					
-					holiday = holidayRepository.saveAndFlush( holiday );
-					holiday.setUuid( KeyFactory.keyToString( holiday.getKey() ) );
-					holiday = holidayRepository.saveAndFlush( holiday );
-					
-					logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-				
-				}
-			}
-			*/
 		
 	}
 	
