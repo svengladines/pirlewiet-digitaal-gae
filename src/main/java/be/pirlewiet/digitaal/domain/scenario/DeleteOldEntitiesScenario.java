@@ -35,7 +35,7 @@ public class DeleteOldEntitiesScenario extends Scenario {
 	//@Transactional
 	public void execute( String... parameters ) {
 
-		/*
+	
 		try {
 			List<QuestionAndAnswer> qnas
 				= this.questionAndAnswerRepository.findAll();
@@ -50,7 +50,6 @@ public class DeleteOldEntitiesScenario extends Scenario {
 		catch( Exception e ) {
 			logger.warn( "exception while removing old qnas", e  );
 		}
-		*/
 		
 		/*
 		try {
