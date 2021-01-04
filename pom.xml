@@ -377,7 +377,7 @@
 	            <version>2.2.0</version>
 	            <configuration>
 	                <projectId>pirlewiet-digitaal</projectId>
-	                <version>2020</version>
+	                <version>2021</version>
 	            </configuration>
 	        </plugin>
 		</plugins>

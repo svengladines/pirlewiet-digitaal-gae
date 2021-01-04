@@ -39,8 +39,7 @@ public class PersonRepositoryObjectify implements PersonRepository {
 
 	@Override
 	public void delete(Person person) {
-		// TODO Auto-generated method stub
-
+		ofy().delete().entity( person ).now();
 	}
 
 }

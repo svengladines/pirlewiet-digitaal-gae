@@ -15,7 +15,7 @@
 							<h2>Contactgegevens doorverwijzer</h2>
 							
 							<p>
-								Geef hier de gegevens op van de persoon bij uw organisatie die ons secretariaat eventueel kan contacteren i.v.m deze application.
+								<strong>Opgelet!</strong> Zorg ervoor dat de persoon die je aanmeldt bereikbaar is tijdens de vakantie!
 							</p>
 						</div>
 						<div class="modal-body">

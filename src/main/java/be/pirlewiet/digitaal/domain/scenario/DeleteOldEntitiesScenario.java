@@ -6,9 +6,11 @@ import javax.annotation.Resource;
 
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
+import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
+import be.pirlewiet.digitaal.repository.PersonRepository;
 import be.pirlewiet.digitaal.repository.impl.QuestionAndAnswerRepositoryObjectify;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
@@ -22,6 +24,9 @@ public class DeleteOldEntitiesScenario extends Scenario {
 	
 	@Resource
 	ApplicationRepository applicationRepository;
+	
+	@Resource
+	PersonRepository personRepository;
 	
 	@Resource
 	DataGuard dataGuard;
@@ -51,7 +56,21 @@ public class DeleteOldEntitiesScenario extends Scenario {
 			logger.warn( "exception while removing old qnas", e  );
 		}
 		
-		/*
+		try {
+			List<Person> all
+				= this.personRepository.findAll();
+			
+			logger.info( "about to delete [{}] persons", all.size() );
+			
+			for ( Person one : all ) {
+				this.personRepository.delete( one );
+			}
+		}
+		
+		catch( Exception e ) {
+			logger.warn( "exception while removing old persons", e  );
+		}
+		
 		try {
 			List<Enrollment> all
 				= this.enrollmentRepository.findAll();
@@ -66,7 +85,6 @@ public class DeleteOldEntitiesScenario extends Scenario {
 		catch( Exception e ) {
 			logger.warn( "exception while removing old enrollments", e  );
 		}
-		*/
 		
 		try {
 			List<Application> all
