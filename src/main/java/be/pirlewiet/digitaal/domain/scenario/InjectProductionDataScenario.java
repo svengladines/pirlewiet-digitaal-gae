@@ -102,8 +102,7 @@ public class InjectProductionDataScenario extends Scenario {
 		
 		*/
 		
-		/*
-		// PaasKIKA 1	6/4/2021 - 11/04/2021
+		// PaasKIKA 1	5/4/2021 - 10/04/2021
 		{
 			String name = "PaasKIKA 1";
 			Holiday holiday
@@ -116,12 +115,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.date( "06/04/2021" ) );
+				start.setTime( Timing.moment( "05/04/2021 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.date( "11/04/2021" ) );
+				end.setTime( Timing.moment( "10/04/2021 23:00" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -129,9 +128,8 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setStart( start.getTime() );
 				holiday.setEnd( end.getTime() );
 				holiday.setDeadLine( new Date() );
-				
+				holiday.setUuid( UUID.randomUUID().toString() );				
 				holiday = holidayRepository.saveAndFlush( holiday );
-				holiday.setUuid( UUID.randomUUID().toString() );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
 			
@@ -152,12 +150,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.date( "13/04/2021" ) );
+				start.setTime( Timing.moment( "12/04/2021 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.date( "18/04/2021" ) );
+				end.setTime( Timing.moment( "16/04/2021 23:00" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -174,7 +172,7 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 		
-		// PaasGezins --- 14/04/2021 - 18/04/2021
+		// PaasGezins --- 13/04/2021 - 17/04/2021
 		{
 			String name = "PaasGEZINS";
 			Holiday holiday
@@ -187,12 +185,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.date( "14/04/2021" ) );
+				start.setTime( Timing.moment( "13/04/2021 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.date( "18/04/2021" ) );
+				end.setTime( Timing.moment( "17/04/2021 23:00" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -209,7 +207,7 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 		
-		// VOV 1 --- 11/5 - 15/5
+		// VOV 1 --- 17/5 - 21/5
 		{
 			String name = "VOV 1";
 			Holiday holiday
@@ -222,12 +220,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.date( "11/05/2021" ) );
+				start.setTime( Timing.moment( "17/05/2021 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.date( "15/05/2021" ) );
+				end.setTime( Timing.moment( "21/05/2021 23:00" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -243,8 +241,8 @@ public class InjectProductionDataScenario extends Scenario {
 			}
 			
 		}
-		*/
 		
+		/*
 		// Zomer 2021 
 		
 				// VOV 2 04/07/2021 - 10/07/2021
@@ -260,12 +258,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.date( "04/07/2021" ) );
+						start.setTime( Timing.moment( "04/07/2021" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.date( "10/07/2021" ) );
+						end.setTime( Timing.moment( "10/07/2021" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -295,12 +293,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.date( "22/07/2021" ) );
+						start.setTime( Timing.moment( "22/07/2021" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.date( "29/07/2021" ) );
+						end.setTime( Timing.moment( "29/07/2021" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -330,12 +328,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.date( "12/07/2021" ) );
+						start.setTime( Timing.moment( "12/07/2021" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.date( "18/07/2021" ) );
+						end.setTime( Timing.moment( "18/07/2021" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -365,12 +363,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.date( "01/08/2021" ) );
+						start.setTime( Timing.moment( "01/08/2021" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.date( "08/08/2021" ) );
+						end.setTime( Timing.moment( "08/08/2021" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -400,12 +398,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.date( "09/08/2021" ) );
+						start.setTime( Timing.moment( "09/08/2021" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.date( "16/08/2021" ) );
+						end.setTime( Timing.moment( "16/08/2021" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -435,12 +433,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.date( "17/08/2021" ) );
+						start.setTime( Timing.moment( "17/08/2021" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.date( "20/08/2021" ) );
+						end.setTime( Timing.moment( "20/08/2021" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -456,7 +454,7 @@ public class InjectProductionDataScenario extends Scenario {
 					}
 					
 				}
-		
+		*/
 	}
 	
 }
