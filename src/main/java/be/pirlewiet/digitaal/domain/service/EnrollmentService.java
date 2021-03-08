@@ -6,6 +6,7 @@ import static be.occam.utils.javax.Utils.map;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -24,6 +25,7 @@ import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.ApplicationManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
+import be.pirlewiet.digitaal.domain.people.HolidayManager;
 import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
@@ -33,8 +35,8 @@ import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Participant;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
@@ -65,6 +67,9 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	ApplicationManager applicationManager;
 	
 	@Resource
+	HolidayManager holidayManager;
+	
+	@Resource
 	OrganisationManager organisationManager;
 	
 	@Resource
@@ -88,12 +93,13 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		Result<List<Result<EnrollmentDTO>> > result
 			= new Result<List<Result<EnrollmentDTO>> >();
 		
+		Application application = this.applicationManager.findOne( applicationUuid );
+		
 		List<Enrollment> enrollments
 			= this.guard().enrollmentManager.findByApplicationUuid( applicationUuid );
 		
 		List<Result<EnrollmentDTO>> individualResults
 			= list();
-		
 		
 		boolean allOK 
 			= true;
@@ -108,15 +114,24 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			List<QuestionAndAnswer> medicals
 				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
 			
-			Result<List<Result<QuestionAndAnswer>>> medicalResult
-				= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), medicals, Tags.TAG_MEDIC );
+			Set<Holiday> holidays
+				= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 			
 			// assume all good untill proven otherwise
 			individualResult.setValue( Value.OK );
+		
+			// 	for KIKA, Tika & VOV, medical lists are mandatory
+			//  Request to make it again only mandatory for those holidays (Anke, March - 2021) 
+			if ( this.holidayManager.hasType( holidays, HolidayType.Kika ) || this.holidayManager.hasType( holidays, HolidayType.Tika ) || this.holidayManager.hasType( holidays, HolidayType.Vov ) ) {
+				
+				Result<List<Result<QuestionAndAnswer>>> medicalResult
+					= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), medicals, Tags.TAG_MEDIC );
 			
-			if ( ! Result.Value.OK.equals( medicalResult.getValue() ) ) {
-				individualResult.setValue( Result.Value.NOK );
-				errorCodes.append( ErrorCodes.PARTICIPANT_MEDIC_QUESTION_MISSING.getCode() ).append( "|" );
+				if ( ! Result.Value.OK.equals( medicalResult.getValue() ) ) {
+					individualResult.setValue( Result.Value.NOK );
+					errorCodes.append( ErrorCodes.PARTICIPANT_MEDIC_QUESTION_MISSING.getCode() ).append( "|" );
+				}
+				
 			}
 			
 			List<QuestionAndAnswer> history
