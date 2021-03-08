@@ -70,7 +70,7 @@ public class EnrollmentController {
 				@RequestBody EnrollmentStatus enrollmentStatus,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		logger.info("application.updateStatus");
+		logger.debug("application.updateStatus");
 		
 		Organisation actor
 			= this.doorMan.guard().whoHasID(  pwtid  );
