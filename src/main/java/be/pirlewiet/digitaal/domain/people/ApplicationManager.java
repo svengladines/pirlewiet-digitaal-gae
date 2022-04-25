@@ -24,12 +24,14 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Enrollment;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Holiday;
+import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
@@ -181,35 +183,6 @@ public class ApplicationManager {
 	
 	   public Application create( Application application, Organisation actor ) {
 	    	
-	    	String email
-	    		= actor.getEmail();
-	    	
-	    	/*
-	    	if ( isEmpty( application.getName() ) ) {
-	    		throw new PirlewietException( ErrorCodes.ORGANISATION_NAME_MISSING, "Vul het veld 'naam' in." );
-	    	}
-	    	
-	    	if ( isEmpty( email ) ) {
-	    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'e-mail' in." );
-	    	}
-	    	
-	    	if ( isEmpty( application.getPhone() ) ) {
-	    		throw new PirlewietException( ErrorCodes.ORGANISATION_PHONE_MISSING, "Vul het veld 'telefoon' in." );
-	    	}
-	    	
-	    	if ( isEmpty( application.getCity() ) ) {
-	    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'gemeente' in." );
-	    	}
-	    	
-	    	if ( isEmpty( organisation.getCode() ) ) {
-	    	
-		    	String code 
-		    		= this.buitenWipper.guard().uniqueCode();
-		    	
-		    	organisation.setCode( code );
-		    	
-	    	}
-	    	*/
 	    	application.setYear( this.currentYear );
 	    	application.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
 	    	application.setHolidayUuids( "" );
@@ -224,18 +197,11 @@ public class ApplicationManager {
 	    	
 	    	List<QuestionAndAnswer> appQList
 				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
-		
+	    	
 			for ( QuestionAndAnswer qna : appQList ) {
 				qna.setEntityUuid( created.getUuid() );
 				this.questionAndAnswerManager.create( qna );
 			}
-	    	
-	    	/*
-	    	if ( sendEmail ) {
-	    		this.sendCreatedEmailToOrganisation( saved );
-	    		this.sendCreatedEmailToPirlewiet( saved );
-	    	}
-	    	*/
 	    	
 	    	return created;
 	    	
@@ -256,6 +222,8 @@ public class ApplicationManager {
 			StringBuilder names
 				= new StringBuilder();
 			
+			List<Holiday> loaded = list();
+			
 			for ( int i=0; i < holidays.size(); i++ ) {
 				
 				Holiday holiday = holidays.get( i );
@@ -266,6 +234,8 @@ public class ApplicationManager {
 					= this.holidayManager.findOneByUuid( holiday.getUuid() );
 				
 				logger.info("found holiday [{}], adding...", one.getName() );
+				
+				loaded.add( one );
 				
 				names.append( one.getName() );
 				
@@ -280,6 +250,16 @@ public class ApplicationManager {
 			application.setHolidayNames( names.toString() );
 			
 			application = this.applicationRepository.saveAndFlush( application );
+			
+			// for CAVASOL, add question(s) about mobility (family...car) (2022)
+			if ( this.holidayManager.hasType( loaded, HolidayType.CavaSol ) ) {
+				logger.info( "CAVASOL; add questions...");
+				QuestionAndAnswer familycar
+					= QuestionSheet.template().getQuestion(QIDs.QID_FAMILY_CAR);
+				familycar.setEntityUuid( application.getUuid() );
+				logger.info( "CAVASOL; add question about family car for application [{}]", application.getUuid() );
+				this.questionAndAnswerManager.create( familycar );
+			}
 			
 		}
 		

@@ -23,4 +23,6 @@ public class QIDs {
 	public static String QID_ADULTERY_WITH = "adultery-with";
 	public static String QID_ADULTERY_WITH_WHO = "adultery-with-who";
 	
+	public static String QID_FAMILY_CAR = "family-car";
+	
 }

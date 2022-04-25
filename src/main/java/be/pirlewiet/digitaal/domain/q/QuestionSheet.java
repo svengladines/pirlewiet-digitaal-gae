@@ -60,11 +60,17 @@ public class QuestionSheet {
 					new QuestionAndAnswer(18,QuestionType.Text, Tags.TAG_ADULTERY, QIDs.QID_ADULTERY_WITH_WHO, "Indien met partner/vriend(in), naam:" )
 		};
 		
+		QuestionAndAnswer[] mobility
+			= new QuestionAndAnswer[] {
+				new QuestionAndAnswer(19, QuestionType.YesNo, Tags.TAG_APPLICATION , QIDs.QID_FAMILY_CAR, "Rijdt de familie met de auto naar de vakantielocatie ?" ),
+	};
+		
 		templateVragen.addAll( Arrays.asList( medics ) );
 		templateVragen.addAll( Arrays.asList( fotos ) );
 		templateVragen.addAll( Arrays.asList( various ) );
 		templateVragen.addAll( Arrays.asList( history ) );
 		templateVragen.addAll( Arrays.asList( adultery ) );
+		templateVragen.addAll( Arrays.asList( mobility ) );
 		
 		return new QuestionSheet( templateVragen );
 		

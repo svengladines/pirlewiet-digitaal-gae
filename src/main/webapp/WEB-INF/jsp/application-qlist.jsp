@@ -49,6 +49,36 @@
 										</c:choose>
 										</div>
 								</c:if>
+								<c:if test="${question.tag eq 'mobility'}">
+									<div class="form-group">
+										<label class="col-sm-6 control-label">${question.question} (*)</label>
+										<c:choose>
+											<c:when test="${question.type eq 'YesNo'}">
+												<div class="col-sm-6">
+													<div class="checkbox">
+														<label>
+															<input type="radio" name="${question.uuid}" class="q" data-tag="${question.tag}" value="Y" ${question.answer eq 'Y' ? "checked='checked'" : ""}>&nbsp;Ja
+														</label>
+														&nbsp;&nbsp;&nbsp;
+														<label>
+															<input type="radio" name="${question.uuid}" class="q" data-tag="${question.tag}" value="N" ${question.answer eq 'N' ? "checked='checked'" : ""}>&nbsp;Neen
+														</label>
+													</div>
+												</div>
+											</c:when>
+											<c:when test="${question.type eq 'Text'}">
+												<div class="col-sm-3">
+													<input id="${question.uuid}" type="text" class="form-control q" data-tag="${question.tag}" value="${question.answer}"></input>
+												</div>
+											</c:when>
+											<c:when test="${question.type eq 'Area'}">
+												<div class="col-sm-6">
+													<textarea id="${question.uuid}" class="form-control q" rows="10" cols="64" data-tag="${question.tag}">${question.answer}</textarea>
+												</div>
+											</c:when>
+										</c:choose>
+										</div>
+								</c:if>
 						</c:forEach>
 							</form>
 					</div>

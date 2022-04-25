@@ -292,7 +292,9 @@ public class Mapper {
 					columns.add( answer( eQList.getQuestion( QIDs.QID_ADULTERY_WITH ) ) );
 					// AF = VOV Partner
 					columns.add( answer( eQList.getQuestion( QIDs.QID_ADULTERY_WITH_WHO ) ) );
-					// AG = comment					
+					// AG = mobility - family car
+					columns.add( answer( appQList.getQuestion( QIDs.QID_FAMILY_CAR ) ) );
+					// AH = comment					
 					columns.add( enrollment.getStatus().getComment() );
 					
 					mapped.add( columns.toArray( new String[] {} ) );

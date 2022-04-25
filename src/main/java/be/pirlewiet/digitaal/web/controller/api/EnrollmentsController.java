@@ -67,26 +67,6 @@ public class EnrollmentsController {
 			
 	}
 	
-	/*
-	
-	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
-	@ResponseBody
-	public ResponseEntity<List<Enrollment>> query( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		List<Enrollment> inschrijvingen
-			= new ArrayList<Enrollment>( );
-		
-		Organisation organisatie
-			= this.organisatie( request, pwtid );
-		
-		inschrijvingen.addAll( this.secretariaatsMedewerker.guard().actueleInschrijvingen( organisatie ) );
-		
-		return response( inschrijvingen, HttpStatus.OK );
-		
-	}
-	
-	*/
-	
 	@RequestMapping( value="/download", method = { RequestMethod.GET }, produces={ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" } )
 	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) EnrollmentStatus.Value status ) {
 		

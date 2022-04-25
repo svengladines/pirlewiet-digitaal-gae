@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.people;
 import static be.occam.utils.javax.Utils.set;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -182,7 +183,7 @@ public class HolidayManager {
 	
     }
     
-    public boolean hasType( Set<Holiday> holidays, HolidayType type ) {
+    public boolean hasType( Collection<Holiday> holidays, HolidayType type ) {
     	
     	boolean has 
     		= false;
