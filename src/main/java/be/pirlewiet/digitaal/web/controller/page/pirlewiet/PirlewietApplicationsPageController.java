@@ -70,8 +70,14 @@ public class PirlewietApplicationsPageController {
 			List<Result<EnrollmentDTO>> appEnrollments
 				= mappedResult.getObject().get( applicationUuid );
 			
-			for ( Result<EnrollmentDTO> enrollmentResult : appEnrollments ) {
-				applicationResult.getObject().getEnrollments().add( enrollmentResult.getObject() );
+			if ( appEnrollments != null ) {
+			
+				for ( Result<EnrollmentDTO> enrollmentResult : appEnrollments ) {
+					applicationResult.getObject().getEnrollments().add( enrollmentResult.getObject() );
+				}
+			}
+			else {
+				logger.warn( "application [{}]; appEnrollments is null", applicationUuid );
 			}
 			
 		}
