@@ -248,7 +248,7 @@ public class Mapper {
 					
 					List<QuestionAndAnswer> enrollmentVariousQuestions
 					// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
-						= enrollmentQuestionsMap.get( Tags.TAG_HISTORY );
+						= enrollmentQuestionsMap.get( Tags.TAG_PARTICIPANT );
 					
 					QuestionSheet appQList
 						= new QuestionSheet( applicationQuestions );
@@ -265,21 +265,21 @@ public class Mapper {
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_BILL ) ) );
 					
 					// S = medic
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDIC ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDIC ) ) );
 					// T = medic tel
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDIC_TEL ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDIC_TEL ) ) );
 					// U = sports
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SPORTS) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SPORTS) ) );
 					// V = game
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_GAME ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_GAME ) ) );
 					// W = wandelen
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_HIKE ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_HIKE ) ) );
 					// X = fietsen 
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_BIKE ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_BIKE ) ) );
 					// Y = zwemmen
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SWIM ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SWIM ) ) );
 					// Z = roken
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SMOKE ) ) );
+					//columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SMOKE ) ) );
 					// AA = aandachtspunten = 10
 					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_REMARKS ) ) );
 					// AB = medicijnen = 11

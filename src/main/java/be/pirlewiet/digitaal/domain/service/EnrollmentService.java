@@ -119,30 +119,16 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 			// assume all good untill proven otherwise
 			individualResult.setValue( Value.OK );
-		
-			// 	for KIKA, Tika & VOV, medical lists are mandatory
-			//  Request to make it again only mandatory for those holidays (Anke, March - 2021) 
-			if ( this.holidayManager.hasType( holidays, HolidayType.Kika ) || this.holidayManager.hasType( holidays, HolidayType.Tika ) || this.holidayManager.hasType( holidays, HolidayType.Vov ) ) {
-				
-				Result<List<Result<QuestionAndAnswer>>> medicalResult
-					= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), medicals, Tags.TAG_MEDIC );
 			
-				if ( ! Result.Value.OK.equals( medicalResult.getValue() ) ) {
-					individualResult.setValue( Result.Value.NOK );
-					errorCodes.append( ErrorCodes.PARTICIPANT_MEDIC_QUESTION_MISSING.getCode() ).append( "|" );
-				}
-				
-			}
-			
-			List<QuestionAndAnswer> history
-				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_HISTORY );
+			List<QuestionAndAnswer> participant
+				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_PARTICIPANT );
 		
-			Result<List<Result<QuestionAndAnswer>>> historyResult
-				= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), history, Tags.TAG_HISTORY );
+			Result<List<Result<QuestionAndAnswer>>> participantResult
+				= this.secretary.checkEnrollmentQuestionList( enrollment.getUuid(), participant, Tags.TAG_PARTICIPANT );
 		
-			if ( ! Result.Value.OK.equals( historyResult.getValue() ) ) {
+			if ( ! Result.Value.OK.equals( participantResult.getValue() ) ) {
 				individualResult.setValue( Result.Value.NOK );
-				errorCodes.append( ErrorCodes.PARTICIPANT_HISTORY_QUESTION_MISSING.getCode() ).append( "|" );
+				errorCodes.append( ErrorCodes.PARTICIPANT_QLIST_QUESTION_MISSING.getCode() ).append( "|" );
 			}
 			
 			if ( ! Value.OK.equals( individualResult.getValue() ) ) {

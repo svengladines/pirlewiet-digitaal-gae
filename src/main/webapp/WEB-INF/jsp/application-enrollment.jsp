@@ -136,7 +136,7 @@
 						</div>
 						
 								<c:forEach items="${qnaResult.object}" var="qna">
-									<c:if test="${qna.tag eq 'history'}">
+									<c:if test="${qna.tag eq 'participant'}">
 										<div class="form-group">
 											<label class="col-sm-6 control-label">${qna.question} (*)</label>
 											<c:choose>

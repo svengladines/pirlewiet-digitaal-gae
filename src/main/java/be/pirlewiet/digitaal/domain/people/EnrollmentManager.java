@@ -107,19 +107,10 @@ public class EnrollmentManager {
 		Enrollment created
 			= this.enrollmentRepository.saveAndFlush( toCreate );
 		
-		List<QuestionAndAnswer> medical
-			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_MEDIC );
-		
-		for ( QuestionAndAnswer qna : medical ) {
-			qna.setUuid( UUID.randomUUID().toString() );
-			qna.setEntityUuid( created.getUuid() );
-			this.questionAndAnswerManager.create( qna );
-		}
-		
-		List<QuestionAndAnswer> history
-			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_HISTORY );
+		List<QuestionAndAnswer> participant
+			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_PARTICIPANT );
 	
-		for ( QuestionAndAnswer qna : history ) {
+		for ( QuestionAndAnswer qna : participant ) {
 			qna.setUuid( UUID.randomUUID().toString() );
 			qna.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna );
@@ -139,7 +130,7 @@ public class EnrollmentManager {
 			logger.info( "VOV; adultery question list size is {}", adultery.size() );
 			for ( QuestionAndAnswer qna : adultery ) {
 				qna.setUuid( UUID.randomUUID().toString() );
-				qna.setTag( Tags.TAG_HISTORY );
+				qna.setTag( Tags.TAG_PARTICIPANT );
 				qna.setEntityUuid( created.getUuid() );
 				this.questionAndAnswerManager.create( qna );
 			}
