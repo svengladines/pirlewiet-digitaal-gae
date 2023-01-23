@@ -105,12 +105,6 @@
 								</div>
 						</div>
 						<div class="form-group">
-								<label for="participant-state-number" class="col-sm-4 control-label">Rijksregisternummer</label>
-								<div class="col-sm-6">
-									<input id="participant-state-number" name="pd-state-number" type="text" class="form-control" value="${enrollment.participant.stateNumber}"></input>
-								</div>
-						</div>
-						<div class="form-group">
 								<label for="address-zipcode" class="col-sm-4 control-label">PostCode (*)</label>
 								<div class="col-sm-4">
 									<input id="address-zipcode" name="pd-zip" type="text" class="form-control" value="${enrollment.address.zipCode}"></input>

@@ -88,7 +88,7 @@
 		<div class="row centered">
 		
 			<div>
-				<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even geduld dus nog...</span></button>
+				<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even geduld ...</span></button>
 			</div>
 			<br/>
 			
@@ -120,8 +120,8 @@
    			type: "get",
    			url:"/api/ping",
    			success: function( ix ) {
-   				//$jq("#goon").removeClass("hidden").removeProp("disabled").addClass("btn-success")
-   				//$jq("#goontext").html("Ga verder");
+   				$jq("#goon").removeClass("hidden").removeProp("disabled").addClass("btn-success")
+   				$jq("#goontext").html("Ga verder");
    			},
    			error: function(  jqXHR, textStatus, errorThrown ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-error");

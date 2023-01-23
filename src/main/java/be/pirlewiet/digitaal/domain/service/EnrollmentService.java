@@ -356,7 +356,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 				logger.info( "download - application [{}], now map", application.getUuid() );
 				
 				List<String[]> mapped
-					= this.mapper.asStrings( 
+					= this.mapper.asStrings(
 							application, 
 							enrollments,
 							null,
@@ -377,7 +377,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 		}
 		
-		bytes = this.mapper.asBytes( rows );
+		bytes = this.mapper.asBytes( rows, this.mapper.headers() );
 		
 		return bytes;
 		
@@ -544,7 +544,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 				logger.info( "download - application [{}], now map", application.getUuid() );
 				
 				List<String[]> mapped
-					= this.mapper.asStrings( 
+					= this.mapper.asStrings(
 							application, 
 							enrollments,
 							null,
@@ -565,7 +565,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 		}
 		
-		bytes = this.mapper.asBytes( rows );
+		bytes = this.mapper.asBytes( rows, this.mapper.headers() );
 		
 		return bytes;
 		

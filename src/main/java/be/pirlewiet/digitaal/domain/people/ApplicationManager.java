@@ -152,7 +152,7 @@ public class ApplicationManager {
 	public List<Application> findActiveByYear( ) {
 		
 		List<Application> byYear
-			= this.applicationRepository.findByYear( 2023 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+			= this.applicationRepository.findByYear( this.currentYear );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
 		List<Application> filtered
 			= list();
