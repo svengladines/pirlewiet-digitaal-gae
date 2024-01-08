@@ -18,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import be.occam.utils.javax.Utils;
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.people.AddressManager;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
@@ -66,7 +67,7 @@ public class Mapper {
 	@Resource
 	DoorMan doorMan;
 	
-	public List<String[]> asStrings( 
+	public List<String[]> asStrings(
 			Application application, 
 			Collection<Enrollment> enrollments,
 			EnrollmentStatus.Value status,
@@ -91,6 +92,7 @@ public class Mapper {
 					return mapped;
 				}
 			}
+			
 			
 			/*
 			Map<String,QuestionAndAnswer> questionMap
@@ -200,7 +202,7 @@ public class Mapper {
 						columns.add( isEmpty( participant.getPhone() ) ? "?"  : participant.getPhone() );
 						// E-MAIL
 						columns.add( participant.getEmail());
-						columns.add( isEmpty( participant.getStateNumber() ) ? "?"  : participant.getStateNumber() );
+						//columns.add( isEmpty( participant.getStateNumber() ) ? "?"  : participant.getStateNumber() );
 					}
 					
 					// NAAM DIENST
@@ -242,58 +244,34 @@ public class Mapper {
 						continue;
 					}
 				
-					List<QuestionAndAnswer> medicQuestions
-						// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
-						= enrollmentQuestionsMap.get( Tags.TAG_MEDIC );
-					
-					List<QuestionAndAnswer> enrollmentVariousQuestions
+					List<QuestionAndAnswer> participantQuestions
 					// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
-						= enrollmentQuestionsMap.get( Tags.TAG_HISTORY );
+						= enrollmentQuestionsMap.get( Tags.TAG_PARTICIPANT );
 					
 					QuestionSheet appQList
 						= new QuestionSheet( applicationQuestions );
-					
-					QuestionSheet eQList
-						 = new QuestionSheet( enrollmentVariousQuestions );
-					
-					QuestionSheet mQList
-						= new QuestionSheet( medicQuestions );
 					
 					// Q = contact
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_CONTACT ) ) );
 					// R = bill
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_BILL ) ) );
-					
-					// S = medic
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDIC ) ) );
-					// T = medic tel
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDIC_TEL ) ) );
-					// U = sports
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SPORTS) ) );
-					// V = game
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_GAME ) ) );
-					// W = wandelen
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_HIKE ) ) );
-					// X = fietsen 
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_BIKE ) ) );
-					// Y = zwemmen
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SWIM ) ) );
-					// Z = roken
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_SMOKE ) ) );
-					// AA = aandachtspunten = 10
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_REMARKS ) ) );
-					// AB = medicijnen = 11
-					columns.add( answer( mQList.getQuestion( QIDs.QID_MEDIC_MEDICINS ) ) );
-					// AC = foto's = 0
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_PHOTO ) ) );
-					// AD = eerder meegeweest ?
-					columns.add( answer( eQList.getQuestion( QIDs.QID_HISTORY ) ) );
+					
+					/////// vragenlijst deelnemer
+					QuestionSheet enrQList = new QuestionSheet( participantQuestions );
+					// xx = eerder meegeweest ?
+					columns.add( answer( enrQList.getQuestion( QIDs.QID_HISTORY ) ) );
+					// xx = spreekt nederlands
+					columns.add( answer( enrQList.getQuestion( QIDs.QID_MEDIC_DUTCH ) ) );
+					// xx = mobility - family car
+					columns.add( answer( enrQList.getQuestion( QIDs.QID_FAMILY_CAR ) ) );
+					// xx = aandachtspunten = 10
+					columns.add( answer( enrQList.getQuestion( QIDs.QID_MEDIC_REMARKS ) ) );
+					
 					// AE = VOV Partner
-					columns.add( answer( eQList.getQuestion( QIDs.QID_ADULTERY_WITH ) ) );
+					columns.add( answer( enrQList.getQuestion( QIDs.QID_ADULTERY_WITH ) ) );
 					// AF = VOV Partner
-					columns.add( answer( eQList.getQuestion( QIDs.QID_ADULTERY_WITH_WHO ) ) );
-					// AG = mobility - family car
-					columns.add( answer( appQList.getQuestion( QIDs.QID_FAMILY_CAR ) ) );
+					columns.add( answer( enrQList.getQuestion( QIDs.QID_ADULTERY_WITH_WHO ) ) );
 					// AH = comment					
 					columns.add( enrollment.getStatus().getComment() );
 					
@@ -374,6 +352,41 @@ public class Mapper {
 	}
 	
 	*/
+	
+	public String[] headers() {
+		
+		List<String> headers = Utils.list();
+		headers.add("Vakantie(s)");
+		headers.add("Datum inschrijving");
+		headers.add("Voornaam");
+		headers.add("Naam");
+		headers.add("Geslacht");
+		headers.add("Geboortedatum");
+		headers.add("Straat");
+		headers.add("Postcode");
+		headers.add("Gemeente");
+		headers.add("Telefoon");
+		headers.add("E-mail");
+		headers.add("Doorverwijzer");
+		headers.add("Contactpersoon");
+		headers.add("Adres doorverwijzer");
+		headers.add("Contactpersoon telefoon");
+		headers.add("Contactpersoon e-mail");
+		
+		headers.add("Contact via doorverwijzer?");
+		headers.add("Factuur");
+		headers.add("Mogen foto's?");
+		headers.add("Meegeweest ?");
+		headers.add("Nederlands?");
+		headers.add("Vervoer");
+		headers.add("Aandachtspunten");
+		headers.add("(Vov) Met vriend(in) ?");
+		headers.add("(Vov) Naam vriend(in)");
+		headers.add("Commentaar");
+		
+		return headers.toArray( new String[] {} );
+		
+	}
 	
 	public byte[] asBytes(List<String[]> data, String... headers) {
 

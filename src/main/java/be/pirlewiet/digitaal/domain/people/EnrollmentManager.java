@@ -22,6 +22,7 @@ import org.springframework.web.servlet.LocaleResolver;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
@@ -107,19 +108,10 @@ public class EnrollmentManager {
 		Enrollment created
 			= this.enrollmentRepository.saveAndFlush( toCreate );
 		
-		List<QuestionAndAnswer> medical
-			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_MEDIC );
-		
-		for ( QuestionAndAnswer qna : medical ) {
-			qna.setUuid( UUID.randomUUID().toString() );
-			qna.setEntityUuid( created.getUuid() );
-			this.questionAndAnswerManager.create( qna );
-		}
-		
-		List<QuestionAndAnswer> history
-			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_HISTORY );
+		List<QuestionAndAnswer> participant
+			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_PARTICIPANT );
 	
-		for ( QuestionAndAnswer qna : history ) {
+		for ( QuestionAndAnswer qna : participant ) {
 			qna.setUuid( UUID.randomUUID().toString() );
 			qna.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna );
@@ -134,15 +126,16 @@ public class EnrollmentManager {
 		// for VOV, add questions about partner (2018)
 		if ( this.holidayManager.hasType( holidays, HolidayType.Vov ) ) {
 			logger.info( "VOV; add questions...");
-			List<QuestionAndAnswer> adultery
-				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_ADULTERY );
-			logger.info( "VOV; adultery question list size is {}", adultery.size() );
-			for ( QuestionAndAnswer qna : adultery ) {
-				qna.setUuid( UUID.randomUUID().toString() );
-				qna.setTag( Tags.TAG_HISTORY );
-				qna.setEntityUuid( created.getUuid() );
-				this.questionAndAnswerManager.create( qna );
-			}
+			QuestionAndAnswer qna = QuestionSheet.template().getQuestion( QIDs.QID_ADULTERY_WITH );
+			qna.setUuid( UUID.randomUUID().toString() );
+			qna.setTag( Tags.TAG_PARTICIPANT );
+			qna.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna );
+			QuestionAndAnswer qna2 = QuestionSheet.template().getQuestion( QIDs.QID_ADULTERY_WITH_WHO );
+			qna2.setUuid( UUID.randomUUID().toString() );
+			qna2.setTag( Tags.TAG_PARTICIPANT );
+			qna2.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna2 );
 		}
 		
 		return created;

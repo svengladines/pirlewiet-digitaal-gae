@@ -145,8 +145,7 @@
 										</c:choose>
 										<br/><br/>
 										<i class="fa fa-user"></i>&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;<br/>
-										<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst</a><br/>													
-										<i class="fa fa-medkit"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche</a>											
+										<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="participant" data-attribute-uuid="${enrollment.uuid}">Vragenlijst</a><br/>													
 													
 										
 									</div>
@@ -162,15 +161,9 @@
 														&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;((<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<c:if test="${enrollment.applicationUuid != null }">(<a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</c:if>&nbsp;&nbsp;&nbsp;
 													</li>
 												</c:if>
-												<c:if test="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_HISTORY' )}">
+												<c:if test="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_QLIST' )}">
 													<li>
-														<a href="javascript:void(0);" class="todo" data-attribute-modal="history" data-attribute-uuid="${enrollment.uuid}">Vragenlijst invullen</a>											
-													</li>
-												</c:if>
-												<c:if test="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_MEDIC' )}">
-													<li>
-														<a href="javascript:void(0);" class="todo" data-attribute-modal="medical" data-attribute-uuid="${enrollment.uuid}">Medische fiche invullen</a><br/>
-														Opgelet: alle vragen uit de lijst moeten beantwoord worden. Vul eventueel "niet van toepassing" (NVT) in.											
+														<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" data-attribute-uuid="${enrollment.uuid}">Vragenlijst invullen</a>											
 													</li>
 												</c:if>
 												</ul>
@@ -316,7 +309,7 @@
 		};
 		
 		var saveParticipantList = function( id ) {
-			return saveQList( id, "history" );
+			return saveQList( id, "participant" );
 		};
 		
 		var saveQList = function( id, tag ) {
@@ -437,21 +430,12 @@
 					
 				});
 				
-				$jq("#q-save-medical").click( function( event ) {
+				$jq("#q-save-participant").click( function( event ) {
 					
 					clearStatus();
 					busyButton( $jq(this) );
 					
-					saveEnrollmentQList( "${application.uuid}", $jq(this).attr("data-attribute-uuid"), "medic" );
-					
-				});
-				
-				$jq("#q-save-history").click( function( event ) {
-					
-					clearStatus();
-					busyButton( $jq(this) );
-					
-					saveEnrollmentQList( "${application.uuid}", $jq(this).attr("data-attribute-uuid"), "history" );
+					saveEnrollmentQList( "${application.uuid}", $jq(this).attr("data-attribute-uuid"), "participant" );
 					
 				});
 				

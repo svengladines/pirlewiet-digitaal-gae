@@ -18,6 +18,7 @@ public class QIDs {
 	public static String QID_MEDIC_REMARKS = "remarks";
 	public static String QID_MEDIC_MEDICINS = "medicins";
 	public static String QID_MEDIC_MEDICINS_DETAIL = "medicins-detail";
+	public static String QID_MEDIC_DUTCH = "dutch";
 	
 	public static String QID_HISTORY = "history";
 	public static String QID_ADULTERY_WITH = "adultery-with";

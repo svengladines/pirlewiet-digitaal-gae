@@ -108,21 +108,13 @@ public class ApplicationPageModalsController {
 		
 			model.put( "enrollmentResult", enrollmentResult );
 			
-		} else if ( "medical".equals( q ) ) {
+		} else if ( "participant".equals( q ) ) {
 			
-			Result<List<QuestionAndAnswerDTO>> medicalResult 
-				= this.questionAndAnswerService.findByEntityAndTag( enrollmentUuid, Tags.TAG_MEDIC );
-			
-			model.put( "enrollmentUuid", enrollmentUuid );
-			model.put( "medicalResult", medicalResult );
-			
-		} else if ( "history".equals( q ) ) {
-			
-			Result<List<QuestionAndAnswerDTO>> medicalResult 
-				= this.questionAndAnswerService.findByEntityAndTag( enrollmentUuid, Tags.TAG_HISTORY );
+			Result<List<QuestionAndAnswerDTO>> participantResult 
+				= this.questionAndAnswerService.findByEntityAndTag( enrollmentUuid, Tags.TAG_PARTICIPANT );
 			
 			model.put( "enrollmentUuid", enrollmentUuid );
-			model.put( "historyResult", medicalResult );
+			model.put( "participantResult", participantResult );
 			
 		}
 		
