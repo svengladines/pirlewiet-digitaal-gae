@@ -43,7 +43,7 @@ public class QuestionSheet {
 		
 		QuestionAndAnswer[] various
 			= new QuestionAndAnswer[] {
-				new QuestionAndAnswer(1,QuestionType.Text, Tags.TAG_APPLICATION, QIDs.QID_SHARED_BILL, "Wie ontvangt de factuur ?" ),
+				new QuestionAndAnswer(1,QuestionType.Text, Tags.TAG_APPLICATION, QIDs.QID_SHARED_BILL, "Wie betaalt de factuur? (Naam ouder/volwassene/organisatie)" ),
 				new QuestionAndAnswer(2,QuestionType.YesNo, Tags.TAG_APPLICATION, QIDs.QID_SHARED_CONTACT, "Verdere contacten i.v.m. de vakantie verlopen via de doorverwijzer ?" ),
 				new QuestionAndAnswer(3,QuestionType.YesNo, Tags.TAG_APPLICATION, QIDs.QID_SHARED_PHOTO, "Mogen wij foto’s gebruiken waar de deelnemer herkenbaar op staat?" )
 		};
