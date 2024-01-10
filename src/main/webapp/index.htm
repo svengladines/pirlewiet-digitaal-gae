@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Pirlewiet Digitaal 2023</title>
+    <title>Pirlewiet Digitaal 2024</title>
     
     <!-- All theme and styling stuff -> pirlewiet.be -->
 
@@ -63,8 +63,8 @@
 		<div class="row centered">
 	
 			<i class="fa fa-calendar"></i>
-			<h1>Onze vakanties voor 2023</h1>
-			<img src="digitaal/resources/images/holidays-2023.jpg"/>
+			<h1>Onze vakanties voor 2024</h1>
+			<img src="digitaal/resources/images/holidays-2024.jpg"/>
 			<br/>
 		</div>
 		
@@ -88,7 +88,7 @@
 		<div class="row centered">
 		
 			<div>
-				<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even geduld ...</span></button>
+				<!-- <button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even geduld ...</span></button> -->
 			</div>
 			<br/>
 			
@@ -116,10 +116,11 @@
     		window.document.location = "/start.html";
     	});
 
+
    		$jq.ajax( {
    			type: "get",
    			url:"/api/ping",
-   			success: function( ix ) {
+   		 	success: function( ix ) {
    				$jq("#goon").removeClass("hidden").removeProp("disabled").addClass("btn-success")
    				$jq("#goontext").html("Ga verder");
    			},
