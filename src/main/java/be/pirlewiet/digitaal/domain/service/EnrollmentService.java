@@ -721,7 +721,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	@Transactional(readOnly=false)
 	public Result<EnrollmentDTO> updateStatus ( String uuid, EnrollmentStatus enrollmentStatus, Organisation actor ) {
 		
-		logger.info("application.updateStatus");
+		logger.debug("application.updateStatus");
 		
 		Result<EnrollmentDTO> result
 			= new Result<EnrollmentDTO>();
