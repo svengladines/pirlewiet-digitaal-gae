@@ -130,9 +130,9 @@ public class ApplicationManager {
 	
 	public List<Application> findByOrganisation( Organisation actor ) {
 		
-		logger.info( "find applications for organisation [{}] and year 2023", actor.getUuid() );
+		logger.info( "find applications for organisation [{}] and year 2024", actor.getUuid() );
 		List<Application> byOrganisationAndYear
-			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2023 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2024 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		
 		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
 		
@@ -251,7 +251,7 @@ public class ApplicationManager {
 			
 			application = this.applicationRepository.saveAndFlush( application );
 			
-			// for CAVASOL, add question(s) about mobility (family...car) (2023)
+			// for CAVASOL, add question(s) about mobility (family...car)
 			if ( this.holidayManager.hasType( loaded, HolidayType.CavaSol ) ) {
 				logger.info( "CAVASOL; add questions...");
 				QuestionAndAnswer familycar
