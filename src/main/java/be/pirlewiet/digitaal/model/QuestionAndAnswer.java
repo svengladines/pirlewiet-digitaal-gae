@@ -36,7 +36,7 @@ public class QuestionAndAnswer {
 	
 	protected QuestionType type;
 	
-	private String optionString;
+	//private String optionString;
 	
 	//@AlsoLoad("id")
 	//protected String oldId;
@@ -119,6 +119,7 @@ public class QuestionAndAnswer {
 		return options;
 	}
 	
+	/*
 	public String getOptionString() {
 		return optionString;
 	}
@@ -126,6 +127,7 @@ public class QuestionAndAnswer {
 	public void setOptionString(String optionString) {
 		this.optionString = optionString;
 	}
+	*/
 
 	public Integer getOrder() {
 		return order;

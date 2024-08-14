@@ -79,7 +79,7 @@ public class EnrollmentsController {
 			= this.enrollmentService.download( actor );
 	
 		String disp
-			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
+			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal_" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
 	
 		Map<String,String> headers
 			= new HashMap<String,String>();

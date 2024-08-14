@@ -87,7 +87,7 @@ public class QuestionAndAnswerManager {
     
   public QuestionAndAnswer create( QuestionAndAnswer toCreate ) {
     	
-	  serialize( toCreate );
+	  //serialize( toCreate );
 	  
 	  toCreate.setUuid( UUID.randomUUID().toString() );
 	  
@@ -122,6 +122,7 @@ public class QuestionAndAnswerManager {
     	
     	if ( QuestionType.MC.equals( questionAndAnswer.getType() ) ) {
     		
+    		/*
     		if ( ! Utils.isEmpty( questionAndAnswer.getOptionString() ) ) {
     			
     			StringTokenizer tok
@@ -137,6 +138,7 @@ public class QuestionAndAnswerManager {
     			}
     			
     		}
+    		*/
     		
     	}
     	
@@ -164,7 +166,7 @@ public class QuestionAndAnswerManager {
     				index++;
     				
     			}
-    			questionAndAnswer.setOptionString( b.toString() );
+    			//questionAndAnswer.setOptionString( b.toString() );
     			
     		}
     		

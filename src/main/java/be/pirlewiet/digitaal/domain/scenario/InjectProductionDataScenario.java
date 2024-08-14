@@ -99,11 +99,14 @@ public class InjectProductionDataScenario extends Scenario {
 			logger.info( "productiondata, pirlewiet existed, rename id field" );
 			this.organisationRepository.saveAndFlush( vzwPirlewiet );
 		}
-		
-	
+
+		*/
+
+		/*
+		// Voorjaar 2024
 		
 		{
-			String name = "PaasKIKA 1";
+			String name = "PaasKIKA";
 			Holiday holiday
 				= this.holidayRepository.findOneByName( name );
 			
@@ -114,12 +117,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.moment( "03/04/2022 08:00" ) );
+				start.setTime( Timing.moment( "01/04/2024 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.moment( "08/04/2022 23:00" ) );
+				end.setTime( Timing.moment( "06/04/2024 23:00" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -128,40 +131,6 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setEnd( end.getTime() );
 				holiday.setDeadLine( new Date() );
 				holiday.setUuid( UUID.randomUUID().toString() );				
-				holiday = holidayRepository.saveAndFlush( holiday );
-				
-				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-			
-			}
-			
-		}
-		
-		{
-			String name = "PaasKIKA 2";
-			Holiday holiday
-				= this.holidayRepository.findOneByName( name );
-			
-			if ( holiday == null ) {
-				
-				holiday = new Holiday();
-		
-				GregorianCalendar start
-					= new GregorianCalendar();
-				
-				start.setTime( Timing.moment( "10/04/2022 08:00" ) );
-				
-				GregorianCalendar end
-					= new GregorianCalendar();
-				
-				end.setTime( Timing.moment( "15/04/2022 23:00" ) );
-				
-				holiday.setName( name );
-				holiday.setPeriod( Period.Spring );
-				holiday.setType( HolidayType.Kika );
-				holiday.setStart( start.getTime() );
-				holiday.setEnd( end.getTime() );
-				holiday.setDeadLine( new Date() );
-				holiday.setUuid( UUID.randomUUID().toString() );
 				holiday = holidayRepository.saveAndFlush( holiday );
 				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
@@ -182,14 +151,15 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.moment( "12/04/2022 08:00" ) );
+				start.setTime( Timing.moment( "09/04/2024 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.moment( "16/04/2022 23:00" ) );
+				end.setTime( Timing.moment( "13/04/2024 23:00" ) );
 				
 				holiday.setName( name );
+
 				holiday.setPeriod( Period.Spring );
 				holiday.setType( HolidayType.Gezin );
 				holiday.setStart( start.getTime() );
@@ -217,12 +187,12 @@ public class InjectProductionDataScenario extends Scenario {
 				GregorianCalendar start
 					= new GregorianCalendar();
 				
-				start.setTime( Timing.moment( "16/05/2022 08:00" ) );
+				start.setTime( Timing.moment( "13/05/2024 08:00" ) );
 				
 				GregorianCalendar end
 					= new GregorianCalendar();
 				
-				end.setTime( Timing.moment( "20/05/2022 23:00" ) );
+				end.setTime( Timing.moment( "17/05/2024 23:00" ) );
 				
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -239,11 +209,9 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 
-		*/
-		
+		 */
 
-		// Zomer 2022 
-		
+		// Zomer 2024
 				// VOV 2
 				{
 					String name = "VOV 2";
@@ -257,12 +225,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.moment( "09/07/2022 08:00" ) );
+						start.setTime( Timing.moment( "8/07/2024 08:00" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.moment( "15/07/2022 23:00" ) );
+						end.setTime( Timing.moment( "12/07/2024 23:00" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -292,12 +260,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.moment( "13/07/2022 08:00" ) );
+						start.setTime( Timing.moment( "17/07/2024 08:00" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.moment( "20/07/2022 23:00" ) );
+						end.setTime( Timing.moment( "24/07/2024 23:00" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -327,12 +295,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.moment( "23/07/2022 08:00" ) );
+						start.setTime( Timing.moment( "11/08/2024 08:00" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.moment( "30/07/2022 23:00" ) );
+						end.setTime( Timing.moment( "17/08/2024 23:00" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -362,12 +330,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.moment( "01/08/2022 08:00" ) );
+						start.setTime( Timing.moment( "02/08/2024 08:00" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.moment( "08/08/2022 23:00" ) );
+						end.setTime( Timing.moment( "08/08/2024 23:00" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -397,12 +365,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.moment( "09/08/2022 08:00" ) );
+						start.setTime( Timing.moment( "09/08/2024 08:00" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.moment( "16/08/2022 23:00" ) );
+						end.setTime( Timing.moment( "15/08/2024 23:00" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -416,43 +384,8 @@ public class InjectProductionDataScenario extends Scenario {
 						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
 					
 					}
-					
 				}
-				
-				{
-					String name = "APi";
-					Holiday holiday
-						= this.holidayRepository.findOneByName( name );
 					
-					if ( holiday == null ) {
-						
-						holiday = new Holiday();
-				
-						GregorianCalendar start
-							= new GregorianCalendar();
-						
-						start.setTime( Timing.moment( "08/08/2022 08:00" ) );
-						
-						GregorianCalendar end
-							= new GregorianCalendar();
-						
-						end.setTime( Timing.moment( "14/08/2022 23:00" ) );
-						
-						holiday.setName( name );
-						holiday.setPeriod( Period.Summer );
-						holiday.setType( HolidayType.Api );
-						holiday.setStart( start.getTime() );
-						holiday.setEnd( end.getTime() );
-						holiday.setDeadLine( new Date() );
-						holiday.setUuid( UUID.randomUUID().toString() );
-						holiday = holidayRepository.saveAndFlush( holiday );
-						
-						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-					
-					}
-					
-				}
-				
 				{
 					String name = "CAVASOL";
 					Holiday holiday
@@ -465,12 +398,12 @@ public class InjectProductionDataScenario extends Scenario {
 						GregorianCalendar start
 							= new GregorianCalendar();
 						
-						start.setTime( Timing.moment( "15/08/2022 08:00" ) );
+						start.setTime( Timing.moment( "08/07/2024 08:00" ) );
 						
 						GregorianCalendar end
 							= new GregorianCalendar();
 						
-						end.setTime( Timing.moment( "19/08/2022 23:00" ) );
+						end.setTime( Timing.moment( "12/07/2024 23:00" ) );
 						
 						holiday.setName( name );
 						holiday.setPeriod( Period.Summer );
@@ -487,5 +420,4 @@ public class InjectProductionDataScenario extends Scenario {
 					
 				}
 	}
-	
 }

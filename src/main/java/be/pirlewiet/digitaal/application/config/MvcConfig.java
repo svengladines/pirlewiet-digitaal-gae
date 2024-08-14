@@ -2,6 +2,7 @@ package be.pirlewiet.digitaal.application.config;
 
 import java.util.Locale;
 
+import be.pirlewiet.digitaal.web.controller.page.pirlewiet.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +34,6 @@ import be.pirlewiet.digitaal.web.controller.page.OrganisationRegistrationPageCon
 import be.pirlewiet.digitaal.web.controller.page.OrganisationsPageController;
 import be.pirlewiet.digitaal.web.controller.page.StartPageController;
 import be.pirlewiet.digitaal.web.controller.page.UploadOrganisationsPageController;
-import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietApplicationsPageController;
-import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietEnrollmentPageController;
-import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietOrganisationPageController;
-import be.pirlewiet.digitaal.web.controller.page.pirlewiet.PirlewietOrganisationsPageController;
 
 @Configuration
 @EnableWebMvc
@@ -152,10 +149,20 @@ public class MvcConfig {
 		public PirlewietApplicationsPageController pirlewietApplicationsPageController() {
 			return new PirlewietApplicationsPageController();
 		}
+
+		@Bean
+		public PirlewietApplications2024PageController pirlewietApplications2024PageController() {
+			return new PirlewietApplications2024PageController();
+		}
 		
 		@Bean
 		public PirlewietEnrollmentPageController pirlewietEnrollmentPageController() {
 			return new PirlewietEnrollmentPageController();
+		}
+
+		@Bean
+		public PirlewietApplicationPageController pirlewietApplicationPageController() {
+			return new PirlewietApplicationPageController();
 		}
 	}
 	

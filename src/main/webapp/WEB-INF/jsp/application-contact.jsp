@@ -12,7 +12,7 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">	
-							<h2>Contactgegevens doorverwijzer</h2>
+							<h2>Contactpersoon van de organisatie bereikbaar tijdens de vakantie</h2>
 							
 							<p>
 								<strong>Opgelet!</strong> Zorg ervoor dat de persoon die je aanmeldt bereikbaar is tijdens de vakantie!

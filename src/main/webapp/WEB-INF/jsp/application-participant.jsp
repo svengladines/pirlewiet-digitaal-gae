@@ -7,7 +7,7 @@
 
 	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 				<c:set value="${applicationResult.object}" var="application"/>
-				<c:set value="${historyResult.object}" var="qna"/>
+				<c:set value="${participantResult.object}" var="qna"/>
 				
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -19,7 +19,7 @@
 						<form class="form-horizontal">
 						
 						<c:forEach items="${qna}" var="question">
-								<c:if test="${question.tag eq 'history'}">
+								<c:if test="${question.tag eq 'participant'}">
 									<div class="form-group">
 										<label class="col-sm-6 control-label">${question.question} (*)</label>
 										<c:choose>
@@ -66,7 +66,7 @@
 					<div class="modal-footer">
 						<div class="form-group">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
-							<button type="button" id="q-save-history" class="btn btn-primary" data-attribute-uuid="${enrollmentUuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+							<button type="button" id="q-save-participant" class="btn btn-primary" data-attribute-uuid="${enrollmentUuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
 							<span id ="q-status-application"></span>
 						</div>
 					</div>
