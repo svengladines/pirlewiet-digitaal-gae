@@ -2,8 +2,8 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CodeRequestsController {
 	private final static Logger logger 
 		= LoggerFactory.getLogger( CodeRequestsController.class );
 	
-	@Resource
+	@Autowired
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.POST)

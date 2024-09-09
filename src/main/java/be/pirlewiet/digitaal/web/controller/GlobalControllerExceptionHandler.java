@@ -4,8 +4,8 @@ import static be.occam.utils.spring.web.Controller.response;
 
 import java.util.Locale;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class GlobalControllerExceptionHandler {
 	private final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	MessageSource messageSource;
 	
     @ExceptionHandler(IllegalArgumentException.class)

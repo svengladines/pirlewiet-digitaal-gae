@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,16 +30,18 @@ import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrganisationManager {
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	protected Organisation pDiddy;
 	
-	@Resource
+	@Autowired
 	protected AddressManager addressManager;
 	
 	protected final Logger logger
@@ -63,13 +65,13 @@ public class OrganisationManager {
 		
 		};
 	
-	@Resource
+	@Autowired
 	protected OrganisationRepository organisationRepository;
 	
-	@Resource
+	@Autowired
 	DoorMan buitenWipper;
 	
-	@Resource
+	@Autowired
 	MailMan postBode;
 	
     public OrganisationManager() {

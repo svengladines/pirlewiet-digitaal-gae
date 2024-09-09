@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
@@ -25,10 +25,10 @@ import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 @Service
 public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service<HolidayDTO,Holiday> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	HolidayManager holidayManager;
 	
 	protected final Comparator<Holiday> chronological = new Comparator<Holiday>() {

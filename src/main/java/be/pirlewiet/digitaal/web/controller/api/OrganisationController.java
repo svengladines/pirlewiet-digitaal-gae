@@ -2,7 +2,7 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +28,10 @@ public class OrganisationController {
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	OrganisationService organisationService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
 	

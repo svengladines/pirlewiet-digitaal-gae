@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.web.controller.page;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +19,10 @@ public class OrganisationRegistrationPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( OrganisationRegistrationPageController.class );
 	
-	@Resource
+	@Autowired
 	OrganisationService organisationService;
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 

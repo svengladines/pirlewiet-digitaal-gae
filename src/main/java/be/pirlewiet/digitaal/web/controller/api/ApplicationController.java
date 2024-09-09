@@ -4,7 +4,7 @@ import static be.occam.utils.spring.web.Controller.response;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +36,13 @@ public class ApplicationController {
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	ApplicationService applicationService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	ApplicationManager intaker;
 	
 	@RequestMapping( value="/holidays", method = { RequestMethod.PUT } )

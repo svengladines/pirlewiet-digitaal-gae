@@ -5,12 +5,12 @@ import static be.occam.utils.spring.web.Controller.response;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,22 +35,19 @@ import be.pirlewiet.digitaal.web.util.ExcelImporter;
 @RequestMapping(value="/organisations")
 public class OrganisationsController {
 	
-	private final Logger logger 
-		= LoggerFactory.getLogger( OrganisationsController.class );
+	private final Logger logger = LoggerFactory.getLogger( OrganisationsController.class );
 	
-	@Resource
-	protected OrganisationService organisationService;
-	
-	@Resource
-	DoorMan doorMan;
-	
-	//@Resource
-	// Reducer reducer;
-	
-	protected final ExcelImporter excelImporter
-		= new ExcelImporter();
-	
-	@RequestMapping( method = { RequestMethod.GET} )
+	protected final OrganisationService organisationService;
+	protected final DoorMan doorMan;
+
+	@Autowired
+    public OrganisationsController(OrganisationService organisationService, DoorMan doorMan) {
+        this.organisationService = organisationService;
+        this.doorMan = doorMan;
+    }
+
+
+    @RequestMapping( method = { RequestMethod.GET} )
 	@ResponseBody
 	public ResponseEntity<Result<List<Result<OrganisationDTO>>>> query( @CookieValue(required=true, value="pwtid") String pwtid, HttpServletResponse response ) {
 		

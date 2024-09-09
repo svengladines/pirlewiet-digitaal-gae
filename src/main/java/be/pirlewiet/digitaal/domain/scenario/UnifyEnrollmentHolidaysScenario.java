@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,22 +28,22 @@ public class UnifyEnrollmentHolidaysScenario extends Scenario {
 	protected final Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	OrganisationService organisationService;
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
-	@Resource
+	@Autowired
 	HolidayService holidayService;
 	
-	@Resource
+	@Autowired
 	ApplicationService applicationService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public UnifyEnrollmentHolidaysScenario guard() {

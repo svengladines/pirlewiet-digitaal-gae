@@ -5,7 +5,9 @@ import static be.occam.utils.javax.Utils.list;
 import java.util.List;
 
 import be.pirlewiet.digitaal.domain.scenario.Scenario;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ScenarioRunner {
 	
 	protected List<Scenario> scenariosToRun

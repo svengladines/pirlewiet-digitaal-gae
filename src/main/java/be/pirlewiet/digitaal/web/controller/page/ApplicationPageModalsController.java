@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,25 +39,25 @@ public class ApplicationPageModalsController {
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	ApplicationService applicationService;
 	
-	@Resource
+	@Autowired
 	HolidayService holidayService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	PersonService personService;
 	
-	@Resource
+	@Autowired
 	ApplicationManager applicationManager;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerService questionAndAnswerService;
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )

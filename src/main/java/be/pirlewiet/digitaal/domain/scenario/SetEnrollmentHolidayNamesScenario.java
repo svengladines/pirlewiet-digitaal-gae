@@ -4,7 +4,7 @@ import static be.occam.utils.javax.Utils.isEmpty;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,22 +31,22 @@ public class SetEnrollmentHolidayNamesScenario extends Scenario {
 	protected final Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	OrganisationService organisationService;
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
-	@Resource
+	@Autowired
 	HolidayService holidayService;
 	
-	@Resource
+	@Autowired
 	ApplicationService applicationService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public SetEnrollmentHolidayNamesScenario guard() {

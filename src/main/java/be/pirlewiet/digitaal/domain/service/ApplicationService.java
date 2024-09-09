@@ -5,7 +5,7 @@ import static be.occam.utils.javax.Utils.list;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,19 +33,19 @@ import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 @Service
 public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Service<ApplicationDTO,Application> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	ApplicationManager applicationManager;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	HolidayManager holidayManager;
 	
-	@Resource
+	@Autowired
 	Secretary secretary;
 	
 	@Override

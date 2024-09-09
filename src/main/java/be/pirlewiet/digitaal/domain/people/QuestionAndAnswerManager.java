@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,9 @@ import be.occam.utils.javax.Utils;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.repository.impl.QuestionAndAnswerRepositoryObjectify;
+import org.springframework.stereotype.Component;
 
+@Component
 public class QuestionAndAnswerManager {
 	
 	protected final Logger logger
@@ -32,7 +34,7 @@ public class QuestionAndAnswerManager {
 		
 	};
 	
-	@Resource
+	@Autowired
 	protected QuestionAndAnswerRepositoryObjectify questionAndAnswerRepository;
 	
     public QuestionAndAnswerManager() {

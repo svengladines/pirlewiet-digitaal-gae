@@ -4,7 +4,7 @@ import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,10 @@ import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 @Service
 public class QuestionAndAnswerService extends be.pirlewiet.digitaal.domain.service.Service<QuestionAndAnswerDTO,QuestionAndAnswer> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
 	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );

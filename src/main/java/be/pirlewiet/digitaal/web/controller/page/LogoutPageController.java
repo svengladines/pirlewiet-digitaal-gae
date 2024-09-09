@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.web.controller.page;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class LogoutPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( LogoutPageController.class );
 	
-	@Resource
+	@Autowired
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.GET) 

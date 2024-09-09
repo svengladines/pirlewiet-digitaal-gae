@@ -11,13 +11,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
@@ -36,43 +37,40 @@ import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
-/*
- * 
- * 
- */
+@Component
 public class EnrollmentManager {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	protected EnrollmentRepository enrollmentRepository;
 	
-	@Resource
+	@Autowired
 	protected QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	protected HolidayManager holidayManager;
 	
-	@Resource
+	@Autowired
 	protected ApplicationManager applicationManager;
 	
-	@Resource
+	@Autowired
 	protected OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	protected PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	MailMan mailMan;
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	MessageSource messageSource;
 	
-	@Resource
+	@Autowired
 	LocaleResolver localeResolver;
 	
 	public EnrollmentManager( ) {

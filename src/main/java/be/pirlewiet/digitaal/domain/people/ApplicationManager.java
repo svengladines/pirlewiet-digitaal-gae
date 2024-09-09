@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,23 +39,25 @@ import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.springframework.stereotype.Component;
 
 /*
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
  * 
  */
+@Component
 public class ApplicationManager {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	MailMan mailMan;
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 
 	protected final Comparator<Application> mostRecentlySubmitted
@@ -106,22 +108,22 @@ public class ApplicationManager {
 	
 	protected final int currentYear;
 	
-	@Resource
+	@Autowired
 	protected ApplicationRepository applicationRepository;
 	
-	@Resource
+	@Autowired
 	protected HolidayManager holidayManager;
 	
-	@Resource
+	@Autowired
 	protected PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	protected QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	protected Secretary secretary;
 	
-	@Resource
+	@Autowired
 	protected EnrollmentManager enrollmentManager;
 	
 	public ApplicationManager( int currentYear ) {

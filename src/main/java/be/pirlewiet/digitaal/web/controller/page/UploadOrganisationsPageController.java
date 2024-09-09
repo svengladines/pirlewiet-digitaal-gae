@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.web.controller.page;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,10 @@ public class UploadOrganisationsPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( UploadOrganisationsPageController.class );
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.GET) 

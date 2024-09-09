@@ -1,8 +1,8 @@
-package be.pirlewiet.digitaal.web.controller;
+package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.googlecode.objectify.ObjectifyService;
 
 import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
 import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
@@ -32,26 +30,26 @@ public class ScenarioController {
 		= LoggerFactory.getLogger( ScenarioController.class );
 	
 	/*
-	@Resource
+	@Autowired
 	ReadyToRockScenario readyToRockScenario;
 	
-	@Resource
+	@Autowired
 	ReadyToRockOneScenario readyToRockOneScenario;
 	*/
 	
-	@Resource
+	@Autowired
 	InjectProductionDataScenario injectProductionDataScenario;
 	
-	@Resource
+	@Autowired
 	DeleteOldEntitiesScenario deleteOldEntitiesScenario;
 	
-	@Resource
+	@Autowired
 	SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario;
 	
-	@Resource
+	@Autowired
 	UnifyEnrollmentHolidaysScenario unifyEnrollmentHolidaysScenario;
 	
-	@Resource
+	@Autowired
 	ObjectifyScenario objectifyScenario;
 	
 	protected final ExcelImporter excelImporter

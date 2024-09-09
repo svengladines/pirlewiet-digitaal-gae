@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +27,16 @@ public class InjectProductionDataScenario extends Scenario {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 
-	@Resource
+	@Autowired
 	OrganisationRepository organisationRepository;
 	
-	@Resource
+	@Autowired
 	AddressRepository addressRepository;
 	
-	@Resource
+	@Autowired
 	HolidayRepository holidayRepository;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public InjectProductionDataScenario guard() {

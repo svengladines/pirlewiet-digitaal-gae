@@ -2,21 +2,21 @@ package be.pirlewiet.digitaal.domain.people;
 
 import java.util.Properties;
 
-import javax.annotation.Resource;
-import javax.mail.Transport;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
-
+import jakarta.mail.Transport;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MailMan {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	JavaMailSender javaMailSender;
 	
 	public boolean deliver( MimeMessage mimeMessage ) {
@@ -26,7 +26,7 @@ public class MailMan {
 			// SGL| doesn't seem to work ... tries SMTP
 			// this.javaMailSender.send( mimeMessage ); 
 			Transport.send( mimeMessage );
-			logger.info( "sent email to {}", (Object) mimeMessage.getRecipients(  RecipientType.TO ) );
+			logger.info( "sent email to {}", (Object) mimeMessage.getRecipients(  MimeMessage.RecipientType.TO ) );
 			return true;
 			
 		}

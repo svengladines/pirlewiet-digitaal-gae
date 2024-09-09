@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,13 +38,13 @@ public class EnrollmentsController {
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	//@Resource
+	//@Autowired
 	Mapper mapper;
 	
 	@RequestMapping( method = { RequestMethod.POST } )

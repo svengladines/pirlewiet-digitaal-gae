@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,34 +51,34 @@ import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 @Service
 public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Service<EnrollmentDTO,Enrollment> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	EnrollmentManager enrollmentManager;
 	
-	@Resource
+	@Autowired
 	PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	AddressManager addressManager;
 	
-	@Resource
+	@Autowired
 	ApplicationManager applicationManager;
 	
-	@Resource
+	@Autowired
 	HolidayManager holidayManager;
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	Secretary secretary;
 	
-	@Resource
+	@Autowired
 	Mapper mapper;
 	
 	@Override

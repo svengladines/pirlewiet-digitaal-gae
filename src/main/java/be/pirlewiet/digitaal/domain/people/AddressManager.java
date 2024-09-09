@@ -5,7 +5,7 @@ import static be.occam.utils.javax.Utils.isEmpty;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,16 +15,18 @@ import be.pirlewiet.digitaal.domain.exception.IncompleteObjectException;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.repository.AddressRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AddressManager {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	AddressRepository addressRepository;
 	
 	public Address create( Address address ) {

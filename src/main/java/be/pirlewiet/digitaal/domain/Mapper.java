@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -46,25 +46,25 @@ public class Mapper {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	AddressManager addressManager;
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	HolidayService holidayService;
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
 	public List<String[]> asStrings(

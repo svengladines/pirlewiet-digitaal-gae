@@ -7,11 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -25,30 +23,33 @@ import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.springframework.stereotype.Component;
 
+import jakarta.mail.internet.MimeMessage;
+
+@Component
 public class DoorMan {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
-	protected OrganisationRepository organisationRepository;
-	
-	@Resource
-	protected DataGuard dataGuard;
-	
-	@Resource
-	JavaMailSender javaMailSender;
-	
-	@Resource
-	MailMan postBode;
-	
-	@Resource
-	CodeMan codeMan;
-	
-	@Resource
-	Organisation pDiddy;
-	
+	protected final OrganisationRepository organisationRepository;
+	protected final DataGuard dataGuard;
+	protected final JavaMailSender javaMailSender;
+	protected final MailMan postBode;
+	protected final CodeMan codeMan;
+	protected final Organisation pDiddy;
+
+	@Autowired
+    public DoorMan(OrganisationRepository organisationRepository, DataGuard dataGuard, JavaMailSender javaMailSender, MailMan postBode, CodeMan codeMan, Organisation pDiddy) {
+        this.organisationRepository = organisationRepository;
+        this.dataGuard = dataGuard;
+        this.javaMailSender = javaMailSender;
+        this.postBode = postBode;
+        this.codeMan = codeMan;
+        this.pDiddy = pDiddy;
+    }
+
     public DoorMan guard() {
     	this.dataGuard.guard();
     	return this;
@@ -193,7 +194,7 @@ public class DoorMan {
 		
 	}
 	
-	protected MimeMessage formatCodeRequestMessages( Organisation organisatie, String email, String code ) {
+	protected MimeMessage formatCodeRequestMessages(Organisation organisatie, String email, String code ) {
 		
 		MimeMessage message
 			= null;

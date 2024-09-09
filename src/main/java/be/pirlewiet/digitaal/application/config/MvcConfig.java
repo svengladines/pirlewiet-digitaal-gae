@@ -13,10 +13,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import be.pirlewiet.digitaal.web.controller.CodesController;
+import be.pirlewiet.digitaal.web.controller.api.CodesController;
 import be.pirlewiet.digitaal.web.controller.GlobalControllerExceptionHandler;
-import be.pirlewiet.digitaal.web.controller.PingController;
-import be.pirlewiet.digitaal.web.controller.ScenarioController;
+import be.pirlewiet.digitaal.web.controller.api.PingController;
+import be.pirlewiet.digitaal.web.controller.api.ScenarioController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationController;
 import be.pirlewiet.digitaal.web.controller.api.ApplicationsController;
 import be.pirlewiet.digitaal.web.controller.api.CodeRequestsController;
@@ -82,225 +82,23 @@ public class MvcConfig {
 	*/
 	
 	@Configuration
-	public static class PageControllerConfig {
-		
-		@Bean
-		public StartPageController pageController() {
-			
-			return new StartPageController();
-			
-		}
-		
-		@Bean
-		public OrganisationPageController organisationPageController() {
-			return new OrganisationPageController();
-		}
-		
-		@Bean
-		public OrganisationRegistrationPageController organisationRegistrationPageController() {
-			return new OrganisationRegistrationPageController();
-		}
-		
-		@Bean
-		public ApplicationsPageController applicationsPageController() {
-			return new ApplicationsPageController();
-		}
-		
-		@Bean
-		public ApplicationPageController applicationPageController() {
-			return new ApplicationPageController();
-		}
-		
-		@Bean
-		public ApplicationPageModalsController applicationPageModalsController() {
-			return new ApplicationPageModalsController();
-		}
-		
-		@Bean
-		public OrganisationsPageController organisationsPageController() {
-			return new OrganisationsPageController();
-		}
-		
-		@Bean
-		public LogoutPageController logOutPageController() {
-			return new LogoutPageController();
-		}
-		
-		@Bean
-		public UploadOrganisationsPageController uploadOrganisationsPageController() {
-			return new UploadOrganisationsPageController();
-		}
-		
-		/*
-		 * Pirlewiet
-		 * 
-		 */
-		@Bean
-		public PirlewietOrganisationsPageController pirlewietOrganisationsPageController() {
-			return new PirlewietOrganisationsPageController();
-		}
-		
-		@Bean
-		public PirlewietOrganisationPageController pirlewietOrganisationPageController() {
-			return new PirlewietOrganisationPageController();
-		}
-		
-		@Bean
-		public PirlewietApplicationsPageController pirlewietApplicationsPageController() {
-			return new PirlewietApplicationsPageController();
-		}
-
-		@Bean
-		public PirlewietApplications2024PageController pirlewietApplications2024PageController() {
-			return new PirlewietApplications2024PageController();
-		}
-		
-		@Bean
-		public PirlewietEnrollmentPageController pirlewietEnrollmentPageController() {
-			return new PirlewietEnrollmentPageController();
-		}
-
-		@Bean
-		public PirlewietApplicationPageController pirlewietApplicationPageController() {
-			return new PirlewietApplicationPageController();
-		}
-	}
-	
-	@Configuration
 	public static class ApiControllerConfig {
-		
-		@Bean
-		public OrganisationsController organisationsController() {
-			
-			return new OrganisationsController();
-			
+
+		@Configuration
+		public static class FormatConfig {
+
+			@Bean
+			DateFormatter dateFormatter() {
+
+				DateFormatter dateFormatter
+						= new DateFormatter();
+
+				dateFormatter.setPattern("dd/MM/yyyy");
+
+				return dateFormatter;
+
+			}
 		}
-		
-		@Bean
-		public MyOrganisationController myOrganisationController() {
-			
-			return new MyOrganisationController();
-			
-		}
-		
-		@Bean
-		public OrganisationController organisationController() {
-			
-			return new OrganisationController();
-			
-		}
-		
-		@Bean
-		public PingController pingController() {
-			
-			return new PingController();
-			
-		}
-		
-		@Bean
-		public CodesController codesController() {
-			
-			return new CodesController();
-			
-		}
-		
-		@Bean
-		public ApplicationsController applicationsController() {
-			return new ApplicationsController();
-		}
-		
-		@Bean
-		public ApplicationController applicationController() {
-			return new ApplicationController();
-		}
-		
-		@Bean
-		public EnrollmentsController enrollmentsController() {
-			
-			return new EnrollmentsController();
-			
-		}
-		
-		@Bean
-		public EnrollmentController enrollmentController() {
-			
-			return new EnrollmentController();
-			
-		}
-		
-		@Bean
-		public CodeRequestsController codeRequestsController() {
-			return new CodeRequestsController();
-		}
-		
-		@Bean
-		public ScenarioController scenarioController() {
-			
-			return new ScenarioController();
-			
-		}
-		
-		/*
-		
-		@Bean
-		public ApplicationController inschrijvingController() {
-			
-			return new ApplicationController();
-			
-		}
-		
-		@Bean
-		public EnrollmentController enrollmentController() {
-			
-			return new EnrollmentController();
-			
-		}
-		
-		@Bean
-		public ParticipantController deelnemerController() {
-			
-			return new ParticipantController();
-			
-		}
-		
-		@Bean
-		public ScenarioController scenarioController() {
-			
-			return new ScenarioController();
-			
-		}
-		
-		@Bean
-		public PDController pdController() {
-			
-			return new PDController();
-			
-		}
-		*/
-		
-		@Bean
-		GlobalControllerExceptionHandler globalControllerExceptionHandler() {
-			return new GlobalControllerExceptionHandler();
-		}
-		
-		
-	}
-	
-	@Configuration
-	public static class FormatConfig {
-		
-		@Bean
-		DateFormatter dateFormatter() {
-			
-			DateFormatter dateFormatter
-				= new DateFormatter();
-			
-			dateFormatter.setPattern("dd/MM/yyyy");
-			
-			return dateFormatter;
-			
-		}
-	}
 	
 	/*
 	@Bean
@@ -319,5 +117,6 @@ public class MvcConfig {
 		
 	}
 	*/
+	}
 	
 }

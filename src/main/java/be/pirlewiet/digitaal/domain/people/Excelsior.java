@@ -7,10 +7,11 @@ import static be.occam.utils.javax.Utils.trim;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
@@ -20,12 +21,13 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 import be.pirlewiet.digitaal.web.util.Tuple;
 
+@Component
 public class Excelsior {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource 
+	@Autowired 
 	protected final ExcelImporter excelImporter
 		= new ExcelImporter();
 	
