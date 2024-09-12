@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="default">
+        <appender name="LOGSTASH" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdc>true</includeMdc>
+                <!-- Prevent HOSTNAME field in the logging output -->
+                <includeContext>false</includeContext>
+                <!-- Add git build info -->
+                <customFields>
+                    {
+                    "build_version":"@project.version@",
+                    "git_commit":"@git.commit.id.abbrev@"
+                    }
+                </customFields>
+                <fieldNames>
+                    <tags>log_tags</tags>
+                    <levelValue>[ignore]</levelValue>
+                </fieldNames>
+            </encoder>
+        </appender>
+        <root level="info">
+            <appender-ref ref="LOGSTASH"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <Pattern>
+                    %d{HH:mm:ss.SSS} [%thread] %-5level [%X{remote_user}] %logger{36} - %msg%n
+                </Pattern>
+            </layout>
+        </appender>
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="be.occam" level="debug" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="org.springframework.web" level="info" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+</configuration>

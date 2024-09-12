@@ -1,11 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>be.pirlewiet</groupId>
 	<artifactId>pirlewiet-digitaal-gae</artifactId>
 	<version>1.0-LATEST-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>pirlewiet-digitaal-gae</name>
 	<url>http://pirlewiet-digitaal.appspot.com</url>
@@ -18,7 +17,8 @@
 	</parent>
 
   <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  <start-class>be.pirlewiet.digitaal.PirlewietDigitaalApplication</start-class>
       <cglib.version>2.2.2</cglib.version>
       <hibernate.version>4.1.9.Final</hibernate.version>
       <servlet-api.version>3.0.1</servlet-api.version>
@@ -41,6 +41,33 @@
 	</dependencyManagement>
 	
 	<dependencies>
+
+		<!-- spring boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
@@ -190,7 +217,7 @@
 	            <version>2.2.0</version>
 	            <configuration>
 	                <projectId>pirlewiet-digitaal</projectId>
-	                <version>2021</version>
+	                <version>2024</version>
 	            </configuration>
 	        </plugin>
 		</plugins>

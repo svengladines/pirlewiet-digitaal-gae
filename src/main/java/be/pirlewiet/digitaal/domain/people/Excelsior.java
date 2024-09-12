@@ -24,12 +24,8 @@ import be.pirlewiet.digitaal.web.util.Tuple;
 @Component
 public class Excelsior {
 	
-	protected final Logger logger
-		= LoggerFactory.getLogger( this.getClass() );
-	
-	@Autowired 
-	protected final ExcelImporter excelImporter
-		= new ExcelImporter();
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
+	protected final ExcelImporter excelImporter = new ExcelImporter();
 	
 	public List<String[]> toRows( MultipartFile file ) {
 		

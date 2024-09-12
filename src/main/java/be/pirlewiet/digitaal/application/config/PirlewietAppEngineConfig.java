@@ -15,8 +15,6 @@ public class PirlewietAppEngineConfig {
 	final static String JPA_PKG = "be.pirlewiet.digitaal";
 	
 	@Configuration
-	@Profile(ConfigurationProfiles.PRODUCTION)
-	//@EnableJpaRepositories(JPA_PKG)
 	static class AppEngineConfig {
 		
 		@Bean

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.mail.internet.MimeMessage;
 
@@ -53,7 +54,7 @@ public class EnrollmentManager {
 	protected HolidayManager holidayManager;
 	
 	@Autowired
-	protected ApplicationManager applicationManager;
+	protected ApplicationRepository applicationRepository;
 	
 	@Autowired
 	protected OrganisationManager organisationManager;
@@ -116,7 +117,7 @@ public class EnrollmentManager {
 		}
 		
 		Application application
-			= this.applicationManager.findOne( created.getApplicationUuid() );
+			= this.applicationRepository.findByUuid(created.getApplicationUuid());
 		
 		Set<Holiday> holidays
 			= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
@@ -264,7 +265,7 @@ public class EnrollmentManager {
 			= this.enrollmentRepository.saveAndFlush( toUpdate );
 		
 		Application application
-			= this.applicationManager.findOne( updated.getApplicationUuid() );
+			= this.applicationRepository.findByUuid(updated.getApplicationUuid());
 		
 		Person contact
 			= this.personManager.findOneByUuid( application.getContactPersonUuid() );

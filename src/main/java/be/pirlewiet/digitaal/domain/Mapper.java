@@ -39,30 +39,13 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.model.Tags;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class Mapper {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
-	
-	@Autowired
-	PersonManager personManager;
-	
-	@Autowired
-	AddressManager addressManager;
-	
-	@Autowired
-	OrganisationManager organisationManager;
-	
-	@Autowired
-	QuestionAndAnswerManager questionAndAnswerManager;
-	
-	@Autowired
-	HolidayService holidayService;
-	
-	@Autowired
-	EnrollmentService enrollmentService;
 	
 	@Autowired
 	DoorMan doorMan;

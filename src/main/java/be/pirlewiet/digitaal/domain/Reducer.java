@@ -1,7 +1,9 @@
 package be.pirlewiet.digitaal.domain;
 
 import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Reducer {
 	
 	public void reduce( OrganisationDTO organisation ) {
