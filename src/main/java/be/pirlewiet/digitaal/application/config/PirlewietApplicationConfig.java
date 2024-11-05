@@ -75,18 +75,6 @@ public class PirlewietApplicationConfig {
 	public final static String EMAIL_ADDRESS = "pirlewiet.digitaal@gmail.com";
 	
 	@Configuration
-	@Profile({ConfigurationProfiles.PRODUCTION})
-	static class RepositoryConfigForProduction {
-		
-		@Bean
-		@Lazy(false)
-		public Objectify objectify() { 
-			return new Objectify();
-		}
-		
-	}
-	
-	@Configuration
 	public static class ServiceConfig {
 
 		@Bean

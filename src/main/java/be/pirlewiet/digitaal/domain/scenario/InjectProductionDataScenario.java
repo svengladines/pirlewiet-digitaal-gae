@@ -50,8 +50,6 @@ public class InjectProductionDataScenario extends Scenario {
 		
 		logger.info( "inject productiondata" );
 		
-		/*
-		
 		Organisation vzwPirlewiet
 			= this.organisationRepository.findOneByEmail( "info@pirlewiet.be" );
 		
@@ -99,8 +97,6 @@ public class InjectProductionDataScenario extends Scenario {
 			logger.info( "productiondata, pirlewiet existed, rename id field" );
 			this.organisationRepository.saveAndFlush( vzwPirlewiet );
 		}
-
-		*/
 
 		/*
 		// Voorjaar 2024

@@ -23,7 +23,7 @@ import be.pirlewiet.digitaal.domain.scenario.UnifyEnrollmentHolidaysScenario;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
 @Controller
-@RequestMapping(value="/scenarios/{id}")
+@RequestMapping(value="/api/scenarios/{id}")
 public class ScenarioController {
 	
 	private final Logger logger 

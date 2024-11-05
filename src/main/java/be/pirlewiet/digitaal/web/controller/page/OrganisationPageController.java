@@ -53,8 +53,7 @@ public class OrganisationPageController {
 			organisation = new OrganisationDTO();
 		}
 		
-		AddressDTO address
-			= null;
+		AddressDTO address = null;
 		
 		if ( organisation.getAddressUuid() == null ) {
 			address = new AddressDTO();
@@ -65,8 +64,7 @@ public class OrganisationPageController {
 			address  = addressResult.getObject();
 		}
 		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
+		Map<String,Object> model = new HashMap<String,Object>();
 		
 		model.put( "organisation", organisation );
 		model.put( "incomplete", organisation.getInComplete() );
@@ -74,8 +72,7 @@ public class OrganisationPageController {
 		
 		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( organisation) );
 
-		String view 
-			= "organisation";
+		String view = "organisation";
 		
 		return new ModelAndView( view, model );	
 			

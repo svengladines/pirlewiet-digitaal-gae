@@ -28,29 +28,17 @@ public class StartPageController {
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.GET) 
-	public ModelAndView view( @CookieValue( required = false, value="pwtid" ) String pwtID )  {
-		
-		ModelAndView mav
-			= new ModelAndView();
+	public String view( @CookieValue( required = false, value="pwtid" ) String pwtID )  {
 		
 		if ( pwtID == null ) {
-			mav.setView( new RedirectView("login.htm") );
-			return mav;
+			return "redirect:/login.html";
 		}
 		else {
-			Organisation organisatie
-				= this.buitenWipper.guard().whoHasID(  pwtID  );	
-		
-			if ( organisatie == null ) {
-				mav.setView( new RedirectView("/login.htm") );
-			}
-			else {
-				mav.setView( new RedirectView("/organisation.html") );
-			}	
+			Organisation organisation = this.buitenWipper.guard().whoHasID(  pwtID  );
+			return organisation != null ? "organisation" : "redirect:/login.html";
 		}
 		
-		return mav;
-		
+
 	}
 	
 }

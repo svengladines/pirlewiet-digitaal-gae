@@ -62,7 +62,7 @@ public class CookieFilter implements Filter {
 			
 			if ( ! present ) {
 				
-				httpResponse.sendRedirect( "/login.htm" );
+				httpResponse.sendRedirect( "/login.html" );
 				return;
 				
 			}

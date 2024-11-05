@@ -11,27 +11,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.model.Organisation;
 
-@Controller
-@RequestMapping(value="/codes")
+@RestController
+@RequestMapping(value="/api/codes")
 public class CodesController {
 	
-	private final static Logger logger 
-		= LoggerFactory.getLogger( CodesController.class );
+	private final static Logger logger = LoggerFactory.getLogger( CodesController.class );
 	
 	@Autowired
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.POST)
-	@ResponseBody
 	public ResponseEntity<String> post( @RequestBody String code, HttpServletResponse response )  {
 		
 		// Map<String, String> headers
@@ -43,16 +37,15 @@ public class CodesController {
 		
 		logger.info( "code [{}] presented", code );
 		
-		Organisation organisatie
-			= this.buitenWipper.guard().whoHasCode( code );
+		Organisation organisation = this.buitenWipper.guard().whoHasCode( code );
 		
-		if ( organisatie == null ) {
+		if ( organisation == null ) {
 			logger.warn( "unknown code [{}] presented!", code );
 			return response( "De opgegeven code werd niet herkend. Probeer opnieuw of vraag je code opnieuw aan.", HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		
 		Cookie cookie
-			= new Cookie( "pwtid", "" + organisatie.getUuid() );
+			= new Cookie( "pwtid", "" + organisation.getUuid() );
 		
 		cookie.setMaxAge( 3600 * 24 * 30 * 12 );
 		
