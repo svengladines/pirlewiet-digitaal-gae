@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.web.controller.api;
 
-import static be.occam.utils.spring.web.Controller.response;
+import static be.pirlewiet.digitaal.web.controller.Controller.response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.servlet.http.Cookie;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import be.pirlewiet.digitaal.domain.people.DoorMan;

@@ -34,9 +34,8 @@ public class Organisation {
 	protected String city;
 	
 	protected Date updated;
-	
-	//@AlsoLoad("id")
-	protected Long oldId;
+
+	protected OrganisationType type = OrganisationType.NON_PROFIT;
 
 	public String getName() {
 		return name;
@@ -101,8 +100,16 @@ public class Organisation {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-	
-	public static Organisation from( OrganisationDTO f ) {
+
+	public OrganisationType getType() {
+		return type;
+	}
+
+	public void setType(OrganisationType type) {
+		this.type = type;
+	}
+
+	public static Organisation from(OrganisationDTO f ) {
 		
 		Organisation t
 			= new Organisation();

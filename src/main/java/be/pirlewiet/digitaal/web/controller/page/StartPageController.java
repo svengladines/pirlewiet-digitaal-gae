@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.web.controller.page;
 
+import be.pirlewiet.digitaal.model.OrganisationType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
@@ -35,7 +36,15 @@ public class StartPageController {
 		}
 		else {
 			Organisation organisation = this.buitenWipper.guard().whoHasID(  pwtID  );
-			return organisation != null ? "organisation" : "redirect:/login.html";
+			if (organisation == null) {
+				return "redirect:/login.html";
+			}
+			else if (OrganisationType.INDIVIDUAL.equals(organisation.getType())) {
+				return "redirect:/profile.html";
+			}
+			else {
+				return "redirect:/organisation.html";
+			}
 		}
 		
 

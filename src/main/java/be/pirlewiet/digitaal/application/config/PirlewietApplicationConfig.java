@@ -64,16 +64,15 @@ import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 
 @Configuration
-//@EnableTransactionManagement
 public class PirlewietApplicationConfig {
-	
+
 	final static Logger logger
-		= LoggerFactory.getLogger( PirlewietApplicationConfig.class );
+			= LoggerFactory.getLogger(PirlewietApplicationConfig.class);
 
 	final static String BASE_PKG = "be.pirlewiet.digitaal";
-	
+
 	public final static String EMAIL_ADDRESS = "pirlewiet.digitaal@gmail.com";
-	
+
 	@Configuration
 	public static class ServiceConfig {
 
@@ -88,70 +87,65 @@ public class PirlewietApplicationConfig {
 			return dateFormatter;
 
 		}
-		
+
 		@Bean
 		OrganisationService organisationService() {
 			return new OrganisationService();
 		}
-		
+
 		@Bean
 		ApplicationService applicationService() {
 			return new ApplicationService();
 		}
-		
+
 		@Bean
 		EnrollmentService enrollmentService() {
 			return new EnrollmentService();
 		}
-		
+
 		@Bean
 		HolidayService holidayService() {
 			return new HolidayService();
 		}
-		
+
 		@Bean
 		PersonService personService() {
 			return new PersonService();
 		}
-		
+
 		@Bean
 		QuestionAndAnswerService questionAndAnswerService() {
 			return new QuestionAndAnswerService();
 		}
-		
+
 	}
-	
+
 	@Configuration
 	public static class PeopleConfig {
-		
-		@Bean 
-		HeadQuarters headQuarters() {
-			return new HeadQuarters( "info@pirlewiet.be" );
-		}
-		
+
 		@Bean
-		ApplicationManager applicationManager(@Value("${pirlewiet.currentYear}") int currentYear ) {
-			return new ApplicationManager( currentYear );
+		ApplicationManager applicationManager(@Value("${pirlewiet.currentYear}") int currentYear) {
+			return new ApplicationManager(currentYear);
 		}
-		
+
 		// can use 'real' javasender, it is stubbed by GAE
 		@Bean
-		public JavaMailSender javaMailSender () {
+		public JavaMailSender javaMailSender() {
 			JavaMailSenderImpl sender
-				= new JavaMailSenderImpl();
+					= new JavaMailSenderImpl();
 			return sender;
 		}
-		
+
 		@Bean
 		public Organisation pDiddy() {
-			
+
 			Organisation pDiddy
-				= new Organisation();
-			
-			pDiddy.setEmail( PirlewietUtil.PDIDDY_EMAIL );
-			pDiddy.setUuid( PirlewietUtil.PDIDDY_ID );
-			pDiddy.setCode( PirlewietUtil.PDIDDY_CODE );
-			
+					= new Organisation();
+
+			pDiddy.setEmail(PirlewietUtil.PDIDDY_EMAIL);
+			pDiddy.setUuid(PirlewietUtil.PDIDDY_ID);
+			pDiddy.setCode(PirlewietUtil.PDIDDY_CODE);
+
 			return pDiddy;
 		}
 		
@@ -162,97 +156,118 @@ public class PirlewietApplicationConfig {
 			return new ScenarioRunner( );
 		}
 		*/
-		
+
 	}
-	
+
 	@Configuration
 	public static class ScenarioConfig {
-		
-		@Bean 
+
+		@Bean
 		SetEnrollmentHolidayNamesScenario setEnrollmentHolidayNamesScenario() {
 			return new SetEnrollmentHolidayNamesScenario();
 		}
-		
+
 		@Bean
 		InjectProductionDataScenario injectProductionDataScenario() {
 			return new InjectProductionDataScenario();
 		}
-		
+
 		@Bean
 		DeleteOldEntitiesScenario deleteOldEntitiesScenario() {
 			return new DeleteOldEntitiesScenario();
 		}
-		
+
 		@Bean
 		UnifyEnrollmentHolidaysScenario unifyEnrollmentHolidaysScenario() {
 			return new UnifyEnrollmentHolidaysScenario();
 		}
-		
+
 		@Bean
 		ObjectifyScenario objectifyScenario() {
 			return new ObjectifyScenario();
 		}
-		
+
 	}
-	
+
 	@Configuration
 	public static class RepositoryConfig {
-		
+
 		@Bean
 		@Lazy(false)
 		public Objectify objectify() {
 			ObjectifyService.init();
-			logger.info( "objectify service initialized");
+			logger.info("objectify service initialized");
 			return new Objectify();
 		}
-		
+
 		@Bean
 		PersonRepository personRepository() {
 			return new PersonRepositoryObjectify();
 		}
-		
+
 		@Bean
 		AddressRepository addressRepository() {
 			return new AddressRepositoryObjectify();
 		}
-		
+
 		@Bean
 		ApplicationRepository applicationRepository() {
 			return new ApplicationRepositoryObjectify();
 		}
-		
+
 		@Bean
 		EnrollmentRepository enrollmentRepository() {
 			return new EnrollmentRepositoryObjectify();
 		}
-		
+
 		@Bean
 		HolidayRepository holidayRepository() {
 			return new HolidayRepositoryObjectify();
 		}
-		
+
 		@Bean
 		OrganisationRepository organisationRepository() {
 			return new OrganisationRepositoryObjectify();
 		}
-		
+
 		@Bean
 		QuestionAndAnswerRepository questionAndAnswerRepository() {
 			return new QuestionAndAnswerRepositoryObjectify();
 		}
 	}
-	
+
 	@Configuration
 	@Profile({ConfigurationProfiles.PRODUCTION})
 	static class ConfigForProduction {
-	
+
 		@Bean
-		public HeadQuarters secretariaat( ) {
-			
-			return new HeadQuarters( "info@pirlewiet.be" );
+		public HeadQuarters secretariaat() {
+
+			return new HeadQuarters("info@pirlewiet.be");
 			// return new HeadQuarters( "sven.gladines@gmail.com" );
-			
+
 		}
-		
+
+	}
+
+	@Configuration
+	@Profile({"local"})
+	static class ConfigForLocal {
+
+		@Bean
+		public HeadQuarters localHeadQuarter(OrganisationRepository organisationRepository) {
+			HeadQuarters headQuarters = new HeadQuarters("info@foo.bar") {
+				@Override
+				public void initialize() {
+					Organisation organisation = new Organisation();
+					organisation.setName("VZW Svekke");
+					organisation.setCode("xxx");
+					organisation.setEmail("info@svekke.gladines");
+					organisation.setUuid("uuid-1");
+					organisationRepository.saveAndFlush(organisation);
+				}
+			};
+			return headQuarters;
+		}
 	}
 }
