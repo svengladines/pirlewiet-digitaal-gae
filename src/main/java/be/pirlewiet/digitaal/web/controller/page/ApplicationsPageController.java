@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,15 +47,12 @@ public class ApplicationsPageController {
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public String view( @CookieValue(required=true, value="pwtid") String pwtid, Model model) {
 		
 		Organisation actor
 			= this.doorMan.guard().whoHasID( pwtid  );
 
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-	
-		model.put( "organisation", actor );
+		model.addAttribute( "organisation", actor );
 	
 		Result<List<Result<ApplicationDTO>>> applicationsResult 
 				= this.applicationService.guard().query( actor );
@@ -74,16 +72,11 @@ public class ApplicationsPageController {
 			}
 			
 		}
-		
-		model.put( "applicationsResult", applicationsResult );
+
+		model.addAttribute( "applicationsResult", applicationsResult );
 	
-		String view = "applications";
-		
-		return new ModelAndView( view, model );
-		
+		return "applications";
 	}
-	
-	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handleError( Exception e ){
