@@ -35,8 +35,6 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
 @Component
 public class EnrollmentManager {
@@ -334,10 +332,11 @@ public class EnrollmentManager {
 	 }
 	 
 	 protected MimeMessage formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
-			
+
 			MimeMessage message
 				= null;
-			
+
+			/* TODO
 			Configuration cfg 
 				= new Configuration();
 		
@@ -400,7 +399,7 @@ public class EnrollmentManager {
 				logger.warn( "could not write e-mail", e );
 				throw new RuntimeException( e );
 			}
-			
+			*/
 			return message;
 	    	
 	    }

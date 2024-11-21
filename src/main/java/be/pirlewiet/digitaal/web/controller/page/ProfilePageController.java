@@ -40,10 +40,8 @@ public class ProfilePageController {
 			Model model)  {
 		
 		OrganisationDTO organisation = null;
-		
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtID  );
 		Result<OrganisationDTO> result = this.organisationService.findOneByUuid( pwtID, actor );
-			
 		organisation = result.getObject();
 			
 		if ( organisation == null ) {
@@ -51,7 +49,6 @@ public class ProfilePageController {
 		}
 		
 		AddressDTO address = null;
-		
 		if ( organisation.getAddressUuid() == null ) {
 			address = new AddressDTO();
 		}

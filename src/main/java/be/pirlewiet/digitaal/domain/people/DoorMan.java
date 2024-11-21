@@ -21,8 +21,6 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.springframework.stereotype.Component;
 
 import jakarta.mail.internet.MimeMessage;
@@ -198,7 +196,7 @@ public class DoorMan {
 		
 		MimeMessage message
 			= null;
-		
+		/* TODO
 		Configuration cfg 
 			= new Configuration();
 	
@@ -241,6 +239,8 @@ public class DoorMan {
 			logger.warn( "could not write e-mail", e );
 			throw new RuntimeException( e );
 		}
+
+		 */
 		
 		return message;
     	

@@ -28,8 +28,6 @@ import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -307,6 +305,7 @@ public class OrganisationManager {
 		MimeMessage message
 			= null;
 
+		/*
 		Configuration cfg 
 			= new Configuration();
 	
@@ -349,6 +348,8 @@ public class OrganisationManager {
 			logger.warn( "could not create e-mail", e );
 			throw new RuntimeException( e );
 		}
+
+		*/
 
 		return message;
 

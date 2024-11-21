@@ -176,12 +176,6 @@
 			<artifactId>jericho-html</artifactId>
 			<version>3.3</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-			<version>2.3.30</version>
-		</dependency>
 	</dependencies>
 
 	<build>

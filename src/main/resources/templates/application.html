@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="nl">
+<head title ="pirlewiet digitaal" th:replace="fragments/fragment-head :: head">>
+</head>
+<body>
+	<div class="banner">
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1>Dossier</h1>
+					<p>
+						Beheer een inschrijvingsdossier.
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
+
+	<div class="container" th:with="app=${applicationResult.object}">
+
+		<br/>
+
+		<div id="row-status" class="row" th:with="questionList=${applicationQuestionListResult.object}">
+			<div>
+				<div class="col-sm-12 alert alert-info">
+					<h4><strong>Status</strong><br/></h4>
+					<p>
+						<i th:text="#{application.status.__${app.status.value}__}"/><br/>
+						<span th:text="#{application.status.__${app.status.value}__.description}"/><br/>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="row-holiday" class="row">
+			<div th:if="${holidaysResult.value == 'NOK'}">
+					<div class="col-sm-12 alert alert-warning">
+						<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
+						Opgelet:
+						<ul>
+							<li>minstens 1 vakantie selecteren</li>
+							<li>enkel vakanties selecteren van hetzelfde type (KIKA, TIKA of GEZINS)</li>
+						</ul>
+						Geen geldige vakantie(s)&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">invullen/wijzigen</a>)
+					</div>
+			</div>
+			<div th:unless="${holidaysResult.value == 'NOK'}">
+				<div class="col-sm-12 alert alert-success">
+					<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
+					<span th:text="${app.holidayNames}"/>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">wijzigen</a>)<br/>
+				</div>
+			</div>
+		</div>
+
+		<div id="row-enrollments" class="row">
+			<div th:if="${ enrollmentsResult.errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
+					<span class="">Nog geen vakantiegangers toegevoegd</span><br/>
+					<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+				</div>
+			</div>
+			<div th:unless="${ enrollmentsResult.errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
+				<div class="col-sm-12 alert ${enrollmentsResult.value == 'OK' ? 'alert-success' : 'alert-warning' }">
+					<i class="fa fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
+					<div th:if="${enrollmentsResult.value == 'NOK'}">
+						<p>
+							Er ontbreken nog gegevens van minstens 1 vakantieganger. Kijk AUB de gegevens na. <br/>
+						</p>
+					</div>
+					<p>
+						<strong>Opgelet</strong>: voor KIKA, TIKA en VOV-vakanties moet de medische fiche <strong>volledig</strong> ingevuld zijn van alle vakantiegangers voordat je het dossier kan doorsturen. <br/> <br/>
+					</p>
+
+					<div class="container">
+						<div th:each="enrollmentResult:${enrollmentResult.object}" class="row">
+							<div class="col-sm-5 alert alert-info" th:with="enrollment=${enrollmentResult.object}">
+								<strong>Vakantieganger(s)</strong>
+								<div th:if="${isPirlewiet}">
+										<a href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="pull-right">[[#{"enrollment.status.${enrollment.status.value}}"/></a>
+								</div>
+								<div th:unless="${isPirlewiet}">
+									<span class="pull-right"><strong th:text="#{enrollment.status.${enrollment.status.value}}"/></span>
+								</div>
+								<br/><br/>
+								<i class="fa fa-user"></i>&nbsp;<span class="x">[[${enrollment.participant.givenName}]]&nbsp;[[${enrollment.participant.familyName}]]</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="[[${enrollment.uuid}]]">Wijzig</a>)&nbsp;&nbsp;(<a th:if="${enrollment.applicationUuid != null }" href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="[[${enrollment.uuid}]]" >Verwijder</a>)&nbsp;&nbsp;<br/>
+								<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="participant" data-attribute-uuid="[[${enrollment.uuid}]]">Vragenlijst</a><br/>
+
+								</div>
+								<div class="col-sm-1">
+								</div>
+									<div th:if="${enrollmentResult.value == 'NOK'}" class="col-sm-5 alert alert-danger">
+										<strong>Te doen</strong><br/>
+										<ul>
+											<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' )}">
+
+													&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;((<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<div th:if="${enrollment.applicationUuid != null }"><a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</div>&nbsp;&nbsp;&nbsp;
+												</li>
+											<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_QLIST' )}">
+													<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" data-attribute-uuid="${enrollment.uuid}">Vragenlijst invullen</a>
+											</li>
+										</ul>
+									</div>
+							</div>
+						<br/>
+						<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		<div id="row-qlist" class="row">
+			<div th:if="${applicationQuestionListResult.value != 'OK'}">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+					<span class="">Niet (volledig) ingevuld </span><br/>
+					<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">Vragenlijst invullen/aanvullen</a>
+				</div>
+			</div>
+			<div th:if="${applicationQuestionListResult.value == 'OK'}">
+				<div class="col-sm-12 alert alert-success">
+					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst dossier</strong><br/></h4>
+					<span>Ingevuld</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">wijzigen</a>)
+				</div>
+			</div>
+		</div>
+		<div id="row-contact" class="row">
+			<div th:unless="${contactResult.value == 'OK'}">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-contact pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
+					<span class="">Niet ingevuld</span><br/>
+					<a href="javascript:void(0);" class="todo" th:attr="data-attribute-uuid=${app.uuid}" data-attribute-modal="contact">Contactpersoon toevoegen</a>
+				</div>
+			</div>
+			<div th:unless="${contactResult.value == 'NOK'}">
+				<div class="col-sm-12 alert alert-success">
+				</div>
+			</div>
+		</div>
+
+		<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+		</div>
+
+	</div><!-- container -->
+
+	<script>
+		var $jq = jQuery.noConflict();
+
+    	var show = function( id ) {
+    		$jq(".panel" ).removeClass("show").addClass("hidden");
+    		$jq("#" + id ).removeClass("hidden").addClass("show");
+    	};
+
+		var saveContact = function( id ) {
+			var c = new Contact( $jq("#contact-uuid").val(), $jq("#contact-given-name").val(), $jq("#contact-family-name").val(), $jq("#contact-phone").val(), $jq("#contact-email").val() );
+			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ), refresh );
+		};
+
+		var toParticipant = function( id ) {
+
+			window.location.hash = "#modal-participant-" + id;
+			window.location.reload();
+
+		};
+
+		var addParticipant = function( applicationUuid ) {
+
+			var address
+				= new Address(
+						$jq("#address-zipcode").val(),
+						$jq("#address-city").val(),
+						$jq("#address-street").val(),
+						$jq("#address-number").val() );
+
+			var participant
+				= new Participant(
+					$jq("#participant-given-name").val(),
+					$jq("#participant-family-name").val(),
+					$jq(".participant-gender:checked").val(),
+					$jq("#participant-birth-day").val(),
+					$jq("#participant-phone").val(),
+					$jq("#participant-email").val(),
+					$jq("#participant-state-number").val()
+				);
+
+			var enrollment =
+				new Enrollment(
+						applicationUuid,
+					participant,
+					address);
+
+			postEnrollment( applicationUuid, enrollment, refresh );
+
+		};
+
+		var saveParticipant = function( applicationUuid, enrollmentUuid ) {
+
+			var address
+				= new Address(
+					$jq("#address-zipcode").val(),
+					$jq("#address-city").val(),
+					$jq("#address-street").val(),
+					$jq("#address-number").val() );
+
+			var participant
+				= new Participant(
+					$jq("#participant-given-name").val(),
+					$jq("#participant-family-name").val(),
+					$jq(".participant-gender:checked").val(),
+					$jq("#participant-birth-day").val(),
+					$jq("#participant-phone").val(),
+					$jq("#participant-email").val()
+			);
+
+		var enrollment =
+			new Enrollment(
+					applicationUuid,
+				participant,
+				address,
+				enrollmentUuid);
+
+			putEnrollment( applicationUuid, enrollment, $jq("#enrollment-save" ), $jq("#enrollment-status" ), refresh );
+
+		};
+
+		var saveParticipantList = function( id ) {
+			return saveQList( id, "participant" );
+		};
+
+		var saveQList = function( id, tag ) {
+			var list
+				= [];
+			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			putQList ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
+		};
+
+		var saveEnrollmentQList = function( applicationUuid, enrollmentUuid, tag ) {
+			var list
+				= [];
+			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			putEnrollmentQList ( applicationUuid, enrollmentUuid, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
+		};
+
+		var saveApplicationStatus = function( applicationUuid, value ) {
+			var comment = "";
+			if ( value ) {
+				var sx = new Status (value, comment ,true );
+				busyButton( $jq("#enrollment-save" ) );
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				doneButton( $jq("#enrollment-save" ) );
+			}
+			else {
+				var sx = new Status ( "AUTO", comment ,true );
+				busyButton( $jq("#enrollment-save" ) );
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				doneButton( $jq("#enrollment-save" ) );
+			}
+
+
+		};
+
+		var cancelApplication = function( applicationUuid ) {
+			saveApplicationStatus( applicationUuid, "CANCELLED", $jq("#status-comment-text").val() );
+		};
+
+		var deleteDraftEnrollment = function( applicationUuid, enrollmentUuid ) {
+
+			deleteEnrollment( applicationUuid, enrollmentUuid, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
+
+		};
+
+		var saveHolidays = function( id ) {
+			var holidays
+				= new Array();
+			$jq( ".holiday:checked" ).each( function( index, element ) {
+				holidays.push( new Holiday( element.value ) );
+			});
+			putHolidays ( id, holidays, $jq("#holiday-save"),$jq("#holiday-status" ), refresh );
+		};
+
+		var refresh = function( ) {
+			window.location.hash="";
+			window.location.reload();
+		};
+
+		$jq(".todo").click( function( event ) {
+
+			$jq("#modal").load( "/application-modals.html?uuid=" + $jq(this).attr("data-attribute-uuid") + "&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-uuid"),
+					function() {
+
+				$jq("#holiday-save").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveHolidays( "${application.uuid}" );
+
+				});
+
+				$jq("#contact-save").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveContact( "${application.uuid}" );
+
+				});
+
+				$jq("#participant-save").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					if ( ( $jq(this).attr("data-attribute-uuid") != null ) && ( $jq(this).attr("data-attribute-uuid") != "" ) ) {
+						saveParticipant( "${application.uuid}", $jq(this).attr("data-attribute-uuid") );
+					}
+					else {
+						addParticipant( "${application.uuid}" );
+					}
+
+				});
+
+				$jq("#q-save-application").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveQList( "${application.uuid}", "application" );
+
+				});
+
+				$jq("#q-save-participant").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveEnrollmentQList( "${application.uuid}", $jq(this).attr("data-attribute-uuid"), "participant" );
+
+				});
+
+			});
+
+
+
+			$jq("#modal").modal();
+
+		});
+
+
+		$jq("#application-submit").click( function( event ) {
+
+			clearStatus();
+			$jq(this).button('Even geduld...');
+
+			saveApplicationStatus( "${application.uuid}" );
+
+		});
+
+		$jq("#application-cancel").click( function( event ) {
+
+			clearStatus();
+			$jq(this).button('Even geduld...');
+
+			cancelApplication( "${application.uuid}" );
+
+		});
+
+		$jq(".enrollment-delete").click( function( event ) {
+
+			var uuid
+				= event.currentTarget.attributes["data-attribute-uuid"].value;
+
+			$jq(this).button('Even geduld...');
+
+			deleteDraftEnrollment( "${application.uuid}" , uuid );
+
+		});
+
+		$jq("#submit-show").click( function( event ) {
+
+			show('div-submit');
+
+		});
+
+		$jq( document ).ready(function() {
+
+			buttons();
+
+			if ( window.location.hash ) {
+				$jq( "#" + window.location.hash.substring(1) ).modal();
+			}
+
+		});
+	</script>
+</body>
+</html>

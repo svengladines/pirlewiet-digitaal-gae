@@ -37,8 +37,7 @@ import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 @RequestMapping( {"application-{uuid}.html"} )
 public class ApplicationPageController {
 	
-	protected Logger logger 
-		= LoggerFactory.getLogger( this.getClass() );
+	protected Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	@Autowired
 	ApplicationService applicationService;
@@ -61,42 +60,27 @@ public class ApplicationPageController {
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public ModelAndView view( @PathVariable String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<ApplicationDTO> applicationResult = this.applicationService.findOne( uuid, actor );
 		
-		Result<ApplicationDTO> applicationResult
-			= this.applicationService.findOne( uuid, actor );
-		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-		
+		Map<String,Object> model = new HashMap<>();
 		model.put( "applicationResult", applicationResult );
-		
 		if ( Value.OK.equals( applicationResult.getValue() ) ) {
-			
-			ApplicationDTO application
-				= applicationResult.getObject();
-			
-			logger.info( "application [{}], contact uuid is [{}]", application.getUuid(), application.getContactPersonUuid() );
-			
-			Result<PersonDTO> contactResult
-				= this.personService.retrieve( application.getContactPersonUuid() );
-			
+			ApplicationDTO application = applicationResult.getObject();
+			logger.debug( "application [{}], contact uuid is [{}]", application.getUuid(), application.getContactPersonUuid() );
+			Result<PersonDTO> contactResult = this.personService.retrieve( application.getContactPersonUuid() );
 			logger.info( "application [{}], contact result is [{}]", application.getUuid(), contactResult.getValue() );
-			
 			model.put( "contactResult", contactResult );
-			
+
 			logger.info( "application [{}], holiday uuids are [{}]", application.getUuid(), application.getHolidayUuids() );
 			
-			Result<List<HolidayDTO>> holidaysResult
-				= this.holidayService.resolve( null , application.getHolidayUuids(), true, false, true, actor);
+			Result<List<HolidayDTO>> holidaysResult = this.holidayService.resolve( null , application.getHolidayUuids(), true, false, true, actor);
 			
 			model.put( "holidaysResult", holidaysResult );
 			
 			logger.info( "application [{}], holidays result is [{}]", application.getUuid(), holidaysResult.getValue() );
 			
-			Result<List<QuestionAndAnswerDTO>> qnaResult 
-				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
+			Result<List<QuestionAndAnswerDTO>> qnaResult = this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
 			
 			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( application, qnaResult.getObject() ) );
 			

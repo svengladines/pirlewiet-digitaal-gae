@@ -37,8 +37,6 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.springframework.stereotype.Component;
 
 /*
@@ -385,7 +383,7 @@ public class ApplicationManager {
 					
 					this.sendIntakeMessageToOrganisation(application, participants, holidays, contact);
 					// TODO, email to pwt
-					this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
+					// this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
 					logger.info( "taken in");
 					
 				}
@@ -435,7 +433,7 @@ public class ApplicationManager {
 			
 			MimeMessage message
 				= null;
-			
+			/* TODO
 			Configuration cfg 
 				= new Configuration();
 		
@@ -506,7 +504,8 @@ public class ApplicationManager {
 			
 			MimeMessage message
 				= null;
-			
+
+			/*
 			Configuration cfg 
 				= new Configuration();
 		
@@ -555,7 +554,8 @@ public class ApplicationManager {
 				logger.warn( "could not write e-mail", e );
 				throw new RuntimeException( e );
 			}
-			
+
+			*/
 			return message;
 	    	
 	    }
