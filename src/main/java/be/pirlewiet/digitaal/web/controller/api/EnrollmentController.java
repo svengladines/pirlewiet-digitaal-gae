@@ -28,7 +28,7 @@ import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Controller
-@RequestMapping( {"/applications/{applicationUuid}/enrollments/{uuid}"} )
+@RequestMapping( {"api/applications/{applicationUuid}/enrollments/{uuid}"} )
 public class EnrollmentController {
 	
 	protected Logger logger 

@@ -472,3 +472,7 @@ a.edit {
 .capita {
 	text-transform: capitalize;
 }
+
+input:valid {
+    background-color: rgb(0 255 0 / 0.1);
+}

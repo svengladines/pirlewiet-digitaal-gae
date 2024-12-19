@@ -146,11 +146,17 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			result.setErrorCode( ErrorCodes.APPLICATION_NO_ENROLLMENTS );
 		}
 		else {
-			result.setValue( allOK ? Value.OK : Value.NOK );
 			result.setObject( individualResults );
+			if(allOK) {
+				result.setValue(Value.OK);
+			}
+			else {
+				result.setValue(Value.NOK);
+				result.setErrorCode( ErrorCodes.APPLICATION_INVALID_ENROLLMENTS );
+			}
 		}
 		
-		
+
 		
 		return result;
 		
