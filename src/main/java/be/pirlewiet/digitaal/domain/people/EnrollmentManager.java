@@ -3,14 +3,9 @@ package be.pirlewiet.digitaal.domain.people;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
+import be.pirlewiet.digitaal.model.*;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.mail.internet.MimeMessage;
@@ -26,14 +21,6 @@ import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 
 @Component
@@ -284,9 +271,7 @@ public class EnrollmentManager {
 	
 	public Enrollment template() {
 		
-		Enrollment enrollment 
-			= new Enrollment();
-		
+		Enrollment enrollment = new Enrollment();
 		return enrollment;
 		
 	}

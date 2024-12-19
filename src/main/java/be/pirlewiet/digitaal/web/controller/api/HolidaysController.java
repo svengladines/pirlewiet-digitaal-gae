@@ -24,7 +24,7 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 
 @Controller
-@RequestMapping( {"/holidays"} )
+@RequestMapping( {"/api/holidays"} )
 public class HolidaysController {
 	
 	protected Logger logger 
@@ -39,83 +39,9 @@ public class HolidaysController {
 	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json"} )
 	@ResponseBody
 	public ResponseEntity<Result<List<Result<HolidayDTO>>>> get( WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		Organisation actor
-			= this.doorMan.whoHasID( pwtid );
-		
-		Result<List<Result<HolidayDTO>>> holidaysResult
-			= this.holidayService.query( actor );
-		
+		Organisation actor = this.doorMan.whoHasID( pwtid );
+		Result<List<Result<HolidayDTO>>> holidaysResult = this.holidayService.query( actor );
 		return response( holidaysResult, HttpStatus.OK );
-		
 	}
-	
-	/*
-	
-	@RequestMapping( method = { RequestMethod.POST } )
-	@ResponseBody
-	public ResponseEntity<Holiday> post(
-				@RequestBody Holiday vakantie, WebRequest request, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		Organisation organisatie
-			= this.organisatie( request, pwtid );
-		
-		if ( ! PirlewietUtil.isPirlewiet( organisatie ) ) {
-			throw new RuntimeException("only pirlewiet can add vakanties");
-		}
-		
-		Holiday aangemaakt
-			= this.secretariaatsMedewerker.maakVakantie( vakantie );
-		
-		if ( aangemaakt == null ) {
-			throw new RuntimeException("create failed");
-		}
-		
-		return response( aangemaakt, HttpStatus.CREATED );
-			
-	}
-	
-	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-
-		Organisation organisatie
-			= this.buitenWipper.whoHasID(  pwtid  );
-		
-		// TODO: check organisatie != null
-		
-		List<Holiday> inschrijvingen 
-			= this.secretariaatsMedewerker.actueleVakanties();
-		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-		
-		model.put( "organisatie", organisatie );
-		model.put( "pwt", PirlewietUtil.isPirlewiet( organisatie ) );
-		model.put( "inschrijvingen", inschrijvingen );
-		
-		return new ModelAndView( "inschrijvingen", model );
-		
-	}
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleError( Exception e ){
-		
-		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
-		
-	}
-	
-	protected Organisation organisatie( WebRequest request, String pwtid ) {
-		
-		Organisation organisatie
-			= new Organisation();
-		organisatie.setUuid( pwtid );
-		
-		return organisatie;
-		
-	}
-	
-	*/
 	
 }

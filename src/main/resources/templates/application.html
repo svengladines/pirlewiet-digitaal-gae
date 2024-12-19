@@ -33,7 +33,7 @@
 		</div>
 
 		<div id="row-holiday" class="row">
-			<div th:if="${holidaysResult.value == 'NOK'}">
+			<div th:if="${holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}">
 					<div class="col-sm-12 alert alert-warning">
 						<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
 						Opgelet:
@@ -41,13 +41,13 @@
 							<li>minstens 1 vakantie selecteren</li>
 							<li>enkel vakanties selecteren van hetzelfde type (KIKA, TIKA of GEZINS)</li>
 						</ul>
-						Geen geldige vakantie(s)&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">invullen/wijzigen</a>)
+						Geen geldige vakantie(s)&nbsp;(<a href="javascript:void(0);" class="todo" th:attr="data-attribute-uuid=${app.uuid}" data-attribute-modal="holidays">invullen/wijzigen</a>)
 					</div>
 			</div>
-			<div th:unless="${holidaysResult.value == 'NOK'}">
+			<div th:if="${holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
 				<div class="col-sm-12 alert alert-success">
 					<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
-					<span th:text="${app.holidayNames}"/>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="holidays">wijzigen</a>)<br/>
+					<span th:text="${app.holidayNames}"/>&nbsp;(<a href="javascript:void(0);" class="todo" th:attr="data-attribute-uuid=${app.uuid}" data-attribute-modal="holidays">wijzigen</a>)<br/>
 				</div>
 			</div>
 		</div>
@@ -103,7 +103,7 @@
 									</div>
 							</div>
 						<br/>
-						<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+						<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-app-uuid="${app.uuid}">Vakantieganger toevoegen</a>
 						</div>
 					</div>
 				</div>
@@ -114,7 +114,7 @@
 				<div class="col-sm-12 alert alert-warning">
 					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 					<span class="">Niet (volledig) ingevuld </span><br/>
-					<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">Vragenlijst invullen/aanvullen</a>
+					<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist" th:attr="data-attribute-uuid=${app.uuid}">Vragenlijst invullen/aanvullen</a>
 				</div>
 			</div>
 			<div th:if="${applicationQuestionListResult.value == 'OK'}">
@@ -301,7 +301,7 @@
 
 		$jq(".todo").click( function( event ) {
 
-			$jq("#modal").load( "/application-modals.html?uuid=" + $jq(this).attr("data-attribute-uuid") + "&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-uuid"),
+			$jq("#modal").load( "/application-modals.html?uuid=" + $jq(this).attr("data-attribute-app-uuid") + "&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-uuid"),
 					function() {
 
 				$jq("#holiday-save").click( function( event ) {
@@ -309,7 +309,7 @@
 					clearStatus();
 					busyButton( $jq(this) );
 
-					saveHolidays( "${application.uuid}" );
+					saveHolidays( $jq(this).attr("data-attribute-uuid") );
 
 				});
 

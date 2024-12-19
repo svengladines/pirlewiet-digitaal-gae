@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller.page;
+package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -1,4 +1,4 @@
-package be.pirlewiet.digitaal.web.controller.page;
+package be.pirlewiet.digitaal.web.controller.page.organisation;
 
 import java.util.HashMap;
 import java.util.Map;

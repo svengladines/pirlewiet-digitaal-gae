@@ -1,3 +1,6 @@
+function base() {
+    return "";
+}
 function error( button, element, message ) {
 	
 	doneButton( button );

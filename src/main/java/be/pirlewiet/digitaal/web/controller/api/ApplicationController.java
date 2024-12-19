@@ -30,7 +30,7 @@ import be.pirlewiet.digitaal.web.dto.PersonDTO;
 import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Controller
-@RequestMapping( {"/applications/{uuid}"} )
+@RequestMapping( {"/api/applications/{uuid}"} )
 public class ApplicationController {
 	
 	protected Logger logger 

@@ -125,10 +125,7 @@ public class ApplicationDTO {
 	}
 
 	public static ApplicationDTO from ( Application f ) {
-		
-		ApplicationDTO t
-			= new ApplicationDTO();
-		
+		ApplicationDTO t = new ApplicationDTO();
 		t.setUuid( f.getUuid() );
 		t.setStatus( f.getStatus() );
 		t.setReference( f.getReference() );
@@ -137,7 +134,6 @@ public class ApplicationDTO {
 		t.setHolidayNames( f.getHolidayNames() );
 		t.setHolidayUuids( f.getHolidayUuids() );
 		t.setSubmitted( f.getSubmitted() );
-		
 		return t;
 		
 	}

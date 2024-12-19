@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.domain.service;
 import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 import be.pirlewiet.digitaal.web.dto.PersonDTO;
 import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+
+import javax.swing.text.html.Option;
 
 @Service
 public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Service<ApplicationDTO,Application> {
@@ -130,20 +133,18 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	@Transactional(readOnly=true)
 	public Result<ApplicationDTO> findOne( String uuid, Organisation actor ) {
 		
-		Result<ApplicationDTO> result
-			= new Result<ApplicationDTO>();
-		
-		Application application
-			= this.guard().applicationManager.findOne( uuid );
-		
-		ApplicationDTO dto
-			= ApplicationDTO.from( application );
-		
-		this.extend( dto, application );
-		
-		result.setValue( Value.OK );
-		result.setObject( dto );
-		
+		Result<ApplicationDTO> result = new Result<ApplicationDTO>();
+		Optional<Application> oApplication = Optional.ofNullable(this.guard().applicationManager.findOne( uuid ));
+		if (oApplication.isPresent()){
+			Application application = oApplication.get();
+			ApplicationDTO dto = ApplicationDTO.from( application );
+			this.extend( dto, application );
+			result.setValue( Value.OK );
+			result.setObject( dto );
+		}
+		else {
+			result.setValue(Value.NOK);
+		}
 		return result;
 		
 	}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import be.pirlewiet.digitaal.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -30,16 +31,6 @@ import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.web.dto.AddressDTO;
 import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
@@ -813,29 +804,22 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	}
 
 	public Result<EnrollmentDTO> template( ) {
-		Enrollment enrollment
-			= this.enrollmentManager.template();
-		
-		EnrollmentDTO dto
-			= EnrollmentDTO.from( enrollment );
-		
-		Result<EnrollmentDTO> result
-			= new Result<EnrollmentDTO>();
+		Enrollment enrollment = this.enrollmentManager.template();
+		EnrollmentDTO dto = EnrollmentDTO.from( enrollment );
+		Participant participant = new Participant();
+		dto.setParticipant(new PersonDTO());
+		dto.setAddress( new AddressDTO() );
+		Result<EnrollmentDTO> result = new Result<EnrollmentDTO>();
 		result.setValue( Value.OK );
 		result.setObject( dto );
-	
 		return result;
 	}
 
 	protected void extend( EnrollmentDTO dto ) {
 		
-		Person participant
-			= this.personManager.findOneByUuid( dto.getParticipantUuid() );
-		
+		Person participant = this.personManager.findOneByUuid( dto.getParticipantUuid() );
 		dto.setParticipant( PersonDTO.from( participant ) );
-		
-		Address address
-			= this.addressManager.findOneByUuid( dto.getAddressUuid() );
+		Address address = this.addressManager.findOneByUuid( dto.getAddressUuid() );
 		dto.setAddress( AddressDTO.from( address ) );
 		
 		

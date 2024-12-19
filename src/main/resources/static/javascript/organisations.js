@@ -12,6 +12,11 @@ var Organisation = function ( id, name, phone, email,city ) {
 	
 };
 
+var Tourist = function ( code, email ) {
+	this.code = code;
+	this.email = email;
+};
+
 var CodeRequest = function ( email ) {
 	this.email = email;
 };

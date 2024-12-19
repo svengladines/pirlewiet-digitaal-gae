@@ -11,10 +11,10 @@ import be.pirlewiet.digitaal.model.Organisation;
 public class AddressDTO {
 	
 	protected String uuid;
-	private String street;
-	private String number;
-	private String zipCode;
-	private String city;
+	private String street = "";
+	private String number = "";
+	private String zipCode = "";
+	private String city = "";
 	
 	public String getZipCode() {
 		return zipCode;

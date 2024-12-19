@@ -100,10 +100,7 @@ public class EnrollmentDTO {
 	}
 
 	public static EnrollmentDTO from ( Enrollment f ) {
-		
-		EnrollmentDTO t
-			= new EnrollmentDTO();
-		
+		EnrollmentDTO t = new EnrollmentDTO();
 		t.setUuid( f.getUuid() );
 		t.setApplicationUuid( f.getApplicationUuid() );
 		t.setStatus( f.getStatus() );
@@ -112,7 +109,6 @@ public class EnrollmentDTO {
 		t.setHolidayUuid( f.getHolidayUuid() );
 		t.setHolidayName( f.getHolidayName() );
 		t.setAddressUuid( f.getAddressUuid() );
-		
 		return t;
 		
 	}
