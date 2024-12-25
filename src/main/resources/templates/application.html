@@ -63,41 +63,42 @@
 						<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
 					</div>
 				</div>
-			</div>
-			<div th:if="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK}" class="container">
-				<div th:each="enrollmentResult:${enrollmentResult.object}" class="row">
-					<div class="col-sm-5 alert alert-info" th:with="enrollment=${enrollmentResult.object}">
-						<strong>Vakantieganger(s)</strong>
-						<div th:if="${isPirlewiet}">
+				<div th:unless="${errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
+					<div th:each="enrollmentResult:${enrollmentsResult.object}" class="row">
+						<div class="col-sm-5 alert alert-info" th:with="enrollment=${enrollmentResult.object}">
+							<strong>Vakantieganger(s)</strong>
+							<div th:if="${isPirlewiet}">
 								<a href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="pull-right">[[#{"enrollment.status.${enrollment.status.value}}"/></a>
-						</div>
-						<div th:unless="${isPirlewiet}">
-							<span class="pull-right"><strong th:text="#{enrollment.status.${enrollment.status.value}}"/></span>
-						</div>
-						<br/><br/>
-						<i class="fa fa-user"></i>&nbsp;<span class="x">[[${enrollment.participant.givenName}]]&nbsp;[[${enrollment.participant.familyName}]]</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="[[${enrollment.uuid}]]">Wijzig</a>)&nbsp;&nbsp;(<a th:if="${enrollment.applicationUuid != null }" href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="[[${enrollment.uuid}]]" >Verwijder</a>)&nbsp;&nbsp;<br/>
-						<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="participant" data-attribute-enrollment-uuid="[[${enrollment.uuid}]]">Vragenlijst</a><br/>
+							</div>
+							<div th:unless="${isPirlewiet}">
+								<span class="pull-right"><strong th:text="#{enrollment.status.${enrollment.status.value}}"/></span>
+							</div>
+							<br/><br/>
+							<i class="fa fa-user"></i>&nbsp;<span class="x">[[${enrollment.participant.givenName}]]&nbsp;[[${enrollment.participant.familyName}]]</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="[[${enrollment.uuid}]]">Wijzig</a>)&nbsp;&nbsp;(<a th:if="${enrollment.applicationUuid != null }" href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="[[${enrollment.uuid}]]" >Verwijder</a>)&nbsp;&nbsp;<br/>
+							<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="participant" data-attribute-enrollment-uuid="[[${enrollment.uuid}]]">Vragenlijst</a><br/>
 
 						</div>
 						<div class="col-sm-1">
 						</div>
-							<div th:if="${enrollmentResult.value == 'NOK'}" class="col-sm-5 alert alert-danger">
-								<strong>Te doen</strong><br/>
-								<ul>
-									<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' )}">
+						<div th:if="${enrollmentResult.value == 'NOK'}" class="col-sm-5 alert alert-danger">
+							<strong>Te doen</strong><br/>
+							<ul>
+								<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' )}">
 
-											&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;((<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<div th:if="${enrollment.applicationUuid != null }"><a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</div>&nbsp;&nbsp;&nbsp;
-										</li>
-									<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_QLIST' )}">
-											<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" data-attribute-enrollment-uuid="${enrollment.uuid}">Vragenlijst invullen</a>
-									</li>
-								</ul>
-							</div>
+									&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;((<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<div th:if="${enrollment.applicationUuid != null }"><a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</div>&nbsp;&nbsp;&nbsp;
+								</li>
+								<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_QLIST' )}">
+									<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" data-attribute-enrollment-uuid="${enrollment.uuid}">Vragenlijst invullen</a>
+								</li>
+							</ul>
+						</div>
 					</div>
-				<br/>
-				<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-app-uuid="${app.uuid}">Vakantieganger toevoegen</a>
 				</div>
 			</div>
+			<div th:if="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK}" class="container">
+			</div>
+			<br/>
+			<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-app-uuid="${app.uuid}">Vakantieganger toevoegen</a>
 		</div>
 
 		<div id="row-qlist" class="row">

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import be.pirlewiet.digitaal.domain.people.*;
+import be.pirlewiet.digitaal.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -13,11 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.people.ApplicationManager;
-import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.HolidayManager;
-import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
-import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 import be.pirlewiet.digitaal.model.Holiday;
@@ -25,10 +22,6 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
-import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.web.dto.HolidayDTO;
-import be.pirlewiet.digitaal.web.dto.PersonDTO;
-import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 import javax.swing.text.html.Option;
@@ -41,6 +34,9 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	
 	@Autowired
 	ApplicationManager applicationManager;
+
+	@Autowired
+	OrganisationManager organisationManager;
 	
 	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
@@ -76,19 +72,30 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		return result;
 		
 	}
+
+	@Transactional(readOnly=false)
+	public Result<ApplicationDTO> createReferenced(ReferencedApplicationDTO dto, String organisationUUid) {
+
+		Result<ApplicationDTO> result = new Result<ApplicationDTO>();
+		Application application = new Application();
+		application.setReference(dto.getReference());
+		Organisation organisation = this.organisationManager.findOneByUuid(organisationUUid);
+		Application created = this.applicationManager.create(application,organisation);
+
+		result.setValue( Value.OK );
+		result.setObject( ApplicationDTO.from( created ) );
+
+		return result;
+
+	}
 	
 	public List<ApplicationDTO> findAll() {
 		
-		List<Application> all
-			= this.applicationManager.findAll();
-		
-		List<ApplicationDTO> result
-			= list();
-		
+		List<Application> all = this.applicationManager.findAll();
+		List<ApplicationDTO> result = list();
 		for ( Application application : all ) {
 			result.add( ApplicationDTO.from( application ) );
 		}
-		
 		return result;
 		
 	}
@@ -97,30 +104,20 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	@Transactional(readOnly=true)
 	public Result<List<Result<ApplicationDTO>>> query( Organisation actor ) {
 		
-		Result<List<Result<ApplicationDTO>>>result
-			= new Result<List<Result<ApplicationDTO>>>();
+		Result<List<Result<ApplicationDTO>>>result = new Result<List<Result<ApplicationDTO>>>();
 		
-		// TODO, remove hardcoded year
-		List<Application> applications
-			= PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findActiveByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
+		List<Application> applications = PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findActiveByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
 		
 		List<Result<ApplicationDTO>> individualResults
 			= list();
 		
 		for ( Application application : applications ) {
-			
-			Result<ApplicationDTO> individualResult
-				= new Result<ApplicationDTO>();
-			
-			ApplicationDTO dto
-				= ApplicationDTO.from( application );
+			Result<ApplicationDTO> individualResult = new Result<ApplicationDTO>();
+			ApplicationDTO dto = ApplicationDTO.from( application );
 			this.extend( dto, application );
-			
 			individualResult.setValue( Value.OK );
 			individualResult.setObject( dto );
-			
 			individualResults.add( individualResult );
-			
 		}
 		
 		result.setValue( Value.OK );

@@ -8,33 +8,21 @@ import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 
 public class ApplicationDTO {
-	
     private String uuid;
-    
     protected String reference;
-    
     protected String contactPersonUuid;
     protected String contactPersonName;
-    
     protected String organisationUuid;
-    
     protected String description;
-    
-    private List<HolidayDTO> holidays
-    	= new ArrayList<HolidayDTO>();
-    
+    private List<HolidayDTO> holidays = new ArrayList<HolidayDTO>();
     protected String holidayUuids;
     protected String holidayNames;
-    
     private int year;
-    
     protected Date submitted;
+    private ApplicationStatus status = new ApplicationStatus();
+	protected PersonDTO applicant;
 
-    private ApplicationStatus status
-    	= new ApplicationStatus();
-    
-    protected List<EnrollmentDTO> enrollments
-    	= new ArrayList<EnrollmentDTO>();
+    protected List<EnrollmentDTO> enrollments = new ArrayList<EnrollmentDTO>();
 
 	public String getReference() {
 		return reference;

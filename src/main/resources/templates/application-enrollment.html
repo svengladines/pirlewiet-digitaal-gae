@@ -13,7 +13,6 @@
 				Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
 			</p>
 			<form id="participant-form" class="form-horizontal" th:with="enrollment=${enrollmentResult.object}" th:attr="appUid=${app.uuid}" th:action="@{/api/applications/{uuid}/enrollments(uuid=${app.uuid})}" method="POST">
-
 				<input th:if="${enrollment.participant.uuid != null}" id="participant-id" type="hidden" th:value="${enrollment.participant.uuid}"/>
 				<div class="form-group">
 					<label for="participant-given-name" class="col-sm-4 control-label">Voornaam (*)</label>

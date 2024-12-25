@@ -4,6 +4,8 @@ import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
+import be.pirlewiet.digitaal.model.OrganisationType;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -119,6 +121,22 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 		return result;
 		
+	}
+
+	public Result<OrganisationDTO> createFromPerson(PersonDTO person) {
+
+		Result<OrganisationDTO> result = new Result<OrganisationDTO>();
+
+		Organisation organisation = Organisation.fromPerson(person);
+		// currently always individual
+		organisation.setType(OrganisationType.INDIVIDUAL);
+		Organisation created = this.organisationManager.create(organisation);
+
+		result.setValue( Value.OK );
+		result.setObject( OrganisationDTO.from( created ) );
+
+		return result;
+
 	}
 	
 	@Override

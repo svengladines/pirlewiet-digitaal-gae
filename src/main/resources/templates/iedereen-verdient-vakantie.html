@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments/fragment-head :: head">>
+	</head>
+	<body>
+
+	<div class="banner">
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1 class="capita">Pirlewiet</h1>
+					<p>
+						Schrijf je hier in voor een Pirlewiet-vakantie.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+
+	<div class="row">
+		<br/>
+		<div class="well">
+			<p>
+				Hoe verloopt je inschrijving bij Pirlewiet ?
+				<ol>
+					<li>Vul hieronder je profielgegevens in. We gebruiken deze gegevens om je te kunnen contacteren bij vragen of om over je inschrijving terug te koppelen.</li>
+					<li>Kies de vakantie waarvoor je jezelf of je gezin wil inschrijven.</li>
+					<li>Vul de gegevens in van alle vakantiegangers.</li>
+					<li>Beantwoord eventueel nog enkele vragen.</li>
+					<li>Verstuur je inschrijving.</li>
+				</ol>
+				<p>
+					Je inschrijving wordt door ons zo snel mogelijk bekeken en behandeld. <br/>
+					Daarna krijg je via e-mail bevestiging van je inschrijving, of word je eventueel op een wachtlijst geplaatst.
+					<strong>Opgelet:</strong> je inschrijving is pas definitief nadat we deze bevestigd hebben.
+				</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<form id="applicant-form" class="form-horizontal" th:action="@{/api/appplications}" method="POST">
+			<input id="applicant-id" type="hidden" name="reference"/>
+			<div class="form-group">
+				<label for="applicant-given-name" class="col-sm-4 control-label">Voornaam (*)</label>
+				<div class="col-sm-6">
+					<input id="applicant-given-name" name="applicant.givenName" type="text" class="form-control" th:value="${applicant.givenName}" required="required"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="applicant-family-name" class="col-sm-4 control-label">Familienaam (*)</label>
+				<div class="col-sm-6">
+					<input id="applicant-family-name" name="applicant.familyName" type="text" class="form-control" th:value="${applicant.familyName}" required="required"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="applicant-phone" class="col-sm-4 control-label">Telefoonnummer</label>
+				<div class="col-sm-4">
+					<input id="applicant-phone" name="applicant.phone" type="tel" class="form-control" th:value="${applicant.phone}" required="required" pattern="^[0-9]{3,4}/[0-9]{6,7}$" placeholder="0499/290671"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="applicant-email" class="col-sm-4 control-label">E-mail</label>
+				<div class="col-sm-6">
+					<input id="applicant-email" name="applicant.email" type="email" class="form-control" th:value="${applicant.email}" pattern="^[0-9a_-z.+-]@[0-9a-z\.+-]$"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="application-send" class="col-sm-4 control-label"></label>
+				<div class="col-sm-6">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+					<button type="submit" id="application-send" class="btn btn-primary applicant-save"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	</div><!-- container -->
+	
+    <script>
+    	var $jq = jQuery.noConflict();
+    	
+    	$jq(".pop").popover();
+    	
+		$jq("#application-send").submit( function( event ) {
+
+		});
+		
+    </script>
+  </body>
+</html>
