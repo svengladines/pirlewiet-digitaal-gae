@@ -120,7 +120,7 @@ public class Organisation {
 		return t;
 	}
 
-	public static Organisation fromPerson(PersonDTO f ) {
+	public static Organisation fromPerson(PersonDTO f) {
 		Organisation t = new Organisation();
 		t.setName( f.getName() );
 		t.setEmail( f.getEmail() );

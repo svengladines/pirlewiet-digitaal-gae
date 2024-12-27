@@ -25,7 +25,7 @@ public class MailMan {
 			Properties props = new Properties();
 			// SGL| doesn't seem to work ... tries SMTP
 			// this.javaMailSender.send( mimeMessage ); 
-			Transport.send( mimeMessage );
+			// TODO: enable! Transport.send( mimeMessage );
 			logger.info( "sent email to {}", (Object) mimeMessage.getRecipients(  MimeMessage.RecipientType.TO ) );
 			return true;
 			

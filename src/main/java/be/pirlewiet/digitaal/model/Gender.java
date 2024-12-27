@@ -2,6 +2,6 @@ package be.pirlewiet.digitaal.model;
 
 public enum Gender {
 	
-	M,F,V
+	M,F,X
 
 }

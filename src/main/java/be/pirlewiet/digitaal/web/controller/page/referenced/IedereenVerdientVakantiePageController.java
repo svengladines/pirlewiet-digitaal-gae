@@ -32,6 +32,8 @@ public class IedereenVerdientVakantiePageController {
 			@RequestParam("ivv-tc") String reference,
 			Model model) {
 
+		model.addAttribute("reference", reference);
+
 		return "iedereen-verdient-vakantie";
 
 	}

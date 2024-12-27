@@ -31,17 +31,17 @@
 					<div class="col-sm-3">
 						<div class="checkbox">
 							<label>
-								<input type="radio" name="participant.gender" class="participant-gender" value="F" th:checked="${enrollment.participant.gender == 'F'}" required="required"/>&nbsp;Vrouw
+								<input type="radio" name="participant.gender" class="participant-gender" value="F" th:checked="${T(be.pirlewiet.digitaal.model.Gender).F == enrollment.participant.gender}" required="required"/>&nbsp;Vrouw
 							</label>
 						</div>
 						<div class="checkbox">
 							<label>
-								<input type="radio" name="participant.gender" class="participant-gender" value="M" th:checked="${enrollment.participant.gender == 'M'}"/>&nbsp;Man
+								<input type="radio" name="participant.gender" class="participant-gender" value="M" th:checked="${T(be.pirlewiet.digitaal.model.Gender).M == enrollment.participant.gender}"/>&nbsp;Man
 							</label>
 						</div>
 						<div class="checkbox">
 							<label>
-								<input type="radio" name="participant.gender" class="participant-gender" value="X" th:checked="${enrollment.participant.gender == 'X'}"/>&nbsp;X
+								<input type="radio" name="participant.gender" class="participant-gender" value="X" th:checked="${T(be.pirlewiet.digitaal.model.Gender).X == enrollment.participant.gender}"/>&nbsp;X
 							</label>
 						</div>
 					</div>

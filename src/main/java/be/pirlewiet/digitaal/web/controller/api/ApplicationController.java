@@ -55,7 +55,7 @@ public class ApplicationController {
 		logger.debug("application.updateHolidays");
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 		Result<ApplicationDTO> x = this.applicationService.guard().updateHolidays( uuid, holidays, actor );
-		return response( x, HttpStatus.OK );
+		return new ResponseEntity<>( x, HttpStatus.OK );
 		
 	}
 	
@@ -69,7 +69,7 @@ public class ApplicationController {
 		logger.debug("application.updateContact");
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 		Result<ApplicationDTO> x = this.applicationService.guard().updateContact( uuid, contact, actor );
-		return response( x, HttpStatus.OK );
+		return new ResponseEntity( x, HttpStatus.OK );
 	}
 	
 	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
@@ -82,7 +82,7 @@ public class ApplicationController {
 		logger.debug("application.updateQList");
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 		Result<ApplicationDTO> x = this.applicationService.guard().updateQList ( uuid, qList, actor );
-		return response( x, HttpStatus.OK );
+		return new ResponseEntity( x, HttpStatus.OK );
 	}
 	
 	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
@@ -94,7 +94,7 @@ public class ApplicationController {
 		logger.debug("application.updateStatus");
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 		Result<ApplicationDTO> x = this.applicationService.guard().updateStatus( uuid, applicationStatus, actor );
-		return response( x, HttpStatus.OK );
+		return new ResponseEntity( x, HttpStatus.OK );
 	}
 	
 }

@@ -26,7 +26,7 @@ import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 
 import static be.pirlewiet.digitaal.web.controller.Controller.response;
 
-@RestController
+@Controller
 @RequestMapping( {"/api/applications"} )
 public class ApplicationsController {
 	
@@ -44,12 +44,8 @@ public class ApplicationsController {
 			@RequestBody ApplicationDTO application, 
 			@CookieValue(required=true, value="pwtid") String pwtid  ) {
 		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		Result<ApplicationDTO> createdResult
-			= this.applicationService.guard().create( application, actor );
-		
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<ApplicationDTO> createdResult = this.applicationService.guard().create( application, actor );
 		return response( createdResult, HttpStatus.OK );
 		
 	}
@@ -75,12 +71,16 @@ public class ApplicationsController {
 			Model model){
 
 		// first create an invididual organisation
-		Result<OrganisationDTO> rCreatedOrganisation = this.organisationService.guard().createFromPerson(application.applicant());
+		Result<OrganisationDTO> rCreatedOrganisation = this.organisationService.guard().createFromPerson(application.getApplicant());
 		if (Result.Value.OK.equals(rCreatedOrganisation.getValue())) {
 			// then create a new application
-			this.applicationService.createReferenced(application,rCreatedOrganisation.getObject().getUuid());
+			Result<ApplicationDTO> rCreatedApplication = this.applicationService.createReferenced(application,rCreatedOrganisation.getObject().getUuid());
+			if (Result.Value.OK.equals(rCreatedApplication.getValue())) {
+				return "redirect:/application-%s.html".formatted(rCreatedApplication.getObject().getUuid());
+			}
 		}
-		return "application";
+		// TODO proper error handling
+		return "error";
 
 	}
 	

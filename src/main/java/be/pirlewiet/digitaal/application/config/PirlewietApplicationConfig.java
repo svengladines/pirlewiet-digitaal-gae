@@ -237,37 +237,12 @@ public class PirlewietApplicationConfig {
 	}
 
 	@Configuration
-	@Profile({ConfigurationProfiles.PRODUCTION})
-	static class ConfigForProduction {
+	static class HeadQuarterConfig {
 
 		@Bean
-		public HeadQuarters secretariaat() {
-
-			return new HeadQuarters("info@pirlewiet.be");
-			// return new HeadQuarters( "sven.gladines@gmail.com" );
-
+		public HeadQuarters headQuarters(@Value("${pirlewiet.email}")String email) {
+			return new HeadQuarters(email);
 		}
 
-	}
-
-	@Configuration
-	@Profile({"local"})
-	static class ConfigForLocal {
-
-		@Bean
-		public HeadQuarters localHeadQuarter(OrganisationRepository organisationRepository) {
-			HeadQuarters headQuarters = new HeadQuarters("info@foo.bar") {
-				@Override
-				public void initialize() {
-					Organisation organisation = new Organisation();
-					organisation.setName("VZW Svekke");
-					organisation.setCode("xxx");
-					organisation.setEmail("info@svekke.gladines");
-					organisation.setUuid("uuid-1");
-					organisationRepository.saveAndFlush(organisation);
-				}
-			};
-			return headQuarters;
-		}
 	}
 }

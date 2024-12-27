@@ -7,15 +7,17 @@ public class ReferencedApplicationDTO {
     protected String reference;
 	protected PersonDTO applicant;
 
-    protected List<EnrollmentDTO> enrollments = new ArrayList<EnrollmentDTO>();
 	public String getReference() {
 		return reference;
 	}
 	public void setReference(String reference) {
 		this.reference = reference;
 	}
-	public PersonDTO applicant() {
+	public PersonDTO getApplicant() {
 		return this.applicant;
+	}
+	public void setApplicant(PersonDTO applicant) {
+		this.applicant = applicant;
 	}
 
 }
