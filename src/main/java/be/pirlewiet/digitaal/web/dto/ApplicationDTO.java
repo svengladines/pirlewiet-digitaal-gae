@@ -8,33 +8,21 @@ import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.ApplicationStatus;
 
 public class ApplicationDTO {
-	
     private String uuid;
-    
     protected String reference;
-    
     protected String contactPersonUuid;
     protected String contactPersonName;
-    
     protected String organisationUuid;
-    
     protected String description;
-    
-    private List<HolidayDTO> holidays
-    	= new ArrayList<HolidayDTO>();
-    
+    private List<HolidayDTO> holidays = new ArrayList<HolidayDTO>();
     protected String holidayUuids;
     protected String holidayNames;
-    
     private int year;
-    
     protected Date submitted;
+    private ApplicationStatus status = new ApplicationStatus();
+	protected PersonDTO applicant;
 
-    private ApplicationStatus status
-    	= new ApplicationStatus();
-    
-    protected List<EnrollmentDTO> enrollments
-    	= new ArrayList<EnrollmentDTO>();
+    protected List<EnrollmentDTO> enrollments = new ArrayList<EnrollmentDTO>();
 
 	public String getReference() {
 		return reference;
@@ -125,10 +113,7 @@ public class ApplicationDTO {
 	}
 
 	public static ApplicationDTO from ( Application f ) {
-		
-		ApplicationDTO t
-			= new ApplicationDTO();
-		
+		ApplicationDTO t = new ApplicationDTO();
 		t.setUuid( f.getUuid() );
 		t.setStatus( f.getStatus() );
 		t.setReference( f.getReference() );
@@ -137,7 +122,6 @@ public class ApplicationDTO {
 		t.setHolidayNames( f.getHolidayNames() );
 		t.setHolidayUuids( f.getHolidayUuids() );
 		t.setSubmitted( f.getSubmitted() );
-		
 		return t;
 		
 	}

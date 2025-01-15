@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
+import be.pirlewiet.digitaal.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +31,6 @@ import be.pirlewiet.digitaal.domain.people.OrganisationManager;
 import be.pirlewiet.digitaal.domain.people.PersonManager;
 import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
 import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.web.dto.AddressDTO;
 import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
@@ -51,34 +42,34 @@ import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 @Service
 public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Service<EnrollmentDTO,Enrollment> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	EnrollmentManager enrollmentManager;
 	
-	@Resource
+	@Autowired
 	PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	AddressManager addressManager;
 	
-	@Resource
+	@Autowired
 	ApplicationManager applicationManager;
 	
-	@Resource
+	@Autowired
 	HolidayManager holidayManager;
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	Secretary secretary;
 	
-	@Resource
+	@Autowired
 	Mapper mapper;
 	
 	@Override
@@ -90,32 +81,24 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	@Transactional(readOnly=true)
 	public Result<List<Result<EnrollmentDTO>>> query( String applicationUuid, Organisation actor ) {
 		
-		Result<List<Result<EnrollmentDTO>> > result
-			= new Result<List<Result<EnrollmentDTO>> >();
+		Result<List<Result<EnrollmentDTO>> > result = new Result<>();
 		
 		Application application = this.applicationManager.findOne( applicationUuid );
 		
-		List<Enrollment> enrollments
-			= this.guard().enrollmentManager.findByApplicationUuid( applicationUuid );
+		List<Enrollment> enrollments = this.guard().enrollmentManager.findByApplicationUuid( applicationUuid );
 		
-		List<Result<EnrollmentDTO>> individualResults
-			= list();
-		
-		boolean allOK 
-			= true;
-		
+		List<Result<EnrollmentDTO>> individualResults = list();
+		boolean allOK = true;
+
 		for ( Enrollment enrollment : enrollments ) {
 			
-			Result<EnrollmentDTO> individualResult
-				= new Result<EnrollmentDTO>();
+			Result<EnrollmentDTO> individualResult = new Result<EnrollmentDTO>();
 			
 			StringBuilder errorCodes = new StringBuilder();
 			
-			List<QuestionAndAnswer> medicals
-				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
+			List<QuestionAndAnswer> medicals = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
 			
-			Set<Holiday> holidays
-				= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
+			Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 			
 			// assume all good untill proven otherwise
 			individualResult.setValue( Value.OK );
@@ -147,7 +130,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			if ( Result.Value.NOK.equals( individualResult.getValue() ) ) {
 				allOK = false;
 			}
-			
+
 		}
 		
 		if ( individualResults.isEmpty() ) {
@@ -155,11 +138,17 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			result.setErrorCode( ErrorCodes.APPLICATION_NO_ENROLLMENTS );
 		}
 		else {
-			result.setValue( allOK ? Value.OK : Value.NOK );
 			result.setObject( individualResults );
+			if(allOK) {
+				result.setValue(Value.OK);
+			}
+			else {
+				result.setValue(Value.PARTIAL);
+				result.setErrorCode( ErrorCodes.APPLICATION_INVALID_ENROLLMENTS );
+			}
 		}
 		
-		
+
 		
 		return result;
 		
@@ -813,29 +802,22 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	}
 
 	public Result<EnrollmentDTO> template( ) {
-		Enrollment enrollment
-			= this.enrollmentManager.template();
-		
-		EnrollmentDTO dto
-			= EnrollmentDTO.from( enrollment );
-		
-		Result<EnrollmentDTO> result
-			= new Result<EnrollmentDTO>();
+		Enrollment enrollment = this.enrollmentManager.template();
+		EnrollmentDTO dto = EnrollmentDTO.from( enrollment );
+		Participant participant = new Participant();
+		dto.setParticipant(new PersonDTO());
+		dto.setAddress( new AddressDTO() );
+		Result<EnrollmentDTO> result = new Result<EnrollmentDTO>();
 		result.setValue( Value.OK );
 		result.setObject( dto );
-	
 		return result;
 	}
 
 	protected void extend( EnrollmentDTO dto ) {
 		
-		Person participant
-			= this.personManager.findOneByUuid( dto.getParticipantUuid() );
-		
+		Person participant = this.personManager.findOneByUuid( dto.getParticipantUuid() );
 		dto.setParticipant( PersonDTO.from( participant ) );
-		
-		Address address
-			= this.addressManager.findOneByUuid( dto.getAddressUuid() );
+		Address address = this.addressManager.findOneByUuid( dto.getAddressUuid() );
 		dto.setAddress( AddressDTO.from( address ) );
 		
 		

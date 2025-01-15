@@ -2,7 +2,7 @@ package be.pirlewiet.digitaal.domain.scenario;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import be.pirlewiet.digitaal.model.Application;
 import be.pirlewiet.digitaal.model.Enrollment;
@@ -16,19 +16,19 @@ import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class DeleteOldEntitiesScenario extends Scenario {
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerRepositoryObjectify questionAndAnswerRepository;
 	
-	@Resource
+	@Autowired
 	EnrollmentRepository enrollmentRepository;
 	
-	@Resource
+	@Autowired
 	ApplicationRepository applicationRepository;
 	
-	@Resource
+	@Autowired
 	PersonRepository personRepository;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public DeleteOldEntitiesScenario guard() {

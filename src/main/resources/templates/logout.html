@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment-head :: head}">>
+<body>
+
+<div th:replace="~{fragments/fragment-menu :: menu(active='enrollments')}"></div>
+
+<div class="banner">
+  <div class="container">
+    <div class="row centered">
+      <div class="col-lg-12">
+        <h1>Uitloggen</h1>
+        <p>Je komt naar hier om uit te loggen.</p>
+      </div>
+    </div><!-- row -->
+  </div><!-- container -->
+</div>
+
+<div class="container">
+  <br/>
+  <div class="row">
+    <div id="inprogress" class="well">
+      Bezig met uitloggen...
+    </div>
+    <div id="done" class="well hidden">
+      Je bent nu uitgelogd. Ga naar de <a th:href="@{/login.html}" class="todo">inlogpagina</a> om opnieuw in te loggen.
+    </div>
+  </div>
+</div><!-- container -->
+
+<script>
+  var $jq = jQuery.noConflict();
+
+  $jq.ajax({
+      type: "delete",
+      url: "/api/codes",
+      success: function() {
+          $jq("#inprogress").removeClass("show").addClass("hidden");
+          $jq("#done").removeClass("hidden").addClass("show");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+          // Error handling code
+      }
+  });
+</script>
+</body>
+</html>

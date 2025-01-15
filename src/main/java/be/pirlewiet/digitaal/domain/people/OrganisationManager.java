@@ -2,20 +2,15 @@ package be.pirlewiet.digitaal.domain.people;
 
 import static be.occam.utils.javax.Utils.isEmpty;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
+import be.pirlewiet.digitaal.model.OrganisationType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,29 +23,36 @@ import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.OrganisationRepository;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+@Component
 public class OrganisationManager {
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	protected Organisation pDiddy;
 	
-	@Resource
+	@Autowired
 	protected AddressManager addressManager;
+
+	@Autowired
+	protected TemplateEngine emailTemplateEngine;
 	
-	protected final Logger logger
-		= LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	protected final Comparator<Organisation> lastUpdatedFirst
 		= new Comparator<Organisation>() {
 
 			@Override
 			public int compare(Organisation o1, Organisation o2) {
-				if ( o1.getUpdated() == null ) {
+				if ( ( o1.getUpdated() == null ) && ( o2.getUpdated() == null ) ) {
+					return 0;
+				}
+				else if ( o1.getUpdated() == null ) {
 					return 1;
 				}
 				else if ( o2.getUpdated() == null ) {
@@ -63,13 +65,13 @@ public class OrganisationManager {
 		
 		};
 	
-	@Resource
+	@Autowired
 	protected OrganisationRepository organisationRepository;
 	
-	@Resource
-	DoorMan buitenWipper;
+	@Autowired
+	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	MailMan postBode;
 	
     public OrganisationManager() {
@@ -81,8 +83,7 @@ public class OrganisationManager {
     
     public Organisation create( Organisation organisation, boolean sendEmail ) {
     	
-    	String email
-    		= organisation.getEmail();
+    	String email = organisation.getEmail();
     	
     	if ( isEmpty( organisation.getName() ) ) {
     		throw new PirlewietException( ErrorCodes.ORGANISATION_NAME_MISSING, "Vul het veld 'naam' in." );
@@ -96,36 +97,35 @@ public class OrganisationManager {
     		throw new PirlewietException( ErrorCodes.ORGANISATION_PHONE_MISSING, "Vul het veld 'telefoon' in." );
     	}
     	
-    	if ( isEmpty( organisation.getCity() ) ) {
-    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_MISSING, "Vul het veld 'gemeente' in." );
+    	if (OrganisationType.NON_PROFIT.equals(organisation.getType())) {
+			 if (isEmpty( organisation.getCity())) {
+				 throw new PirlewietException(ErrorCodes.ORGANISATION_CITY_MISSING, "Vul het veld 'gemeente' in.");
+			 }
+			Organisation existing = this.organisationRepository.findOneByEmail( email );
+			if ( existing != null ) {
+				throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_TAKEN, String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
+			}
     	}
     	
-    	Organisation existing
-    		= this.organisationRepository.findOneByEmail( email );
-    	
-    	if ( existing != null ) {
-    		throw new PirlewietException( ErrorCodes.ORGANISATION_EMAIL_TAKEN, String.format( "Er bestaat al een organisatie met het e-mailadres [%s]. Geef een ander e-mailadres op om een nieuwe organisatie aan te maken.", email ) );
-    	}
-    	
-    	if ( isEmpty( organisation.getCode() ) ) {
-    	
-	    	String code 
-	    		= this.buitenWipper.guard().uniqueCode();
-	    	
+    	if (isEmpty(organisation.getCode())) {
+	    	String code = this.doorMan.guard().uniqueCode();
 	    	organisation.setCode( code );
-	    	
     	}
     	
     	organisation.setUuid( UUID.randomUUID().toString() );
     	
-    	Organisation saved 
-    		= this.organisationRepository.saveAndFlush( organisation );
+    	Organisation saved = this.organisationRepository.saveAndFlush( organisation );
     	
     	logger.info( "created organisation with uuid [{}], name [{}] and code [{}]", new Object[] { saved.getUuid(), saved.getName(), saved.getCode() } );
     	
     	if ( sendEmail ) {
-    		this.sendCreatedEmailToOrganisation( saved );
-    		this.sendCreatedEmailToPirlewiet( saved );
+			if (OrganisationType.NON_PROFIT.equals(organisation.getType())) {
+				this.sendCreatedEmailToOrganisation(saved);
+				this.sendCreatedEmailToPirlewiet( saved );
+			}
+			else {
+				this.sendTouristCreatedEmailToPirlewiet( saved );
+			}
     	}
     	
     	return saved;
@@ -271,85 +271,48 @@ public class OrganisationManager {
     }
     
     protected boolean sendCreatedEmailToOrganisation( Organisation organisation ) {
-    	
-		MimeMessage message
-			= formatCreatedMessage( organisation, "/templates/to-organisation/organisation-created.tmpl", organisation.getEmail() );
+
+		/* TODO!
+		MimeMessage message = formatCreatedMessage( "Pirlewiet Digitaal: registratie", organisation, "/to-organisation/organisation-created", organisation.getEmail() );
 
 		if ( message != null ) {
-			
 			return postBode.deliver( message );
-			
 		}
+		 */
 		
 		return false;
 	
     }
-    
+
  protected boolean sendCreatedEmailToPirlewiet( Organisation organisation ) {
-    	
+		/* TODO
 		MimeMessage message
-			= formatCreatedMessage( organisation, "/templates/to-pirlewiet/organisation-created.tmpl",this.headQuarters.getEmail()  );
+			= formatCreatedMessage( "Nieuwe doorverwijzer geregistreerd", organisation, "/email/to-pirlewiet/organisation-created",this.headQuarters.getEmail()  );
 
 		if ( message != null ) {
 			
 			return postBode.deliver( message );
 			
 		}
-		
+		 */
 		return false;
-	
     }
 
-    protected MimeMessage formatCreatedMessage( Organisation organisation, String templateLocation, String to ) {
+	protected boolean sendTouristCreatedEmailToPirlewiet( Organisation organisation ) {
 
-		MimeMessage message
-			= null;
-
-		Configuration cfg 
-			= new Configuration();
-	
-		try {
-	
-			InputStream tis
-				= this.getClass().getResourceAsStream( templateLocation );
-	
-			Template template 
-				= new Template("code", new InputStreamReader( tis ), cfg );
-	
-			Map<String, Object> model = new HashMap<String, Object>();
-			
-			model.put( "organisation", organisation );
-			
-			StringWriter bodyWriter 
-				= new StringWriter();
-			
-			template.process( model , bodyWriter );
-			
-			bodyWriter.flush();
-				
-			message = this.postBode.message();
-			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-		
-			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( to );
-			helper.setReplyTo( headQuarters.getEmail() );
-			helper.setSubject( "Pirlewiet: registratie als doorverwijzer" );
-		
-			String text
-				= bodyWriter.toString();
-			
-			logger.info( "email text is [{}]", text );
-				
-			helper.setText(text, true);
-	
-		} catch( Exception e ) {
-			logger.warn( "could not create e-mail", e );
-			throw new RuntimeException( e );
+		/* TODO
+		MimeMessage message = formatCreatedMessage( "Nieuwe vakantieganger geregistreerd", organisation, "/email/to-pirlewiet/tourist-created",this.headQuarters.getEmail()  );
+		if ( message != null ) {
+			return postBode.deliver( message );
 		}
+		 */
+		return false;
 
-		return message;
+	}
 
+    protected String formatCreatedMessage( String subject, Organisation organisation, String templateLocation, String to ) {
+		// TODO
+		return "TODO";
     }
     
 }

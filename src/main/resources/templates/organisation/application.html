@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment-head :: head}">
+</head>
+<body>
+
+<div th:replace="~{fragments/fragment-menu :: menu}"></div>
+
+<div class="banner">
+	<div class="container">
+		<div class="row centered">
+			<div class="col-lg-12">
+				<h1>Dossier</h1>
+				<p>
+					Beheer een inschrijvingsdossier.
+				</p>
+			</div>
+		</div><!-- row -->
+	</div><!-- container -->
+</div>
+
+	<div class="container" th:with="app=${applicationResult.object}">
+
+		<span id="the-app" th:attr="data-attribute-app-uuid=${app.uuid}" class="hidden"></span>
+
+		<br/>
+
+		<div id="row-status" class="row" th:with="questionList=${applicationQuestionListResult.object}">
+			<div>
+				<div class="col-sm-12 alert alert-info">
+					<h4><strong>Status</strong><br/></h4>
+					<p>
+						<i th:text="#{application.status.__${app.status.value}__}"/><br/>
+						<span th:text="#{application.status.__${app.status.value}__.description}"/><br/>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="row-applicant" class="row">
+			<div th:if="${applicantResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-contact pull-right"></i><h4><strong>Aanvrager</strong><br/></h4>
+					<span class="">Niet ingevuld</span><br/>
+					<a href="javascript:void(0);" class="todo" th:attr="data-attribute-uuid=${app.uuid}" data-attribute-modal="applicant">Aanvrager toevoegen</a>
+				</div>
+			</div>
+			<div th:if="${applicantResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
+				<div class="col-sm-12 alert alert-success" th:with="applicant=${applicantResult.object}">
+					<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Aanvrager</strong><br/></h4>
+					<span th:text="${applicant.givenName} + ' ' + ${applicant.familyName}"/>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="applicant">wijzigen</a>)
+				</div>
+			</div>
+		</div>
+
+		<div id="row-holiday" class="row">
+			<div th:if="${holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}">
+					<div class="col-sm-12 alert alert-warning">
+						<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
+						Opgelet:
+						<ul>
+							<li>minstens 1 vakantie selecteren</li>
+							<li>enkel vakanties selecteren van hetzelfde type (KIKA, TIKA of GEZINS)</li>
+						</ul>
+						Geen geldige vakantie(s)&nbsp;(<a href="javascript:void(0);" class="todo" th:attr="data-attribute-app-uuid=${app.uuid}" data-attribute-modal="holidays">invullen/wijzigen</a>)
+					</div>
+			</div>
+			<div th:if="${holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
+				<div class="col-sm-12 alert alert-success">
+					<i class="fa fa-2x fa-calendar pull-right"></i><h4><strong>Vakantie(s)</strong></h4>
+					<span th:text="${app.holidayNames}"/>&nbsp;(<a href="javascript:void(0);" class="todo" th:attr="data-attribute-app-uuid=${app.uuid}" data-attribute-modal="holidays">wijzigen</a>)<br/>
+				</div>
+			</div>
+		</div>
+
+		<div id="row-enrollments" class="row">
+			<div th:if="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}" th:with="errorCode=${enrollmentsResult.errorCode}">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
+					<div th:if="${errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
+							<span class="">Nog geen vakantiegangers toegevoegd</span><br/>
+						<i class="fa fa-1x fa-plus"></i>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+					</div>
+				</div>
+			</div>
+			<div th:unless="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}" class="alert" th:classappend="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK ? 'alert-success' : 'alert-warning'}">
+				<i class="fa fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
+				<div class="container">
+					<div th:each="enrollmentResult:${enrollmentsResult.object}" class="row">
+						<div class="col-sm-5 alert" th:with="enrollment=${enrollmentResult.object}" th:classappend="${enrollmentResult.value == T(be.occam.utils.spring.web.Result.Value).OK ? 'alert-success' : 'alert-warning'}">
+							<div>
+								<span class="pull-right"><strong th:text="#{enrollment.status.__${enrollment.status.value}__}"/></span>
+							</div>
+							<br/><br/>
+							<i class="fa fa-user"></i>&nbsp;<span class="x">[[${enrollment.participant.givenName}]]&nbsp;[[${enrollment.participant.familyName}]]</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" th:attr="data-attribute-enrollment-uuid=${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;(<span th:if="${enrollment.applicationUuid != null }"><a href="javascript:void(0);" class="enrollment-delete" th:attr="data-attribute-enrollment-uuid=${enrollment.uuid}" >Verwijder</a>)</span>
+							<div><i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" th:attr="data-attribute-enrollment-uuid=${enrollment.uuid}">Vragenlijst</a><br/></div>
+						</div>
+					</div>
+					<div class="row">
+						<i class="fa fa-1x fa-plus"></i>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="row-qlist" class="row">
+			<div th:unless="${applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-1x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+					<span class="">Niet (volledig) ingevuld </span><br/>
+					<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist" th:attr="data-attribute-uuid=${app.uuid}">Vragenlijst invullen/aanvullen</a>
+				</div>
+			</div>
+			<div th:if="${applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
+				<div class="col-sm-12 alert alert-success">
+					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+					<span>Ingevuld</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">wijzigen</a>)
+				</div>
+			</div>
+		</div>
+		<div id="row-submit" class="row">
+			<div th:switch="${app.status.value}">
+				<div th:case="${T(be.pirlewiet.digitaal.model.ApplicationStatus.Value).DRAFT}">
+					<div th:if="${(applicantResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK) && (applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK)}" class="col-sm-12 alert alert-info">
+						<p>
+							Je inschrijving is volledig. Je kan deze nu versturen.
+						</p>
+						<br/>
+						<button type="button" id="application-submit" class="btn btn-primary"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="application-cancel" class="btn btn-danger pull-right"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
+					</div>
+					<div th:unless="${(applicantResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK) && (applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK)}" class="col-sm-12 alert alert-info">
+						<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
+						<span class="text-warning">Een inschrijving is pas volledig als alle bovenstaande kaders groen zijn.</span><br/>
+					</div>
+				</div>
+				<div th:case="${T(be.pirlewiet.digitaal.model.ApplicationStatus.Value).CANCELLED}">
+					<div class="col-sm-12 alert alert-info">
+						<p>
+						<h4><strong>Acties</strong></h4>
+						</p>
+						De inschrijving is geannuleerd. Je kan hier geen actie meer voor ondernemen.
+					</div>
+				</div>
+				<div th:case="*">
+					<div class="col-sm-12 alert alert-info">
+						<p>
+							<strong>Acties</strong>
+						</p>
+						<br/>
+						<button type="button" id="application-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Annuleer</button>
+					</div>
+				</div>
+		</div>
+		<div id="modal" class="modal fade" tabindex="-1" role="dialog">
+		</div>
+
+	</div><!-- container -->
+
+	<script>
+		var $jq = jQuery.noConflict();
+
+    	var show = function( id ) {
+    		$jq(".panel" ).removeClass("show").addClass("hidden");
+    		$jq("#" + id ).removeClass("hidden").addClass("show");
+    	};
+
+		var saveContact = function( id ) {
+			var c = new Contact( $jq("#contact-uuid").val(), $jq("#contact-given-name").val(), $jq("#contact-family-name").val(), $jq("#contact-phone").val(), $jq("#contact-email").val() );
+			putContact ( id, c, $jq("#contact-save" ),$jq("#contact-status" ), refresh );
+		};
+
+		var toParticipant = function( id ) {
+
+			window.location.hash = "#modal-participant-" + id;
+			window.location.reload();
+
+		};
+
+		var saveParticipantList = function( id ) {
+			return saveQList( id, "participant" );
+		};
+
+		var saveQList = function( id, tag ) {
+			var list
+				= [];
+			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			putQList ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
+		};
+
+		var saveEnrollmentQList = function( applicationUuid, enrollmentUuid, tag ) {
+			var list
+				= [];
+			$jq( "input:checked.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
+			});
+			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
+				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+			});
+			putEnrollmentQList ( applicationUuid, enrollmentUuid, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
+		};
+
+		var saveApplicationStatus = function( applicationUuid, value ) {
+			var comment = "";
+			if ( value ) {
+				var sx = new Status (value, comment ,true );
+				busyButton( $jq("#enrollment-save" ) );
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				doneButton( $jq("#enrollment-save" ) );
+			}
+			else {
+				var sx = new Status ( "AUTO", comment ,true );
+				busyButton( $jq("#enrollment-save" ) );
+				putStatus ( applicationUuid, sx, $jq("#enrollment-save" ),$jq("#x-status" ), refresh );
+				doneButton( $jq("#enrollment-save" ) );
+			}
+
+
+		};
+
+		var cancelApplication = function( applicationUuid ) {
+			saveApplicationStatus( applicationUuid, "CANCELLED", $jq("#status-comment-text").val() );
+		};
+
+		var deleteDraftEnrollment = function( applicationUuid, enrollmentUuid ) {
+
+			deleteEnrollment( applicationUuid, enrollmentUuid, $jq("#enrollment-delete" ),$jq("#delete-status" ), refresh );
+
+		};
+
+		var saveHolidays = function( id ) {
+			var holidays
+				= new Array();
+			$jq( ".holiday:checked" ).each( function( index, element ) {
+				holidays.push( new Holiday( element.value ) );
+			});
+			putHolidays ( id, holidays, $jq("#holiday-save"),$jq("#holiday-status" ), refresh );
+		};
+
+		var refresh = function( ) {
+			window.location.hash="";
+			window.location.reload();
+		};
+
+		$jq(".todo").click( function( event ) {
+
+			$jq("#modal").load( "/application-modals.html?uuid=" + $jq("#the-app").attr("data-attribute-app-uuid") + "&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-enrollment-uuid"),
+					function() {
+
+				$jq("#holiday-save").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveHolidays( $jq("#the-app").attr("data-attribute-app-uuid") );
+
+				});
+
+				$jq("#contact-save").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveContact( $jq("#the-app").attr("data-attribute-app-uuid") );
+
+				});
+
+				$jq("#q-save-application-qlist").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveQList( $jq("#the-app").attr("data-attribute-app-uuid"), "application" );
+
+				});
+
+				$jq("#q-save-participant").click( function( event ) {
+
+					clearStatus();
+					busyButton( $jq(this) );
+
+					saveEnrollmentQList( $jq("#the-app").attr("data-attribute-app-uuid"), $jq(this).attr("data-attribute-enrollment-uuid"), "participant" );
+
+				});
+
+			});
+
+
+
+			$jq("#modal").modal();
+
+		});
+
+
+		$jq("#application-submit").click( function( event ) {
+
+			clearStatus();
+			$jq(this).button('Even geduld...');
+
+			saveApplicationStatus( $jq("#the-app").attr("data-attribute-app-uuid") );
+
+		});
+
+		$jq("#application-cancel").click( function( event ) {
+
+			clearStatus();
+			$jq(this).button('Even geduld...');
+
+			cancelApplication( $jq("#the-app").attr("data-attribute-app-uuid") );
+
+		});
+
+		$jq(".enrollment-delete").click( function( event ) {
+
+			var uuid= event.currentTarget.attributes["data-attribute-enrollment-uuid"].value;
+
+			$jq(this).button('Even geduld...');
+
+			deleteDraftEnrollment( "${application.uuid}" , uuid );
+
+		});
+
+		$jq("#submit-show").click( function( event ) {
+
+			show('div-submit');
+
+		});
+
+		$jq( document ).ready(function() {
+
+			buttons();
+
+			if ( window.location.hash ) {
+				$jq( "#" + window.location.hash.substring(1) ).modal();
+			}
+
+		});
+	</script>
+</body>
+</html>

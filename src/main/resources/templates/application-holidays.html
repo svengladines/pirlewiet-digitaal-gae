@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="nl" >
+<head title ="pirlewiet digitaal" th:replace="fragments/fragment-head :: head">>
+</head>
+<body>
+
+    <div class="modal-dialog" th:with="app=${applicationResult.object}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Vakantie(s)</h2>
+                <p>
+                    Selecteer de vakantie(s) waarvoor je wil inschrijven.
+                </p>
+            </div>
+            <div class="modal-body" th:with="currentHolidays=${holidaysResult.object}">
+                <p th:if="${#lists.isEmpty(currentHolidays)}" class="text=info">Er is momenteel geen vakantie waar men voor je inschrijven. Controleer de inschrijvingsdata op onze website.</p>
+                <div id="spring" class="col-sm-12">
+                    <strong>Voorjaar</strong>
+                    <div th:each="h:${currentHolidays}">
+                        <div>
+                            <div th:if="${h.object.period == T(be.pirlewiet.digitaal.model.Period).Spring}">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="vak" class="holiday" th:value="${h.object.uuid}" th:text="${h.object.name}" th:checked="${h.value == T(be.occam.utils.spring.web.Result.Value).OK}"/>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!--
+                        <fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${h.start}" var="start"></th:dat:formatDate>
+                        <fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${h.end}" var="end"></fmt:formatDate>
+                        -->
+                </div>
+                <div id="summer" class="col-sm-12">
+                    <strong>Zomer</strong>
+                    <div th:each="h:${currentHolidays}">
+                        <div>
+                            <div th:if="${h.object.period == T(be.pirlewiet.digitaal.model.Period).Summer}">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="vak" class="holiday" th:value="${h.object.uuid}" th:text="${h.object.name}" th:checked="${h.value == T(be.occam.utils.spring.web.Result.Value).OK}"/>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    <fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${h.start}" var="start"></th:dat:formatDate>
+                    <fmt:formatDate type="date" pattern="dd/MM/yyyy" value="${h.end}" var="end"></fmt:formatDate>
+                    -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+                <button type="button" id="holiday-save" class="btn btn-primary" th:attr="data-attribute-uuid=${app.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+                <span id ="holiday-status"></span>
+            </div>
+        </div>
+    </div>
+</body>

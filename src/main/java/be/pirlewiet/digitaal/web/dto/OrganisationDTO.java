@@ -7,8 +7,7 @@ import be.pirlewiet.digitaal.model.Organisation;
 
 public class OrganisationDTO {
 	
-	protected final Logger logger
-		= LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	private String uuid;
 	protected String name;
@@ -18,7 +17,6 @@ public class OrganisationDTO {
 	protected String alternativeEmail;
 	protected boolean inComplete;
 	protected String addressUuid;
-	protected String city;
 	protected AddressDTO address;
 	
 	public String getName() {
@@ -84,29 +82,34 @@ public class OrganisationDTO {
 	public void setInComplete(boolean inComplete) {
 		this.inComplete = inComplete;
 	}
-	
-	public String getCity() {
-		return city;
+
+	public AddressDTO getAddress() {
+		return address;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
+	public OrganisationDTO setAddress(AddressDTO address) {
+		this.address = address;
+		return this;
 	}
 
-	public static OrganisationDTO from( Organisation f ) {
+	public static OrganisationDTO from(Organisation f ) {
 		
-		OrganisationDTO t
-			= new OrganisationDTO();
+		OrganisationDTO t = new OrganisationDTO();
 		
 		t.setUuid( f.getUuid() );
 		t.setName( f.getName() );
 		t.setEmail( f.getEmail() );
 		t.setPhone( f.getPhone() );
 		t.setAddressUuid( f.getAddressUuid() );
-		t.setCity( f.getCity() );
 		t.setCode( f.getCode() );
-		
+
+		t.setAddress(new AddressDTO().setUuid(f.getAddressUuid()).setCity(f.getCity()));
+
 		return t;
+	}
+
+	public String getCity() {
+		return this.address != null ? this.address.getCity() : "?";
 	}
 	
 	

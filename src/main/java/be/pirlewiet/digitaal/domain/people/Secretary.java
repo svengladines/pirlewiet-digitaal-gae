@@ -5,11 +5,12 @@ import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
 
 import be.occam.utils.spring.web.Result;
@@ -19,54 +20,13 @@ import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 
+@Component
 public class Secretary {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 
-	/*
-	protected final Comparator<Application> mostRecentApplications
-			= new Comparator<Application>() {
-
-		@Override
-		public int compare(Application o1, Application o2) {
-			
-			Date d1 = o1.get
-			Date d2 = o2.getInschrijvingsdatum();
-			
-			if ( d1 == null ) {
-				return 1;
-			}
-			else if ( d2 == null ) {
-				return -1;
-			}
-			else {
-				return  ( 0- d1.compareTo( d2 ) );
-			}
-			
-		}
-			
-	};
-	*/
-	
-	@Resource
-	protected EnrollmentRepository inschrijvingXRepository;
-	
-	@Resource
-	protected HolidayManager holidayManager;
-	
-	@Resource
-	protected PersonManager personManager;
-	
-	@Resource
-	DoorMan doorMan;
-
-	@Resource
-	MessageSource messageSource;
-	
-	@Resource
-	LocaleResolver localeResolver;
-	
+	@Autowired
     public Secretary( ) {
     }
     

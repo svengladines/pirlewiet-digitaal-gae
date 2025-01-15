@@ -4,7 +4,9 @@ import static be.occam.utils.javax.Utils.list;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import be.pirlewiet.digitaal.model.OrganisationType;
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,19 +31,19 @@ import be.pirlewiet.digitaal.web.util.Tuple;
 @Service
 public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Service<OrganisationDTO,Organisation> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	Excelsior excelsior;
 	
-	@Resource
+	@Autowired
 	Reducer reducer;
 	
-	@Resource
+	@Autowired
 	AddressManager addressManager;
 	
 	@Override
@@ -53,12 +55,8 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	@Override
 	public Result<List<Result<OrganisationDTO>>> query(Organisation actor) {
 		
-		List<Organisation> organisations
-			= this.organisationManager.all();
-		
-		
-		List<OrganisationDTO> dtos
-			= list();
+		List<Organisation> organisations = this.organisationManager.all();
+		List<OrganisationDTO> dtos = list();
 		
 		for ( Organisation organisation : organisations ) {
 			
@@ -73,16 +71,13 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			
 		}
 		
-		Result<List<Result<OrganisationDTO>>> result
-			= new Result<List<Result<OrganisationDTO>>>();
+		Result<List<Result<OrganisationDTO>>> result = new Result<>();
 		
-		List<Result<OrganisationDTO>> individualResults
-			= list();
+		List<Result<OrganisationDTO>> individualResults = list();
 		
 		for ( OrganisationDTO dto : dtos ) {
 			
-			Result<OrganisationDTO> individualResult
-				= new Result<OrganisationDTO>();
+			Result<OrganisationDTO> individualResult = new Result<>();
 			individualResult.setValue( Value.OK );
 			individualResult.setObject( dto );
 			
@@ -99,7 +94,31 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 
+	public Result<List<Result<OrganisationDTO>>> query(Organisation actor, boolean includeAddress) {
 
+		if (!includeAddress) {
+			return this.query(actor);
+		}
+		else {
+			Result<List<Result<OrganisationDTO>>> result = this.query(actor);
+			if (Value.OK.equals(result.getValue())) {
+				result.getObject().stream().forEach(or -> {
+					try {
+						String addressUuid = or.getObject().getAddressUuid();
+						Address a = this.addressManager.findOneByUuid(addressUuid);
+						if (a != null){
+							or.getObject().setAddress(AddressDTO.from(a));
+						}
+					}
+					catch(Exception e) {
+						logger.error("failed to get organisation address", e);
+					}
+
+				});
+			}
+			return result;
+		}
+	}
 
 	@Override
 	////@Transactional(readOnly=false)
@@ -119,6 +138,22 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 		return result;
 		
+	}
+
+	public Result<OrganisationDTO> createFromPerson(PersonDTO person) {
+
+		Result<OrganisationDTO> result = new Result<OrganisationDTO>();
+
+		Organisation organisation = Organisation.fromPerson(person);
+		// currently always individual
+		organisation.setType(OrganisationType.INDIVIDUAL);
+		Organisation created = this.organisationManager.create(organisation);
+
+		result.setValue( Value.OK );
+		result.setObject( OrganisationDTO.from( created ) );
+
+		return result;
+
 	}
 	
 	@Override

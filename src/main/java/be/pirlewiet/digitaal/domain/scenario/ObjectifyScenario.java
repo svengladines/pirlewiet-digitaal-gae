@@ -2,7 +2,7 @@ package be.pirlewiet.digitaal.domain.scenario;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +18,13 @@ public class ObjectifyScenario extends Scenario {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 
-	@Resource
+	@Autowired
 	OrganisationRepository organisationRepository;
 	
-	@Resource
+	@Autowired
 	AddressRepository addressRepository;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public ObjectifyScenario guard() {

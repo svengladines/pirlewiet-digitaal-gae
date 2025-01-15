@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/resources/images/pirlewiet_icon.png" type="image/png">
+
+    <title>Pirlewiet Digitaal - Aanmelden</title>
+
+	  <link rel="icon" href="/favicon.ico" sizes="16x16">
+	  <link rel="stylesheet" href="/theme/css/bootstrap.css">
+	  <link rel="stylesheet" href="/theme/css/font-awesome.css">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	  <link rel="stylesheet" href="/theme/css/pirlewiet.css">
+
+	  <script src="/javascript/jquery-1.11.1.js"></script>
+	  <script src="/theme/js/bootstrap.js"></script>
+	  <script type="text/javascript" src="/javascript/pirlewiet.js"></script>
+    
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">PIRLEWIET DIGITAAL</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/index.htm">START</a></li>
+            <li><a href="/organisations.html">ORGANISATIES</a></li>
+            <li><a href="/help.htm">HELP</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+	<div class="banner">	
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1/>Hulp met aanmelden</h1>
+					<p>
+						 Heb je geen code, of vergat je ze ? Of is jouw organisatie nog niet geregistreerd als doorverwijzer ? Volg de stappen hieronder!
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
+
+	<div class="container">
+	
+			<br/>
+	
+			<div class="row">
+		
+			<div id="nocodediv" class="col-md-12">
+			
+					<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-list fa-stack-1x"></i>
+  						
+						</span>
+						Bekijk onze <a href="/organisation/organisations.html">lijst van geregistreerde doorverwijzers</a> en zoek je organisatie.
+					</p>
+					
+					<p>
+					<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-envelope fa-stack-1x"></i>
+  						
+						</span>
+						Geef het corresponderende e-mail adres in en druk op 'Zend code'. Even later krijg je je code toegezonden op het ingegeven e-mailadres.
+					</p>
+					
+					<form class="form-horizontal" role="form">
+						<div class="form-group">
+							<label for="email" class="col-sm-2 control-label">E-mailadres</label>
+							<div class="col-sm-3">	
+								<input id="email" type="text" class="form-control" value="" placeholder="info@mijndienst.be"></input>
+							</div>
+						</div>
+						<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-6">
+							<button type="button" id="emailbtn" class="btn btn-primary" data-loading-text="Even geduld..."><i class="fa fa-save"></i>&nbsp;&nbsp;Zend code</button>
+							<p>
+								<span id="email-ok" class="error text-success hidden"></span>
+							</p>
+							
+							<p>
+								<span id="email-unknown" class="error text-danger hidden">
+									Het e-mailadres werd niet herkend. Controleer of je het juiste e-mailadres ingaf. <br/>
+								</span>
+							</p>
+							
+							<p>
+								<span id="email-error" class="error text-danger hidden"></span>
+							</p>
+						</div>
+					</div>
+					</form>
+					
+					<p>
+						<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-question fa-stack-1x"></i>
+  						
+						</span>
+						Vond je je organisatie in de lijst, maar herkende je het e-mailadres niet, of is het niet meer actief ? Contacteer dan ons secretariaat.
+					</p>
+					
+					<p>
+						<span class="fa-stack fa-lg">
+  						<i class="fa fa-square-o fa-stack-2x"></i>
+  						<i class="fa fa-question fa-stack-1x"></i>
+  						
+						</span>
+						Vond je je organisatie niet terug in de lijst ? Vul dan het <a href="/organisation/registration.html">registratieformulier voor doorverwijzers</a> in.
+					</p>
+		</div>
+		</div>
+		<br/>
+	</div>
+	
+	<div id="f">
+		<div class="container">
+			<p>
+				<span><i class="fa fa-info-circle"></i>Het secretariaat is geopend van maandag t.e.m. vrijdag (9u-13u)</span><br/>
+				<a href="https://goo.gl/maps/GrHUf"><i class="fa fa-home"></i>Sint-Salvatorstraat 30, 9000 Gent</a><br/>
+				<span><i class="fa fa-phone"></i>09 269 07 88</span><br/>
+				<a href="mailto:info@pirlewiet.be"><i class="fa fa-envelope"></i>info@pirlewiet.be</a><br/>
+			</p>
+		</div>
+	</div>
+	
+
+    <script>
+    
+    	var $jq = jQuery.noConflict();
+    	
+    	var sendEmail = function() {
+    		
+    		var button = $jq("#emailbtn");
+    		
+			busyButton( button );
+			
+			var email = $jq("#email").val();
+			
+			var request = new CodeRequest( email );
+	
+	    	$jq.ajax( {
+	    		type: "post",
+	    		url:"/api/coderequests",
+	    		contentType: "application/json",
+	    	    processData: false,
+	    		data: JSON.stringify(request),
+	    		success: function( ) {
+	    			doneButton( button );
+	    			success( $jq("#emailbtn"), $jq("#email-ok"), "Een e-mail met de inlogcode werd opgestuurd naar " + email );
+	    		},
+	    		error: function(  jqXHR, textStatus, errorThrown ) {
+	    			doneButton( button );
+	    			if( jqXHR.status == 422 ) {
+	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Het opgegeven e-mailadres '" + email + "' is niet gekend. <br/>Controleer het adres en probeer opnieuw." );
+	    			}
+	    			else {
+	    				error( $jq("#emailbtn"), $jq("#email-ok"), "Er trad een fout op. Probeer AUB opnieuw. Indien het probleem blijft optreden, contacteer dan ons secretariaat." );
+	    			}
+	    		}
+	    	});
+
+    		
+    	};
+    	
+    	$jq("#emailbtn").click( function ( event ) {
+			
+			event.preventDefault();
+			sendEmail();
+			   	
+   		});
+    	
+		$jq("#email").keypress( function(event) {
+    		
+		    if(event.which == 13) {
+		       event.preventDefault();
+		       sendEmail();
+		    }
+		    
+		});
+    		
+    </script>
+  </body>
+</html>

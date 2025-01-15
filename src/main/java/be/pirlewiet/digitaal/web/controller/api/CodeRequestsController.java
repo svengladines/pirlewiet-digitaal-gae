@@ -2,8 +2,8 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +20,13 @@ import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.CodeRequest;
 
 @Controller
-@RequestMapping(value="/coderequests")
+@RequestMapping(value="/api/coderequests")
 public class CodeRequestsController {
 	
 	private final static Logger logger 
 		= LoggerFactory.getLogger( CodeRequestsController.class );
 	
-	@Resource
+	@Autowired
 	protected DoorMan buitenWipper;
 	
 	@RequestMapping(method=RequestMethod.POST)
@@ -38,10 +38,10 @@ public class CodeRequestsController {
 		this.buitenWipper.guard().processCodeRequest( codeRequest, true );
 		
 		if ( CodeRequest.Status.REJECTED.equals( codeRequest.getStatus() ) ) {
-			return response( HttpStatus.UNPROCESSABLE_ENTITY );
+			return new ResponseEntity<>( HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		
-		return response( codeRequest, HttpStatus.OK );
+		return new ResponseEntity<>(codeRequest, HttpStatus.OK);
 		
 	}
 	

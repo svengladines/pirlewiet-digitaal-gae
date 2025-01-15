@@ -4,7 +4,7 @@ import static be.occam.utils.spring.web.Controller.response;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,19 +30,19 @@ import be.pirlewiet.digitaal.web.dto.PersonDTO;
 import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Controller
-@RequestMapping( {"/applications/{uuid}"} )
+@RequestMapping( {"/api/applications/{uuid}"} )
 public class ApplicationController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	ApplicationService applicationService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	ApplicationManager intaker;
 	
 	@RequestMapping( value="/holidays", method = { RequestMethod.PUT } )
@@ -52,15 +52,10 @@ public class ApplicationController {
 				@RequestBody List<HolidayDTO> holidays,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		logger.info("application.updateHolidays");
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		Result<ApplicationDTO> x 
-			= this.applicationService.guard().updateHolidays( uuid, holidays, actor );
-		
-		return response( x, HttpStatus.OK );
+		logger.debug("application.updateHolidays");
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<ApplicationDTO> x = this.applicationService.guard().updateHolidays( uuid, holidays, actor );
+		return new ResponseEntity<>( x, HttpStatus.OK );
 		
 	}
 	
@@ -71,16 +66,10 @@ public class ApplicationController {
 				@RequestBody PersonDTO contact,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		logger.info("application.updateContact");
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		Result<ApplicationDTO> x 
-			= this.applicationService.guard().updateContact( uuid, contact, actor );
-		
-		return response( x, HttpStatus.OK );
-		
+		logger.debug("application.updateContact");
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<ApplicationDTO> x = this.applicationService.guard().updateContact( uuid, contact, actor );
+		return new ResponseEntity( x, HttpStatus.OK );
 	}
 	
 	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
@@ -90,16 +79,10 @@ public class ApplicationController {
 				@RequestBody List<QuestionAndAnswerDTO> qList ,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
 		
-		logger.info("application.updateQList");
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		Result<ApplicationDTO> x 
-			= this.applicationService.guard().updateQList ( uuid, qList, actor );
-		
-		return response( x, HttpStatus.OK );
-		
+		logger.debug("application.updateQList");
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<ApplicationDTO> x = this.applicationService.guard().updateQList ( uuid, qList, actor );
+		return new ResponseEntity( x, HttpStatus.OK );
 	}
 	
 	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
@@ -108,219 +91,10 @@ public class ApplicationController {
 				@PathVariable String uuid,
 				@RequestBody ApplicationStatus applicationStatus,
 				@CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		logger.info("application.updateStatus");
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		Result<ApplicationDTO> x 
-			= this.applicationService.guard().updateStatus( uuid, applicationStatus, actor );
-		
-		return response( x, HttpStatus.OK );
-		
+		logger.debug("application.updateStatus");
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<ApplicationDTO> x = this.applicationService.guard().updateStatus( uuid, applicationStatus, actor );
+		return new ResponseEntity( x, HttpStatus.OK );
 	}
-	
-	/*
-	@RequestMapping( method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
-	@ResponseBody
-	public ResponseEntity<Enrollment> retrieve( @PathVariable String uuid ) {
-		
-		Enrollment inschrijving
-			= this.secretariaatsMedewerker.guard().findInschrijving( uuid );
-		
-		if ( inschrijving == null ) {
-			return response( HttpStatus.NOT_FOUND );
-		}
-		
-		logger.debug( "[{}]; retrieved by secretary", inschrijving.getUuid() );
-		//logger.debug( "[{}]; contact is [{}]", inschrijving.getUuid(), inschrijving.getContactGegevens().getName() );
-
-		return response( inschrijving, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Enrollment> update(
-				@RequestBody Enrollment inschrijving ) {
-		
-		return response( inschrijving, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( method = { RequestMethod.DELETE } )
-	public ResponseEntity<Enrollment> delete( @PathVariable String uuid ) {
-		
-		// this.secretariaatsMedewerker.guard().deleteEnrollment( uuid );
-		
-		return response( HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/contact", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<PersonInfo> contactUpdate(
-				@PathVariable String uuid,
-				@RequestBody PersonInfo contactGegevens ) {
-		
-		// this.secretariaatsMedewerker.guard().updateContact( uuid, contactGegevens);
-		
-		return response( contactGegevens, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/deelnemers", method = { RequestMethod.GET }, produces={"application/json","text/xml"} )
-	@ResponseBody
-	public ResponseEntity<List<Participant>> deelnemersRetrieve(
-				@PathVariable String uuid  ) {
-		
-		ResponseEntity<Enrollment> retrieve
-			= this.retrieve( uuid );
-		
-		Enrollment inschrijving
-			= retrieve.getBody();
-		
-		return response( inschrijving.getDeelnemers(), HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/adres", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Address> adressUpdate(
-				@PathVariable String uuid,
-				@RequestBody Address adres ) {
-		
-		this.retrieve( uuid );
-		
-		this.secretariaatsMedewerker.guard().updateInschrijvingsAdres( uuid, adres );
-		
-		return response( adres, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/participant", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<Participant> participantUpdate(
-			@PathVariable String uuid,
-			@RequestBody Participant participant ) {
-		
-		this.retrieve( uuid );
-		
-		this.secretariaatsMedewerker.guard().updateDeelnemer( uuid, participant );
-		
-		return response( participant, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/qlist", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<List<QuestionAndAnswer>> questionsUpdate(
-				@PathVariable String uuid,
-				@RequestBody List<QuestionAndAnswer> vragen ) {
-		
-		ResponseEntity<Enrollment> retrieve
-			= this.retrieve( uuid );
-		
-		Enrollment inschrijving
-			= retrieve.getBody();
-		
-		this.secretariaatsMedewerker.guard().updateVragenLijst( inschrijving.getUuid(), vragen );
-		
-		return response( vragen, HttpStatus.OK );
-		
-	}
-	
-	@RequestMapping( value="/status", method = { RequestMethod.PUT } )
-	@ResponseBody
-	public ResponseEntity<EnrollmentStatus> updateStatus(
-				@PathVariable String uuid,
-				@RequestBody EnrollmentStatus status,
-				@CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		logger.info( "[{}]; updateStatus via PUT for [{}]", pwtid, uuid );
-		
-		Organisation organisatie
-			= this.buitenWipper.guard().whoHasID(  pwtid  );
-		
-		ResponseEntity<Enrollment> retrieve
-			= this.retrieve( uuid );
-		
-		Enrollment inschrijving
-			= retrieve.getBody();
-		
-		if ( PirlewietUtil.isPirlewiet( organisatie ) ) { 
-		
-			this.secretariaatsMedewerker.updateStatus( uuid, status );
-			
-		}
-		else {
-			
-			this.intaker.guard().updateStatus( inschrijving, status );
-			
-		}
-		
-		return response( status, HttpStatus.OK );
-		
-	}
-	
-	@ExceptionHandler(Exception.class)
-	@ResponseBody
-	public ResponseEntity<String> handleError( Exception e ){
-		
-		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
-		
-	}
-	
-	@ExceptionHandler( PirlewietException.class)
-	@ResponseBody
-	public ResponseEntity<String> handleFailure( PirlewietException e ){
-		
-		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.BAD_REQUEST );
-		
-	}
-	
-	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @PathVariable String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
-		
-		Organisation organisatie
-			= this.buitenWipper.guard().whoHasID(  pwtid  );
-		
-		ResponseEntity<Enrollment> entity
-			= this.retrieve( uuid );
-		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-		
-		Enrollment application
-			= entity.getBody();
-		
-		model.put( "application", application );
-		
-		List<Holiday> vakanties
-			= this.secretariaatsMedewerker.guard().actueleVakanties( );
-		
-		model.put( "vakanties", vakanties );
-		model.put( "applicationHolidaysResult", this.secretariaatsMedewerker.guard().checkApplicationHolidaysStatus( application ) );
-		model.put( "applicationContactResult", this.secretariaatsMedewerker.guard().checkApplicationContactStatus( application ) );
-		model.put( "applicationQuestionListResult", this.secretariaatsMedewerker.guard().checkApplicationQuestionList( application ) );
-		model.put( "enrollmentsStatus", this.secretariaatsMedewerker.guard().checkEnrollmentsStatus( application ) );
-		model.put( "related", this.secretariaatsMedewerker.guard().findRelated( application, true) );
-		
-		EnrollmentStatus applicationStatus
-			= this.secretariaatsMedewerker.guard().whatIsTheApplicationStatus( application );
-		
-		model.put("applicationStatus", applicationStatus );
-		
-		// pirlewiet no longer has separate 'inschrijving' view
-		String view
-			= PirlewietUtil.isPirlewiet( organisatie ) ? "inschrijving" : "inschrijving";
-
-		return new ModelAndView( view, model );
-		
-	}
-	*/
 	
 }

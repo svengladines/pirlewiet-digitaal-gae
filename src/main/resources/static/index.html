@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Pirlewiet Digitaal 2025</title>
+    
+    <!-- All theme and styling stuff -> pirlewiet.be -->
+
+    <link rel="icon" href="https://www.pirlewiet.be/images/pirlewiet_icon.png" sizes="16x16" type="image/png">
+    
+    <link rel="stylesheet" href="/theme/css/bootstrap.css">
+    <link rel="stylesheet" href="/theme/css/font-awesome.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/theme/css/pirlewiet.css">
+
+    <script src="/javascript/jquery-1.11.1.js"></script>
+    <script src="/theme/js/bootstrap.js"></script>
+    
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <span class="navbar-brand">PIRLEWIET DIGITAAL</span>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li class=''><a href="/help.html">HELP</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+	<div class="banner">
+		<div class="container">
+			<div class="row centered">
+				<div class="col-lg-12">
+					<h1>Welkom</h1>
+					<p>
+						Via deze webtoepassing kan je als doorverwijzer deelnemers inschrijven voor de vakanties van Pirlewiet.<br/>
+					</p>
+				</div>
+			</div><!-- row -->
+		</div><!-- container -->
+	</div>
+
+	<div class="container w">
+	
+		<div class="row centered">
+	
+			<i class="fa fa-calendar"></i>
+			<h1>Onze vakanties voor 2025</h1>
+			<img src="images/holidays-2025.png"/>
+			<br/>
+		</div>
+		
+		<div class="row centered">
+			<br/>
+			<i class="fa fa-leaf"></i>
+			<h3>Voorjaar</h1>
+			<br/>
+			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 15 januari.</p>
+
+		</div>
+		<br>
+		
+		<div class="row centered">
+			<i class="fa fa-sun-o"></i><h3>Zomer</h3>
+			<br/>
+			<p class="text-info">Voor deze vakanties kan je inschrijven vanaf 1 maart. </p>
+			
+		</div>
+		
+		<div class="row centered">
+		
+			<div>
+					<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Laden ... even geduld ...</span></button>
+			</div>
+			<br/>
+			
+		</div>
+		
+	</div>
+	
+	<div id="f">
+		<div class="container">
+			<p>
+				<a href="https://goo.gl/maps/GrHUf"><i class="fa fa-home"></i>Sint-Salvatorstraat 30, 9000 Gent</a><br/>
+				<span><i class="fa fa-phone"></i>09 269 07 88</span><br/>
+				<a href="mailto:info@pirlewiet.be"><i class="fa fa-envelope"></i>info@pirlewiet.be</a><br/>
+			</p>
+		</div>
+	</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script>
+    	var $jq = jQuery.noConflict();
+    	
+    	$jq("#goon").click( function () {
+    		window.document.location = "/start.html";
+    	});
+
+
+   		$jq.ajax( {
+   			type: "get",
+   			url:"/api/ping",
+   		 	success: function( ix ) {
+   				$jq("#goon").removeClass("hidden").removeProp("disabled").addClass("btn-success")
+   				$jq("#goontext").html("Ga verder");
+   			},
+   			error: function(  jqXHR, textStatus, errorThrown ) {
+   				$jq("#goon").removeProp("disabled").addClass("btn-error");
+   			}
+   		});
+    		
+    </script>
+  </body>
+</html>

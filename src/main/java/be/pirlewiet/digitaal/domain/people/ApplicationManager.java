@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,25 +36,29 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import org.springframework.stereotype.Component;
+import org.thymeleaf.context.Context;
 
 /*
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
  * 
  */
+@Component
 public class ApplicationManager {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	MailMan mailMan;
+
+	@Autowired
+	SpokesPerson spokesPerson;
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	OrganisationManager organisationManager;
 
 	protected final Comparator<Application> mostRecentlySubmitted
@@ -106,22 +109,22 @@ public class ApplicationManager {
 	
 	protected final int currentYear;
 	
-	@Resource
+	@Autowired
 	protected ApplicationRepository applicationRepository;
 	
-	@Resource
+	@Autowired
 	protected HolidayManager holidayManager;
 	
-	@Resource
+	@Autowired
 	protected PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	protected QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	protected Secretary secretary;
 	
-	@Resource
+	@Autowired
 	protected EnrollmentManager enrollmentManager;
 	
 	public ApplicationManager( int currentYear ) {
@@ -129,53 +132,32 @@ public class ApplicationManager {
 	}
 	
 	public List<Application> findByOrganisation( Organisation actor ) {
-		
-		logger.info( "find applications for organisation [{}] and year 2024", actor.getUuid() );
-		List<Application> byOrganisationAndYear
-			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2024 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
-		
+		logger.info( "find applications for organisation [{}] and year [{}]", actor.getUuid(), this.currentYear );
+		List<Application> byOrganisationAndYear = this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
-		
 		return byOrganisationAndYear;
-		
 	}
 	
 	public List<Application> findAll( ) {
-		
-		List<Application> all
-			= this.applicationRepository.findAll();
-	
+		List<Application> all = this.applicationRepository.findAll();
 		return all;
-		
 	}
 	
 	public List<Application> findActiveByYear( ) {
-		
-		List<Application> byYear
-			= this.applicationRepository.findByYear( this.currentYear );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
-		
-		List<Application> filtered
-			= list();
-		
+		List<Application> byYear = this.applicationRepository.findByYear( this.currentYear );
+		List<Application> filtered = list();
 		for ( Application application : byYear ) {
-			
 			if ( ( ! ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) && ( ! ApplicationStatus.Value.CANCELLED.equals( application.getStatus().getValue() ) ) ) {
 				filtered.add( application );
 			}
-		
-			
 		}
-		
 		Collections.sort( filtered, this.mostRecentlySubmitted );
-		
 		return filtered;
-		
 	}
 	
 	public Application findOne( String uuid ) {
 		
-		Application one
-			= this.applicationRepository.findByUuid( uuid );
+		Application one = this.applicationRepository.findByUuid( uuid );
 		
 		return one;
 		
@@ -195,8 +177,7 @@ public class ApplicationManager {
 	    	
 	    	logger.info( "created application with uuid [{}]", new Object[] { created.getUuid() } );
 	    	
-	    	List<QuestionAndAnswer> appQList
-				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
+	    	List<QuestionAndAnswer> appQList = QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
 	    	
 			for ( QuestionAndAnswer qna : appQList ) {
 				qna.setEntityUuid( created.getUuid() );
@@ -209,7 +190,7 @@ public class ApplicationManager {
 	
 	public Application updateHolidays( String uuid, List<Holiday> holidays ) {
 		
-		logger.info("application.updateHolidays");
+		logger.debug("application.updateHolidays");
 		
 		Application application
 			= this.findOne( uuid );
@@ -254,8 +235,7 @@ public class ApplicationManager {
 			// for CAVASOL, add question(s) about mobility (family...car)
 			if ( this.holidayManager.hasType( loaded, HolidayType.CavaSol ) ) {
 				logger.info( "CAVASOL; add questions...");
-				QuestionAndAnswer familycar
-					= QuestionSheet.template().getQuestion(QIDs.QID_FAMILY_CAR);
+				QuestionAndAnswer familycar = QuestionSheet.template().getQuestion(QIDs.QID_FAMILY_CAR);
 				familycar.setEntityUuid( application.getUuid() );
 				logger.info( "CAVASOL; add question about family car for application [{}]", application.getUuid() );
 				this.questionAndAnswerManager.create( familycar );
@@ -333,7 +313,7 @@ public class ApplicationManager {
 	
 	public Application updateStatus( String uuid, ApplicationStatus applicationStatus ) {
 		
-		logger.info("application.updateStatus");
+		logger.debug("application.updateStatus");
 		
 		Application application
 			= this.findOne( uuid );
@@ -346,10 +326,9 @@ public class ApplicationManager {
 			if ( ApplicationStatus.Value.AUTO.equals( applicationStatus.getValue() ) ) {
 				
 				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
-					logger.info( "intake");
+					logger.info( "Application []; intake", application.getUuid());
 					// TODO, load and manager will load again. performance optimization possible
-					List<Enrollment> enrollments
-						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
+					List<Enrollment> enrollments = this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
 						if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) || ( isEmpty( enrollment.getHolidayName() ) ) ) {
 							this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids(), true );
@@ -360,30 +339,22 @@ public class ApplicationManager {
 					application.setSubmitted( new Date() );
 					save = true;
 					
-					Organisation organisation
-						= this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+					Organisation organisation = this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+					Person contact = this.personManager.findOneByUuid( application.getContactPersonUuid() );
+					Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 					
-					Person contact
-						= this.personManager.findOneByUuid( application.getContactPersonUuid() );
-					
-					Set<Holiday> holidays
-						= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
-					
-					List<Person> participants
-						= list();
+					List<Person> participants = list();
 					
 					for ( Enrollment enrollment : enrollments ) {
-						
 						Person participant
 							= this.personManager.findOneByUuid( enrollment.getParticipantUuid() );
-						
 						participants.add( participant );
 						
 					}
 					
 					this.sendIntakeMessageToOrganisation(application, participants, holidays, contact);
 					// TODO, email to pwt
-					this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
+					//this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
 					logger.info( "taken in");
 					
 				}
@@ -414,150 +385,19 @@ public class ApplicationManager {
 		return application;
 	}
 	
-	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact ) {
-	    	
-			MimeMessage message
-				= this.formatIntakeMessageOrganisation( application, participants, holidays, contact );
-
-			if ( message != null ) {
-				
-				return mailMan.deliver( message );
-				
-			}
-			
-			return false;
-		
+	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant ) {
+		String message = message = this.spokesPerson.formatIntakeMessageOrganisation( application, participants, holidays, applicant );
+		if ( message != null ) {
+			mailMan.deliver(applicant.getEmail(),"Ontvangstbevestiging", message );
+			logger.info( "Application [{}]; receipt email sent to [{}]", application.getUuid(), applicant.getEmail() );
+			return true;
+		}
+		return false;
 	 }
-	 
-	 protected MimeMessage formatIntakeMessageOrganisation( Application application, List<Person> participants, Set<Holiday> holidays, Person recipient ) {
-			
-			MimeMessage message
-				= null;
-			
-			Configuration cfg 
-				= new Configuration();
-		
-			try {
-				
-				InputStream tis
-					= this.getClass().getResourceAsStream( "/templates/to-organisation/intake.tmpl" );
-				
-				Template template 
-					= new Template("intake", new InputStreamReader( tis ), cfg );
-				
-				Map<String, Object> model = new HashMap<String, Object>();
-				
-				model.put( "application", application );
-				model.put( "participants", participants );
-				model.put( "holidays", holidays );
-				model.put( "uuid", application.getUuid() );
-				
-				StringWriter bodyWriter 
-					= new StringWriter();
-				
-				template.process( model , bodyWriter );
-				
-				bodyWriter.flush();
-					
-				message = this.mailMan.message();
-				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-			
-				helper.setTo( recipient.getEmail() );
-				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-				helper.setReplyTo( headQuarters.getEmail() );
-				helper.setSubject( "Uw inschrijving bij Pirlewiet werd aangepast" );
-					
-				String text
-					= bodyWriter.toString();
-					
-				logger.info( "email text is [{}]", text );
-					
-				helper.setText(text, true);
-					
-			}
-			catch( Exception e ) {
-				logger.warn( "could not write e-mail", e );
-				throw new RuntimeException( e );
-			}
-			
-			return message;
-	    	
-	    }
 	 
 	 protected boolean sendIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
-	    	
-			MimeMessage message
-				= this.formatIntakeMessagePirlewiet( application, participants, holidays, contact, organisation );
-
-			if ( message != null ) {
-				
-				return mailMan.deliver( message );
-				
-			}
-			
-			return false;
-		
+		// TODO!
+		 return true;
 	 }
-	 
-	 protected MimeMessage formatIntakeMessagePirlewiet( Application application, List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
-			
-			MimeMessage message
-				= null;
-			
-			Configuration cfg 
-				= new Configuration();
-		
-			try {
-				
-				InputStream tis
-					= this.getClass().getResourceAsStream( "/templates/to-pirlewiet/intake.tmpl" );
-				
-				Template template 
-					= new Template("intake", new InputStreamReader( tis ), cfg );
-				
-				Map<String, Object> model = new HashMap<String, Object>();
-				
-				model.put( "application", application );
-				model.put( "participants", participants );
-				model.put( "holidays", holidays );
-				model.put( "uuid", application.getUuid() );
-				model.put( "organisation", organisation );
-				model.put( "contact", contact );
-				
-				StringWriter bodyWriter 
-					= new StringWriter();
-				
-				template.process( model , bodyWriter );
-				
-				bodyWriter.flush();
-					
-				message = this.mailMan.message();
-				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-			
-				helper.setTo( this.headQuarters.getEmail() );
-				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-				helper.setReplyTo( headQuarters.getEmail() );
-				helper.setSubject( "Nieuw dossier ingediend" );
-					
-				String text
-					= bodyWriter.toString();
-					
-				logger.info( "email text is [{}]", text );
-					
-				helper.setText(text, true);
-					
-			}
-			catch( Exception e ) {
-				logger.warn( "could not write e-mail", e );
-				throw new RuntimeException( e );
-			}
-			
-			return message;
-	    	
-	    }
-	
-
 }
  

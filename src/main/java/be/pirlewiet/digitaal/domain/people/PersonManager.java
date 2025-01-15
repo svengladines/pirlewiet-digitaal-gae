@@ -3,7 +3,7 @@ package be.pirlewiet.digitaal.domain.people;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,25 +12,27 @@ import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.repository.PersonRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PersonManager {
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	protected Organisation pDiddy;
 	
-	@Resource
+	@Autowired
 	protected AddressManager addressManager;
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	protected PersonRepository personRepository;
 	
-	@Resource
+	@Autowired
 	MailMan postBode;
 	
     public PersonManager() {

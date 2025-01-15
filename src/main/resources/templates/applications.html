@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment-head :: head}">>
+</head>
+
+<body>
+
+<div class="banner">
+	<div class="container">
+		<div class="row centered">
+			<div class="col-lg-12">
+				<h1>Inschrijvingen</h1>
+				<p>
+					Beheer hier de inschrijvingen van jouw organisatie.
+				</p>
+			</div>
+		</div><!-- row -->
+	</div><!-- container -->
+</div>
+
+	<div class="container content">
+
+		<div class="row">
+
+			<br/>
+
+			<div th:if="${true || ('sven.gladines@gmail.com' == organisation.email)}">
+					<form class="form-horizontal">
+
+						<div class="form-group form-group-lg">
+							<div>
+								<button type="button" id="create" class="btn btn-primary btn"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+							</div>
+						</div>
+
+					</form>
+				<div>
+
+				<div th:unless="${true || ('sven.gladines@gmail.com' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">>
+					<strong>Inschrijvingen zijn pas mogelijk vanaf 15 januari. Nog even geduld!</strong> <br/><br/>
+				</div>
+		</div>
+
+		<div class="row mandatory">
+
+			<div th:if="${applicationsResult.value == 'OK'}">
+
+					<div th:each="individualResult : ${applicationsResult.object}">
+
+						<div th:with="application=${individualResult.object}">
+
+							<table class="table table-bordered">
+
+								<thead>
+								<tr class="bg-success">
+									<th scope="row" class="th-row">Dossier</th>
+									<td colspan="2">
+										<a th:title="${application.uuid}" href="/application-${application.uuid}.html" class="btn btn-primary pull-right">Wijzig</a>
+									</td>
+								</tr>
+								</thead>
+
+								<tbody>
+
+								<tr>
+									<th scope="row" class="bg-info">Status</th>
+									<td colspan="2" class="bg-info" th:text="#application.status.${application.status.value}">
+									</td>
+								</tr>
+
+								<tr>
+									<th scope="row" class="th-row">Vakantie(s)</th>
+									<td colspan="2">
+										${application.holidayNames}
+									</td>
+								</tr>
+
+								<tr>
+									<th scope="row" class="th-row">Contactpersoon</th>
+									<td colspan="2">
+										${application.contactPersonName}
+									</td>
+								</tr>
+
+								<tr th:each="enrollment : ${application.enrollments}">
+									<th scope="row" class="th-row">Deelnemer</th>
+									<td colspan="2">
+										<span>${enrollment.participantName}</span>
+										<span th:if="${application.status.value != 'DRAFT}" class="pull-right text-success">
+											<strong th:text="#enrollment.status.${enrollment.status.value}"></strong>
+										</span>
+									</td>
+								</tr>
+
+								</tbody>
+							</table>
+
+						</div>
+
+					</div>
+
+
+				<div th:unless="${applicationsResult.value == 'OK'}">
+
+					<span>${applications.result.errorCode}</span>
+
+				</div>
+		</div>
+
+	</div><!-- container -->
+	</div>
+
+<script>
+	var $jq = jQuery.noConflict();
+
+    $jq("#create").click( function( event ) {
+
+        event.preventDefault();
+
+        busyButton( $jq("#create") );
+
+        postApplication( new Application(), viewApplication );
+
+    });
+
+</script>
+</body>
+</html>

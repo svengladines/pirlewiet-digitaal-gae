@@ -3,76 +3,59 @@ package be.pirlewiet.digitaal.domain.people;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-import javax.annotation.Resource;
-import javax.mail.internet.MimeMessage;
+import be.pirlewiet.digitaal.model.*;
+import be.pirlewiet.digitaal.repository.ApplicationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
 
 import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 
-/*
- * 
- * 
- */
+@Component
 public class EnrollmentManager {
 
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	protected EnrollmentRepository enrollmentRepository;
 	
-	@Resource
+	@Autowired
 	protected QuestionAndAnswerManager questionAndAnswerManager;
 	
-	@Resource
+	@Autowired
 	protected HolidayManager holidayManager;
 	
-	@Resource
-	protected ApplicationManager applicationManager;
+	@Autowired
+	protected ApplicationRepository applicationRepository;
 	
-	@Resource
+	@Autowired
 	protected OrganisationManager organisationManager;
 	
-	@Resource
+	@Autowired
 	protected PersonManager personManager;
 	
-	@Resource
+	@Autowired
 	MailMan mailMan;
 	
-	@Resource
+	@Autowired
 	HeadQuarters headQuarters;
 	
-	@Resource
+	@Autowired
 	MessageSource messageSource;
 	
-	@Resource
+	@Autowired
 	LocaleResolver localeResolver;
 	
 	public EnrollmentManager( ) {
@@ -118,7 +101,7 @@ public class EnrollmentManager {
 		}
 		
 		Application application
-			= this.applicationManager.findOne( created.getApplicationUuid() );
+			= this.applicationRepository.findByUuid(created.getApplicationUuid());
 		
 		Set<Holiday> holidays
 			= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
@@ -136,6 +119,17 @@ public class EnrollmentManager {
 			qna2.setTag( Tags.TAG_PARTICIPANT );
 			qna2.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna2 );
+		}
+
+		// for TIKA, add questions about partner (2018)
+		if ( this.holidayManager.hasType( holidays, HolidayType.Tika ) ) {
+			logger.info( "TIKA; add questions...");
+			// Add questions manually  for now ... RFC...
+			QuestionAndAnswer qna = QuestionSheet.template().getQuestion( QIDs.QID_TIKA_CYCLING );
+			qna.setUuid( UUID.randomUUID().toString() );
+			qna.setTag( Tags.TAG_PARTICIPANT );
+			qna.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna );
 		}
 		
 		return created;
@@ -266,7 +260,7 @@ public class EnrollmentManager {
 			= this.enrollmentRepository.saveAndFlush( toUpdate );
 		
 		Application application
-			= this.applicationManager.findOne( updated.getApplicationUuid() );
+			= this.applicationRepository.findByUuid(updated.getApplicationUuid());
 		
 		Person contact
 			= this.personManager.findOneByUuid( application.getContactPersonUuid() );
@@ -287,9 +281,7 @@ public class EnrollmentManager {
 	
 	public Enrollment template() {
 		
-		Enrollment enrollment 
-			= new Enrollment();
-		
+		Enrollment enrollment = new Enrollment();
 		return enrollment;
 		
 	}
@@ -320,7 +312,8 @@ public class EnrollmentManager {
 	}
 	
 	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person contact ) {
-	    	
+
+		/* TODO
 			MimeMessage message
 				= this.formatUpdateMessageToOrganisation( enrollment, participant, holidays, oldStatus, contact );
 
@@ -329,82 +322,14 @@ public class EnrollmentManager {
 				return mailMan.deliver( message );
 				
 			}
-			
+		*/
 			return false;
 		
 	 }
 	 
-	 protected MimeMessage formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
-			
-			MimeMessage message
-				= null;
-			
-			Configuration cfg 
-				= new Configuration();
-		
-			try {
-				
-				EnrollmentStatus newStatus
-					= enrollment.getStatus();
-				
-				InputStream tis
-					= this.getClass().getResourceAsStream( "/templates/to-organisation/enrollment-status-update.tmpl" );
-				
-				Template template 
-					= new Template("code", new InputStreamReader( tis ), cfg );
-				
-				Map<String, Object> model = new HashMap<String, Object>();
-				
-				String oldStatusMessage
-					= this.messageSource.getMessage( String.format( "enrollment.status.%s",  oldStatus) , new Object[] {}, localeResolver.resolveLocale( null ) );
-				
-				String newStatusMessage
-					= this.messageSource.getMessage( String.format( "enrollment.status.%s",  newStatus.getValue() ) , new Object[] {}, localeResolver.resolveLocale( null ) );
-				
-				String newStatusDescription
-					= this.messageSource.getMessage( String.format( "enrollment.status.%s.description",  newStatus.getValue() ) , new Object[] {}, localeResolver.resolveLocale( null ) );
-						
-				model.put( "enrollment", enrollment );
-				model.put( "participant", participant );
-				model.put( "holiday", enrollment.getHolidayName() );
-				model.put( "oldStatusMessage", oldStatusMessage );
-				model.put( "newStatusMessage", newStatusMessage );
-				model.put( "newStatusDescription", newStatusDescription );
-				model.put( "newStatusComment", newStatus.getComment() );
-				model.put( "uuid", enrollment.getUuid() );
-				
-				StringWriter bodyWriter 
-					= new StringWriter();
-				
-				template.process( model , bodyWriter );
-				
-				bodyWriter.flush();
-					
-				message = this.mailMan.message();
-				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-			
-				helper.setTo( recipient.getEmail() );
-				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-				helper.setReplyTo( headQuarters.getEmail() );
-				helper.setSubject( "Uw inschrijving bij Pirlewiet werd aangepast" );
-					
-				String text
-					= bodyWriter.toString();
-					
-				logger.info( "email text is [{}]", text );
-					
-				helper.setText(text, true);
-					
-			}
-			catch( Exception e ) {
-				logger.warn( "could not write e-mail", e );
-				throw new RuntimeException( e );
-			}
-			
-			return message;
-	    	
-	    }
+	protected String formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
+		return "TODO";
+	}
 	
 
 }

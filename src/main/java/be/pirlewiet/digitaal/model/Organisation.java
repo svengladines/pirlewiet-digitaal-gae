@@ -2,6 +2,7 @@ package be.pirlewiet.digitaal.model;
 
 import java.util.Date;
 
+import be.pirlewiet.digitaal.web.dto.PersonDTO;
 import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -34,9 +35,8 @@ public class Organisation {
 	protected String city;
 	
 	protected Date updated;
-	
-	//@AlsoLoad("id")
-	protected Long oldId;
+
+	protected OrganisationType type = OrganisationType.NON_PROFIT;
 
 	public String getName() {
 		return name;
@@ -101,19 +101,33 @@ public class Organisation {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-	
-	public static Organisation from( OrganisationDTO f ) {
-		
-		Organisation t
-			= new Organisation();
-		
+
+	public OrganisationType getType() {
+		return type;
+	}
+
+	public void setType(OrganisationType type) {
+		this.type = type;
+	}
+
+	public static Organisation from(OrganisationDTO f ) {
+		Organisation t = new Organisation();
 		t.setUuid( f.getUuid() );
 		t.setName( f.getName() );
 		t.setEmail( f.getEmail() );
 		t.setPhone( f.getPhone() );
 		t.setAddressUuid( f.getAddressUuid() );
-		t.setCity( f.getCity() );
-		
+		if (f.getAddress() != null) {
+			t.setCity(f.getAddress().getCity());
+		}
+		return t;
+	}
+
+	public static Organisation fromPerson(PersonDTO f) {
+		Organisation t = new Organisation();
+		t.setName( f.getName() );
+		t.setEmail( f.getEmail() );
+		t.setPhone( f.getPhone() );
 		return t;
 	}
 

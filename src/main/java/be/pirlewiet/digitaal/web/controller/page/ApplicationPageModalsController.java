@@ -3,13 +3,16 @@ package be.pirlewiet.digitaal.web.controller.page;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,90 +42,88 @@ public class ApplicationPageModalsController {
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	ApplicationService applicationService;
 	
-	@Resource
+	@Autowired
 	HolidayService holidayService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	PersonService personService;
 	
-	@Resource
+	@Autowired
 	ApplicationManager applicationManager;
 	
-	@Resource
+	@Autowired
 	QuestionAndAnswerService questionAndAnswerService;
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @RequestParam String uuid, @RequestParam String q, @RequestParam(required=false) String enrollmentUuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public String view(
+			@RequestParam String uuid,
+			@RequestParam String q,
+			@RequestParam(required=false) String enrollmentUuid,
+			@CookieValue(required=true, value="pwtid") String pwtid,
+			Model model) {
 		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 		
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-		
-		Result<ApplicationDTO> applicationResult
-			= this.applicationService.findOne( uuid, actor );
+		Result<ApplicationDTO> applicationResult = this.applicationService.findOne( uuid, actor );
 	
-		model.put( "applicationResult", applicationResult );
+		model.addAttribute( "applicationResult", applicationResult );
 		
 		if ( "holidays".equals( q ) ) {
-			
-			Result<List<Result<HolidayDTO>>> holidaysResult 
-				= this.holidayService.query( actor );
-			
-			model.put( "holidaysResult", holidaysResult );
-			
+			Result<List<Result<HolidayDTO>>> holidaysResult = this.holidayService.query( actor );
+			Set<String> resolved = this.holidayService.resolve(null,applicationResult.getObject().getHolidayUuids(),false,false, false, actor)
+					.getObject().stream().map(h -> h.getUuid()).collect(Collectors.toSet());
+			holidaysResult.getObject().stream().forEach(r -> {
+				r.setValue(resolved.contains(r.getObject().getUuid()) ? Result.Value.OK : Result.Value.NOK);
+			});
+			model.addAttribute( "holidaysResult", holidaysResult );
 		}
-		else if ( "contact".equals( q ) ) {
+		else if ( "qlist".equals( q ) ) {
 			
-			Result<PersonDTO> contactResult 
-				= this.personService.retrieve( applicationResult.getObject().getContactPersonUuid() );
-			
-			model.put( "contactResult", contactResult );
-			
-		} else if ( "qlist".equals( q ) ) {
-			
-			Result<List<QuestionAndAnswerDTO>> qnaResult 
-				= this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
-			
-			model.put( "qnaResult", qnaResult );
+			Result<List<QuestionAndAnswerDTO>> qnaResult = this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
+			model.addAttribute( "qnaResult", qnaResult );
 			
 		} else if ( "enrollment".equals( q ) ) {
 		
 			Result<EnrollmentDTO> enrollmentResult;
 			
-			if ( enrollmentUuid != null ) {
+			if ((enrollmentUuid != null) && (!enrollmentUuid.equals("undefined"))) {
 				enrollmentResult = this.enrollmentService.findOneByUuid( enrollmentUuid );
 			} else {
 				enrollmentResult = this.enrollmentService.template( );
 			}
 		
-			model.put( "enrollmentResult", enrollmentResult );
+			model.addAttribute( "enrollmentResult", enrollmentResult );
 			
 		} else if ( "participant".equals( q ) ) {
 			
 			Result<List<QuestionAndAnswerDTO>> participantResult 
 				= this.questionAndAnswerService.findByEntityAndTag( enrollmentUuid, Tags.TAG_PARTICIPANT );
 			
-			model.put( "enrollmentUuid", enrollmentUuid );
-			model.put( "participantResult", participantResult );
+			model.addAttribute( "enrollmentUuid", enrollmentUuid );
+			model.addAttribute( "participantResult", participantResult );
 			
 		}
-		
-		String view
-			= new StringBuilder("application-").append( q ).toString();
+		else if ( "applicant".equals( q ) ) {
 
-		return new ModelAndView( view, model );
-		
+			Result<PersonDTO> applicantResult = this.personService.retrieve( applicationResult.getObject().getContactPersonUuid() );
+			if(Result.Value.NOK.equals(applicantResult.getValue())){
+				applicantResult.setObject(new PersonDTO());
+			}
+			model.addAttribute( "applicantResult", applicantResult );
+
+		}
+
+		return "application-%s".formatted( q );
+
 	}
 		
 }

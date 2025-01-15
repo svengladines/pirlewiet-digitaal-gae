@@ -3,7 +3,7 @@ package be.pirlewiet.digitaal.domain.service;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public abstract class Service<D,O> {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public Service<D,O> guard() {

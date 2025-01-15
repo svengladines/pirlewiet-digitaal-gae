@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,32 +39,15 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.QuestionType;
 import be.pirlewiet.digitaal.model.Tags;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class Mapper {
 	
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
-	PersonManager personManager;
-	
-	@Resource
-	AddressManager addressManager;
-	
-	@Resource
-	OrganisationManager organisationManager;
-	
-	@Resource
-	QuestionAndAnswerManager questionAndAnswerManager;
-	
-	@Resource
-	HolidayService holidayService;
-	
-	@Resource
-	EnrollmentService enrollmentService;
-	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
 	public List<String[]> asStrings(

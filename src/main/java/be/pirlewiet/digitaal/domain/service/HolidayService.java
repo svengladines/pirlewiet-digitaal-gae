@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
@@ -25,10 +25,10 @@ import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 @Service
 public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service<HolidayDTO,Holiday> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	HolidayManager holidayManager;
 	
 	protected final Comparator<Holiday> chronological = new Comparator<Holiday>() {
@@ -63,29 +63,18 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 	@Override
 	public Result<List<Result<HolidayDTO>>> query(Organisation actor) {
 		
-		List<Holiday> currentHolidays
-			= this.holidayManager.findCurrentHolidays();
-		
+		List<Holiday> currentHolidays = this.holidayManager.findCurrentHolidays();
 		Collections.sort( currentHolidays, this.chronological );
 		
-		Result<List<Result<HolidayDTO>>> result
-			= new Result<List<Result<HolidayDTO>>>();
-		
-		List<Result<HolidayDTO>> dtos
-			= list();
+		Result<List<Result<HolidayDTO>>> result = new Result<List<Result<HolidayDTO>>>();
+		List<Result<HolidayDTO>> dtos = list();
 		
 		for ( Holiday holiday : currentHolidays ) {
-			
-			Result<HolidayDTO> individualResult
-				= new Result<HolidayDTO>();
-			
+			Result<HolidayDTO> individualResult = new Result<HolidayDTO>();
 			individualResult.setValue( Value.OK );
 			individualResult.setObject( HolidayDTO.from( holiday ) );
-			
 			dtos.add( individualResult );
-			
 		}
-		
 		result.setValue( Value.OK );
 		result.setObject( dtos );
 		
@@ -95,33 +84,19 @@ public class HolidayService extends be.pirlewiet.digitaal.domain.service.Service
 	
 	public Result<List<HolidayDTO>> resolve(String enrollmentHolidayString, String applicationHolidayString, boolean checkNotEmpty, boolean checkSingle, boolean checkSingleType, Organisation actor) {
 		
-		Result<List<HolidayDTO>> result
-			= new Result<List<HolidayDTO>>();
-		
+		Result<List<HolidayDTO>> result = new Result<>();
 		result.setValue( Value.OK );
-		
-		List<Holiday> holidays
-			= list();
-		
-		List<HolidayDTO> dtos
-			= list();
-		
-		Set<Holiday> enrollmentHolidays 
-			= set();
-		
-		Set<Holiday> applicationHolidays
-			= set();
+		List<Holiday> holidays = list();
+		List<HolidayDTO> dtos = list();
+		Set<Holiday> enrollmentHolidays = set();
+		Set<Holiday> applicationHolidays = set();
 		
 		if ( enrollmentHolidayString != null ) {
-		
 			enrollmentHolidays.addAll( this.holidayManager.holidaysFromUUidString( enrollmentHolidayString ) );
-			
 		}
 		
 		if ( applicationHolidayString != null ) {
-			
 			applicationHolidays.addAll( this.holidayManager.holidaysFromUUidString( applicationHolidayString ) );
-			
 		}
 		
 		for ( Holiday applicationHoliday : applicationHolidays ) {

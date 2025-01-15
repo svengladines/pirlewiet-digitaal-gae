@@ -14,11 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,42 +181,22 @@ public class ExcelImporter {
 		return false;
 	}
 
-	private String getCelValue(Cell currentCell) {
+	private String getCelValue(final Cell currentCell) {
+		return switch (currentCell.getCellType()) {
+			case BLANK -> "";
+			case BOOLEAN -> String.valueOf(currentCell.getBooleanCellValue());
+            case NUMERIC -> {
+				if (DateUtil.isCellDateFormatted(currentCell)) {
+					SimpleDateFormat formatter = new SimpleDateFormat(this.getCellDateFormat());
+					yield formatter.format(currentCell.getDateCellValue());
 
-		String value = null;
-
-		switch (currentCell.getCellType()) {
-
-		case Cell.CELL_TYPE_BLANK:
-			value = "";
-			break;
-
-		case Cell.CELL_TYPE_BOOLEAN:
-			value = String.valueOf(currentCell.getBooleanCellValue());
-			break;
-
-		case Cell.CELL_TYPE_NUMERIC:
-
-			if (DateUtil.isCellDateFormatted(currentCell)) {
-
-				SimpleDateFormat formatter = new SimpleDateFormat(this.getCellDateFormat());
-
-				value = formatter.format(currentCell.getDateCellValue());
-
-			} else {
-
-				value = String.valueOf(currentCell.getNumericCellValue());
+				} else {
+					yield String.valueOf(currentCell.getNumericCellValue());
+				}
 			}
-
-			break;
-
-		case Cell.CELL_TYPE_STRING:
-			value = currentCell.getStringCellValue();
-			break;
-
-		}
-
-		return value;
+			case STRING -> currentCell.getStringCellValue();
+			case FORMULA,ERROR, _NONE -> null;
+        };
 	}
 
 	public String getCellDateFormat() {

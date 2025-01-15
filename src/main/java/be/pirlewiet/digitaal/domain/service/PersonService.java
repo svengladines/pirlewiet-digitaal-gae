@@ -1,6 +1,6 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import be.pirlewiet.digitaal.web.dto.PersonDTO;
 @Service
 public class PersonService extends be.pirlewiet.digitaal.domain.service.Service<PersonDTO,Person> {
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
-	@Resource
+	@Autowired
 	PersonManager personManager;
 	
 	public Result<PersonDTO> retrieve( String uuid ) {

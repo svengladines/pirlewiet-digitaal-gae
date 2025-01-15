@@ -1,7 +1,10 @@
 package be.pirlewiet.digitaal.domain.people;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
 
+@Component
 public class CodeMan {
 	
 	protected final String[] letters =

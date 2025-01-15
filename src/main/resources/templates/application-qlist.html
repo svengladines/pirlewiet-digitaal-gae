@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="nl">
+<head title ="pirlewiet digitaal" th:replace="fragments/fragment-head :: head">>
+</head>
+<body>
+    <div class="modal-dialog" th:with="app=${applicationResult.object}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Vragenlijst</h2>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div th:each="question:${qnaResult.object}">
+                        <div th:if="${question.tag eq 'application'}" class="form-group">
+                            <label class="col-sm-6 control-label" th:text="${question.question}"/>
+                            <div th:if="${question.type == T(be.pirlewiet.digitaal.model.QuestionType).YesNo}" class="col-sm-6">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="radio" th:name="${question.uuid}" class="q" th:attr="data-tag=${question.tag}" th:checked="${question.answer eq 'Y'}" value="Y">&nbsp;Ja</input>
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <label>
+                                        <input type="radio" th:name="${question.uuid}" class="q" th:attr="data-tag=${question.tag}" th:checked="${question.answer eq 'N'}" value="N">&nbsp;Nee</input>
+                                    </label>
+                                </div>
+                            </div>
+                            <div th:if="${question.type == T(be.pirlewiet.digitaal.model.QuestionType).Text}" class="col-sm-6">
+                                <input th:name="${question.uuid}" th:attr="data-tag=${question.tag}" type="text" class="form-control q" th:value="${question.answer}"/>
+                            </div>
+                            <div th:if="${question.type == T(be.pirlewiet.digitaal.model.QuestionType).Area}" class="col-sm-6">
+                                    <div class="col-sm-6">
+                                        <textarea th:name="${question.uuid}" th:attr="data-tag=${question.tag}" class="form-control q" rows="10" cols="64" th:text="${question.answer}"/>
+                                    </div>
+                            </div>
+                            <div th:if="${question.type == T(be.pirlewiet.digitaal.model.QuestionType).MC}" class="col-sm-6">
+                                <div class="checkbox" th:each="option:${question.options}">
+                                    <label>
+                                        <input type="radio" th:name="${question.uuid}" class="q" th:attr="data-tag=${question.tag},data-qid=${question.qid}" th:checked="${question.answer eq option}" th:value="${option}" th:text="' ' + ${option}"/>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+                    <button type="button" id="q-save-application-qlist" class="btn btn-primary" th:attr="data-attr-app-uuid=${app.uuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+                    <span id ="q-status-application"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

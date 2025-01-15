@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="nl">
+<head title ="pirlewiet digitaal" th:replace="fragments/fragment-head :: head">>
+</head>
+<body>
+	<div class="modal-dialog" th:with="contact=${applicantResult.object}">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Aanvrager</h2>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+					<input th:if="${contact.uuid != null}"type="hidden" id="contact-uuid" th:value="${contact.uuid}">
+					<div class="form-group">
+						<label for="contact-given-name" class="col-sm-4 control-label">Voornaam</label>
+							<div class="col-sm-6">
+								<input name="givenName" id="contact-given-name" type="text" class="form-control" th:value="${contact.givenName}" required="required"></input>
+							</div>
+					</div>
+					<div class="form-group">
+						<label for="contact-family-name" class="col-sm-4 control-label">Naam</label>
+							<div class="col-sm-6">
+								<input name="familyName" id="contact-family-name" type="text" class="form-control" th:value="${contact.familyName}" required="required"></input>
+							</div>
+					</div>
+					<div class="form-group">
+						<label for="contact-phone" class="col-sm-4 control-label">Telefoon</label>
+							<div class="col-sm-4">
+								<input name="phone" id="contact-phone" type="text" class="form-control" th:value="${contact.phone}" required="required" pattern="^[0-9]{3,4}/[0-9]{6,7}$" placeholder="0499/123456"></input>
+							</div>
+					</div>
+					<div class="form-group">
+						<label for="contact-email" class="col-sm-4 control-label">E-mail</label>
+							<div class="col-sm-6">
+								<input name="email" id="contact-email" type="email" class="form-control" th:value="${contact.email}" required="required" pattern="^[0-9a_-z.+-]@[0-9a-z\.+-]$"></input>
+							</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="form-group">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+					<button type="button" id="contact-save" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+					<span id ="contact-status"></span>
+				</div>
+			</div>
+		</div>
+	</div>

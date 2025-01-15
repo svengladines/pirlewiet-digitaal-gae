@@ -11,5 +11,8 @@ public class HeadQuarters {
 	public String getEmail() {
 		return email;
 	}
-	
+
+	public void initialize() {
+	}
+
 }

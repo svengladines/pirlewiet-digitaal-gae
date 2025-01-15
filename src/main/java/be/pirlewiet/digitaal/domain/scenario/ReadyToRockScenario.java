@@ -2,7 +2,7 @@ package be.pirlewiet.digitaal.domain.scenario;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.Organisation;
@@ -11,13 +11,13 @@ import be.pirlewiet.digitaal.web.util.DataGuard;
 
 public class ReadyToRockScenario extends Scenario {
 	
-	@Resource
+	@Autowired
 	OrganisationRepository organisatieRepository;
 	
-	@Resource
+	@Autowired
 	Secretary secretariaatsMedewerker;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
 	public ReadyToRockScenario guard() {

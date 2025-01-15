@@ -3,7 +3,7 @@ package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +29,10 @@ public class PirlewietOrganisationPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( PirlewietOrganisationPageController.class );
 	
-	@Resource
+	@Autowired
 	OrganisationService organisationService;
 	
-	@Resource
+	@Autowired
 	protected DoorMan doorMan;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 

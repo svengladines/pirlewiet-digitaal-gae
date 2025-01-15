@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="nl" >
+<head title ="Pirlewiet Digitaal" th:replace="fragments/fragment-head :: head">>
+</head>
+<body>
+<div class="modal-dialog" th:with="app=${applicationResult.object}">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Medische vragenlijst</h2>
+        </div>
+        <div class="modal-body" th:with="app=${applicationResult.object}>
+            <form th:with="medical=${medicalResult.object}" class="form-horizontal">
+                <div th:each="question:${medical}">
+                    <div th:if="${question.tag eq 'application'}" class="form-group">
+                        <label class="col-sm-6 control-label">${question.question} (*)</label>
+                        <div th:if="${question.type eq 'YesNo'}" class="col-sm-6">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="radio" name="${question.uuid}" class="q" data-tag="${question.tag}" th:attr="checked=${question.answer eq 'Y' ? 'checked' : ''}" th:text="&nbsp;Ja">
+                                </label>
+                                &nbsp;&nbsp;&nbsp;
+                                <label>
+                                    <input type="radio" name="${question.uuid}" class="q" data-tag="${question.tag}" th:attr="checked=${question.answer eq 'N' ? 'checked' : ''}" th:text="&nbsp;Nee">
+                                </label>
+                            </div>
+                        </div>
+                        <div th:if="${question.type eq 'Text'}" class="col-sm-6">
+                            <div class="col-sm-3">
+                                <input th:attr="id=${question.uuid}" type="text" class="form-control q" th:attr="data-tag=${question.tag}" th:value="${question.answer}"/>
+                            </div>
+                        </div>
+                        <div th:if="${question.type eq 'Text'}" class="col-sm-6">
+                            <div class="col-sm-6">
+                                <textarea th:attr="id=${question.uuid}" class="form-control q" rows="10" cols="64" th:attr="data-tag=${question.tag}" th:text="${question.answer}"/>
+                            </div>
+                        </div>
+                </div>
+            </form>
+        </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleer</button>
+                    <button type="button" id="q-save-medical" class="btn btn-primary" data-attribute-uuid="${enrollmentUuid}"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Sla op</button>
+                    <span id ="q-status-enrollment"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

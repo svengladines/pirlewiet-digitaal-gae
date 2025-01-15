@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<p>
+    Beste doorverwijzer,
+</p>
+
+<p>
+    Jij of een van je collega's vroeg een code aan voor de digitale inschrijvingen van Pirlewiet VZW.
+</p>
+
+<p>
+    Hieronder vind je deze code terug. Je kan deze gebruiken om je aan te melden. Als dit niet lukt, contacteer dan het secretariaat van Pirlewiet.
+</p>
+
+<p>
+    Je code: <strong th:text="${code}"></strong>
+</p>
+
+<p>
+    Ga naar onze <a th:href="@{https://pirlewiet-digitaal.appspot.com/index.html}">website voor digitale inschrijvingen</a>
+</p>
+
+<p>
+    Met vriendelijke groet,<br/>
+    Pirlewiet VZW.
+</p>
+
+<p>
+    Deze e-mail werd automatisch gegenereerd; je kan hier niet op antwoorden. <br/>
+    Wil je contact opnemen met het secretariaat van Pirlewiet kan dat via <a th:href="@{http://www.pirlewiet.be}">www.pirlewiet.be</a> of via <a th:href="@{mailto:info@pirlewiet.be}">info@pirlewiet.be</a>
+</p>
+</body>
+</html>

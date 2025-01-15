@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import be.occam.utils.spring.web.Result;
@@ -26,9 +27,10 @@ import be.pirlewiet.digitaal.model.HolidayType;
 import be.pirlewiet.digitaal.repository.HolidayRepository;
 import be.pirlewiet.digitaal.web.util.DataGuard;
 
+@Component
 public class HolidayManager {
 	
-	@Resource
+	@Autowired
 	protected HeadQuarters headQuarters;
 	
 	protected final Logger logger
@@ -44,13 +46,13 @@ public class HolidayManager {
 	
 	};
 	
-	@Resource
+	@Autowired
 	protected HolidayRepository holidayRepository;
 	
-	@Resource
+	@Autowired
 	DataGuard dataGuard;
 	
-	@Resource
+	@Autowired
 	MailMan postBode;
 	
     public HolidayManager() {

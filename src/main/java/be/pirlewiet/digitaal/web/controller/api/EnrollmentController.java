@@ -1,23 +1,5 @@
 package be.pirlewiet.digitaal.web.controller.api;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import be.occam.utils.spring.web.Result;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
@@ -26,18 +8,26 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.web.dto.HolidayDTO;
 import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
-@RequestMapping( {"/applications/{applicationUuid}/enrollments/{uuid}"} )
+@RequestMapping( {"api/applications/{applicationUuid}/enrollments/{uuid}"} )
 public class EnrollmentController {
 	
-	protected Logger logger 
-		= LoggerFactory.getLogger( this.getClass() );
+	protected Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
-	@Resource
+	@Autowired
 	EnrollmentService enrollmentService;
 	
-	@Resource
+	@Autowired
 	DoorMan doorMan;
 	
 
@@ -59,7 +49,7 @@ public class EnrollmentController {
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().update( enrollment, actor );
 		
-		return response( x, HttpStatus.OK );
+		return new ResponseEntity<>(x, HttpStatus.OK);
 		
 	}
 	
@@ -77,8 +67,8 @@ public class EnrollmentController {
 		
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().updateStatus( uuid, enrollmentStatus, actor );
-		
-		return response( x, HttpStatus.OK );
+
+		return new ResponseEntity<>(x, HttpStatus.OK);
 		
 	}
 	
@@ -96,8 +86,8 @@ public class EnrollmentController {
 		
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().updateQList ( uuid, qList, actor );
-		
-		return response( x, HttpStatus.OK );
+
+		return new ResponseEntity<>(x, HttpStatus.OK);
 		
 	}
 
@@ -115,8 +105,8 @@ public class EnrollmentController {
 		
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().updateHolidays( uuid, holidays, actor );
-		
-		return response( x, HttpStatus.OK );
+
+		return new ResponseEntity<>(x, HttpStatus.OK);
 		
 	}
 	
@@ -133,8 +123,8 @@ public class EnrollmentController {
 
 		Result<EnrollmentDTO> x 
 			= this.enrollmentService.guard().delete( uuid, actor );
-		
-		return response( x, HttpStatus.OK );
+
+		return new ResponseEntity<>(x, HttpStatus.OK);
 		
 	}
 	

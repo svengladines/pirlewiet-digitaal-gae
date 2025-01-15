@@ -23,7 +23,7 @@ public class HolidayRepositoryObjectify implements HolidayRepository {
 
 	@Override
 	public Holiday findByUuid(String uuid) {
-		logger.info( "load holiday with uuid [{}]", uuid );
+		logger.debug( "load holiday with uuid [{}]", uuid );
 		return ofy().load().type(Holiday.class).filter("uuid", uuid).first().now();
 	}
 
