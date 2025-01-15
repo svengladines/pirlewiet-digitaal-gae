@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 
 @Controller
-@RequestMapping( {"/applications-pirlewiet.html"} )
+@RequestMapping( {"/pirlewiet/applications.html"} )
 public class PirlewietApplicationsPageController {
 	
 	protected Logger logger 
@@ -46,15 +47,11 @@ public class PirlewietApplicationsPageController {
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public String view( @CookieValue(required=true, value="pwtid") String pwtid, Model model ) {
 		
-		Organisation actor
-			= this.doorMan.guard().whoHasID( pwtid  );
+		Organisation actor = this.doorMan.guard().whoHasID( pwtid  );
 
-		Map<String,Object> model
-			= new HashMap<String,Object>();
-	
-		model.put( "organisation", actor );
+		model.addAttribute( "organisation", actor );
 	
 		Result<List<Result<ApplicationDTO>>> applicationsResult 
 				= this.applicationService.guard().query( actor );
@@ -82,13 +79,8 @@ public class PirlewietApplicationsPageController {
 			
 		}
 		
-		model.put( "applicationsResult", applicationsResult );
-		
-		String view
-			= "applications-pirlewiet";
-		
-		return new ModelAndView( view, model );
-		
+		model.addAttribute( "applicationsResult", applicationsResult );
+		return "pirlewiet/applications";
 	}
 	
 	

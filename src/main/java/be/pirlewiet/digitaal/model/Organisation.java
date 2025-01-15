@@ -117,6 +117,9 @@ public class Organisation {
 		t.setEmail( f.getEmail() );
 		t.setPhone( f.getPhone() );
 		t.setAddressUuid( f.getAddressUuid() );
+		if (f.getAddress() != null) {
+			t.setCity(f.getAddress().getCity());
+		}
 		return t;
 	}
 

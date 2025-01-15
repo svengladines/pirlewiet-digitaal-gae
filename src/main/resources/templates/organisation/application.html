@@ -79,7 +79,7 @@
 					<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
 					<div th:if="${errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
 							<span class="">Nog geen vakantiegangers toegevoegd</span><br/>
-						<i class="fa fa-2x fa-plus"/>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+						<i class="fa fa-1x fa-plus"></i>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
 					</div>
 				</div>
 			</div>
@@ -105,7 +105,7 @@
 		<div id="row-qlist" class="row">
 			<div th:unless="${applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
 				<div class="col-sm-12 alert alert-warning">
-					<i class="fa fa-2x fa-2x fa-question pull-right"/><h4><strong>Vragenlijst</strong><br/></h4>
+					<i class="fa fa-1x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 					<span class="">Niet (volledig) ingevuld </span><br/>
 					<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist" th:attr="data-attribute-uuid=${app.uuid}">Vragenlijst invullen/aanvullen</a>
 				</div>

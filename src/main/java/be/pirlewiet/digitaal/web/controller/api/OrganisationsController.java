@@ -32,7 +32,7 @@ import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
 @Controller
-@RequestMapping(value="/organisations")
+@RequestMapping(value="/api/organisations")
 public class OrganisationsController {
 	
 	private final Logger logger = LoggerFactory.getLogger( OrganisationsController.class );
@@ -79,7 +79,7 @@ public class OrganisationsController {
 		
 			response.addCookie( cookie );
 			
-			return response( createdResult, HttpStatus.OK );
+			return new ResponseEntity<>( createdResult, HttpStatus.OK );
 		
 		}
 		
@@ -95,7 +95,7 @@ public class OrganisationsController {
 		Organisation actor 
 			= this.doorMan.guard().whoHasID( pwtid );
 	
-		return response( this.organisationService.consume( file, actor ), HttpStatus.OK ); 
+		return new ResponseEntity<>( this.organisationService.consume( file, actor ), HttpStatus.OK );
 	
 	}
 			

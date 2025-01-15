@@ -108,7 +108,7 @@ var postApplication = function( application,callback ) {
 
 var viewApplication = function( application ) {
 
-	window.location.href = "/application-" + application.uuid + ".html";
+	window.location.href = "/organisation/application-" + application.uuid + ".html";
 	
 };
 

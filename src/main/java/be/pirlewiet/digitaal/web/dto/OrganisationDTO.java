@@ -83,7 +83,7 @@ public class OrganisationDTO {
 		this.inComplete = inComplete;
 	}
 
-	public AddressDTO address() {
+	public AddressDTO getAddress() {
 		return address;
 	}
 

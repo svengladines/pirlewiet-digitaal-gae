@@ -34,9 +34,8 @@ public class CookieFilter implements Filter {
 			if ( ( httpRequest.getRequestURI().equals( "/api/codes" ) )
 					|| ( httpRequest.getRequestURI().equals( "/api/ping" ) )
 					|| ( httpRequest.getRequestURI().equals( "/api/coderequests" ) ) 
-					|| ( httpRequest.getRequestURI().equals( "/organisation.html" ) )
-					|| ( httpRequest.getRequestURI().equals( "/organisations.html" ) )
-					|| ( httpRequest.getRequestURI().equals( "/registration.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/organisation/registration.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/index.htm" ) )
 					|| ( httpRequest.getRequestURI().equals( "/api/organisations" ) ) ) {
 				chain.doFilter( httpRequest, httpResponse );
 				return;

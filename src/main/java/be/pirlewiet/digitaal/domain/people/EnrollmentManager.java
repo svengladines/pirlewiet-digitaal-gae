@@ -120,6 +120,17 @@ public class EnrollmentManager {
 			qna2.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna2 );
 		}
+
+		// for TIKA, add questions about partner (2018)
+		if ( this.holidayManager.hasType( holidays, HolidayType.Tika ) ) {
+			logger.info( "TIKA; add questions...");
+			// Add questions manually  for now ... RFC...
+			QuestionAndAnswer qna = QuestionSheet.template().getQuestion( QIDs.QID_TIKA_CYCLING );
+			qna.setUuid( UUID.randomUUID().toString() );
+			qna.setTag( Tags.TAG_PARTICIPANT );
+			qna.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna );
+		}
 		
 		return created;
 		

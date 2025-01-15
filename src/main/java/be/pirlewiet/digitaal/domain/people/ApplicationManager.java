@@ -177,8 +177,7 @@ public class ApplicationManager {
 	    	
 	    	logger.info( "created application with uuid [{}]", new Object[] { created.getUuid() } );
 	    	
-	    	List<QuestionAndAnswer> appQList
-				= QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
+	    	List<QuestionAndAnswer> appQList = QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
 	    	
 			for ( QuestionAndAnswer qna : appQList ) {
 				qna.setEntityUuid( created.getUuid() );
@@ -191,7 +190,7 @@ public class ApplicationManager {
 	
 	public Application updateHolidays( String uuid, List<Holiday> holidays ) {
 		
-		logger.info("application.updateHolidays");
+		logger.debug("application.updateHolidays");
 		
 		Application application
 			= this.findOne( uuid );
@@ -314,7 +313,7 @@ public class ApplicationManager {
 	
 	public Application updateStatus( String uuid, ApplicationStatus applicationStatus ) {
 		
-		logger.info("application.updateStatus");
+		logger.debug("application.updateStatus");
 		
 		Application application
 			= this.findOne( uuid );
@@ -327,10 +326,9 @@ public class ApplicationManager {
 			if ( ApplicationStatus.Value.AUTO.equals( applicationStatus.getValue() ) ) {
 				
 				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
-					logger.info( "intake");
+					logger.info( "Application []; intake", application.getUuid());
 					// TODO, load and manager will load again. performance optimization possible
-					List<Enrollment> enrollments
-						= this.enrollmentManager.findByApplicationUuid( application.getUuid() );
+					List<Enrollment> enrollments = this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
 						if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) || ( isEmpty( enrollment.getHolidayName() ) ) ) {
 							this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids(), true );
@@ -341,23 +339,15 @@ public class ApplicationManager {
 					application.setSubmitted( new Date() );
 					save = true;
 					
-					Organisation organisation
-						= this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+					Organisation organisation = this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
+					Person contact = this.personManager.findOneByUuid( application.getContactPersonUuid() );
+					Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 					
-					Person contact
-						= this.personManager.findOneByUuid( application.getContactPersonUuid() );
-					
-					Set<Holiday> holidays
-						= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
-					
-					List<Person> participants
-						= list();
+					List<Person> participants = list();
 					
 					for ( Enrollment enrollment : enrollments ) {
-						
 						Person participant
 							= this.personManager.findOneByUuid( enrollment.getParticipantUuid() );
-						
 						participants.add( participant );
 						
 					}
@@ -399,7 +389,7 @@ public class ApplicationManager {
 		String message = message = this.spokesPerson.formatIntakeMessageOrganisation( application, participants, holidays, applicant );
 		if ( message != null ) {
 			mailMan.deliver(applicant.getEmail(),"Ontvangstbevestiging", message );
-			logger.info( "Application [{}]; code request email sent to [{}]", application.getUuid(), applicant.getEmail() );
+			logger.info( "Application [{}]; receipt email sent to [{}]", application.getUuid(), applicant.getEmail() );
 			return true;
 		}
 		return false;

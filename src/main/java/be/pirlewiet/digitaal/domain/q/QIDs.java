@@ -6,6 +6,7 @@ public class QIDs {
 	public static String QID_SHARED_BILL = "bill";
 	public static String QID_SHARED_BILL_DETAIL = "bill-detail";
 	public static String QID_SHARED_CONTACT = "contact";
+	public static String QID_SHARED_CONTACT_PHONE = "phone";
 	
 	public static String QID_MEDIC_MEDIC = "medic_name";
 	public static String QID_MEDIC_MEDIC_TEL = "medic_tel";
@@ -27,5 +28,8 @@ public class QIDs {
 	public static String QID_ADULTERY_SELF_RELIANT = "adultery-self-reliant";
 
 	public static String QID_FAMILY_CAR = "family-car";
+
+	public static String QID_TIKA_CYCLING = "tika-cycling";
+
 	
 }

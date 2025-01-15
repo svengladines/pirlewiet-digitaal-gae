@@ -14,7 +14,7 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.OrganisationService;
 
 @Controller
-@RequestMapping(value="/registration.html")
+@RequestMapping(value="/organisation/registration.html")
 public class OrganisationRegistrationPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( OrganisationRegistrationPageController.class );
@@ -26,10 +26,8 @@ public class OrganisationRegistrationPageController {
 	protected DoorMan doorMan;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 
-	public ModelAndView view()  {
-		
-		return new ModelAndView( "registration" );	
-			
+	public String view()  {
+		return "organisation/registration";
 	}
 	
 }

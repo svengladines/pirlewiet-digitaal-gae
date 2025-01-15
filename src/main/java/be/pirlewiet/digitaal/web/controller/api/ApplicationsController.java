@@ -76,7 +76,7 @@ public class ApplicationsController {
 			// then create a new application
 			Result<ApplicationDTO> rCreatedApplication = this.applicationService.createReferenced(application,rCreatedOrganisation.getObject().getUuid());
 			if (Result.Value.OK.equals(rCreatedApplication.getValue())) {
-				return "redirect:/application-%s.html".formatted(rCreatedApplication.getObject().getUuid());
+				return "redirect:/organisation/application-%s.html".formatted(rCreatedApplication.getObject().getUuid());
 			}
 		}
 		// TODO proper error handling

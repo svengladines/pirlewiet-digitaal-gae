@@ -38,8 +38,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class='active'><a href="/index.htm">START</a></li>
-            <li class=''><a href="/help.htm">HELP</a></li>
+            <li class=''><a href="/help.html">HELP</a></li>
           </ul>
         </div>
       </div>
@@ -88,9 +87,7 @@
 		<div class="row centered">
 		
 			<div>
-				<!--
-					<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Even geduld ...</span></button>
-				-->
+					<button type="button" disabled="disabled" id="goon" class="btn btn-default btn-lg" data-vakantie="1"><span id="goontext">Laden ... even geduld ...</span></button>
 			</div>
 			<br/>
 			
@@ -122,8 +119,8 @@
    			type: "get",
    			url:"/api/ping",
    		 	success: function( ix ) {
-   				//$jq("#goon").removeClass("hidden").removeProp("disabled").addClass("btn-success")
-   				//$jq("#goontext").html("Ga verder");
+   				$jq("#goon").removeClass("hidden").removeProp("disabled").addClass("btn-success")
+   				$jq("#goontext").html("Ga verder");
    			},
    			error: function(  jqXHR, textStatus, errorThrown ) {
    				$jq("#goon").removeProp("disabled").addClass("btn-error");

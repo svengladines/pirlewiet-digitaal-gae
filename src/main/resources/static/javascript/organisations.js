@@ -52,14 +52,14 @@ var putOrganisation = function ( organisation, button, errorElement, callback, c
 
 	$jq.ajax( {
 		type: "put",
-		url: base() + "/api/organisation",
+		url: base() + "/api/organisations/" + organisation.uuid,
 		dataType: "json",
 		contentType: "application/json",
 	    processData: false,
 		data: JSON.stringify( organisation ),
-		success: function( jqXHR ) {
+		success: function( updated ) {
 			if ( callback ) {
-				callback();
+				callback(updated);
 			}
 		},
 		error: function(  jqXHR, textStatus, errorThrown ) {
@@ -73,7 +73,7 @@ var putOrganisationAddress = function ( organisation, adres, button, statusEleme
 
 	$jq.ajax( {
 		type: "put",
-		url: base() + "/api/organisation/address",
+		url: base() + "/api/organisations/" + organisation.uuid + "/address",
 		dataType: "json",
 		contentType: "application/json;charset=\"utf-8\"",
 	    processData: false,
