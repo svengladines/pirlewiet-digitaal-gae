@@ -1,0 +1,21 @@
+runtime: java21
+
+handlers:
+  - url: /.*\.html
+    static_dir: src/main/resources/static
+  - url: /files/.*
+    static_dir: src/main/resources/static/files
+  - url: /images/.*
+    static_dir: src/main/resources/static/images
+  - url: /javascript/.*
+    static_dir: src/main/resources/static/javascript
+  - url: /theme/css/.*
+    static_dir: src/main/resources/static/theme/css
+  - url: /theme/fonts/.*
+    static_dir: src/main/resources/static/theme/fonts
+  - url: /theme/js/.*
+    static_dir: src/main/resources/static/theme/js
+
+env_variables:
+  PIRLEWIET_EMAIL : "sven.gladines@gmail.com"
+  PIRLEWIET_YEAR : 2025

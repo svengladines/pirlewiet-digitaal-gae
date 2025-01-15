@@ -3,10 +3,6 @@ var Tourist = function ( code, email ) {
 	this.email = email;
 };
 
-var CodeRequest = function ( email ) {
-	this.email = email;
-};
-
 var postTourist = function ( tourist, button, statusElement, callback ) {
 
 	$jq.ajax( {

@@ -4,6 +4,7 @@ public class QIDs {
 	
 	public static String QID_SHARED_PHOTO = "photo";
 	public static String QID_SHARED_BILL = "bill";
+	public static String QID_SHARED_BILL_DETAIL = "bill-detail";
 	public static String QID_SHARED_CONTACT = "contact";
 	
 	public static String QID_MEDIC_MEDIC = "medic_name";
@@ -23,7 +24,8 @@ public class QIDs {
 	public static String QID_HISTORY = "history";
 	public static String QID_ADULTERY_WITH = "adultery-with";
 	public static String QID_ADULTERY_WITH_WHO = "adultery-with-who";
-	
+	public static String QID_ADULTERY_SELF_RELIANT = "adultery-self-reliant";
+
 	public static String QID_FAMILY_CAR = "family-car";
 	
 }

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +24,7 @@ import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping(value="/organisation.html")
+@RequestMapping(value="/organisation/organisation.html")
 public class OrganisationPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( OrganisationPageController.class );
@@ -35,18 +36,10 @@ public class OrganisationPageController {
 	protected DoorMan doorMan;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 
-	public ModelAndView view( @CookieValue( required = true, value="pwtid" ) String pwtID )  {
-		
-		OrganisationDTO organisation
-			= null;
-		
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtID  );
-		
-		
-		Result<OrganisationDTO> result 
-			= this.organisationService.findOneByUuid( pwtID, actor );
-			
+	public String view( @CookieValue( required = true, value="pwtid" ) String pwtID, Model model )  {
+		OrganisationDTO organisation = null;
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtID  );
+		Result<OrganisationDTO> result = this.organisationService.findOneByUuid( pwtID, actor );
 		organisation = result.getObject();
 			
 		if ( organisation == null ) {
@@ -54,7 +47,6 @@ public class OrganisationPageController {
 		}
 		
 		AddressDTO address = null;
-		
 		if ( organisation.getAddressUuid() == null ) {
 			address = new AddressDTO();
 		}
@@ -64,18 +56,11 @@ public class OrganisationPageController {
 			address  = addressResult.getObject();
 		}
 		
-		Map<String,Object> model = new HashMap<String,Object>();
-		
-		model.put( "organisation", organisation );
-		model.put( "incomplete", organisation.getInComplete() );
-		model.put( "address", address );
-		
-		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( organisation) );
-
-		String view = "organisation";
-		
-		return new ModelAndView( view, model );	
-			
+		model.addAttribute( "organisation", organisation );
+		model.addAttribute( "incomplete", organisation.getInComplete() );
+		model.addAttribute( "address", address );
+		model.addAttribute( "isPirlewiet", PirlewietUtil.isPirlewiet( organisation) );
+		return "organisation/organisation";
 	}
 	
 }

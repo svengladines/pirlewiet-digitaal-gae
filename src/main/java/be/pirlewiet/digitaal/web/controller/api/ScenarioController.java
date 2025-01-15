@@ -108,12 +108,12 @@ public class ScenarioController {
 			}
 			*/
 			
-			return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
+			return new ResponseEntity<>( Boolean.FALSE, HttpStatus.NOT_FOUND );
 			
 		}
 		catch( Exception e ) {
 			logger.warn( "scenario execution failed", e );
-			return response( Boolean.FALSE, HttpStatus.INTERNAL_SERVER_ERROR );
+			return new ResponseEntity<>( Boolean.FALSE, HttpStatus.INTERNAL_SERVER_ERROR );
 		}
 			
 	}

@@ -2,21 +2,15 @@ package be.pirlewiet.digitaal.domain.people;
 
 import static be.occam.utils.javax.Utils.isEmpty;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import be.pirlewiet.digitaal.model.OrganisationType;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +49,10 @@ public class OrganisationManager {
 
 			@Override
 			public int compare(Organisation o1, Organisation o2) {
-				if ( o1.getUpdated() == null ) {
+				if ( ( o1.getUpdated() == null ) && ( o2.getUpdated() == null ) ) {
+					return 0;
+				}
+				else if ( o1.getUpdated() == null ) {
 					return 1;
 				}
 				else if ( o2.getUpdated() == null ) {
@@ -72,7 +69,7 @@ public class OrganisationManager {
 	protected OrganisationRepository organisationRepository;
 	
 	@Autowired
-	DoorMan buitenWipper;
+	DoorMan doorMan;
 	
 	@Autowired
 	MailMan postBode;
@@ -111,7 +108,7 @@ public class OrganisationManager {
     	}
     	
     	if (isEmpty(organisation.getCode())) {
-	    	String code = this.buitenWipper.guard().uniqueCode();
+	    	String code = this.doorMan.guard().uniqueCode();
 	    	organisation.setCode( code );
     	}
     	
@@ -274,19 +271,21 @@ public class OrganisationManager {
     }
     
     protected boolean sendCreatedEmailToOrganisation( Organisation organisation ) {
-    	
+
+		/* TODO!
 		MimeMessage message = formatCreatedMessage( "Pirlewiet Digitaal: registratie", organisation, "/to-organisation/organisation-created", organisation.getEmail() );
 
 		if ( message != null ) {
 			return postBode.deliver( message );
 		}
+		 */
 		
 		return false;
 	
     }
 
  protected boolean sendCreatedEmailToPirlewiet( Organisation organisation ) {
-    	
+		/* TODO
 		MimeMessage message
 			= formatCreatedMessage( "Nieuwe doorverwijzer geregistreerd", organisation, "/email/to-pirlewiet/organisation-created",this.headQuarters.getEmail()  );
 
@@ -295,52 +294,25 @@ public class OrganisationManager {
 			return postBode.deliver( message );
 			
 		}
-		
+		 */
 		return false;
-	
     }
 
 	protected boolean sendTouristCreatedEmailToPirlewiet( Organisation organisation ) {
 
+		/* TODO
 		MimeMessage message = formatCreatedMessage( "Nieuwe vakantieganger geregistreerd", organisation, "/email/to-pirlewiet/tourist-created",this.headQuarters.getEmail()  );
 		if ( message != null ) {
 			return postBode.deliver( message );
 		}
+		 */
 		return false;
 
 	}
 
-    protected MimeMessage formatCreatedMessage( String subject, Organisation organisation, String templateLocation, String to ) {
-
-		MimeMessage message
-			= null;
-
-		final Context ctx = new Context();
-
-		try {
-
-			ctx.setVariable("organisation", organisation);
-			final String content = this.emailTemplateEngine.process(templateLocation, ctx);
-				
-			message = this.postBode.message();
-			// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-			MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-		
-			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( to );
-			helper.setReplyTo( headQuarters.getEmail() );
-
-			String text = content;
-			logger.info( "email text is [{}]", text );
-			helper.setText(text, true);
-	
-		} catch( Exception e ) {
-			logger.warn( "could not create e-mail", e );
-			throw new RuntimeException( e );
-		}
-
-		return message;
-
+    protected String formatCreatedMessage( String subject, Organisation organisation, String templateLocation, String to ) {
+		// TODO
+		return "TODO";
     }
     
 }

@@ -13,7 +13,7 @@
 				Opgelet: voeg hier enkel deelnemers toe van hetzelfde gezin. Voor andere deelnemers moet je een aparte inschrijving maken.
 			</p>
 			<form id="participant-form" class="form-horizontal" th:with="enrollment=${enrollmentResult.object}" th:attr="appUid=${app.uuid}" th:action="@{/api/applications/{uuid}/enrollments(uuid=${app.uuid})}" method="POST">
-				<input th:if="${enrollment.participant.uuid != null}" id="participant-id" type="hidden" th:value="${enrollment.participant.uuid}"/>
+				<input th:if="${enrollment.uuid != null}" id="enrollment-uuid" name="uuid" type="hidden" th:value="${enrollment.uuid}"/>
 				<div class="form-group">
 					<label for="participant-given-name" class="col-sm-4 control-label">Voornaam (*)</label>
 					<div class="col-sm-6">
@@ -49,13 +49,13 @@
 				<div class="form-group">
 					<label for="participant-birth-day" class="col-sm-4 control-label">Geboortedatum (*)</label>
 					<div class="col-sm-3">
-						<input id="participant-birth-day" name="participant.birthDay" type="text" class="form-control" th:value="${enrollment.participant.birthDay}" placeholder="28/08/1977" required="required" pattern="^[0-9]{2}/[0-9]{2}/[0-9]{4}$"/>
+						<input id="participant-birth-day" name="participant.birthDay" type="text" class="form-control" th:value="${enrollment.participant.birthDay}" placeholder="01/01/2000" required="required" pattern="^[0-9]{2}/[0-9]{2}/[0-9]{4}$"/>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="participant-phone" class="col-sm-4 control-label">Telefoonnummer (*)</label>
 					<div class="col-sm-4">
-						<input id="participant-phone" name="participant.phone" type="tel" class="form-control" th:value="${enrollment.participant.phone}" required="required" pattern="^[0-9]{3,4}/[0-9]{6,7}$" placeholder="0499/290671"/>
+						<input id="participant-phone" name="participant.phone" type="tel" class="form-control" th:value="${enrollment.participant.phone}" required="required" pattern="^[0-9]{3,4}/[0-9]{6,7}$" placeholder="0499/123456"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -83,7 +83,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="address-number" class="col-sm-4 control-label">Huisnummer (*)</label>
+					<label for="address-number" class="col-sm-4 control-label">Huisnummer/bus (*)</label>
 					<div class="col-sm-2">
 						<input id="address-number" type="text" name="address.number" class="form-control" th:value="${enrollment.address.number}" required="required"/>
 					</div>

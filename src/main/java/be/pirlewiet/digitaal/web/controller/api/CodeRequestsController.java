@@ -20,7 +20,7 @@ import be.pirlewiet.digitaal.domain.people.Secretary;
 import be.pirlewiet.digitaal.model.CodeRequest;
 
 @Controller
-@RequestMapping(value="/coderequests")
+@RequestMapping(value="/api/coderequests")
 public class CodeRequestsController {
 	
 	private final static Logger logger 
@@ -38,10 +38,10 @@ public class CodeRequestsController {
 		this.buitenWipper.guard().processCodeRequest( codeRequest, true );
 		
 		if ( CodeRequest.Status.REJECTED.equals( codeRequest.getStatus() ) ) {
-			return response( HttpStatus.UNPROCESSABLE_ENTITY );
+			return new ResponseEntity<>( HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		
-		return response( codeRequest, HttpStatus.OK );
+		return new ResponseEntity<>(codeRequest, HttpStatus.OK);
 		
 	}
 	

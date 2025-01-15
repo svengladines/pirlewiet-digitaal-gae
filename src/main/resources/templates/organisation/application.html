@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="nl">
-<head title ="pirlewiet digitaal" th:replace="fragments/fragment-head :: head">>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment-head :: head}">
 </head>
 <body>
-	<div class="banner">
-		<div class="container">
-			<div class="row centered">
-				<div class="col-lg-12">
-					<h1>Dossier</h1>
-					<p>
-						Beheer een inschrijvingsdossier.
-					</p>
-				</div>
-			</div><!-- row -->
-		</div><!-- container -->
-	</div>
+
+<div th:replace="~{fragments/fragment-menu :: menu}"></div>
+
+<div class="banner">
+	<div class="container">
+		<div class="row centered">
+			<div class="col-lg-12">
+				<h1>Dossier</h1>
+				<p>
+					Beheer een inschrijvingsdossier.
+				</p>
+			</div>
+		</div><!-- row -->
+	</div><!-- container -->
+</div>
 
 	<div class="container" th:with="app=${applicationResult.object}">
 
@@ -30,6 +33,22 @@
 						<i th:text="#{application.status.__${app.status.value}__}"/><br/>
 						<span th:text="#{application.status.__${app.status.value}__.description}"/><br/>
 					</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="row-applicant" class="row">
+			<div th:if="${applicantResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}">
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-contact pull-right"></i><h4><strong>Aanvrager</strong><br/></h4>
+					<span class="">Niet ingevuld</span><br/>
+					<a href="javascript:void(0);" class="todo" th:attr="data-attribute-uuid=${app.uuid}" data-attribute-modal="applicant">Aanvrager toevoegen</a>
+				</div>
+			</div>
+			<div th:if="${applicantResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
+				<div class="col-sm-12 alert alert-success" th:with="applicant=${applicantResult.object}">
+					<i class="fa fa-2x fa-phone pull-right"></i><h4><strong>Aanvrager</strong><br/></h4>
+					<span th:text="${applicant.givenName} + ' ' + ${applicant.familyName}"/>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="applicant">wijzigen</a>)
 				</div>
 			</div>
 		</div>
@@ -56,78 +75,82 @@
 
 		<div id="row-enrollments" class="row">
 			<div th:if="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}" th:with="errorCode=${enrollmentsResult.errorCode}">
-				<div th:if="${errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
-					<div class="col-sm-12 alert alert-warning">
-						<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
-						<span class="">Nog geen vakantiegangers toegevoegd</span><br/>
-						<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
+				<div class="col-sm-12 alert alert-warning">
+					<i class="fa fa-2x fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
+					<div th:if="${errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }">
+							<span class="">Nog geen vakantiegangers toegevoegd</span><br/>
+						<i class="fa fa-2x fa-plus"/>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
 					</div>
 				</div>
-				<div th:unless="${errorCode.code == 'APPLICATION_NO_ENROLLMENTS' }" class="container">
+			</div>
+			<div th:unless="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}" class="alert" th:classappend="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK ? 'alert-success' : 'alert-warning'}">
+				<i class="fa fa-2x fa-users pull-right"></i><h4><strong>Vakantieganger(s)</strong><br/></h4>
+				<div class="container">
 					<div th:each="enrollmentResult:${enrollmentsResult.object}" class="row">
-						<div class="col-sm-5 alert alert-info" th:with="enrollment=${enrollmentResult.object}">
-							<strong>Vakantieganger(s)</strong>
-							<div th:if="${isPirlewiet}">
-								<a href="/enrollment-${enrollment.uuid}-pirlewiet.html" class="pull-right">[[#{"enrollment.status.${enrollment.status.value}}"/></a>
-							</div>
-							<div th:unless="${isPirlewiet}">
+						<div class="col-sm-5 alert" th:with="enrollment=${enrollmentResult.object}" th:classappend="${enrollmentResult.value == T(be.occam.utils.spring.web.Result.Value).OK ? 'alert-success' : 'alert-warning'}">
+							<div>
 								<span class="pull-right"><strong th:text="#{enrollment.status.__${enrollment.status.value}__}"/></span>
 							</div>
 							<br/><br/>
-							<i class="fa fa-user"></i>&nbsp;<span class="x">[[${enrollment.participant.givenName}]]&nbsp;[[${enrollment.participant.familyName}]]</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" th:attr="data-attribute-uuid=${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;(<a th:if="${enrollment.applicationUuid != null }" href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="[[${enrollment.uuid}]]" >Verwijder</a>)&nbsp;&nbsp;<br/>
-							<i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="dam" data-attribute-modal="participant" data-attribute-enrollment-uuid="[[${enrollment.uuid}]]">Vragenlijst</a><br/>
-
+							<i class="fa fa-user"></i>&nbsp;<span class="x">[[${enrollment.participant.givenName}]]&nbsp;[[${enrollment.participant.familyName}]]</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" th:attr="data-attribute-enrollment-uuid=${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;(<span th:if="${enrollment.applicationUuid != null }"><a href="javascript:void(0);" class="enrollment-delete" th:attr="data-attribute-enrollment-uuid=${enrollment.uuid}" >Verwijder</a>)</span>
+							<div><i class="fa fa-question"></i>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" th:attr="data-attribute-enrollment-uuid=${enrollment.uuid}">Vragenlijst</a><br/></div>
 						</div>
-						<div class="col-sm-1">
-						</div>
-						<div th:if="${enrollmentResult.value == 'NOK'}" class="col-sm-5 alert alert-danger">
-							<strong>Te doen</strong><br/>
-							<ul>
-								<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_DATA_' )}">
-
-									&nbsp;<span class="x">${enrollment.participant.givenName}&nbsp;${enrollment.participant.familyName}</span>&nbsp;((<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment" data-attribute-uuid="${enrollment.uuid}">Wijzig</a>)&nbsp;&nbsp;<div th:if="${enrollment.applicationUuid != null }"><a href="javascript:void(0);" class="enrollment-delete" data-attribute-uuid="${enrollment.uuid}" >Verwijder</a>)</div>&nbsp;&nbsp;&nbsp;
-								</li>
-								<li th:if="${fn:contains( enrollmentResult.errorCode.code, 'PARTICIPANT_QLIST' )}">
-									<a href="javascript:void(0);" class="todo" data-attribute-modal="participant" data-attribute-enrollment-uuid="${enrollment.uuid}">Vragenlijst invullen</a>
-								</li>
-							</ul>
-						</div>
+					</div>
+					<div class="row">
+						<i class="fa fa-1x fa-plus"></i>&nbsp;<a href="javascript:void(0);" class="todo" data-attribute-modal="enrollment">Vakantieganger toevoegen</a>
 					</div>
 				</div>
 			</div>
-			<div th:if="${enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK}" class="container">
-			</div>
 		</div>
-
 		<div id="row-qlist" class="row">
-			<div th:if="${applicationQuestionListResult.value != 'OK'}">
+			<div th:unless="${applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
 				<div class="col-sm-12 alert alert-warning">
-					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
+					<i class="fa fa-2x fa-2x fa-question pull-right"/><h4><strong>Vragenlijst</strong><br/></h4>
 					<span class="">Niet (volledig) ingevuld </span><br/>
 					<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist" th:attr="data-attribute-uuid=${app.uuid}">Vragenlijst invullen/aanvullen</a>
 				</div>
 			</div>
-			<div th:if="${applicationQuestionListResult.value == 'OK'}">
+			<div th:if="${applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
 				<div class="col-sm-12 alert alert-success">
-					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst dossier</strong><br/></h4>
+					<i class="fa fa-2x fa-2x fa-question pull-right"></i><h4><strong>Vragenlijst</strong><br/></h4>
 					<span>Ingevuld</span>&nbsp;(<a href="javascript:void(0);" class="todo" data-attribute-modal="qlist">wijzigen</a>)
 				</div>
 			</div>
 		</div>
-		<div id="row-contact" class="row">
-			<div th:unless="${contactResult.value == 'OK'}">
-				<div class="col-sm-12 alert alert-warning">
-					<i class="fa fa-2x fa-2x fa-contact pull-right"></i><h4><strong>Contactpersoon</strong><br/></h4>
-					<span class="">Niet ingevuld</span><br/>
-					<a href="javascript:void(0);" class="todo" th:attr="data-attribute-uuid=${app.uuid}" data-attribute-modal="contact">Contactpersoon toevoegen</a>
+		<div id="row-submit" class="row">
+			<div th:switch="${app.status.value}">
+				<div th:case="${T(be.pirlewiet.digitaal.model.ApplicationStatus.Value).DRAFT}">
+					<div th:if="${(applicantResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK) && (applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK)}" class="col-sm-12 alert alert-info">
+						<p>
+							Je inschrijving is volledig. Je kan deze nu versturen.
+						</p>
+						<br/>
+						<button type="button" id="application-submit" class="btn btn-primary"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Verstuur</button>
+						<button type="button" id="application-cancel" class="btn btn-danger pull-right"><i class="fa fa-trash"></i>&nbsp;&nbsp;Verwijder</button>
+					</div>
+					<div th:unless="${(applicantResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(holidaysResult.value == T(be.occam.utils.spring.web.Result.Value).OK)&&(enrollmentsResult.value == T(be.occam.utils.spring.web.Result.Value).OK) && (applicationQuestionListResult.value == T(be.occam.utils.spring.web.Result.Value).OK)}" class="col-sm-12 alert alert-info">
+						<span class="text-warning">Je inschrijving is nog niet volledig, je kan deze nog niet versturen.</span><br/>
+						<span class="text-warning">Een inschrijving is pas volledig als alle bovenstaande kaders groen zijn.</span><br/>
+					</div>
 				</div>
-			</div>
-			<div th:unless="${contactResult.value == 'NOK'}">
-				<div class="col-sm-12 alert alert-success">
+				<div th:case="${T(be.pirlewiet.digitaal.model.ApplicationStatus.Value).CANCELLED}">
+					<div class="col-sm-12 alert alert-info">
+						<p>
+						<h4><strong>Acties</strong></h4>
+						</p>
+						De inschrijving is geannuleerd. Je kan hier geen actie meer voor ondernemen.
+					</div>
 				</div>
-			</div>
+				<div th:case="*">
+					<div class="col-sm-12 alert alert-info">
+						<p>
+							<strong>Acties</strong>
+						</p>
+						<br/>
+						<button type="button" id="application-cancel" class="btn btn-danger"><i class="fa fa-3 fa-trash"></i>&nbsp;&nbsp;Annuleer</button>
+					</div>
+				</div>
 		</div>
-
 		<div id="modal" class="modal fade" tabindex="-1" role="dialog">
 		</div>
 
@@ -164,10 +187,10 @@
 				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
 			});
 			$jq( "input[type='text'].q[data-tag='" + tag + "']" ).each( function( index, element ) {
-				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
 			});
 			$jq( "textarea.q[data-tag='" + tag + "']" ).each( function( index, element ) {
-				list.push( new QuestionAndAnswer( element.id, tag, element.value ) );
+				list.push( new QuestionAndAnswer( element.name, tag, element.value ) );
 			});
 			putQList ( id, list, $jq("#q-save-" + tag ),$jq("#q-status-" + tag ), refresh );
 		};
@@ -231,7 +254,7 @@
 
 		$jq(".todo").click( function( event ) {
 
-			$jq("#modal").load( "/application-modals.html?uuid=" + $jq("#the-app").attr("data-attribute-app-uuid") + "&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-uuid"),
+			$jq("#modal").load( "/application-modals.html?uuid=" + $jq("#the-app").attr("data-attribute-app-uuid") + "&q=" + $jq(this).attr("data-attribute-modal") + "&enrollmentUuid=" + $jq(this).attr("data-attribute-enrollment-uuid"),
 					function() {
 
 				$jq("#holiday-save").click( function( event ) {
@@ -239,7 +262,7 @@
 					clearStatus();
 					busyButton( $jq(this) );
 
-					saveHolidays( $jq(this).attr("data-attribute-uuid") );
+					saveHolidays( $jq("#the-app").attr("data-attribute-app-uuid") );
 
 				});
 
@@ -248,16 +271,16 @@
 					clearStatus();
 					busyButton( $jq(this) );
 
-					saveContact( "${application.uuid}" );
+					saveContact( $jq("#the-app").attr("data-attribute-app-uuid") );
 
 				});
 
-				$jq("#q-save-application").click( function( event ) {
+				$jq("#q-save-application-qlist").click( function( event ) {
 
 					clearStatus();
 					busyButton( $jq(this) );
 
-					saveQList( "${application.uuid}", "application" );
+					saveQList( $jq("#the-app").attr("data-attribute-app-uuid"), "application" );
 
 				});
 
@@ -284,7 +307,7 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 
-			saveApplicationStatus( "${application.uuid}" );
+			saveApplicationStatus( $jq("#the-app").attr("data-attribute-app-uuid") );
 
 		});
 
@@ -293,14 +316,13 @@
 			clearStatus();
 			$jq(this).button('Even geduld...');
 
-			cancelApplication( "${application.uuid}" );
+			cancelApplication( $jq("#the-app").attr("data-attribute-app-uuid") );
 
 		});
 
 		$jq(".enrollment-delete").click( function( event ) {
 
-			var uuid
-				= event.currentTarget.attributes["data-attribute-uuid"].value;
+			var uuid= event.currentTarget.attributes["data-attribute-enrollment-uuid"].value;
 
 			$jq(this).button('Even geduld...');
 

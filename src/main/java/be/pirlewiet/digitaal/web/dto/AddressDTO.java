@@ -44,16 +44,18 @@ public class AddressDTO {
 		return city;
 	}
 
-	public void setCity(String city) {
+	public AddressDTO setCity(String city) {
 		this.city = city;
+		return this;
 	}
 	
 	public String getUuid() {
 		return uuid;
 	}
 
-	public void setUuid(String uuid) {
+	public AddressDTO setUuid(String uuid) {
 		this.uuid = uuid;
+		return this;
 	}
 
 	public static AddressDTO from( Address f ) {

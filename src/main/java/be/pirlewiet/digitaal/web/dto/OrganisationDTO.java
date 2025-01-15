@@ -82,11 +82,19 @@ public class OrganisationDTO {
 	public void setInComplete(boolean inComplete) {
 		this.inComplete = inComplete;
 	}
-	
-	public static OrganisationDTO from( Organisation f ) {
+
+	public AddressDTO address() {
+		return address;
+	}
+
+	public OrganisationDTO setAddress(AddressDTO address) {
+		this.address = address;
+		return this;
+	}
+
+	public static OrganisationDTO from(Organisation f ) {
 		
-		OrganisationDTO t
-			= new OrganisationDTO();
+		OrganisationDTO t = new OrganisationDTO();
 		
 		t.setUuid( f.getUuid() );
 		t.setName( f.getName() );
@@ -94,12 +102,14 @@ public class OrganisationDTO {
 		t.setPhone( f.getPhone() );
 		t.setAddressUuid( f.getAddressUuid() );
 		t.setCode( f.getCode() );
-		
+
+		t.setAddress(new AddressDTO().setUuid(f.getAddressUuid()).setCity(f.getCity()));
+
 		return t;
 	}
 
 	public String getCity() {
-		return this.address.getCity();
+		return this.address != null ? this.address.getCity() : "?";
 	}
 	
 	

@@ -43,7 +43,7 @@ public class StartPageController {
 				return "redirect:/profile.html";
 			}
 			else {
-				return "redirect:/organisation.html";
+				return "redirect:/organisation/organisation.html";
 			}
 		}
 		

@@ -35,7 +35,7 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<String> handleRequestException(IllegalArgumentException e, WebRequest webRequest ) {
 		logger.warn("bad request", e);
-		return response( e.getMessage(), HttpStatus.BAD_REQUEST );
+		return new ResponseEntity<>( e.getMessage(), HttpStatus.BAD_REQUEST );
 	}
 
 

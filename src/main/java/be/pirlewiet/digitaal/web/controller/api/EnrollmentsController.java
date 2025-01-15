@@ -69,14 +69,17 @@ public class EnrollmentsController {
 
 		Organisation actor = this.doorMan.guard().whoHasID( pwtid );
 		enrollment.setApplicationUuid( applicationUuid );
-		result = this.enrollmentService.create( enrollment, actor );
+		if (enrollment.getUuid()!=null) {
+			result = this.enrollmentService.update(enrollment,actor);
+		}
+		else {
+			result = this.enrollmentService.create(enrollment, actor);
+		}
 
 		if (Result.Value.OK.equals(result.getValue())) {
-			return "redirect:/application-%s.html".formatted(applicationUuid);
+			return "redirect:/organisation/application-%s.html".formatted(applicationUuid);
 		}
 		return "error";
-
-
 
 	}
 	

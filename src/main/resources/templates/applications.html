@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/fragment-head :: head">>
+<head th:replace="~{fragments/fragment-head :: head}">>
 </head>
 
 <body>
@@ -24,7 +24,7 @@
 
 			<br/>
 
-			<div th:if="${true || ('sven.gladines@gmail.com' == organisation.email) || ('anke.wulteputte@hotmail.com' == organisation.email )}">
+			<div th:if="${true || ('sven.gladines@gmail.com' == organisation.email)}">
 					<form class="form-horizontal">
 
 						<div class="form-group form-group-lg">

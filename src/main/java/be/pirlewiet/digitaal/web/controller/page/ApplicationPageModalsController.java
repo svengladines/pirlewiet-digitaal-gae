@@ -86,12 +86,7 @@ public class ApplicationPageModalsController {
 			});
 			model.addAttribute( "holidaysResult", holidaysResult );
 		}
-		else if ( "contact".equals( q ) ) {
-			
-			Result<PersonDTO> contactResult = this.personService.retrieve( applicationResult.getObject().getContactPersonUuid() );
-			model.addAttribute( "contactResult", contactResult );
-			
-		} else if ( "qlist".equals( q ) ) {
+		else if ( "qlist".equals( q ) ) {
 			
 			Result<List<QuestionAndAnswerDTO>> qnaResult = this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
 			model.addAttribute( "qnaResult", qnaResult );
@@ -117,7 +112,16 @@ public class ApplicationPageModalsController {
 			model.addAttribute( "participantResult", participantResult );
 			
 		}
-		
+		else if ( "applicant".equals( q ) ) {
+
+			Result<PersonDTO> applicantResult = this.personService.retrieve( applicationResult.getObject().getContactPersonUuid() );
+			if(Result.Value.NOK.equals(applicantResult.getValue())){
+				applicantResult.setObject(new PersonDTO());
+			}
+			model.addAttribute( "applicantResult", applicantResult );
+
+		}
+
 		return "application-%s".formatted( q );
 
 	}

@@ -1,19 +1,12 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
-import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
 import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import be.pirlewiet.digitaal.model.CodeRequest;
@@ -23,7 +16,7 @@ import be.pirlewiet.digitaal.web.util.DataGuard;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import org.springframework.stereotype.Component;
 
-import jakarta.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage;
 
 @Component
 public class DoorMan {
@@ -33,19 +26,19 @@ public class DoorMan {
 	
 	protected final OrganisationRepository organisationRepository;
 	protected final DataGuard dataGuard;
-	protected final JavaMailSender javaMailSender;
-	protected final MailMan postBode;
+	protected final MailMan mailMan;
 	protected final CodeMan codeMan;
 	protected final Organisation pDiddy;
+	protected final SpokesPerson spokesPerson;
 
 	@Autowired
-    public DoorMan(OrganisationRepository organisationRepository, DataGuard dataGuard, JavaMailSender javaMailSender, MailMan postBode, CodeMan codeMan, Organisation pDiddy) {
+    public DoorMan(OrganisationRepository organisationRepository, DataGuard dataGuard, MailMan mailMan, CodeMan codeMan, Organisation pDiddy, SpokesPerson spokesPerson) {
         this.organisationRepository = organisationRepository;
         this.dataGuard = dataGuard;
-        this.javaMailSender = javaMailSender;
-        this.postBode = postBode;
+        this.mailMan = mailMan;
         this.codeMan = codeMan;
         this.pDiddy = pDiddy;
+        this.spokesPerson = spokesPerson;
     }
 
     public DoorMan guard() {
@@ -157,15 +150,10 @@ public class DoorMan {
 		codeRequest.setStatus( CodeRequest.Status.OK );
 		
 		if ( sendEmail ) {
-		
-			MimeMessage message
-				= formatCodeRequestMessages( organisatie , email, code );
-			
+			String message = this.spokesPerson.formatCodeRequestMessages(code);
 			if ( message != null ) {
-				
-				postBode.deliver( message );
+				mailMan.deliver( email,"Aanvraag code", message );
 				logger.info( "code request email sent to [{}]", email );
-				
 			}
 			
 		}
@@ -191,59 +179,5 @@ public class DoorMan {
 		return code;
 		
 	}
-	
-	protected MimeMessage formatCodeRequestMessages(Organisation organisatie, String email, String code ) {
-		
-		MimeMessage message
-			= null;
-		/* TODO
-		Configuration cfg 
-			= new Configuration();
-	
-		try {
-			
-			InputStream tis
-				= this.getClass().getResourceAsStream( "/templates/to-organisation/code-request.tmpl" );
-			
-			Template template 
-				= new Template("code", new InputStreamReader( tis ), cfg );
-			
-			Map<String, Object> model = new HashMap<String, Object>();
-					
-			model.put( "organisatie", organisatie );
-			model.put( "code", code.toUpperCase() );
-			
-			StringWriter bodyWriter 
-				= new StringWriter();
-			
-			template.process( model , bodyWriter );
-			
-			bodyWriter.flush();
-				
-			message = this.javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message);
-				
-			helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-			helper.setTo( email );
-			helper.setSubject( "Aanvraag code" );
-				
-			String text
-				= bodyWriter.toString();
-				
-			logger.info( "email text is [{}]", text );
-				
-			helper.setText(text, true);
-				
-		}
-		catch( Exception e ) {
-			logger.warn( "could not write e-mail", e );
-			throw new RuntimeException( e );
-		}
-
-		 */
-		
-		return message;
-    	
-    }
 
 }

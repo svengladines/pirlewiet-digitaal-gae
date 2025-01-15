@@ -84,4 +84,8 @@ function buttons() {
 
 }
 
+var CodeRequest = function ( email ) {
+	this.email = email;
+};
+
 

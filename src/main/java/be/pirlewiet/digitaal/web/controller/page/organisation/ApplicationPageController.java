@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import javax.swing.text.html.Option;
 
 @Controller
-@RequestMapping( {"application-{uuid}.html"} )
+@RequestMapping( {"/organisation/application-{uuid}.html"} )
 public class ApplicationPageController {
 	
 	protected Logger logger = LoggerFactory.getLogger( this.getClass() );
@@ -61,47 +62,39 @@ public class ApplicationPageController {
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public ModelAndView view( @PathVariable String uuid, @CookieValue(required=true, value="pwtid") String pwtid ) {
+	public String view(
+			@PathVariable String uuid, @CookieValue(required=true,
+			value="pwtid") String pwtid,
+			Model model) {
 		
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 		Result<ApplicationDTO> applicationResult = this.applicationService.findOne( uuid, actor );
 		
-		Map<String,Object> model = new HashMap<>();
-		model.put( "applicationResult", applicationResult );
+		model.addAttribute( "applicationResult", applicationResult );
 		if ( Value.OK.equals( applicationResult.getValue() ) ) {
 			ApplicationDTO application = applicationResult.getObject();
-			logger.debug( "application [{}], contact uuid is [{}]", application.getUuid(), application.getContactPersonUuid() );
-			Result<PersonDTO> contactResult = this.personService.retrieve( application.getContactPersonUuid() );
-			logger.info( "application [{}], contact result is [{}]", application.getUuid(), contactResult.getValue() );
-			model.put( "contactResult", contactResult );
+			logger.debug( "application [{}], applicant uuid is [{}]", application.getUuid(), application.getContactPersonUuid() );
+			Result<PersonDTO> applicantResult = this.personService.retrieve( application.getContactPersonUuid() );
+			logger.info( "application [{}], applicant result is [{}]", application.getUuid(), applicantResult.getValue() );
+			model.addAttribute( "applicantResult", applicantResult );
 
 			logger.info( "application [{}], holiday uuids are [{}]", application.getUuid(), application.getHolidayUuids() );
 			
 			Result<List<HolidayDTO>> holidaysResult = this.holidayService.resolve( null , application.getHolidayUuids(), true, false, true, actor);
 			
-			model.put( "holidaysResult", holidaysResult );
+			model.addAttribute( "holidaysResult", holidaysResult );
 			
 			logger.info( "application [{}], holidays result is [{}]", application.getUuid(), holidaysResult.getValue() );
 			
-			Result<List<QuestionAndAnswerDTO>> qnaResult = this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
+			Result<List<Result<EnrollmentDTO>>> enrollmentsResult = this.enrollmentService.query( application.getUuid(), actor );
 			
-			model.put( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( application, qnaResult.getObject() ) );
-			
-			Result<List<Result<EnrollmentDTO>>> enrollmentsResult 
-				= this.enrollmentService.query( application.getUuid(), actor );
-			
-			model.put( "enrollmentsResult", enrollmentsResult );
-			
-			
-		}
-		
-		model.put( "isPirlewiet", PirlewietUtil.isPirlewiet( actor ) );
-		
-		String view
-			= "application";
+			model.addAttribute( "enrollmentsResult", enrollmentsResult );
 
-		return new ModelAndView( view, model );
-		
+			Result<List<QuestionAndAnswerDTO>> qnaResult = this.questionAndAnswerService.findByEntityAndTag( applicationResult.getObject().getUuid(), Tags.TAG_APPLICATION );
+			// verify if all questions have been answeren correctly
+			model.addAttribute( "applicationQuestionListResult", this.applicationService.checkApplicationQuestionList( application, qnaResult.getObject() ) );
+		}
+		return "organisation/application";
 	}
 	
 }

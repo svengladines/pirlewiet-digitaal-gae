@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +37,7 @@ import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.context.Context;
 
 /*
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
@@ -51,6 +51,9 @@ public class ApplicationManager {
 	
 	@Autowired
 	MailMan mailMan;
+
+	@Autowired
+	SpokesPerson spokesPerson;
 	
 	@Autowired
 	HeadQuarters headQuarters;
@@ -129,47 +132,27 @@ public class ApplicationManager {
 	}
 	
 	public List<Application> findByOrganisation( Organisation actor ) {
-		
-		logger.info( "find applications for organisation [{}] and year 2024", actor.getUuid() );
-		List<Application> byOrganisationAndYear
-			= this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), 2024 );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
-		
+		logger.info( "find applications for organisation [{}] and year [{}]", actor.getUuid(), this.currentYear );
+		List<Application> byOrganisationAndYear = this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
 		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
-		
 		return byOrganisationAndYear;
-		
 	}
 	
 	public List<Application> findAll( ) {
-		
-		List<Application> all
-			= this.applicationRepository.findAll();
-	
+		List<Application> all = this.applicationRepository.findAll();
 		return all;
-		
 	}
 	
 	public List<Application> findActiveByYear( ) {
-		
-		List<Application> byYear
-			= this.applicationRepository.findByYear( this.currentYear );//.findByYear(2019);//.findAll();//.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
-		
-		List<Application> filtered
-			= list();
-		
+		List<Application> byYear = this.applicationRepository.findByYear( this.currentYear );
+		List<Application> filtered = list();
 		for ( Application application : byYear ) {
-			
 			if ( ( ! ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) && ( ! ApplicationStatus.Value.CANCELLED.equals( application.getStatus().getValue() ) ) ) {
 				filtered.add( application );
 			}
-		
-			
 		}
-		
 		Collections.sort( filtered, this.mostRecentlySubmitted );
-		
 		return filtered;
-		
 	}
 	
 	public Application findOne( String uuid ) {
@@ -253,8 +236,7 @@ public class ApplicationManager {
 			// for CAVASOL, add question(s) about mobility (family...car)
 			if ( this.holidayManager.hasType( loaded, HolidayType.CavaSol ) ) {
 				logger.info( "CAVASOL; add questions...");
-				QuestionAndAnswer familycar
-					= QuestionSheet.template().getQuestion(QIDs.QID_FAMILY_CAR);
+				QuestionAndAnswer familycar = QuestionSheet.template().getQuestion(QIDs.QID_FAMILY_CAR);
 				familycar.setEntityUuid( application.getUuid() );
 				logger.info( "CAVASOL; add question about family car for application [{}]", application.getUuid() );
 				this.questionAndAnswerManager.create( familycar );
@@ -382,7 +364,7 @@ public class ApplicationManager {
 					
 					this.sendIntakeMessageToOrganisation(application, participants, holidays, contact);
 					// TODO, email to pwt
-					// this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
+					//this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
 					logger.info( "taken in");
 					
 				}
@@ -413,152 +395,19 @@ public class ApplicationManager {
 		return application;
 	}
 	
-	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact ) {
-	    	
-			MimeMessage message
-				= this.formatIntakeMessageOrganisation( application, participants, holidays, contact );
-
-			if ( message != null ) {
-				
-				return mailMan.deliver( message );
-				
-			}
-			
-			return false;
-		
+	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant ) {
+		String message = message = this.spokesPerson.formatIntakeMessageOrganisation( application, participants, holidays, applicant );
+		if ( message != null ) {
+			mailMan.deliver(applicant.getEmail(),"Ontvangstbevestiging", message );
+			logger.info( "Application [{}]; code request email sent to [{}]", application.getUuid(), applicant.getEmail() );
+			return true;
+		}
+		return false;
 	 }
-	 
-	 protected MimeMessage formatIntakeMessageOrganisation( Application application, List<Person> participants, Set<Holiday> holidays, Person recipient ) {
-			
-			MimeMessage message
-				= null;
-			/* TODO
-			Configuration cfg 
-				= new Configuration();
-		
-			try {
-				
-				InputStream tis
-					= this.getClass().getResourceAsStream( "/templates/to-organisation/intake.tmpl" );
-				
-				Template template 
-					= new Template("intake", new InputStreamReader( tis ), cfg );
-				
-				Map<String, Object> model = new HashMap<String, Object>();
-				
-				model.put( "application", application );
-				model.put( "participants", participants );
-				model.put( "holidays", holidays );
-				model.put( "uuid", application.getUuid() );
-				
-				StringWriter bodyWriter 
-					= new StringWriter();
-				
-				template.process( model , bodyWriter );
-				
-				bodyWriter.flush();
-					
-				message = this.mailMan.message();
-				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-			
-				helper.setTo( recipient.getEmail() );
-				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-				helper.setReplyTo( headQuarters.getEmail() );
-				helper.setSubject( "Uw inschrijving bij Pirlewiet werd aangepast" );
-					
-				String text
-					= bodyWriter.toString();
-					
-				logger.info( "email text is [{}]", text );
-					
-				helper.setText(text, true);
-					
-			}
-			catch( Exception e ) {
-				logger.warn( "could not write e-mail", e );
-				throw new RuntimeException( e );
-			}
-			
-			return message;
-	    	
-	    }
 	 
 	 protected boolean sendIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
-	    	
-			MimeMessage message
-				= this.formatIntakeMessagePirlewiet( application, participants, holidays, contact, organisation );
-
-			if ( message != null ) {
-				
-				return mailMan.deliver( message );
-				
-			}
-			
-			return false;
-		
+		// TODO!
+		 return true;
 	 }
-	 
-	 protected MimeMessage formatIntakeMessagePirlewiet( Application application, List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
-			
-			MimeMessage message
-				= null;
-
-			/*
-			Configuration cfg 
-				= new Configuration();
-		
-			try {
-				
-				InputStream tis
-					= this.getClass().getResourceAsStream( "/templates/to-pirlewiet/intake.tmpl" );
-				
-				Template template 
-					= new Template("intake", new InputStreamReader( tis ), cfg );
-				
-				Map<String, Object> model = new HashMap<String, Object>();
-				
-				model.put( "application", application );
-				model.put( "participants", participants );
-				model.put( "holidays", holidays );
-				model.put( "uuid", application.getUuid() );
-				model.put( "organisation", organisation );
-				model.put( "contact", contact );
-				
-				StringWriter bodyWriter 
-					= new StringWriter();
-				
-				template.process( model , bodyWriter );
-				
-				bodyWriter.flush();
-					
-				message = this.mailMan.message();
-				// SGL| GAE does not support multipart_mode_mixed_related (default, when flag true is set)
-				MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, "utf-8");
-			
-				helper.setTo( this.headQuarters.getEmail() );
-				helper.setFrom( PirlewietApplicationConfig.EMAIL_ADDRESS );
-				helper.setReplyTo( headQuarters.getEmail() );
-				helper.setSubject( "Nieuw dossier ingediend" );
-					
-				String text
-					= bodyWriter.toString();
-					
-				logger.info( "email text is [{}]", text );
-					
-				helper.setText(text, true);
-					
-			}
-			catch( Exception e ) {
-				logger.warn( "could not write e-mail", e );
-				throw new RuntimeException( e );
-			}
-
-			*/
-			return message;
-	    	
-	    }
-	
-
 }
  

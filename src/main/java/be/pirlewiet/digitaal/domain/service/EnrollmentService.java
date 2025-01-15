@@ -81,32 +81,24 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	@Transactional(readOnly=true)
 	public Result<List<Result<EnrollmentDTO>>> query( String applicationUuid, Organisation actor ) {
 		
-		Result<List<Result<EnrollmentDTO>> > result
-			= new Result<List<Result<EnrollmentDTO>> >();
+		Result<List<Result<EnrollmentDTO>> > result = new Result<>();
 		
 		Application application = this.applicationManager.findOne( applicationUuid );
 		
-		List<Enrollment> enrollments
-			= this.guard().enrollmentManager.findByApplicationUuid( applicationUuid );
+		List<Enrollment> enrollments = this.guard().enrollmentManager.findByApplicationUuid( applicationUuid );
 		
-		List<Result<EnrollmentDTO>> individualResults
-			= list();
-		
-		boolean allOK 
-			= true;
-		
+		List<Result<EnrollmentDTO>> individualResults = list();
+		boolean allOK = true;
+
 		for ( Enrollment enrollment : enrollments ) {
 			
-			Result<EnrollmentDTO> individualResult
-				= new Result<EnrollmentDTO>();
+			Result<EnrollmentDTO> individualResult = new Result<EnrollmentDTO>();
 			
 			StringBuilder errorCodes = new StringBuilder();
 			
-			List<QuestionAndAnswer> medicals
-				= this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
+			List<QuestionAndAnswer> medicals = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
 			
-			Set<Holiday> holidays
-				= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
+			Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 			
 			// assume all good untill proven otherwise
 			individualResult.setValue( Value.OK );
@@ -138,7 +130,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			if ( Result.Value.NOK.equals( individualResult.getValue() ) ) {
 				allOK = false;
 			}
-			
+
 		}
 		
 		if ( individualResults.isEmpty() ) {
@@ -151,7 +143,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 				result.setValue(Value.OK);
 			}
 			else {
-				result.setValue(Value.NOK);
+				result.setValue(Value.PARTIAL);
 				result.setErrorCode( ErrorCodes.APPLICATION_INVALID_ENROLLMENTS );
 			}
 		}

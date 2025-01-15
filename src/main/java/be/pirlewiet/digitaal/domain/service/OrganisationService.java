@@ -55,12 +55,8 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 	@Override
 	public Result<List<Result<OrganisationDTO>>> query(Organisation actor) {
 		
-		List<Organisation> organisations
-			= this.organisationManager.all();
-		
-		
-		List<OrganisationDTO> dtos
-			= list();
+		List<Organisation> organisations = this.organisationManager.all();
+		List<OrganisationDTO> dtos = list();
 		
 		for ( Organisation organisation : organisations ) {
 			
@@ -75,16 +71,13 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 			
 		}
 		
-		Result<List<Result<OrganisationDTO>>> result
-			= new Result<List<Result<OrganisationDTO>>>();
+		Result<List<Result<OrganisationDTO>>> result = new Result<>();
 		
-		List<Result<OrganisationDTO>> individualResults
-			= list();
+		List<Result<OrganisationDTO>> individualResults = list();
 		
 		for ( OrganisationDTO dto : dtos ) {
 			
-			Result<OrganisationDTO> individualResult
-				= new Result<OrganisationDTO>();
+			Result<OrganisationDTO> individualResult = new Result<>();
 			individualResult.setValue( Value.OK );
 			individualResult.setObject( dto );
 			
@@ -101,7 +94,31 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		
 	}
 
+	public Result<List<Result<OrganisationDTO>>> query(Organisation actor, boolean includeAddress) {
 
+		if (!includeAddress) {
+			return this.query(actor);
+		}
+		else {
+			Result<List<Result<OrganisationDTO>>> result = this.query(actor);
+			if (Value.OK.equals(result.getValue())) {
+				result.getObject().stream().forEach(or -> {
+					try {
+						String addressUuid = or.getObject().getAddressUuid();
+						Address a = this.addressManager.findOneByUuid(addressUuid);
+						if (a != null){
+							or.getObject().setAddress(AddressDTO.from(a));
+						}
+					}
+					catch(Exception e) {
+						logger.error("failed to get organisation address", e);
+					}
+
+				});
+			}
+			return result;
+		}
+	}
 
 	@Override
 	////@Transactional(readOnly=false)

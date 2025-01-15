@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.format.datetime.DateFormatter;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
@@ -124,18 +122,11 @@ public class PirlewietApplicationConfig {
 	public static class PeopleConfig {
 
 		@Bean
-		ApplicationManager applicationManager(@Value("${pirlewiet.currentYear}") int currentYear) {
+		ApplicationManager applicationManager(@Value("${pirlewiet.year}") int currentYear) {
 			return new ApplicationManager(currentYear);
 		}
 
 		// can use 'real' javasender, it is stubbed by GAE
-		@Bean
-		public JavaMailSender javaMailSender() {
-			JavaMailSenderImpl sender
-					= new JavaMailSenderImpl();
-			return sender;
-		}
-
 		@Bean
 		public Organisation pDiddy() {
 
@@ -156,7 +147,6 @@ public class PirlewietApplicationConfig {
 			return new ScenarioRunner( );
 		}
 		*/
-
 	}
 
 	@Configuration

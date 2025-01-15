@@ -104,13 +104,11 @@ public class InjectProductionDataScenario extends Scenario {
 			Holiday holiday = this.holidayRepository.findOneByName( name );
 			
 			if ( holiday == null ) {
-				
 				holiday = new Holiday();
-
 				GregorianCalendar start = new GregorianCalendar();
-				start.setTime( Timing.moment( "01/04/2025 08:00" ) );
+				start.setTime( Timing.moment( "07/04/2025 08:00" ) );
 				GregorianCalendar end = new GregorianCalendar();
-				end.setTime( Timing.moment( "06/04/2025 23:00" ) );
+				end.setTime( Timing.moment( "12/04/2025 23:00" ) );
 
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
@@ -120,15 +118,10 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setDeadLine( new Date() );
 				holiday.setUuid( UUID.randomUUID().toString() );				
 				holiday = holidayRepository.saveAndFlush( holiday );
-				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-			
 			}
 			
 		}
-
-		/*
-		
 		{
 			String name = "PaasGEZINS";
 			Holiday holiday
@@ -137,17 +130,11 @@ public class InjectProductionDataScenario extends Scenario {
 			if ( holiday == null ) {
 				
 				holiday = new Holiday();
-		
-				GregorianCalendar start
-					= new GregorianCalendar();
+				GregorianCalendar start = new GregorianCalendar();
+				start.setTime( Timing.moment( "15/04/2025 08:00" ) );
 				
-				start.setTime( Timing.moment( "09/04/2025 08:00" ) );
-				
-				GregorianCalendar end
-					= new GregorianCalendar();
-				
-				end.setTime( Timing.moment( "13/04/2025 23:00" ) );
-				
+				GregorianCalendar end = new GregorianCalendar();
+				end.setTime( Timing.moment( "19/04/2025 23:00" ) );
 				holiday.setName( name );
 
 				holiday.setPeriod( Period.Spring );
@@ -164,26 +151,16 @@ public class InjectProductionDataScenario extends Scenario {
 			
 		}
 		
-		// VOV 1 --- 17/5 - 21/5
 		{
 			String name = "VOV 1";
-			Holiday holiday
-				= this.holidayRepository.findOneByName( name );
+			Holiday holiday = this.holidayRepository.findOneByName( name );
 			
 			if ( holiday == null ) {
-				
 				holiday = new Holiday();
-	
-				GregorianCalendar start
-					= new GregorianCalendar();
-				
-				start.setTime( Timing.moment( "13/05/2025 08:00" ) );
-				
-				GregorianCalendar end
-					= new GregorianCalendar();
-				
-				end.setTime( Timing.moment( "17/05/2025 23:00" ) );
-				
+				GregorianCalendar start = new GregorianCalendar();
+				start.setTime( Timing.moment( "19/05/2025 08:00" ) );
+				GregorianCalendar end = new GregorianCalendar();
+				end.setTime( Timing.moment( "23/05/2025 23:00" ) );
 				holiday.setName( name );
 				holiday.setPeriod( Period.Spring );
 				holiday.setType( HolidayType.Vov );
@@ -192,14 +169,11 @@ public class InjectProductionDataScenario extends Scenario {
 				holiday.setDeadLine( new Date() );
 				holiday.setUuid( UUID.randomUUID().toString() );
 				holiday = holidayRepository.saveAndFlush( holiday );
-				
 				logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
-			
 			}
-			
 		}
 
-		 */
+		 /*
 
 		// Zomer 2025
 				// VOV 2
@@ -378,20 +352,12 @@ public class InjectProductionDataScenario extends Scenario {
 					
 				{
 					String name = "CAVASOL";
-					Holiday holiday
-						= this.holidayRepository.findOneByName( name );
-					
+					Holiday holiday= this.holidayRepository.findOneByName( name );
 					if ( holiday == null ) {
-						
 						holiday = new Holiday();
-				
-						GregorianCalendar start
-							= new GregorianCalendar();
-						
+						GregorianCalendar start= new GregorianCalendar();
 						start.setTime( Timing.moment( "08/07/2025 08:00" ) );
-						
-						GregorianCalendar end
-							= new GregorianCalendar();
+						GregorianCalendar end= new GregorianCalendar();
 						
 						end.setTime( Timing.moment( "12/07/2025 23:00" ) );
 						
@@ -403,11 +369,10 @@ public class InjectProductionDataScenario extends Scenario {
 						holiday.setDeadLine( new Date() );
 						holiday.setUuid( UUID.randomUUID().toString() );
 						holiday = holidayRepository.saveAndFlush( holiday );
-						
 						logger.info( "holiday [{}] created, got uuid [{}]", holiday.getName(), holiday.getUuid() );
 					
 					}
-					
 				}
+		  */
 	}
 }
