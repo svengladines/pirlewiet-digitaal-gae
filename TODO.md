@@ -9,7 +9,10 @@
 
 * lijst met doorverwijzers + code
 * intake email naar Pirlewiet
-* papieren inschrijf-formulier 
+* papieren inschrijf-formulier
+
+### MED
+* [pirlewiet] datum dossier op overichtspagina 
 
 ### LOW
 * https
