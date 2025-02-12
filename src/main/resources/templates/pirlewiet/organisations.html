@@ -26,6 +26,7 @@
                 <th>Naam</th>
                 <th>Gemeente</th>
                 <th>E-mail</th>
+                <th>Code</th>
             </tr>
             </thead>
             <tbody th:with="organisations=${organisationsResult.object}">
@@ -33,6 +34,7 @@
                     <td th:text="${organisationResult.object.name}"></td>
                     <td class="nowrap" th:text="${organisationResult.object.city}"></td>
                     <td class="nowrap" th:text="${organisationResult.object.email}"></td>
+                    <td class="nowrap" th:text="${organisationResult.object.code}"></td>
                 </tr>
             </tbody>
         </table>

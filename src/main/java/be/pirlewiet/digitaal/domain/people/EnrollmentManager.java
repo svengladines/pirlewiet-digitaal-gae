@@ -241,7 +241,7 @@ public class EnrollmentManager {
 	
 	public Enrollment updateStatus( String enrollmentUUid, EnrollmentStatus newStatus, boolean sendUpdate ) {
 
-		logger.info("Enrollment [{}]; update status to [{}]", newStatus.getValue());
+		logger.info("Enrollment [{}]; update status to [{}]", enrollmentUUid, newStatus.getValue());
 		
 		Enrollment toUpdate = this.findOneByUuid( enrollmentUUid );
 		EnrollmentStatus oldStatus = toUpdate.getStatus();
