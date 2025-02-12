@@ -45,6 +45,9 @@ public class EnrollmentManager {
 	
 	@Autowired
 	protected PersonManager personManager;
+
+	@Autowired
+	SpokesPerson spokesPerson;
 	
 	@Autowired
 	MailMan mailMan;
@@ -63,11 +66,8 @@ public class EnrollmentManager {
 	
 	public List<Enrollment> findByApplicationUuid( String applicationUuid ) {
 		
-		List<Enrollment> enrollments
-			= this.enrollmentRepository.findByApplicationUuid( applicationUuid );
-		
+		List<Enrollment> enrollments = this.enrollmentRepository.findByApplicationUuid( applicationUuid );
 		// TODO, sort ...
-		
 		return enrollments;
 		
 	}
@@ -88,8 +88,7 @@ public class EnrollmentManager {
 		
 		toCreate.setUuid( UUID.randomUUID().toString() );
 		
-		Enrollment created
-			= this.enrollmentRepository.saveAndFlush( toCreate );
+		Enrollment created = this.enrollmentRepository.saveAndFlush( toCreate );
 		
 		List<QuestionAndAnswer> participant
 			= QuestionSheet.template().getQuestions( ).get( Tags.TAG_PARTICIPANT );
@@ -100,11 +99,8 @@ public class EnrollmentManager {
 			this.questionAndAnswerManager.create( qna );
 		}
 		
-		Application application
-			= this.applicationRepository.findByUuid(created.getApplicationUuid());
-		
-		Set<Holiday> holidays
-			= this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
+		Application application = this.applicationRepository.findByUuid(created.getApplicationUuid());
+		Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 		
 		// for VOV, add questions about partner (2018)
 		if ( this.holidayManager.hasType( holidays, HolidayType.Vov ) ) {
@@ -145,10 +141,7 @@ public class EnrollmentManager {
 		if ( update.getStatus() != null ) {
 			toUpdate.setStatus( update.getStatus() );
 		}
-		
-		Enrollment updated
-			= this.enrollmentRepository.saveAndFlush( toUpdate );
-		
+		Enrollment updated = this.enrollmentRepository.saveAndFlush( toUpdate );
 		return updated;
 		
 	}
@@ -247,29 +240,18 @@ public class EnrollmentManager {
 	}
 	
 	public Enrollment updateStatus( String enrollmentUUid, EnrollmentStatus newStatus, boolean sendUpdate ) {
+
+		logger.info("Enrollment [{}]; update status to [{}]", newStatus.getValue());
 		
-		Enrollment toUpdate
-			= this.findOneByUuid( enrollmentUUid );
-		
-		EnrollmentStatus.Value oldStatus
-			= toUpdate.getStatus().getValue();
-		
+		Enrollment toUpdate = this.findOneByUuid( enrollmentUUid );
+		EnrollmentStatus oldStatus = toUpdate.getStatus();
 		toUpdate.setStatus( newStatus );
+		Enrollment updated = this.enrollmentRepository.saveAndFlush( toUpdate );
 		
-		Enrollment updated
-			= this.enrollmentRepository.saveAndFlush( toUpdate );
-		
-		Application application
-			= this.applicationRepository.findByUuid(updated.getApplicationUuid());
-		
-		Person contact
-			= this.personManager.findOneByUuid( application.getContactPersonUuid() );
-		
-		Set<Holiday> holidays
-			= this.holidayManager.holidaysFromUUidString( updated.getHolidayUuid() );
-		
-		Person participant
-			= this.personManager.findOneByUuid( updated.getParticipantUuid() );
+		Application application = this.applicationRepository.findByUuid(updated.getApplicationUuid());
+		Person contact = this.personManager.findOneByUuid( application.getContactPersonUuid() );
+		Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( updated.getHolidayUuid() );
+		Person participant = this.personManager.findOneByUuid( updated.getParticipantUuid() );
 		
 		if ( sendUpdate ) {
 			this.sendStatusUpdateToOrganisation( updated, participant, holidays, oldStatus, contact );
@@ -311,20 +293,15 @@ public class EnrollmentManager {
 		return enrollment;
 	}
 	
-	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person contact ) {
+	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, Set<Holiday> holidays, EnrollmentStatus oldStatus, Person applicant ) {
 
-		/* TODO
-			MimeMessage message
-				= this.formatUpdateMessageToOrganisation( enrollment, participant, holidays, oldStatus, contact );
-
-			if ( message != null ) {
-				
-				return mailMan.deliver( message );
-				
-			}
-		*/
-			return false;
-		
+		String message = this.spokesPerson.formatEnrollmentStatusUpdateMessageOrganisation(enrollment,participant,holidays, oldStatus, applicant);
+		 if ( message != null ) {
+			 mailMan.deliver(applicant.getEmail(),"Uw inschrijving voor %s %s werd aangepast".formatted(participant.getGivenName(), participant.getFamilyName()), message );
+			 logger.info( "Enrollment [{}]; status update email sent to [{}]", enrollment.getUuid(), applicant.getEmail() );
+			 return true;
+		 }
+		 return false;
 	 }
 	 
 	protected String formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {

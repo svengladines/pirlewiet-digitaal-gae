@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.web.dto;
 
+import be.pirlewiet.digitaal.model.OrganisationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,7 +8,7 @@ import be.pirlewiet.digitaal.model.Organisation;
 
 public class OrganisationDTO {
 	
-	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private String uuid;
 	protected String name;
@@ -18,6 +19,7 @@ public class OrganisationDTO {
 	protected boolean inComplete;
 	protected String addressUuid;
 	protected AddressDTO address;
+	protected OrganisationType type;
 	
 	public String getName() {
 		return name;
@@ -92,16 +94,26 @@ public class OrganisationDTO {
 		return this;
 	}
 
-	public static OrganisationDTO from(Organisation f ) {
+	public OrganisationType getType() {
+		return type;
+	}
+
+	public OrganisationDTO setType(OrganisationType type) {
+		this.type = type;
+		return this;
+	}
+
+	public static OrganisationDTO from(Organisation f) {
 		
 		OrganisationDTO t = new OrganisationDTO();
 		
-		t.setUuid( f.getUuid() );
-		t.setName( f.getName() );
-		t.setEmail( f.getEmail() );
-		t.setPhone( f.getPhone() );
-		t.setAddressUuid( f.getAddressUuid() );
-		t.setCode( f.getCode() );
+		t.setUuid(f.getUuid());
+		t.setName(f.getName());
+		t.setEmail(f.getEmail());
+		t.setPhone(f.getPhone());
+		t.setAddressUuid(f.getAddressUuid());
+		t.setCode(f.getCode());
+		t.setType(f.getType());
 
 		t.setAddress(new AddressDTO().setUuid(f.getAddressUuid()).setCity(f.getCity()));
 

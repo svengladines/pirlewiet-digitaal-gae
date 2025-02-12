@@ -106,10 +106,16 @@ var postApplication = function( application,callback ) {
 	
 };
 
-var viewApplication = function( application ) {
+var viewApplicationOrganisation = function( application ) {
 
 	window.location.href = "/organisation/application-" + application.uuid + ".html";
 	
+};
+
+var viewApplicationOrganisation = function( application ) {
+
+	window.location.href = "/referenced/application-" + application.uuid + ".html";
+
 };
 
 var postEnrollment = function ( applicationUuid, enrollment, callback ) {

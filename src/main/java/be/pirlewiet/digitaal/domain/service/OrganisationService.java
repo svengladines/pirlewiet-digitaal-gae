@@ -51,24 +51,29 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		super.guard();
 		return this;
 	}
-	
+
 	@Override
 	public Result<List<Result<OrganisationDTO>>> query(Organisation actor) {
+		return this.query(actor, OrganisationType.NON_PROFIT );
+	}
+	
+	public Result<List<Result<OrganisationDTO>>> query(Organisation actor, OrganisationType organisationType) {
 		
 		List<Organisation> organisations = this.organisationManager.all();
 		List<OrganisationDTO> dtos = list();
 		
 		for ( Organisation organisation : organisations ) {
-			
-			OrganisationDTO dto
-				= OrganisationDTO.from( organisation );
-			
+			if ((organisation.getType() == null) && (!organisationType.equals(OrganisationType.NON_PROFIT))) {
+				continue;
+			}
+			else if (!organisation.getType().equals(organisationType)) {
+				continue;
+			}
+			OrganisationDTO dto = OrganisationDTO.from( organisation );
 			if ( ! PirlewietUtil.isPirlewiet( actor ) ) {
 				this.reducer.reduce( dto );	
 			}
-			
 			dtos.add( dto );
-			
 		}
 		
 		Result<List<Result<OrganisationDTO>>> result = new Result<>();
@@ -76,16 +81,11 @@ public class OrganisationService extends be.pirlewiet.digitaal.domain.service.Se
 		List<Result<OrganisationDTO>> individualResults = list();
 		
 		for ( OrganisationDTO dto : dtos ) {
-			
 			Result<OrganisationDTO> individualResult = new Result<>();
 			individualResult.setValue( Value.OK );
 			individualResult.setObject( dto );
-			
 			individualResults.add( individualResult );
-			
-			
 		}
-		
 		result.setValue( Value.OK );
 		result.setObject( individualResults );
 		

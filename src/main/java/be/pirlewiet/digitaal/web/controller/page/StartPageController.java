@@ -42,7 +42,7 @@ public class StartPageController {
 				return "redirect:/pirlewiet/applications.html";
 			}
 			else if (OrganisationType.INDIVIDUAL.equals(organisation.getType())) {
-				return "redirect:/profile.html";
+				return "redirect:/referenced/profile.html";
 			}
 			else {
 				return "redirect:/organisation/organisation.html";

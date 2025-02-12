@@ -1,15 +1,15 @@
 package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
+import be.occam.utils.spring.web.Result;
+import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.service.OrganisationService;
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.OrganisationType;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
+import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,16 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import be.occam.utils.spring.web.Result;
-import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.service.OrganisationService;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+import java.util.*;
 
 @Controller
-@RequestMapping( {"/pirlewiet/organisations.html"} )
-public class PirlewietOrganisationsPageController {
+@RequestMapping( {"/pirlewiet/tourists.html"} )
+public class PirlewietTouristsPageController {
 	
 	protected Logger logger 
 		= LoggerFactory.getLogger( this.getClass() );
@@ -68,18 +63,12 @@ public class PirlewietOrganisationsPageController {
 			@RequestParam(required=false) String order,
 			@CookieValue(required=true, value="pwtid") String pwtid,
 			Model model) {
-	
-		Organisation actor
-			= this.doorMan.guard().whoHasID(  pwtid  );
-		
-		Result<List<Result<OrganisationDTO>>> organisationsResult
-				= this.organisationService.guard().query( actor );
-		
+
+		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
+		Result<List<Result<OrganisationDTO>>> organisationsResult = this.organisationService.guard().query( actor, OrganisationType.INDIVIDUAL);
 		this.order(organisationsResult.getObject(), order );
-			
-		model.addAttribute( "organisationsResult", organisationsResult );
-		
-		return "pirlewiet/organisations";
+		model.addAttribute("organisationsResult", organisationsResult );
+		return "pirlewiet/tourists";
 	}
 	
 	protected void order( List<Result<OrganisationDTO>> list, String order ) {

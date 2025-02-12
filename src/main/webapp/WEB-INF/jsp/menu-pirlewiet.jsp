@@ -22,7 +22,7 @@
             <li ${param.active eq 'organisations' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/organisations-pirlewiet.html">ORGANISATIES</a>
           	<li ${param.active eq 'enrollments' ? "class='active'" : ""}><a href="${pageContext.servletContext.contextPath}/applications-pirlewiet.html">INSCHRIJVINGEN</a>
             </li>
-            <li><a href="/help.htm">HELP</a></li>
+            <li><a href="/help.html">HELP</a></li>
             <li><a id="logout" title="Uitloggen" href="${pageContext.servletContext.contextPath}/logout.html"><i class="fa fa-sign-out"></i>&nbsp;Uitloggen</a></li>
           </ul>
         </div><!--/.nav-collapse -->

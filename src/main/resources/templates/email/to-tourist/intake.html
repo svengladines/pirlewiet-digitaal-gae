@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<p>
+    Beste <span th:text="${applicant.givenName}"/>
+</p>
+
+<p>
+    Via deze e-mail bevestigen we graag dat we je aanvraag tot inschrijving goed ontvingen en in behandeling hebben genomen.<br/>
+</p>
+
+<p>
+    Wanneer een beslissing is genomen rond deze aanvraag of indien er vragen zijn, word je gecontacteerd.
+</p>
+
+<p>
+<table>
+    <tbody>
+    <tr>
+        <th scope="row">Vakantie(s)</th>
+        <td>
+            <ul>
+                <li th:each="h : ${holidays}" th:text="${h.name}"></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">Deelnemer(s)</th>
+        <td>
+            <ul>
+                <li th:each="p : ${participants}" th:text="${p.givenName} + ' ' + ${p.familyName}"></li>
+            </ul>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</p>
+
+<p>
+    Voor het overzicht van alle inschrijvingen, surf naar <a th:href="@{https://pirlewiet-digitaal.appspot.com/index.html}">Pirlewiet Digitaal</a>
+</p>
+
+<p>
+    Met vriendelijke groet,<br/>
+    Pirlewiet Digitaal.
+</p>
+
+<p>
+    Deze e-mail werd automatisch gegenereerd; je kan hier niet op antwoorden. <br/>
+    Wil je contact opnemen met het secretariaat van Pirlewiet, dan kan dit via <a th:href="@{https://www.pirlewiet.be}">www.pirlewiet.be</a> of via <a th:href="@{mailto:info@pirlewiet.be}">info@pirlewiet.be</a>
+</p>
+</body>
+</html>

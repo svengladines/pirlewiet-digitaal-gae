@@ -2,6 +2,8 @@ package be.pirlewiet.digitaal.web.controller.page.referenced;
 
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
+import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
+import be.pirlewiet.digitaal.domain.exception.NoReferenceException;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.*;
 import be.pirlewiet.digitaal.model.Organisation;
@@ -29,11 +31,20 @@ public class IedereenVerdientVakantiePageController {
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
 	public String view(
-			@RequestParam("ivv-tc") String reference,
+			@RequestParam(value = "ivv-tc", required = false) String reference,
 			Model model) {
 
-		model.addAttribute("reference", reference);
+		Result<String> result = new Result<>();
 
+		if (reference == null) {
+			result.setErrorCode(ErrorCodes.REFERENCED_NO_CODE);
+			result.setValue(Value.NOK);
+		}
+		else {
+			result.setValue(Value.OK);
+			result.setObject(reference);
+		}
+		model.addAttribute("referenceResult", result);
 		return "iedereen-verdient-vakantie";
 
 	}

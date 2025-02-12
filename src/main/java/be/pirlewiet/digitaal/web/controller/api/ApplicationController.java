@@ -68,7 +68,7 @@ public class ApplicationController {
 		
 		logger.debug("application.updateContact");
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
-		Result<ApplicationDTO> x = this.applicationService.guard().updateContact( uuid, contact, actor );
+		Result<ApplicationDTO> x = this.applicationService.guard().updateApplicant( uuid, contact );
 		return new ResponseEntity( x, HttpStatus.OK );
 	}
 	

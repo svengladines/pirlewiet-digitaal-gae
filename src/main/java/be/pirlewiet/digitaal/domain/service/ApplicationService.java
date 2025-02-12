@@ -24,8 +24,6 @@ import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
-import javax.swing.text.html.Option;
-
 @Service
 public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Service<ApplicationDTO,Application> {
 	
@@ -81,7 +79,7 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		application.setReference(dto.getReference());
 		Organisation organisation = this.organisationManager.findOneByUuid(organisationUUid);
 		Application created = this.applicationManager.create(application,organisation);
-
+		this.updateApplicant(created.getUuid(),dto.getApplicant());
 		result.setValue( Value.OK );
 		result.setObject( ApplicationDTO.from( created ) );
 
@@ -108,8 +106,7 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 		
 		List<Application> applications = PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findActiveByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
 		
-		List<Result<ApplicationDTO>> individualResults
-			= list();
+		List<Result<ApplicationDTO>> individualResults = list();
 		
 		for ( Application application : applications ) {
 			Result<ApplicationDTO> individualResult = new Result<ApplicationDTO>();
@@ -176,21 +173,16 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	}
 	
 	@Transactional(readOnly=false)
-	public Result<ApplicationDTO> updateContact ( String uuid, PersonDTO contact, Organisation actor ) {
+	public Result<ApplicationDTO> updateApplicant(String uuid, PersonDTO contact ) {
 		
 		logger.info("application.updateHolidays");
 		
-		Result<ApplicationDTO> result
-			= new Result<ApplicationDTO>();
+		Result<ApplicationDTO> result = new Result<ApplicationDTO>();
 		
-		List<Holiday> holidayz
-			= list();
+		List<Holiday> holidayz = list();
 		
-		Person c
-			= Person.from( contact );
-		
-		Application updated
-			= this.applicationManager.updateContact( uuid, c );
+		Person c = Person.from( contact );
+		Application updated = this.applicationManager.updateApplicant( uuid, c );
 		
 		result.setValue( Value.OK );
 		result.setObject( ApplicationDTO.from( updated ) );

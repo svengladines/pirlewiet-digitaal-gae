@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragment-head :: head}">
+</head>
+<body>
+
+<div th:replace="~{fragments/fragment-menu :: menu-referenced}"></div>
+
+<div class="banner">
+	<div class="container">
+		<div class="row centered">
+			<div class="col-lg-12">
+				<h1>Fout</h1>
+				<p>
+					Er trad een fout op bij de verwerking van uw formulier. Probeer AUB opnieuw. Als het probleem blijft optreden, contacteer dan het secretariaat van Pirlewiet via <a href="mailto:info@pirlewiet.be">info@pirlewiet.be</a>
+				</p>
+			</div>
+		</div><!-- row -->
+	</div><!-- container -->
+</div>
+
+<div class="container">
+
+	<div id="row-error" class="row">
+	</div>
+</div>
+
+<script>
+	var $jq = jQuery.noConflict();
+</script>
+</body>
+</html>

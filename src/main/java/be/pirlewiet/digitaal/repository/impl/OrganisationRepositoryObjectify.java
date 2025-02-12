@@ -1,21 +1,15 @@
 package be.pirlewiet.digitaal.repository.impl;
 
-import static com.googlecode.objectify.ObjectifyService.ofy;
-
-import java.util.List;
-
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repository.OrganisationRepository;
+import com.googlecode.objectify.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.googlecode.objectify.Key;
-import com.googlecode.objectify.ObjectifyFactory;
-import com.googlecode.objectify.ObjectifyService;
+import java.util.List;
 
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Entitty;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repository.OrganisationRepository;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @Repository
 public class OrganisationRepositoryObjectify implements OrganisationRepository {

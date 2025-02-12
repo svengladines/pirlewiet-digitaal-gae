@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Statuswijziging Inschrijving</title>
+</head>
+<body>
+<p>
+    Beste doorverwijzer,
+</p>
+
+<p>
+    Via deze e-mail laten we graag weten dat het secretariaat van Pirlewiet de status wijzigde van de inschrijving van <span th:text="${participant.givenName} + '' + ${participant.familyName}"></span>
+</p>
+
+<p>
+    De status van onderstaande inschrijving werd gewijzigd van <strong th:text="#{enrollment.status.__${oldStatus.value}__}"></strong> naar <strong th:text="#{enrollment.status.__${newStatus.value}__}"></strong>, m.a.w. <span th:text="#{enrollment.status.__${newStatus.value}__.description}"></span>
+</p>
+
+<p>
+    Het secretariaat voegde volgende commentaar toe:
+</p>
+
+<p>
+    <span th:text="${newStatus.comment}"></span>
+</p>
+
+<p>
+<table class="table">
+    <tbody>
+    <tr>
+        <th>Vakantie</th>
+        <td>
+            <span th:text="${holiday}"></span>
+        </td>
+    </tr>
+    <tr>
+        <th>Deelnemer</th>
+        <td>
+            <span th:text="${participant.givenName} + '&nbsp;' + ${participant.familyName}"></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</p>
+
+<p>
+    Voor het overzicht van al de inschrijvingen van jouw organisatie surf naar <a href="https://pirlewiet-digitaal.appspot.com/index.html">Pirlewiet Digitaal</a>
+</p>
+
+<p>
+    Met vriendelijke groet,<br/>
+    Pirlewiet Digitaal.
+</p>
+
+<p>
+    Deze e-mail werd automatisch gegenereerd; je kan hier niet op antwoorden. <br/>
+    Wil je contact opnemen met het secretariaat van Pirlewiet, dan kan dit via <a href="@{http://www.pirlewiet.be}">www.pirlewiet.be</a> of via <a href="@{mailto:info@pirlewiet.be}">info@pirlewiet.be</a>
+</p>
+</body>
+</html>

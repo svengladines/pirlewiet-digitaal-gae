@@ -1,105 +1,89 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/fragment-head :: head}">
-</head>
+
+<head th:replace="~{fragments/fragment-head :: header}"></head>
+
 <body>
 
-<div th:replace="~{fragments/fragment-menu :: menu}"></div>
+<div th:replace="~{fragments/fragment-menu :: menu-pirlewiet(active='enrollments')}"></div>
 
 <div class="banner">
 	<div class="container">
 		<div class="row centered">
 			<div class="col-lg-12">
 				<h1>Inschrijvingen</h1>
-				<p>
-					Beheer hier de inschrijvingen.
-				</p>
+				<p>Beheer hier de inschrijvingen.</p>
 			</div>
 		</div><!-- row -->
 	</div><!-- container -->
 </div>
 
-<div class="container">
+<div class="container content">
+	<div class="row">
+		<div class="col-xs-12">
+			<br/>
+			<button type="button" id="download" class="btn btn-primary btn"><i class="fa fa-download"></i>&nbsp;&nbsp;Download inschrijvingen</button>
+			<br/>
+			<br/>
+		</div>
+	</div>
 
-	<div id="row-current" class="row">
-
-		<br/>
-
-			<div class="col-sm-12" th:if="${applicationsResult.value == T(be.occam.utils.spring.web.Result.Value).OK}" th:with="applications=${applicationsResult.object}">
-
-					<div th:each="applicationResult : ${applications}">
-
-						<div th:with="app=${applicationResult.object}">
-
-							<table class="table table-bordered">
-
-								<thead>
-								<tr class="bg-success">
-									<th scope="row" class="th-row">Dossier</th>
-									<td colspan="2">
-										<a th:title="${app.uuid}" th:attr="href=@{/organisation/application-{uuid}.html(uuid=${app.uuid})}" class="btn btn-primary pull-right">Wijzig</a>
-									</td>
-								</tr>
-								</thead>
-
-								<tbody>
-
-								<tr>
-									<th scope="row" class="bg-info">Status</th>
-									<td colspan="2" class="bg-info" th:text="#{application.status.__${app.status.value}__}">
-									</td>
-								</tr>
-
-								<tr>
-									<th scope="row" class="th-row">Vakantie(s)</th>
-									<td colspan="2" th:text="${app.holidayNames}"/>
-								</tr>
-
-								<tr>
-									<th scope="row" class="th-row">Aanvrager</th>
-									<td colspan="2" th:text="${app.contactPersonName}"/>
-								</tr>
-
-								<tr th:each="enrollment:${app.enrollments}">
-									<th scope="row" class="th-row">Deelnemer</th>
-									<td colspan="2">
-										<span th:text="${enrollment.participantName}"/>
-										<span th:if="${app.status.value != T(be.pirlewiet.digitaal.model.ApplicationStatus.Value).DRAFT}" class="pull-right text-success">
-											<strong th:text="#{enrollment.status.__${enrollment.status.value}__}"></strong>
-										</span>
-									</td>
-								</tr>
-
-								</tbody>
-							</table>
-
-						</div>
-
-					</div>
-
-
-				<div th:unless="${applicationsResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
-
-					<span>${applications.result.errorCode}</span>
-
+	<div class="row">
+		<div class="col-xs-12">
+			<div th:if="${applicationsResult.value == T(be.occam.utils.spring.web.Result.Value).OK}">
+				<div th:if="${#lists.isEmpty(applicationsResult.object)}">
+					Er zijn nog geen dossiers ingediend.
 				</div>
+				<div th:each="applicationResult : ${applicationsResult.object}">
+					<div th:with="app=${applicationResult.object}">
+						<table class="table table-bordered">
+							<thead>
+							<tr>
+								<th scope="row" class="th-row">Dossier</th>
+								<th colspan="2">
+									<span><!--<strong th:text="${#dates.format(app.submitted, 'dd/MM/yyyy')}"></strong>--></span>
+									<a th:title="${app.uuid}" th:attr="href=@{/organisation/application-{uuid}.html(uuid=${app.uuid})}" class="btn btn-primary pull-right">Wijzig</a>
+								</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<th scope="row" class="th-row">Vakantie(s)</th>
+								<td colspan="2" th:text="${app.holidayNames}"></td>
+							</tr>
+							<tr>
+								<th scope="row" class="th-row">Contactpersoon</th>
+								<td colspan="2" th:text="${app.contactPersonName}"></td>
+							</tr>
+							<tr th:each="enrollment : ${app.enrollments}">
+								<th scope="row" class="th-row">Vakantieganger</th>
+								<td colspan="2">
+									<span th:text="${enrollment.participantName}"></span>
+									<div class="pull-right">
+										<span class="text-info"><strong th:text="#{enrollment.status.__${enrollment.status.value}__}"></strong></span>&nbsp;&nbsp;
+										<a th:href="@{/pirlewiet/enrollment-{uuid}.html(uuid=${enrollment.uuid})}" class="btn btn-default">Beheer</a>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div th:if="${applicationsResult.value == T(be.occam.utils.spring.web.Result.Value).NOK}">
+				<span th:text="${applicationsResult.errorCode}"></span>
+			</div>
 		</div>
 	</div>
 </div>
 
-<script>
+<script th:inline="javascript">
 	var $jq = jQuery.noConflict();
-
-    $jq("#create").click( function( event ) {
-
+    $jq("#download").click(function(event) {
         event.preventDefault();
-
-        busyButton( $jq("#create") );
-
-        postApplication( new Application(), viewApplication );
-
+        busyButton($jq(this));
+        window.location.href = "/api/applications/pirlewiet/enrollments/download";
     });
-
 </script>
 </body>
 </html>

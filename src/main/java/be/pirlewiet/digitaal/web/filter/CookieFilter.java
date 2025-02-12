@@ -35,8 +35,12 @@ public class CookieFilter implements Filter {
 					|| ( httpRequest.getRequestURI().equals( "/api/ping" ) )
 					|| ( httpRequest.getRequestURI().equals( "/api/coderequests" ) ) 
 					|| ( httpRequest.getRequestURI().equals( "/organisation/registration.html" ) )
-					|| ( httpRequest.getRequestURI().equals( "/index.htm" ) )
-					|| ( httpRequest.getRequestURI().equals( "/api/organisations" ) ) ) {
+					|| ( httpRequest.getRequestURI().equals( "/index.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/anonymous/organisations.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/anonymous/registration.html" ) )
+					|| ( httpRequest.getRequestURI().equals( "/api/organisations" ) )
+					// TODO: for ivv, but not good securitywise... DoD...
+					|| ( httpRequest.getRequestURI().equals( "/api/applications" ))) {
 				chain.doFilter( httpRequest, httpResponse );
 				return;
 			}

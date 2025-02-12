@@ -2,6 +2,7 @@ package be.pirlewiet.digitaal.web.controller.api;
 
 import static be.occam.utils.spring.web.Controller.response;
 
+import be.pirlewiet.digitaal.domain.scenario.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
@@ -15,11 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
-import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
-import be.pirlewiet.digitaal.domain.scenario.ObjectifyScenario;
-import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
-import be.pirlewiet.digitaal.domain.scenario.UnifyEnrollmentHolidaysScenario;
 import be.pirlewiet.digitaal.web.util.ExcelImporter;
 
 @Controller
@@ -48,6 +44,9 @@ public class ScenarioController {
 	
 	@Autowired
 	UnifyEnrollmentHolidaysScenario unifyEnrollmentHolidaysScenario;
+
+	@Autowired
+	SetMissingApplicantsToReferencedScenario setMissingApplicantsToReferencedScenario;
 	
 	@Autowired
 	ObjectifyScenario objectifyScenario;
@@ -63,48 +62,52 @@ public class ScenarioController {
 			
 			if ( "injectProductionDataScenario".equals( id ) ) {
 				this.injectProductionDataScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "deleteOldEntitiesScenario".equals( id ) ) {
 				this.deleteOldEntitiesScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "setEnrollmentHolidayNamesScenario".equals( id ) ) {
 				this.setEnrollmentHolidayNamesScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "unifyEnrollmentHolidaysScenario".equals( id ) ) {
 				this.unifyEnrollmentHolidaysScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "objectifyScenario".equals( id ) ) {
 				this.objectifyScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
+			}
+			else if ( "setMissingApplicantsToReferencedScenario".equals( id ) ) {
+				this.setMissingApplicantsToReferencedScenario.guard().execute();
+				new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 		
 			/*
 			if ( "uuid".equals( id ) ) {
 				this.setOrganisationsUuidScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "ready".equals( id ) ) {
 				// this.readyToRockScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "rockme".equals( id ) ) {
 				this.readyToRockOneScenario.guard().execute( q );
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else if ( "".equals( id ) ) {
 				this.readyToRockOneScenario.guard().execute( q );
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			else {
-				return response( Boolean.FALSE, HttpStatus.NOT_FOUND );
+				return new ResponseEntity<>( Boolean.FALSE, HttpStatus.NOT_FOUND );
 			}
 			if ( "qid".equals( id ) ) {
 				this.setQuestionsQIDScenario.guard().execute();
-				return response( Boolean.TRUE, HttpStatus.OK );
+				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
 			*/
 			

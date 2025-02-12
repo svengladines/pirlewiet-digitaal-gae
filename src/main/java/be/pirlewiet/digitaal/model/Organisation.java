@@ -36,6 +36,7 @@ public class Organisation {
 	
 	protected Date updated;
 
+	@Index
 	protected OrganisationType type = OrganisationType.NON_PROFIT;
 
 	public String getName() {

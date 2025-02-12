@@ -77,187 +77,115 @@ public class Mapper {
 			}
 			
 			
-			/*
-			Map<String,QuestionAndAnswer> questionMap
-				= Utils.map();
-			*/
+			Map<String,List<QuestionAndAnswer>> applicationQuestionsMap = qnaMap.get( application.getUuid() );
 			
-			Map<String,List<QuestionAndAnswer>> applicationQuestionsMap
-				= qnaMap.get( application.getUuid() );
-			
-			List<QuestionAndAnswer> applicationQuestions
-				= applicationQuestionsMap.get( Tags.TAG_APPLICATION );
+			List<QuestionAndAnswer> applicationQuestions = applicationQuestionsMap.get( Tags.TAG_APPLICATION );
 				
-				
-			//= this.questionAndAnswerManager.findByEntityAndTag( , Tags.TAG_APPLICATION );
-		
-			// List<QuestionAndAnswer> enrollmentQuestions
-			//	= this.questionAndAnswerManager.findByEntityAndTag( application.getUuid(), Tags.TAG_VARIOUS );
+			Organisation organisation = organisationMap.get( application.getOrganisationUuid() );
 			
-			//Organisation organisation
-				// = this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
-			Organisation organisation
-				= organisationMap.get( application.getOrganisationUuid() );
+			Person applicant = personMap.get( application.getContactPersonUuid() );
 			
-			Person contact
-				// = this.personManager.findOneByUuid( application.getContactPersonUuid() );
-				= personMap.get( application.getContactPersonUuid() );
-			
-			Organisation pirlewiet
-				= this.doorMan.whoHasCode( "dig151" );
+			Organisation pirlewiet = this.doorMan.whoHasCode( "dig151" );
 			
 			for ( Enrollment enrollment : all ) {
 				
 				try {
 					
-					/*
-					 * Cfr mail secretariaat 18/01/2017
-					 * DATUM ÌNSCHRIJVING - VOORNAAM - NAAM - M/V - GEBOORTEDATUM - ADRES - POSTCODE - GEMEENTE - TEL/GSM - E-MAIL- NAAM DIENST - CONTACTPERSOON DIENST - ADRES DIENST - TEL/GSM DIENST - E-MAIL DIENST - CONTACT VIA DOORVERWIJZER? - FACTUUR - HUISARTS - TEL HUISARTS - SPORT - SPEL - WANDELEN - FIETSEN - ZWEMMEN - ROKEN - AANDACHTSPUNTEN - GENEESMIDDELEN - FOTO'S	- OPMERKINGEN
-					 */
+					List<String> columns = new ArrayList<String>( 30 );
 
-					List<String> columns
-						= new ArrayList<String>( 21 );
-					
-					/**
-					 *  Really bad!!!! TODO, fix this, but it's urgent!
-					 */
-					
-					if ( isEmpty( enrollment.getHolidayName() ) ) {
-						
-						logger.warn( "enrollment [{}] does not have a holiday name", enrollment.getUuid() );
-						/*
-						Result<List<HolidayDTO>> holidaysResult
-							= this.holidayService.resolve( enrollment.getHolidayUuid(), application.getHolidayUuids(), false, false, false, pirlewiet );
-						
-						List<HolidayDTO> holidays
-							= holidaysResult.getObject();
-						
-						Result<EnrollmentDTO> updatedEnrollment 
-							= this.enrollmentService.updateHolidays( enrollment.getUuid(), holidays, pirlewiet );
-						
-						enrollment.setHolidayName( updatedEnrollment.getObject().getHolidayName() );
-						*/
-					}
-					
-					columns.add( enrollment.getHolidayName() );
-					
-					Person participant
-						= personMap.get( enrollment.getParticipantUuid() );
-					
-					if ( application.getSubmitted() != null ) {
-						//  DATUM ÌNSCHRIJVING 
-						columns.add( Timing.date( application.getSubmitted(), Timing.dateFormat ) );
-					}
-					else {
-						columns.add( "?" );
-					}
-					
+					Person participant = personMap.get( enrollment.getParticipantUuid() );
+
+					// A|
+					columns.add(isEmpty(enrollment.getHolidayName()) ? "?" : enrollment.getHolidayName());
+					// B|
+					columns.add( ( application.getSubmitted() != null ) ? Timing.date( application.getSubmitted(), Timing.dateFormat ) : "?" );
+
 					if ( participant != null ) {
-						// VOORNAAM
+						// C|
 						columns.add( participant.getGivenName() );
-						// NAAM
+						// D|
 						columns.add( participant.getFamilyName() );
-						// M/V
+						// E|
 						columns.add( participant.getGender() != null ? map( participant.getGender() ) : "?" );
-						// GEBOORTEDATUM
+						// F|
 						columns.add( participant.getBirthDay()!= null ? Timing.date( participant.getBirthDay(), Timing.dateFormat ) : "?" );
 					}
 					
-					Address address
-						= addressMap.get( enrollment.getAddressUuid() );
+					Address participantAddress = addressMap.get( enrollment.getAddressUuid() );
 					
-					if ( address != null ) {
-						
-						// ADRES
-						columns.add( new StringBuilder().append( address.getStreet() ).append( " " ).append( address.getNumber() ).toString() );
-						// POSTCODE
-						columns.add( address.getZipCode() );
-						// GEMEENTE
-						columns.add( address.getCity() );
+					if ( participantAddress != null ) {
+						// G| participant street
+						columns.add( new StringBuilder().append( participantAddress.getStreet() ).append( " " ).append( participantAddress.getNumber() ).toString() );
+						// H| participant zip
+						columns.add( participantAddress.getZipCode() );
+						// I| participant city
+						columns.add( participantAddress.getCity() );
 					}
 					
-					// doorverwijzer/contactpersooon
-					
-					// NAAM DIENST - CONTACTPERSOON DIENST - ADRES DIENST - TEL/GSM DIENST - E-MAIL DIENST 
-					
-					if ( participant != null ) {
-						// TEL/GSM
-						columns.add( isEmpty( participant.getPhone() ) ? "?"  : participant.getPhone() );
-						// E-MAIL
-						columns.add( participant.getEmail());
-						//columns.add( isEmpty( participant.getStateNumber() ) ? "?"  : participant.getStateNumber() );
-					}
-					
-					// NAAM DIENST
-					columns.add( organisation.getName());
-					
-					if ( contact != null ) {
-						// CONTACTPERSOON DIENST
-						columns.add( String.format( "%s %s", contact.getGivenName(), contact.getFamilyName() ) );
-						// ??? columns.add( new StringBuilder().append( organisation.getaddress().getStraat() ).append( " " ).append( organisation.getaddress().getNummer() ).append( ",").append( organisation.getaddress().getZipCode() ).append( " ").append( organisation.getaddress().getGemeente() ).toString());
-					}
-					
-					Address organisationAddress
-						= addressMap.get( organisation.getAddressUuid() );
-				
-					StringBuilder b 
-						= new StringBuilder()
-						.append( organisationAddress.getStreet() )
-						.append( " " ).append( organisationAddress.getNumber() )
-						.append( " " ).append( organisationAddress.getZipCode() )
-						.append( " " ).append( organisationAddress.getCity() );
-					columns.add( b.toString() );
-					
-					columns.add( contact.getPhone() );
-					columns.add( contact.getEmail());
+					// J| participant phone
+					columns.add( isEmpty( participant.getPhone() ) ? "?"  : participant.getPhone() );
+					// K| participant email
+					columns.add( isEmpty( participant.getEmail() ) ? "?"  : participant.getEmail());
 
-					// CONTACT VIA DOORVERWIJZER? - FACTUUR - HUISARTS - TEL HUISARTS - SPORT - SPEL - WANDELEN - FIETSEN - ZWEMMEN - ROKEN - AANDACHTSPUNTEN - GENEESMIDDELEN - FOTO'S	- OPMERKINGEN
-					
-					// CONTACT VIA	FACTUUR	
-					
-					// HUISARTS	TEL HUISARTS
-					
-					// SPORT	SPEL	WANDELEN	FIETSEN	ZWEMMEN	ROKEN	AANDACHTSPUNTEN	GENEESMIDDELEN	FOTO'S	NAAM GEZIN	KEUZE VAKANTIE
-					
-					Map<String,List<QuestionAndAnswer>> enrollmentQuestionsMap
-						= qnaMap.get( enrollment.getUuid() );
-					
+					// L| organisation name
+					columns.add( organisation.getName());
+					Address organisationAddress = addressMap.get( organisation.getAddressUuid() );
+					StringBuilder b = new StringBuilder()
+							.append( organisationAddress.getStreet() )
+							.append( " " ).append( organisationAddress.getNumber() )
+							.append( " " ).append( organisationAddress.getZipCode() )
+							.append( " " ).append( organisationAddress.getCity() );
+
+					// M| organisation address
+					columns.add( b.toString() );
+
+					if ( applicant != null ) {
+						// N| applicant name
+						columns.add( String.format( "%s %s", applicant.getGivenName(), applicant.getFamilyName() ) );
+					}
+					// O| applicant phone
+					columns.add( applicant.getPhone() );
+					// P| applicant email
+					columns.add( applicant.getEmail());
+
+					Map<String,List<QuestionAndAnswer>> enrollmentQuestionsMap = qnaMap.get( enrollment.getUuid() );
 					if ( enrollmentQuestionsMap == null ) {
 						logger.warn( "no enrollment qna found for enrollment [{}], stopped mapping", enrollment.getUuid() );
 						continue;
 					}
-				
-					List<QuestionAndAnswer> participantQuestions
+
+					List<QuestionAndAnswer> participantQuestions = enrollmentQuestionsMap.get( Tags.TAG_PARTICIPANT );
 					// = this.questionAndAnswerManager.findByEntityAndTag( enrollment.getUuid(), Tags.TAG_MEDIC );
-						= enrollmentQuestionsMap.get( Tags.TAG_PARTICIPANT );
-					
-					QuestionSheet appQList
-						= new QuestionSheet( applicationQuestions );
-					
-					// Q = contact
-					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_CONTACT ) ) );
-					// R = bill
+					QuestionSheet appQList = new QuestionSheet( applicationQuestions );
+					// Q = bill
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_BILL ) ) );
+					// R = bill-detail
+					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_BILL_DETAIL ) ) );
+					// S = contact naam
+					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_CONTACT ) ) );
+					// T = contact telefoon
+					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_CONTACT_PHONE ) ) );
+					// U| photo
 					columns.add( answer( appQList.getQuestion( QIDs.QID_SHARED_PHOTO ) ) );
-					
 					/////// vragenlijst deelnemer
 					QuestionSheet enrQList = new QuestionSheet( participantQuestions );
-					// xx = eerder meegeweest ?
+					// V| = eerder meegeweest ?
 					columns.add( answer( enrQList.getQuestion( QIDs.QID_HISTORY ) ) );
-					// xx = spreekt nederlands
+					// W| = spreekt nederlands
 					columns.add( answer( enrQList.getQuestion( QIDs.QID_MEDIC_DUTCH ) ) );
-					// xx = mobility - family car
+					// X| = mobility - family car
 					columns.add( answer( enrQList.getQuestion( QIDs.QID_FAMILY_CAR ) ) );
-					// xx = aandachtspunten = 10
+					// Y| = aandachtspunten = 10
 					columns.add( answer( enrQList.getQuestion( QIDs.QID_MEDIC_REMARKS ) ) );
 					
-					// AE = VOV Partner
+					// Z = VOV Partner
 					columns.add( answer( enrQList.getQuestion( QIDs.QID_ADULTERY_WITH ) ) );
-					// AF = VOV Partner
+					// AA = VOV Partner
 					columns.add( answer( enrQList.getQuestion( QIDs.QID_ADULTERY_WITH_WHO ) ) );
-					// AH = comment					
+					// AB = VOV zelvoorzienend
+					columns.add( answer( appQList.getQuestion( QIDs.QID_ADULTERY_SELF_RELIANT) ) );
+					// AC = comment
 					columns.add( enrollment.getStatus().getComment() );
-					
 					mapped.add( columns.toArray( new String[] {} ) );
 				}
 				catch( Exception e ) {
@@ -277,98 +205,72 @@ public class Mapper {
 		
 	}
 	
-
-	/*
-	public List<String[]> asStrings( Collection<Organisation> organisations, boolean reduced ) {
-		
-		List<String[]> mapped
-			= new ArrayList<String[]>( organisations.size() );
-			
-		
-		try {
-			
-			for ( Organisation organisation : organisations ) {
-				
-				try {
-					
-					// NAAM DIENST address TEL GSM E-MAIL
-				
-					List<String> columns
-						= new ArrayList<String>( 8 );
-					
-					columns.add( organisation.getName() );
-					
-					Address organisastionAddress
-						= this.adderssManager.findOneByUuid( organisation.getAddressUuid() );
-					
-					if ( address != null ) {
-						
-						columns.add( new StringBuilder().append( address.getStraat() ).append( " " ).append( address.getNummer() ).toString() );
-						columns.add( address.getZipCode() );
-						columns.add( address.getGemeente() );
-					}
-					
-					
-					columns.add( organisation.getTelefoonNummer() );
-					columns.add( organisation.getGsmNummer() );
-					
-					columns.add( organisation.getEmail() );
-					columns.add( organisation.getCode() );	
-						
-					mapped.add( columns.toArray( new String[] {} ) );
-				}
-				catch( Exception e ) {
-					logger.warn( "failed to map organisation", e );
-				}
-				
-			}
-
-		}
-		catch( Exception e ) {
-			
-			logger.warn("Er is een probleem; could not map inschrijving", e );
-			
-		}
-		
-		return mapped;
-		
-	}
-	
-	*/
-	
 	public String[] headers() {
 		
 		List<String> headers = Utils.list();
+		// A
 		headers.add("Vakantie(s)");
+		// B
 		headers.add("Datum inschrijving");
+		// deelnemer
+		// C
 		headers.add("Voornaam");
+		// D
 		headers.add("Naam");
+		// E
 		headers.add("Geslacht");
+		// F
 		headers.add("Geboortedatum");
+		// G
 		headers.add("Straat");
+		// H
 		headers.add("Postcode");
+		// I
 		headers.add("Gemeente");
+		// J
 		headers.add("Telefoon");
+		// K
 		headers.add("E-mail");
-		headers.add("Doorverwijzer");
-		headers.add("Contactpersoon");
-		headers.add("Adres doorverwijzer");
+		// doorverwijzer
+		// L
+		headers.add("Doorverwijzer naam");
+		// M
+		headers.add("Doorverwijzer adres");
+		// N|
+		headers.add("Aanvrager naam");
+		// O|
+		headers.add("Aanvrager telefoon");
+		// P|
+		headers.add("Aanvrager e-mail");
+		//////// vragenlijst dossier
+		// Q|
+		headers.add("Wie factuur?");
+		// R|
+		headers.add("Factuur naam?");
+		// S|
+		headers.add("Contactpersoon naam");
+		// T|
 		headers.add("Contactpersoon telefoon");
-		headers.add("Contactpersoon e-mail");
-		
-		headers.add("Contact via doorverwijzer?");
-		headers.add("Factuur");
+		// U|
 		headers.add("Mogen foto's?");
+		// vragenlijst deelnemer
+		// V|
 		headers.add("Meegeweest ?");
+		// W|
 		headers.add("Nederlands?");
+		// X|
 		headers.add("Vervoer");
+		// Y|
 		headers.add("Aandachtspunten");
+		// Z|
 		headers.add("(Vov) Met vriend(in) ?");
+		// AA|
 		headers.add("(Vov) Naam vriend(in)");
+		// AB|
+		headers.add("(Vov) Zelfvoorzienend?");
+		// AC|
 		headers.add("Commentaar");
-		
 		return headers.toArray( new String[] {} );
-		
 	}
 	
 	public byte[] asBytes(List<String[]> data, String... headers) {

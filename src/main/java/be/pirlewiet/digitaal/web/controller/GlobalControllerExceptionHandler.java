@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,8 +54,7 @@ public class GlobalControllerExceptionHandler {
 		result.setValue( Value.NOK );
 		result.setErrorCode( e.getErrorCode() );
 		
-		String message
-			= e.getMessage();
+		String message = e.getMessage();
 		
 		if ( message == null ) {
 			message = this.messageSource.getMessage( String.format("pwt.error.%s", e.getErrorCode().getCode() ), new Object[] {}, Locale.forLanguageTag("nl-NL") );
@@ -69,21 +69,15 @@ public class GlobalControllerExceptionHandler {
 	
 	@SuppressWarnings("rawtypes")
 	@ExceptionHandler(Exception.class)
-	@ResponseStatus(HttpStatus.OK)
-	public Result handleException(Exception e, WebRequest webRequest, HttpServletResponse httpServletResponse ) {
-		
+	public String handleException(Exception e, Model model ) {
+
 		logger.warn("unexpected error", e);
-		
-		httpServletResponse.setStatus( HttpStatus.OK.value() );
-		
-		Result result
-			= new Result();
-		
+		Result result = new Result();
 		result.setValue( Value.NOK );
 		result.setErrorCode( ErrorCodes.INTERNAL );
 		result.setMessage( "Er trad een fout op. Probeer AUB opnieuw. Indien het probleem aanhoudt, contacteer dan ons secretariaat." );
-		
- 		return result;
+		model.addAttribute("result", result);
+ 		return "error";
 		
 	}
     

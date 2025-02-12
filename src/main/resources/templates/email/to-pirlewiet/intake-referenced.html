@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nieuwe Inschrijving</title>
+</head>
+<body>
+<p>
+    Beste Pirlewieter,
+</p>
+
+<p>
+    Iemand zond een nieuwe inschrijving in via IVV. <br/>
+    Deze inschrijving kreeg automatisch de status 'In behandeling' en de aanvrager kreeg een e-mail ter bevestiging hiervan. <br/>
+</p>
+<p>
+    Details van de inschrijving vind je hieronder<br/>
+</p>
+
+<p>
+<table>
+    <tbody>
+    <tr>
+        <th scope="row">Aanvrager</th>
+        <td>
+            <ul>
+                <li th:text="'Naam:' + ${applicant.givenName} + ' ' +  ${applicant.familyName}"></li>
+                <li th:text="'Telefoon:' + ${applicant.phone}"></li>
+                <li th:text="'Email:' + ${applicant.email}"></li>
+                <li th:text="'Inlogcode:' + ${organisation.code}"></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">Vakantie(s)</th>
+        <td>
+            <ul>
+                <li th:each="h : ${holidays}" th:text="${h.name}"></li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">Deelnemer(s)</th>
+        <td>
+            <ul>
+                <li th:each="p : ${participants}" th:text="${p.givenName} + ' ' + ${p.familyName}"></li>
+            </ul>
+        </td>
+    </tr>
+</table>
+</p>
+
+<p>
+    Met vriendelijke groet,<br/>
+    Pirlewiet-Digitaal.
+</p>
+</body>
+</html>

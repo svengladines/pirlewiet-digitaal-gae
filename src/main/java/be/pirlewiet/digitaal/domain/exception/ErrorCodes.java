@@ -39,6 +39,8 @@ public class ErrorCodes {
 	
 	public static ErrorCode ENROLLMENT_HOLIDAY_NONE = new ErrorCode("ENROLLMENT_HOLIDAY_NONE");
 	public static ErrorCode ENROLLMENT_HOLIDAY_MULTPILE = new ErrorCode("ENROLLMENT_HOLIDAY_MULTPILE");
+
+	public static ErrorCode REFERENCED_NO_CODE = new ErrorCode("REFERENCED_NO_CODE");
 	
 	public static ErrorCode INTERNAL = new ErrorCode("pwtInternal");
 

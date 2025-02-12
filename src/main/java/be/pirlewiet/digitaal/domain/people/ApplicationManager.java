@@ -3,41 +3,24 @@ package be.pirlewiet.digitaal.domain.people;
 import static be.occam.utils.javax.Utils.isEmpty;
 import static be.occam.utils.javax.Utils.list;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import be.pirlewiet.digitaal.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
-import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.ApplicationStatus;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Holiday;
-import be.pirlewiet.digitaal.model.HolidayType;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.context.Context;
 
 /*
  * Receives applications, checks them and passes them on to the secretaries, notifying them and the applicant via e-mail.
@@ -171,9 +154,9 @@ public class ApplicationManager {
 	    	application.setHolidayNames( "" );
 	    	application.setOrganisationUuid( actor.getUuid() );
 	    	application.setUuid( UUID.randomUUID().toString() );
+			application.setCreated(new Date());
 	    	
-	    	Application created 
-	    		= this.applicationRepository.saveAndFlush( application );
+	    	Application created = this.applicationRepository.saveAndFlush( application );
 	    	
 	    	logger.info( "created application with uuid [{}]", new Object[] { created.getUuid() } );
 	    	
@@ -271,7 +254,7 @@ public class ApplicationManager {
 		return application;
 	}
 	
-	public Application updateContact( String uuid, Person contactPerson ) {
+	public Application updateApplicant(String uuid, Person contactPerson ) {
 		
 		logger.info("application.updateContact");
 		
@@ -319,10 +302,7 @@ public class ApplicationManager {
 			= this.findOne( uuid );
 		
 		if ( application != null ) {
-			
-			boolean save
-				= false;
-			
+			boolean save = false;
 			if ( ApplicationStatus.Value.AUTO.equals( applicationStatus.getValue() ) ) {
 				
 				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
@@ -340,21 +320,26 @@ public class ApplicationManager {
 					save = true;
 					
 					Organisation organisation = this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
-					Person contact = this.personManager.findOneByUuid( application.getContactPersonUuid() );
+					Person applicant = this.personManager.findOneByUuid( application.getContactPersonUuid() );
 					Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
 					
 					List<Person> participants = list();
 					
 					for ( Enrollment enrollment : enrollments ) {
-						Person participant
-							= this.personManager.findOneByUuid( enrollment.getParticipantUuid() );
+						Person participant = this.personManager.findOneByUuid( enrollment.getParticipantUuid() );
 						participants.add( participant );
 						
 					}
-					
-					this.sendIntakeMessageToOrganisation(application, participants, holidays, contact);
-					// TODO, email to pwt
-					//this.sendIntakeMessageToPirlewiet(application, participants, holidays, contact, organisation);
+
+					if (OrganisationType.INDIVIDUAL.equals(organisation.getType())) {
+						this.sendIntakeMessageToTourist(application, participants, holidays, applicant);
+						this.sendTouristIntakeMessageToPirlewiet(application, participants, holidays, applicant, organisation);
+					}
+					else {
+						this.sendIntakeMessageToOrganisation(application, participants, holidays, applicant);
+						this.sendOrganisationIntakeMessageToPirlewiet(application, participants, holidays, applicant, organisation);
+					}
+
 					logger.info( "taken in");
 					
 				}
@@ -394,10 +379,35 @@ public class ApplicationManager {
 		}
 		return false;
 	 }
+
+	protected boolean sendIntakeMessageToTourist( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant ) {
+		String message = message = this.spokesPerson.formatIntakeMessageTourist( application, participants, holidays, applicant );
+		if ( message != null ) {
+			mailMan.deliver(applicant.getEmail(),"Ontvangstbevestiging", message );
+			logger.info( "Referenced application [{}]; receipt email sent to [{}]", application.getUuid(), applicant.getEmail() );
+			return true;
+		}
+		return false;
+	}
 	 
-	 protected boolean sendIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person contact, Organisation organisation ) {
-		// TODO!
-		 return true;
+	 protected boolean sendOrganisationIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant, Organisation organisation ) {
+		 String message = message = this.spokesPerson.formatOrganisationIntakeMessagePirlewiet( application, participants, holidays, applicant, organisation );
+		 if ( message != null ) {
+			 mailMan.deliver(headQuarters.getEmail(),"Nieuwe inschrijving door % %s".formatted(applicant.getGivenName(), applicant.getFamilyName()), message);
+			 logger.info( "Application [{}]; receipt email sent to [{}]", application.getUuid(), applicant.getEmail() );
+			 return true;
+		 }
+		 return false;
 	 }
+
+	protected boolean sendTouristIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant, Organisation organisation ) {
+		String message = message = this.spokesPerson.formatReferencedIntakeMessagePirlewiet( application, participants, holidays, applicant, organisation );
+		if ( message != null ) {
+			mailMan.deliver(headQuarters.getEmail(),"Nieuwe inschrijving via IVV door %s %s".formatted(applicant.getGivenName(), applicant.getFamilyName()), message);
+			logger.info( "Application [{}]; receipt email sent to [{}]", application.getUuid(), applicant.getEmail() );
+			return true;
+		}
+		return false;
+	}
 }
  

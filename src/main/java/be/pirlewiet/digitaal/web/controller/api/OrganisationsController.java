@@ -65,8 +65,7 @@ public class OrganisationsController {
 	@ResponseBody
 	public ResponseEntity<Result<OrganisationDTO>> post( @RequestBody OrganisationDTO organisation, HttpServletResponse response ) {
 		
-		Result<OrganisationDTO> createdResult
-			= this.organisationService.guard().create( organisation, null );
+		Result<OrganisationDTO> createdResult = this.organisationService.guard().create( organisation, null );
 		
 		if ( Value.OK.equals( createdResult.getValue() ) ) {
 		

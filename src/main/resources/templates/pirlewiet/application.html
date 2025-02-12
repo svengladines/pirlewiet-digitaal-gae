@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/fragment-head :: head"></head>
+
+<body>
+<div th:replace="fragments/fragment-menu :: menu-pirlewiet(active='enrollments')"></div>
+
+<div class="banner">
+    <div class="container">
+        <div class="row centered">
+            <div class="col-lg-12">
+                <h1>Dossier</h1>
+                <p>Beslis over de inschrijving van de deelnemer(s).</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div th:if="${applicationResult != null}">
+        <div th:with="application=${applicationResult.object}">
+            <br/>
+            <div class="row">
+                <div class="col-sm-2 col-sm-offset-10 right-wing">
+                    <a th:href="@{/application-{enrollment.applicationUuid}(enrollment.applicationUuid=${enrollment.applicationUuid})}">Naar het dossier</a>
+                </div>
+                <br/>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 alert alert-info">
+                    <h4><strong>Status</strong><br/></h4>
+                    <p>
+                        <i th:text="#{application.status.${application.status.value}}"></i><br/>
+                        <span th:text="#{application.status.${application.status.value}.description}"></span><br/>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 alert" th:class="${'OK' == holidaysResult.value ? 'alert-success' : 'alert-warning'}">
+                    <div th:with="holidays=${holidaysResult.object}">
+                        <i class="fa fa-2x fa-calendar pull-right"></i>
+                        <h4><strong>Vakantie</strong><br/></h4>
+                        <p>Selecteer de vakantie</p>
+                        <div th:each="holiday : ${holidays}">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" class="holiday" th:value="${holiday.uuid}" th:checked="${holiday.isApplicationHoliday}">
+                                    <span th:text="${holiday.name}"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 alert alert-success">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <i class="fa fa-2x fa-user pull-right"></i>
+                            <h4><strong>Deelnemer(s)</strong><br/></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <br/>
+                        <table class="table table-bordered">
+                            <tr th:each="enrollment : ${application.enrollments}">
+                                <td th:text="${enrollment.participantName}"></td>
+                                <td colspan="2">
+                                    <div class="pull-right">
+                                        <select th:id="${enrollment.uuid}-status" class="form-control status-select" th:data-application-uuid="${application.uuid}" th:data-enrollment-uuid="${enrollment.uuid}">
+                                            <option th:each="statusValue : ${T(be.pirlewiet.digitaal.model.EnrollmentStatus.Value).values()}" th:value="${statusValue}" th:selected="${statusValue == enrollment.status.value}" th:text="#{enrollment.status.${statusValue}}"></option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="comment" class="row hidden">
+                <div class="col-sm-12 alert alert-info">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4><strong>Uitleg bij beslissing</strong></h4>
+                            <p>Voorzie eventueel enige uitleg bij de beslissing.<br/>
+                                <strong>Opgelet:</strong> De doorverwijzer krijgt een e-mail met deze uitleg.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="radio col-sm-12">
+                            <textarea id="decision-comment-text" class="form-control" rows="8" cols="64"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 alert alert-info">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h4><strong>Versturen</strong><br/></h4>
+                        </div>
+                    </div>
+                    <div id="enrollment-status" class="col-sm-12 alert alert-warning hidden"></div>
+                    <div class="row">
+                        <div class="radio col-sm-12">
+                            <button type="button" id="enrollment-submit" class="btn btn-primary"><i class="fa fa-3 fa-save"></i>&nbsp;&nbsp;Verstuur</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+
+<script th:inline="javascript">
+    var $jq = jQuery.noConflict();
+
+    var show = function(id) {
+        $jq(".panel").removeClass("show").addClass("hidden");
+        $jq("#" + id).removeClass("hidden").addClass("show");
+    };
+
+    var saveHolidays = function(id) {
+        var holidays = [];
+        $jq(".holiday:checked").each(function(index, element) {
+            holidays.push(new Holiday(element.value));
+        });
+        putEnrollmentHolidays("[[${enrollment.applicationUuid}]]", id, holidays, $jq("#enrollment-submit"), $jq("#enrollment-status"), saveStatus);
+    };
+
+    var saveStatus = function(id) {
+        var comment = $jq("#decision-comment-text").val();
+        var decision = $jq("input[name=decision]:checked").val();
+        if (decision != null) {
+            var sx = new Status(decision, comment, true);
+            putEnrollmentStatus("[[${enrollment.applicationUuid}]]", id, sx, $jq("#enrollment-submit"), $jq("#enrollment-status"), refresh);
+        }
+    };
+
+    $jq("#enrollment-submit").click(function(event) {
+        clearStatus();
+        saveHolidays("[[${enrollment.uuid}]]");
+    });
+
+    $jq("input[name='decision']").change(function(event) {});
+
+    $jq(".status-select").change(function() {
+        $jq("#comment").removeClass("hidden").addClass("show");
+        var selectId = $jq(this).attr("id");
+        var applicationUuid = $jq(this).attr("data-application-uuid");
+        var enrollmentUuid = $jq(this).attr("data-enrollment-uuid");
+        $jq("#" + selectId + " option:selected").each(function() {});
+    });
+
+    $jq(document).ready(function() {
+        buttons();
+    });
+</script>
+</body>
+
+</html>

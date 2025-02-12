@@ -7,6 +7,8 @@ import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.web.dto.ReferencedApplicationDTO;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
@@ -68,19 +70,31 @@ public class ApplicationsController {
 	@RequestMapping( method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public String postForm(
 			@ModelAttribute ReferencedApplicationDTO application,
+			HttpServletResponse response,
 			Model model){
 
 		// first create an invididual organisation
 		Result<OrganisationDTO> rCreatedOrganisation = this.organisationService.guard().createFromPerson(application.getApplicant());
 		if (Result.Value.OK.equals(rCreatedOrganisation.getValue())) {
+			Cookie cookie = new Cookie( "pwtid", "" + rCreatedOrganisation.getObject().getUuid());
+			cookie.setMaxAge( 3600 * 24 * 30 * 12 );
+			cookie.setPath( "/" );
+			response.addCookie( cookie );
 			// then create a new application
 			Result<ApplicationDTO> rCreatedApplication = this.applicationService.createReferenced(application,rCreatedOrganisation.getObject().getUuid());
 			if (Result.Value.OK.equals(rCreatedApplication.getValue())) {
-				return "redirect:/organisation/application-%s.html".formatted(rCreatedApplication.getObject().getUuid());
+				return "redirect:/referenced/application-%s.html".formatted(rCreatedApplication.getObject().getUuid());
+			}
+			else {
+				logger.error("failed to create referenced application with reference [{}], e-mail [{}], error code = [{}]", application.getReference(), application.getApplicant().getEmail(), rCreatedApplication.getErrorCode().getCode());
 			}
 		}
+		else {
+			logger.error("failed to create individual organisation with reference [{}] and e-mail [{}], error code- [{}]", application.getReference(), application.getApplicant().getEmail(), rCreatedOrganisation.getErrorCode().getCode());
+		}
+
 		// TODO proper error handling
-		return "error";
+		return "referenced/error";
 
 	}
 	

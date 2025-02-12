@@ -208,33 +208,27 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 	@Transactional(readOnly=true)
 	public byte[] download( Organisation actor ) {
 		
-		byte[] bytes
-			= new byte[] {};
+		byte[] bytes;
 		
-		List<String[]> rows
-			= list();
+		List<String[]> rows = list();
 		
 		if ( PirlewietUtil.isPirlewiet( actor ) ) {
 			
 			logger.info( "start download...");
 			
-			List<Application> applications
-				= this.applicationManager.findActiveByYear();
+			List<Application> applications = this.applicationManager.findActiveByYear();
 			
 			logger.info( "download - applications loaded");
 			
-			List<Enrollment> allEnrollments
-				= this.enrollmentManager.findAll();
+			List<Enrollment> allEnrollments = this.enrollmentManager.findAll();
 			
 			logger.info( "download - enrollments loaded");
 			
-			Map<String, List<Enrollment>> enrollmentMap
-				= map();
+			Map<String, List<Enrollment>> enrollmentMap = map();
 			
 			for ( Enrollment enrollment : allEnrollments ) {
 				
-				List<Enrollment> appedEnrollments
-					= enrollmentMap.get( enrollment.getApplicationUuid() );
+				List<Enrollment> appedEnrollments = enrollmentMap.get( enrollment.getApplicationUuid() );
 				
 				if ( appedEnrollments == null ) {
 					appedEnrollments = list();
@@ -669,26 +663,13 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			Person updateParticipant
 				= Person.from( participant );
 			
-			Person toUpdateParticipant 
-				= this.personManager.findOneByUuid( toUpdate.getParticipantUuid() );
-			
-			Person updatedParticipant
-				= this.personManager.update( toUpdateParticipant, updateParticipant );
-			
-			Address toUpdateAddress
-				= this.addressManager.findOneByUuid( toUpdate.getAddressUuid() );
-			
-			Address updateAddress
-				= Address.from( enrollment.getAddress() );
-			
+			Person toUpdateParticipant = this.personManager.findOneByUuid( toUpdate.getParticipantUuid() );
+			Person updatedParticipant = this.personManager.update( toUpdateParticipant, updateParticipant );
+			Address toUpdateAddress = this.addressManager.findOneByUuid( toUpdate.getAddressUuid() );
+			Address updateAddress = Address.from( enrollment.getAddress() );
 			this.addressManager.update( toUpdateAddress, updateAddress );
-			
-			Enrollment updated
-				= this.enrollmentManager.update( toUpdate, update );
-			
-			EnrollmentDTO dto
-				= EnrollmentDTO.from( updated );
-		
+			Enrollment updated = this.enrollmentManager.update( toUpdate, update );
+			EnrollmentDTO dto = EnrollmentDTO.from( updated );
 			result.setValue( Value.OK);
 			result.setObject( dto );
 		

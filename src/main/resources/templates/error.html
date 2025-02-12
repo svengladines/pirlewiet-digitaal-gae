@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Error</title>
+<html xmlns:th="http://www.thymeleaf.org" lang="nl">
+<head title ="pirlewiet digitaal" th:replace="fragments/fragment-head :: head">>
 </head>
 <body>
+
+<div class="banner">
+    <div class="container">
+        <div class="row centered">
+            <div class="col-lg-12">
+                <h1>Oeps!</h1>
+                <p>Er trad een fout op.</p>
+            </div>
+        </div><!-- row -->
+    </div><!-- container -->
+</div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="alert alert-warning">
+            <br/>
+            <p>
+                <span th:text="${result.message}"/>
+            </p>
+            <p>
+                Foutcode: <strong th:text="${result.errorCode.code}"/>
+            </p>
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>

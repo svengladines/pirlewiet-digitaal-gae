@@ -6,14 +6,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import be.pirlewiet.digitaal.model.OrganisationType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -55,7 +58,7 @@ public class EnrollmentsController {
 		enrollment.setApplicationUuid( applicationUuid );
 		result = this.enrollmentService.create( enrollment, actor );
 		
-		return response( result, HttpStatus.CREATED );
+		return new ResponseEntity( result, HttpStatus.CREATED );
 			
 	}
 
@@ -77,7 +80,7 @@ public class EnrollmentsController {
 		}
 
 		if (Result.Value.OK.equals(result.getValue())) {
-			return "redirect:/organisation/application-%s.html".formatted(applicationUuid);
+			return "redirect:/%s/application-%s.html".formatted(OrganisationType.INDIVIDUAL.equals(actor.getType()) ? "referenced" : "organisation", applicationUuid);
 		}
 		return "error";
 
@@ -87,22 +90,13 @@ public class EnrollmentsController {
 	public ResponseEntity<byte[]> download( @CookieValue(required=true, value="pwtid") String pwtid, @RequestParam(required=false) EnrollmentStatus.Value status ) {
 		
 
-		Organisation actor
-			= this.doorMan.guard().whoHasID( pwtid  );
-		
-
-		byte[] result 
-			= this.enrollmentService.download( actor );
+		Organisation actor = this.doorMan.guard().whoHasID( pwtid  );
+		byte[] result = this.enrollmentService.download( actor );
+		String disp = new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal_" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
+		HttpHeaders headers = new HttpHeaders() {};
+		headers.add( "Content-Disposition", disp.toString() );
 	
-		String disp
-			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal_" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
-	
-		Map<String,String> headers
-			= new HashMap<String,String>();
-		
-		headers.put( "Content-Disposition", disp.toString() );
-	
-		return response( result, HttpStatus.OK, headers );
+		return new ResponseEntity<>( result, headers, HttpStatus.OK );
 		
 	}
 	
@@ -117,15 +111,10 @@ public class EnrollmentsController {
 		byte[] result 
 			= this.enrollmentService.downloadOneHundred( actor );
 	
-		String disp
-			= new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
-	
-		Map<String,String> headers
-			= new HashMap<String,String>();
-		
-		headers.put( "Content-Disposition", disp.toString() );
-	
-		return response( result, HttpStatus.OK, headers );
+		String disp = new StringBuilder("attachment; filename=_").append( "pirlewiet-digitaal" ).append( Timing.date(new Date(), Timing.dateFormat ) ).append( ".xlsx" ).toString();
+		HttpHeaders headers = new HttpHeaders() {};
+		headers.add( "Content-Disposition", disp.toString() );
+		return new ResponseEntity<>(result, headers, HttpStatus.OK);
 		
 	}
 	

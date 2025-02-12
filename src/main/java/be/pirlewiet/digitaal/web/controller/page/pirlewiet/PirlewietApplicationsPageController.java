@@ -53,19 +53,15 @@ public class PirlewietApplicationsPageController {
 
 		model.addAttribute( "organisation", actor );
 	
-		Result<List<Result<ApplicationDTO>>> applicationsResult 
-				= this.applicationService.guard().query( actor );
+		Result<List<Result<ApplicationDTO>>> applicationsResult = this.applicationService.guard().query( actor );
 		
-		Result<Map<String, List<Result<EnrollmentDTO>>>> mappedResult
-			= this.enrollmentService.guard().mapped(applicationsResult.getObject(), actor );
+		Result<Map<String, List<Result<EnrollmentDTO>>>> mappedResult = this.enrollmentService.guard().mapped(applicationsResult.getObject(), actor );
 		
 		for ( Result<ApplicationDTO> applicationResult : applicationsResult.getObject() ) {
 			
-			String applicationUuid
-				= applicationResult.getObject().getUuid();
+			String applicationUuid = applicationResult.getObject().getUuid();
 			
-			List<Result<EnrollmentDTO>> appEnrollments
-				= mappedResult.getObject().get( applicationUuid );
+			List<Result<EnrollmentDTO>> appEnrollments = mappedResult.getObject().get( applicationUuid );
 			
 			if ( appEnrollments != null ) {
 			
