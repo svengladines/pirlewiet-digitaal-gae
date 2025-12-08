@@ -28,8 +28,7 @@ import be.pirlewiet.digitaal.web.util.DataGuard;
  */
 public class SetEnrollmentHolidayNamesScenario extends Scenario {
 	
-	protected final Logger logger 
-		= LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	@Autowired
 	OrganisationService organisationService;

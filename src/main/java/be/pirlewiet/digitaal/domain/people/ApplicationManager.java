@@ -29,8 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationManager {
 
-	protected final Logger logger
-		= LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	@Autowired
 	MailMan mailMan;
@@ -146,30 +145,30 @@ public class ApplicationManager {
 		
 	}
 	
-	   public Application create( Application application, Organisation actor ) {
-	    	
-	    	application.setYear( this.currentYear );
-	    	application.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
-	    	application.setHolidayUuids( "" );
-	    	application.setHolidayNames( "" );
-	    	application.setOrganisationUuid( actor.getUuid() );
-	    	application.setUuid( UUID.randomUUID().toString() );
-			application.setCreated(new Date());
-	    	
-	    	Application created = this.applicationRepository.saveAndFlush( application );
-	    	
-	    	logger.info( "created application with uuid [{}]", new Object[] { created.getUuid() } );
-	    	
-	    	List<QuestionAndAnswer> appQList = QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
-	    	
-			for ( QuestionAndAnswer qna : appQList ) {
-				qna.setEntityUuid( created.getUuid() );
-				this.questionAndAnswerManager.create( qna );
-			}
-	    	
-	    	return created;
-	    	
-	    }
+   public Application create( Application application, Organisation actor ) {
+
+		application.setYear( this.currentYear );
+		application.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
+		application.setHolidayUuids( "" );
+		application.setHolidayNames( "" );
+		application.setOrganisationUuid( actor.getUuid() );
+		application.setUuid( UUID.randomUUID().toString() );
+		application.setCreated(new Date());
+
+		Application created = this.applicationRepository.saveAndFlush( application );
+
+		logger.info( "[{}]; created application", new Object[] { created.getUuid() } );
+
+		List<QuestionAndAnswer> appQList = QuestionSheet.template().getQuestions( ).get( Tags.TAG_APPLICATION );
+
+		for ( QuestionAndAnswer qna : appQList ) {
+			qna.setEntityUuid( created.getUuid() );
+			this.questionAndAnswerManager.create( qna );
+		}
+
+		return created;
+
+	}
 	
 	public Application updateHolidays( String uuid, List<Holiday> holidays ) {
 		
@@ -256,21 +255,17 @@ public class ApplicationManager {
 	
 	public Application updateApplicant(String uuid, Person contactPerson ) {
 		
-		logger.info("application.updateContact");
+		logger.debug("application.updateContact");
 		
-		Application application
-			= this.findOne( uuid );
+		Application application = this.findOne( uuid );
 		
 		if ( application != null ) {
 			
-			StringBuilder uuids
-				= new StringBuilder();
+			StringBuilder uuids = new StringBuilder();
 			
-			StringBuilder names
-				= new StringBuilder();
+			StringBuilder names = new StringBuilder();
 			
-			Person p
-				= isEmpty(contactPerson.getUuid() ) ? this.personManager.template() : this.personManager.findOneByUuid( contactPerson.getUuid() ) ;
+			Person p = isEmpty(contactPerson.getUuid() ) ? this.personManager.template() : this.personManager.findOneByUuid( contactPerson.getUuid() ) ;
 				
 			if ( ! isEmpty(contactPerson.getUuid() ) && ( p != null ) ) {
 				logger.info("found existing person [{} {}], update...", p.getGivenName(), p.getFamilyName() );	
@@ -298,8 +293,7 @@ public class ApplicationManager {
 		
 		logger.debug("application.updateStatus");
 		
-		Application application
-			= this.findOne( uuid );
+		Application application = this.findOne( uuid );
 		
 		if ( application != null ) {
 			boolean save = false;
@@ -331,22 +325,22 @@ public class ApplicationManager {
 						
 					}
 
-					if (OrganisationType.INDIVIDUAL.equals(organisation.getType())) {
-						this.sendIntakeMessageToTourist(application, participants, holidays, applicant);
-						this.sendTouristIntakeMessageToPirlewiet(application, participants, holidays, applicant, organisation);
+					try {
+						if (OrganisationType.INDIVIDUAL.equals(organisation.getType())) {
+							this.sendIntakeMessageToTourist(application, participants, holidays, applicant);
+							this.sendTouristIntakeMessageToPirlewiet(application, participants, holidays, applicant, organisation);
+						} else {
+							this.sendIntakeMessageToOrganisation(application, participants, holidays, applicant);
+							this.sendOrganisationIntakeMessageToPirlewiet(application, participants, holidays, applicant, organisation);
+						}
+					} catch(Exception e) {
+						logger.error("intake - email notification failed", e);
 					}
-					else {
-						this.sendIntakeMessageToOrganisation(application, participants, holidays, applicant);
-						this.sendOrganisationIntakeMessageToPirlewiet(application, participants, holidays, applicant, organisation);
-					}
-
-					logger.info( "taken in");
-					
+					logger.info("[{}]; application submitted", new Object[] { application.getUuid()});
 				}
 				
 			}
 			else if ( ApplicationStatus.Value.CANCELLED.equals( applicationStatus.getValue() ) ) {
-				
 				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
 					logger.info( "delete draft");
 					// TODO delete all enrollments
@@ -357,7 +351,7 @@ public class ApplicationManager {
 					applicationStatus.setValue( ApplicationStatus.Value.CANCELLED );
 					save = true;	
 				}
-				
+				logger.info("[{}]; application cancelled", new Object[] { application.getUuid()});
 			}
 			
 			if ( save ) {
@@ -393,7 +387,7 @@ public class ApplicationManager {
 	 protected boolean sendOrganisationIntakeMessageToPirlewiet( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant, Organisation organisation ) {
 		 String message = message = this.spokesPerson.formatOrganisationIntakeMessagePirlewiet( application, participants, holidays, applicant, organisation );
 		 if ( message != null ) {
-			 mailMan.deliver(headQuarters.getEmail(),"Nieuwe inschrijving door % %s".formatted(applicant.getGivenName(), applicant.getFamilyName()), message);
+			 mailMan.deliver(headQuarters.getEmail(),"Nieuwe inschrijving door %s %s".formatted(applicant.getGivenName(), applicant.getFamilyName()), message);
 			 logger.info( "Application [{}]; receipt email sent to [{}]", application.getUuid(), applicant.getEmail() );
 			 return true;
 		 }

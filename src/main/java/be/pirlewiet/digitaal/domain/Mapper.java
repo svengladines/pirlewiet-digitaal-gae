@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import be.pirlewiet.digitaal.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -29,16 +30,6 @@ import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.domain.service.HolidayService;
-import be.pirlewiet.digitaal.model.Address;
-import be.pirlewiet.digitaal.model.Application;
-import be.pirlewiet.digitaal.model.Enrollment;
-import be.pirlewiet.digitaal.model.EnrollmentStatus;
-import be.pirlewiet.digitaal.model.Gender;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.model.Person;
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
-import be.pirlewiet.digitaal.model.QuestionType;
-import be.pirlewiet.digitaal.model.Tags;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -186,6 +177,8 @@ public class Mapper {
 					columns.add( answer( appQList.getQuestion( QIDs.QID_ADULTERY_SELF_RELIANT) ) );
 					// AC = comment
 					columns.add( enrollment.getStatus().getComment() );
+					// AD = bron (doorverwijzer of ivv)
+					columns.add( source(organisation) );
 					mapped.add( columns.toArray( new String[] {} ) );
 				}
 				catch( Exception e ) {
@@ -270,6 +263,8 @@ public class Mapper {
 		headers.add("(Vov) Zelfvoorzienend?");
 		// AC|
 		headers.add("Commentaar");
+		// AD|
+		headers.add("Bron");
 		return headers.toArray( new String[] {} );
 	}
 	
@@ -381,12 +376,8 @@ public class Mapper {
 	}
 	
 	protected String map( final Gender gender ) {
-		
-		String value
-			= "";
-		
+		String value = "";
 		switch( gender ) {
-		
 		case M: value = "m";
 				break;
 		case F: value = "v";
@@ -394,10 +385,16 @@ public class Mapper {
 		default: value = "?";
 				break;
 		}
-		
 		return value;
-		
-	} 
+	}
+
+	protected String source( Organisation organisation ) {
+		return switch (organisation.getType()){
+			case OrganisationType.INDIVIDUAL -> "I";
+			case OrganisationType.NON_PROFIT -> "D";
+			default -> "?";
+		};
+	}
 	
 	
 }

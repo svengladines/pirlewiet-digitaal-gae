@@ -104,7 +104,7 @@ public class EnrollmentManager {
 		
 		// for VOV, add questions about partner (2018)
 		if ( this.holidayManager.hasType( holidays, HolidayType.Vov ) ) {
-			logger.info( "VOV; add questions...");
+			logger.debug( "VOV; add questions...");
 			QuestionAndAnswer qna = QuestionSheet.template().getQuestion( QIDs.QID_ADULTERY_WITH );
 			qna.setUuid( UUID.randomUUID().toString() );
 			qna.setTag( Tags.TAG_PARTICIPANT );
@@ -119,7 +119,7 @@ public class EnrollmentManager {
 
 		// for TIKA, add questions about partner (2018)
 		if ( this.holidayManager.hasType( holidays, HolidayType.Tika ) ) {
-			logger.info( "TIKA; add questions...");
+			logger.debug( "TIKA; add questions...");
 			// Add questions manually  for now ... RFC...
 			QuestionAndAnswer qna = QuestionSheet.template().getQuestion( QIDs.QID_TIKA_CYCLING );
 			qna.setUuid( UUID.randomUUID().toString() );
@@ -127,6 +127,8 @@ public class EnrollmentManager {
 			qna.setEntityUuid( created.getUuid() );
 			this.questionAndAnswerManager.create( qna );
 		}
+
+		logger.info("[{}]; enrollment created with uuid [{}] and participant [{}]", application.getUuid(), created.getUuid(), created.getParticipantName());
 		
 		return created;
 		
@@ -194,10 +196,9 @@ public class EnrollmentManager {
 	
 	public Enrollment updateHolidays( String uuid, String holidayUuids, boolean resolveNames ) {
 		
-		logger.info("enrollment.updateHolidays");
+		logger.debug("enrollment.updateHolidays");
 		
-		Enrollment enrollment
-			= this.findOneByUuid( uuid );
+		Enrollment enrollment = this.findOneByUuid( uuid );
 		
 		if ( enrollment != null ) {
 			
@@ -270,7 +271,7 @@ public class EnrollmentManager {
 
 	public Enrollment updateQList( String uuid, List<QuestionAndAnswer> qList ) {
 		
-		logger.info("enrollment.updateQList");
+		logger.debug("enrollment.updateQList");
 		
 		Enrollment enrollment
 			= this.findOneByUuid( uuid );
