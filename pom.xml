@@ -200,7 +200,7 @@
 	            <version>2.8.1</version>
 	            <configuration>
 	                <projectId>pirlewiet-digitaal</projectId>
-	                <version>2025-go</version>
+	                <version>2026-go</version>
 	            </configuration>
 	        </plugin>
 		</plugins>
