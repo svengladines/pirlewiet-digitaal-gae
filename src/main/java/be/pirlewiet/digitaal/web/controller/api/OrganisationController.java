@@ -1,7 +1,5 @@
 package be.pirlewiet.digitaal.web.controller.api;
 
-import static be.occam.utils.spring.web.Controller.response;
-
 import be.pirlewiet.digitaal.web.dto.AddressDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,7 @@ public class OrganisationController {
 		Organisation actor = this.doorMan.guard().whoHasID(  pwtid  );
 
 		if ( actor == null ) {
-			return response( HttpStatus.NOT_FOUND );
+			return new ResponseEntity<>( HttpStatus.NOT_FOUND );
 		}
 
 		Result<OrganisationDTO> result = this.organisationService.guard().update(organisation, actor);
@@ -56,7 +54,7 @@ public class OrganisationController {
 				= this.doorMan.guard().whoHasID(  pwtid  );
 		
 			if ( actor == null ) {
-				return response( HttpStatus.NOT_FOUND );
+				return new ResponseEntity<>( HttpStatus.NOT_FOUND );
 			}
 			
 			Result<OrganisationDTO> result = this.organisationService.guard().delete( organisationUuid , actor );

@@ -1,7 +1,5 @@
 package be.pirlewiet.digitaal.domain.service;
 
-import static be.occam.utils.javax.Utils.list;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +21,8 @@ import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.model.QuestionAndAnswer;
 import be.pirlewiet.digitaal.model.Tags;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+
+import static be.occam.utils.javax.Utils.list;
 
 @Service
 public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Service<ApplicationDTO,Application> {

@@ -1,13 +1,13 @@
 package be.pirlewiet.digitaal.web.controller.api;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import java.util.List;
-import java.util.Locale;
-
+import be.occam.utils.spring.web.Result;
+import be.occam.utils.spring.web.Result.Value;
+import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.service.OrganisationService;
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import be.occam.utils.spring.web.Result;
-import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.service.OrganisationService;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
-import be.pirlewiet.digitaal.web.util.ExcelImporter;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping(value="/api/organisations")
@@ -57,7 +47,7 @@ public class OrganisationsController {
 		Result<List<Result<OrganisationDTO>>> created
 			= this.organisationService.guard().query( actor );
 		
-		return response( created, HttpStatus.OK );
+		return new ResponseEntity<>( created, HttpStatus.OK );
 			
 	}
 	
@@ -82,7 +72,7 @@ public class OrganisationsController {
 		
 		}
 		
-		return response( HttpStatus.INTERNAL_SERVER_ERROR );
+		return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR );
 			
 	}
 	

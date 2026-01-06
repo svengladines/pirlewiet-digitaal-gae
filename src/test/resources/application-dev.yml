@@ -1,0 +1,5 @@
+salesforce:
+  api:
+    baseUrl: https://orgfarm-1dfa9a20b4-dev-ed.develop.my.salesforce.com
+    clientId: xxx
+    clientSecret: xxx

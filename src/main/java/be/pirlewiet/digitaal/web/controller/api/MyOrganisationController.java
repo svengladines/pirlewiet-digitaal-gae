@@ -1,21 +1,5 @@
 package be.pirlewiet.digitaal.web.controller.api;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.spring.web.Result.Value;
 import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
@@ -24,6 +8,14 @@ import be.pirlewiet.digitaal.domain.service.OrganisationService;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.web.dto.AddressDTO;
 import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping( {"/organisation"} )
@@ -47,7 +39,7 @@ public class MyOrganisationController {
 		Result<OrganisationDTO> result 
 			= this.organisationService.findOneByUuid( pwtid, actor );
 
-		return response( result, result.getValue().equals( Value.OK ) ? HttpStatus.OK : result.getErrorCode().equals( ErrorCodes.ORGANISATION_NOT_FOUND ) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR );
+		return new ResponseEntity<>( result, result.getValue().equals( Value.OK ) ? HttpStatus.OK : result.getErrorCode().equals( ErrorCodes.ORGANISATION_NOT_FOUND ) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR );
 		
 	}
 	
@@ -60,13 +52,13 @@ public class MyOrganisationController {
 				= this.doorMan.guard().whoHasID(  pwtid  );
 		
 			if ( actor == null ) {
-				return response( HttpStatus.NOT_FOUND );
+				return new ResponseEntity<>( HttpStatus.NOT_FOUND );
 			}
 			
 			Result<OrganisationDTO> result
 				= this.organisationService.guard().update( organisation , actor );
 		
-			return response( result, HttpStatus.OK );
+			return new ResponseEntity<>( result, HttpStatus.OK );
 			
 	}
 	
@@ -83,7 +75,7 @@ public class MyOrganisationController {
 		Result<AddressDTO> result
 			= this.organisationService.guard().updateAddress( actor.getUuid(), address, actor );
 		
-		return response( result, HttpStatus.OK );
+		return new ResponseEntity<>( result, HttpStatus.OK );
 		
 	}
 	

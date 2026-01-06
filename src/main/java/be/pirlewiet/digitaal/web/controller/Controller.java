@@ -40,15 +40,9 @@ public class Controller {
 
     }
 
-    public static <T> ResponseEntity<T> response( T t, HttpStatus status ) {
-
-        return response( t, status, null );
-
-    }
-
     public static <T> ResponseEntity<T> response( HttpStatus status ) {
 
-        return response( null, status );
+        return new ResponseEntity<>( null, status );
 
     }
 

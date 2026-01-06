@@ -1,15 +1,15 @@
 package be.pirlewiet.digitaal.web.controller.page.pirlewiet;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
+import be.occam.utils.spring.web.Result;
+import be.pirlewiet.digitaal.domain.people.DoorMan;
+import be.pirlewiet.digitaal.domain.service.ApplicationService;
+import be.pirlewiet.digitaal.domain.service.EnrollmentService;
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
+import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +20,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
-import be.occam.utils.spring.web.Result;
-import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.service.ApplicationService;
-import be.pirlewiet.digitaal.domain.service.EnrollmentService;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.web.dto.ApplicationDTO;
-import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping( {"/pirlewiet/applications.html"} )
@@ -85,7 +79,7 @@ public class PirlewietApplicationsPageController {
 	public ResponseEntity<String> handleError( Exception e ){
 		
 		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
+		return new ResponseEntity<>( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
 		
 	}
 	

@@ -2,3 +2,11 @@ spring:
   web:
     locale: nl_NL
     locale-resolver: fixed
+
+  security:
+    oauth:
+      client:
+        registration:
+          salesforce:
+            client-id: ${SALESFORCE_CLIENT_ID}
+            client-secret: ${SALESFORCE_CLIENT_SECRET}

@@ -1,64 +1,21 @@
 package be.pirlewiet.digitaal.application.config;
 
+import be.pirlewiet.digitaal.domain.HeadQuarters;
+import be.pirlewiet.digitaal.domain.people.ApplicationManager;
+import be.pirlewiet.digitaal.domain.scenario.*;
+import be.pirlewiet.digitaal.domain.service.*;
+import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.repository.*;
+import be.pirlewiet.digitaal.repository.impl.*;
+import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+import com.googlecode.objectify.ObjectifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.format.datetime.DateFormatter;
-
-import com.googlecode.objectify.ObjectifyFactory;
-import com.googlecode.objectify.ObjectifyService;
-
-import be.occam.utils.spring.configuration.ConfigurationProfiles;
-import be.pirlewiet.digitaal.domain.HeadQuarters;
-import be.pirlewiet.digitaal.domain.Mapper;
-import be.pirlewiet.digitaal.domain.Reducer;
-import be.pirlewiet.digitaal.domain.people.AddressManager;
-import be.pirlewiet.digitaal.domain.people.ApplicationManager;
-import be.pirlewiet.digitaal.domain.people.CodeMan;
-import be.pirlewiet.digitaal.domain.people.DoorMan;
-import be.pirlewiet.digitaal.domain.people.EnrollmentManager;
-import be.pirlewiet.digitaal.domain.people.Excelsior;
-import be.pirlewiet.digitaal.domain.people.HolidayManager;
-import be.pirlewiet.digitaal.domain.people.MailMan;
-import be.pirlewiet.digitaal.domain.people.OrganisationManager;
-import be.pirlewiet.digitaal.domain.people.PersonManager;
-import be.pirlewiet.digitaal.domain.people.QuestionAndAnswerManager;
-import be.pirlewiet.digitaal.domain.people.Secretary;
-import be.pirlewiet.digitaal.domain.scenario.DeleteOldEntitiesScenario;
-import be.pirlewiet.digitaal.domain.scenario.InjectProductionDataScenario;
-import be.pirlewiet.digitaal.domain.scenario.ObjectifyScenario;
-import be.pirlewiet.digitaal.domain.scenario.SetEnrollmentHolidayNamesScenario;
-import be.pirlewiet.digitaal.domain.scenario.UnifyEnrollmentHolidaysScenario;
-import be.pirlewiet.digitaal.domain.service.ApplicationService;
-import be.pirlewiet.digitaal.domain.service.EnrollmentService;
-import be.pirlewiet.digitaal.domain.service.HolidayService;
-import be.pirlewiet.digitaal.domain.service.OrganisationService;
-import be.pirlewiet.digitaal.domain.service.PersonService;
-import be.pirlewiet.digitaal.domain.service.QuestionAndAnswerService;
-import be.pirlewiet.digitaal.model.Organisation;
-import be.pirlewiet.digitaal.repository.AddressRepository;
-import be.pirlewiet.digitaal.repository.ApplicationRepository;
-import be.pirlewiet.digitaal.repository.EnrollmentRepository;
-import be.pirlewiet.digitaal.repository.HolidayRepository;
-import be.pirlewiet.digitaal.repository.OrganisationRepository;
-import be.pirlewiet.digitaal.repository.PersonRepository;
-import be.pirlewiet.digitaal.repository.QuestionAndAnswerRepository;
-import be.pirlewiet.digitaal.repository.impl.AddressRepositoryObjectify;
-import be.pirlewiet.digitaal.repository.impl.ApplicationRepositoryObjectify;
-import be.pirlewiet.digitaal.repository.impl.EnrollmentRepositoryObjectify;
-import be.pirlewiet.digitaal.repository.impl.HolidayRepositoryObjectify;
-import be.pirlewiet.digitaal.repository.impl.Objectify;
-import be.pirlewiet.digitaal.repository.impl.OrganisationRepositoryObjectify;
-import be.pirlewiet.digitaal.repository.impl.PersonRepositoryObjectify;
-import be.pirlewiet.digitaal.repository.impl.QuestionAndAnswerRepositoryObjectify;
-import be.pirlewiet.digitaal.web.util.ExcelImporter;
-import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 
 @Configuration
