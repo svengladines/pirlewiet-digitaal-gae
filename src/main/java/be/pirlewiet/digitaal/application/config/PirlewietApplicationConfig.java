@@ -8,13 +8,22 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.repository.*;
 import be.pirlewiet.digitaal.repository.impl.*;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
+import com.google.api.gax.grpc.GrpcTransportChannel;
+import com.google.appengine.repackaged.io.grpc.ManagedChannelBuilder;
+import com.google.cloud.NoCredentials;
+import com.google.cloud.datastore.Datastore;
+import com.google.cloud.datastore.DatastoreOptions;
+import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.format.datetime.DateFormatter;
 
 
@@ -141,10 +150,11 @@ public class PirlewietApplicationConfig {
 
 		@Bean
 		@Lazy(false)
-		public Objectify objectify() {
-			ObjectifyService.init();
+		public Objectify objectify(Datastore datastore) {
+			ObjectifyFactory factory = new ObjectifyFactory(datastore);
+			ObjectifyService.init(factory);
 			logger.info("objectify service initialized");
-			return new Objectify();
+			return new Objectify(factory);
 		}
 
 		@Bean
@@ -192,4 +202,21 @@ public class PirlewietApplicationConfig {
 		}
 
 	}
+
+	@Configuration
+	@Profile("dev")
+	static class DevConfig {
+
+		@Bean
+		public Datastore datastoreOptions(@Value("${gcp.project-id}")String projectId,@Value("${gcp.datastore.host}") String host) {
+			DatastoreOptions.Builder builder = DatastoreOptions.newBuilder()
+					.setProjectId(projectId)
+					.setHost(host)
+					.setCredentials(NoCredentials.getInstance());
+			return builder.build().getService();
+		}
+
+	}
+
+
 }

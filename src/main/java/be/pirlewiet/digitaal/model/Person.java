@@ -37,6 +37,9 @@ public class Person {
 	private Gender gender;
 	
 	private String stateNumber;
+
+	@Index
+	private String externalId;
 	
 	public Person() {
 	}
@@ -103,6 +106,13 @@ public class Person {
 
 	public void setStateNumber(String stateNumber) {
 		this.stateNumber = stateNumber;
+	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 
 	public static Person from( PersonDTO f ) {

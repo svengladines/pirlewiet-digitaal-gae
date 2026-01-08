@@ -38,6 +38,9 @@
         <logger name="org.thymeleaf" level="info" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
+        <logger name="com.google" level="debug" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
     </springProfile>
     <springProfile name="dev">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -53,10 +56,13 @@
         <logger name="be.occam" level="debug" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
-        <logger name="org.springframework" level="info" additivity="false">
+        <logger name="org.springframework" level="debug" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
         <logger name="org.thymeleaf" level="info" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <logger name="com.google" level="debug" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>

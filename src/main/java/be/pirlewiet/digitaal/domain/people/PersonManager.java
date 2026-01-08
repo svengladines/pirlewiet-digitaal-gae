@@ -3,6 +3,9 @@ package be.pirlewiet.digitaal.domain.people;
 import java.util.List;
 import java.util.UUID;
 
+import be.occam.utils.timing.Timing;
+import be.pirlewiet.digitaal.infrastructure.salesforce.Contact;
+import be.pirlewiet.digitaal.infrastructure.salesforce.SalesforceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
@@ -33,7 +36,10 @@ public class PersonManager {
 	protected PersonRepository personRepository;
 	
 	@Autowired
-	MailMan postBode;
+	MailMan mailMan;
+
+	@Autowired
+	SalesforceClient salesforceClient;
 	
     public PersonManager() {
     	
@@ -104,5 +110,25 @@ public class PersonManager {
     public void delete( Person person ) {
     	this.personRepository.delete( person );
     }
+
+	public void touch(Person person){
+		logger.info("person [{}]; touch", person.getUuid());
+		if (person.getExternalId() == null) {
+			logger.info("person [{}]; is no SF contact yet", person.getUuid());
+			this.salesforceClient.createContact(toContact(person)).ifPresent(contact -> {
+				person.setExternalId(contact.id());
+				logger.info("person [{}]; saved as new SF contact with id {}", person.getUuid(), contact.id());
+				this.personRepository.saveAndFlush(person);
+			});
+		}
+	}
+
+	protected static Contact toContact(Person person) {
+		return new Contact()
+			.firstName(person.getGivenName())
+			.lastName(person.getFamilyName())
+			.mobilePhone(person.getPhone())
+			.birthDate(Timing.date(person.getBirthDay(),"yyyy-MM-dd"));
+	}
        
 }

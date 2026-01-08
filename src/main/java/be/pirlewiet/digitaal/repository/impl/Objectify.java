@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.repository.impl;
 
+import com.googlecode.objectify.ObjectifyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,8 @@ public class Objectify {
 	protected final Logger logger
 		= LoggerFactory.getLogger( this.getClass() );
 	
-	public Objectify() {
-		ObjectifyService.init();
+	public Objectify(ObjectifyFactory factory) {
+		ObjectifyService.init(factory);
 		ObjectifyService.register( Organisation.class );
 		ObjectifyService.register( Address.class );
 		ObjectifyService.register( Application.class );

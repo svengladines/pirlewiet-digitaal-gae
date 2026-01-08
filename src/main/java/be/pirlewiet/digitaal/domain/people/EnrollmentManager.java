@@ -293,6 +293,12 @@ public class EnrollmentManager {
 		
 		return enrollment;
 	}
+
+	public Enrollment finalizeParticipant( Enrollment enrollment ) {
+		Person person = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
+		this.personManager.touch(person);
+		return enrollment;
+	}
 	
 	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, Set<Holiday> holidays, EnrollmentStatus oldStatus, Person applicant ) {
 
