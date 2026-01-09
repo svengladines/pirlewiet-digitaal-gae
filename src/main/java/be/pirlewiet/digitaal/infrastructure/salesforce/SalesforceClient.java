@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Component
@@ -39,15 +40,27 @@ public class SalesforceClient {
             logger.error("contact creation failed with exception", e);
             return Optional.empty();
         }
+    }
 
+    public Optional<Contact> updateContact(String id,Contact toUpdate) {
+        try {
+            salesforceRestTemplate.patchForObject(path("Contact",id), toUpdate, Contact.class);
+            return Optional.of(toUpdate);
+        }
+        catch(Exception e) {
+            logger.error("contact update failed with exception", e);
+            return Optional.empty();
+        }
     }
 
     protected String path(String object) {
         return "/services/data/v%s/sobjects/%s".formatted(SALESFORCE_API_VERSION,object);
     }
 
-    protected String path(String object, String id) {
-        return "/services/data/v%s/sobjects/%s/%s".formatted(SALESFORCE_API_VERSION,object,id);
+    protected String path(String object, String... subs) {
+        StringBuilder path = new StringBuilder("/services/data/v%s/sobjects/%s".formatted(SALESFORCE_API_VERSION,object));
+        Arrays.stream(subs).forEach(sub -> {path.append("/%s".formatted(sub));});
+        return path.toString();
     }
 
 }

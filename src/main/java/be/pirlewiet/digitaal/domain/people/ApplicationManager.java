@@ -308,7 +308,6 @@ public class ApplicationManager {
 								this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids(), true );
 							}
 							this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), false );
-							this.enrollmentManager.finalizeParticipant(enrollment);
 					}
 					applicationStatus.setValue( ApplicationStatus.Value.SUBMITTED );
 					application.setSubmitted( new Date() );

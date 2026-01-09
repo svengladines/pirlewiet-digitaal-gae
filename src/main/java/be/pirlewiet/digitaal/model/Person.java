@@ -116,20 +116,15 @@ public class Person {
 	}
 
 	public static Person from( PersonDTO f ) {
-		
-		Person t
-			= new Person();
-		
-		t.setUuid( f.getUuid() );
-		t.setGivenName( f.getGivenName() );
-		t.setFamilyName( f.getFamilyName() );
-		t.setPhone( f.getPhone() );
-		t.setEmail( f.getEmail() );
-		t.setGender( f.getGender() );	
-		t.setStateNumber( f.getStateNumber() );
-		
+		Person t = new Person();
+		t.setUuid(f.getUuid());
+		t.setGivenName(f.getGivenName());
+		t.setFamilyName(f.getFamilyName());
+		t.setPhone(f.getPhone());
+		t.setEmail(f.getEmail());
+		t.setGender(f.getGender());
+		t.setStateNumber( f.getStateNumber());
+		t.setBirthDay(Timing.date(f.getBirthDay()));
 		return t;
-		
 	}
-	
 }

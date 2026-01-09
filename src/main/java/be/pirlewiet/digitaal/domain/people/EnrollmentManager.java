@@ -296,7 +296,6 @@ public class EnrollmentManager {
 
 	public Enrollment finalizeParticipant( Enrollment enrollment ) {
 		Person person = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
-		this.personManager.touch(person);
 		return enrollment;
 	}
 	

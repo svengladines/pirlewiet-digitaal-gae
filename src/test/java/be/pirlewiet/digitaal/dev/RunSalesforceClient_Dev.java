@@ -41,7 +41,7 @@ public class RunSalesforceClient_Dev {
         Contact toCreate = new Contact()
                 .firstName("Lisa")
                 .lastName("Simpson")
-                .geslacht("Vrouw")
+                .gender("Vrouw")
                 .birthDate("1990-01-01")
                 .mobilePhone("0499/290671");
         salesforceClient.createContact(toCreate).ifPresentOrElse(contact -> {

@@ -14,8 +14,8 @@ public class Contact {
     protected String birthDate;
     @JsonProperty("MobilePhone")
     protected String mobilePhone;
-    //@JsonProperty("Geslacht")
-    protected String geslacht;
+    @JsonProperty("Geslacht__c")
+    protected String gender;
 
     // MailingAddress -> salesforce does not support composite field on Rest API
     @JsonProperty("MailingCity")
@@ -70,12 +70,40 @@ public class Contact {
         return this;
     }
 
-    public String geslacht() {
-        return geslacht;
+    public String gender() {
+        return gender;
     }
 
-    public Contact geslacht(String geslacht) {
-        this.geslacht = geslacht;
+    public Contact gender(String gender) {
+        this.gender = gender;
         return this;
     }
+
+    public String city() {
+        return city;
+    }
+
+    public Contact city(String city) {
+        this.city = city;
+        return this;
+    }
+
+    public String postalCode() {
+        return postalCode;
+    }
+
+    public Contact postalCode(String postalCode) {
+        this.postalCode = postalCode;
+        return this;
+    }
+
+    public String street() {
+        return street;
+    }
+
+    public Contact street(String street) {
+        this.street = street;
+        return this;
+    }
+
 }

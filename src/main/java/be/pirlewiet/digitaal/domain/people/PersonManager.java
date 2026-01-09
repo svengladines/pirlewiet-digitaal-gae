@@ -6,6 +6,8 @@ import java.util.UUID;
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.infrastructure.salesforce.Contact;
 import be.pirlewiet.digitaal.infrastructure.salesforce.SalesforceClient;
+import be.pirlewiet.digitaal.model.Address;
+import be.pirlewiet.digitaal.model.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
@@ -16,6 +18,8 @@ import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.repository.PersonRepository;
 import org.springframework.stereotype.Component;
+
+import static java.util.Optional.ofNullable;
 
 @Component
 public class PersonManager {
@@ -101,34 +105,46 @@ public class PersonManager {
     		updated = this.personRepository.saveAndFlush( updated );
     		
     	}
-    	
     	return updated;
-    		
-    	
     }
     
     public void delete( Person person ) {
     	this.personRepository.delete( person );
     }
 
-	public void touch(Person person){
+	public void touch(Person person, Address address) {
 		logger.info("person [{}]; touch", person.getUuid());
-		if (person.getExternalId() == null) {
-			logger.info("person [{}]; is no SF contact yet", person.getUuid());
-			this.salesforceClient.createContact(toContact(person)).ifPresent(contact -> {
+		ofNullable(person.getExternalId()).ifPresentOrElse(id -> {
+			logger.info("person [{}], is contact [{}]; update...", person.getUuid(),id);
+			this.salesforceClient.updateContact(id, toContact(person,address)).ifPresent(contact -> {
+				logger.info("person [{}]; saved SF contact with id {}", person.getUuid(), contact.id());
+				this.personRepository.saveAndFlush(person);
+			});
+		}, () -> {
+			logger.info("person [{}]; is no SF contact yet, create", person.getUuid());
+			this.salesforceClient.createContact(toContact(person,address)).ifPresent(contact -> {
 				person.setExternalId(contact.id());
 				logger.info("person [{}]; saved as new SF contact with id {}", person.getUuid(), contact.id());
 				this.personRepository.saveAndFlush(person);
 			});
-		}
+		});
 	}
 
-	protected static Contact toContact(Person person) {
+	protected static Contact toContact(Person person,Address address ) {
 		return new Contact()
 			.firstName(person.getGivenName())
 			.lastName(person.getFamilyName())
 			.mobilePhone(person.getPhone())
-			.birthDate(Timing.date(person.getBirthDay(),"yyyy-MM-dd"));
+			.birthDate(Timing.date(person.getBirthDay(),"yyyy-MM-dd"))
+			.city(address.getCity())
+			.street("%s %s".formatted(address.getStreet(),address.getNumber()))
+			.postalCode(address.getZipCode())
+				.gender(switch (person.getGender()) {
+					case Gender.M -> "Man";
+					case Gender.F -> "Vrouw";
+					default -> "X";
+				});
+
 	}
        
 }
