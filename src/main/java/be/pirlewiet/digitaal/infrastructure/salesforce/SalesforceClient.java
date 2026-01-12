@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -46,6 +47,17 @@ public class SalesforceClient {
         try {
             salesforceRestTemplate.patchForObject(path("Contact",id), toUpdate, Contact.class);
             return Optional.of(toUpdate);
+        }
+        catch(Exception e) {
+            logger.error("contact update failed with exception", e);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Boolean> updateContact(String id, Map<String,String> toUpdate) {
+        try {
+            salesforceRestTemplate.patchForObject(path("Contact",id), toUpdate, Map.class);
+            return Optional.of(Boolean.TRUE);
         }
         catch(Exception e) {
             logger.error("contact update failed with exception", e);

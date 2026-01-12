@@ -132,6 +132,8 @@ public class PersonManager {
 
 	protected static Contact toContact(Person person,Address address ) {
 		return new Contact()
+			// TODO: allow other types
+			.type("Deelnemer")
 			.firstName(person.getGivenName())
 			.lastName(person.getFamilyName())
 			.mobilePhone(person.getPhone())

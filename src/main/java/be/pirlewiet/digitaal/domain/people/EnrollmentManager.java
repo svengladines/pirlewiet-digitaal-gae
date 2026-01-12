@@ -5,6 +5,10 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.*;
 
+import be.occam.utils.timing.Timing;
+import be.pirlewiet.digitaal.infrastructure.salesforce.Contact;
+import be.pirlewiet.digitaal.infrastructure.salesforce.SalesForceMapper;
+import be.pirlewiet.digitaal.infrastructure.salesforce.SalesforceClient;
 import be.pirlewiet.digitaal.model.*;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,8 @@ import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
+
+import static java.util.Optional.ofNullable;
 
 @Component
 public class EnrollmentManager {
@@ -60,6 +66,9 @@ public class EnrollmentManager {
 	
 	@Autowired
 	LocaleResolver localeResolver;
+
+	@Autowired
+	SalesforceClient salesforceClient;
 	
 	public EnrollmentManager( ) {
 	}
@@ -253,10 +262,12 @@ public class EnrollmentManager {
 		Person contact = this.personManager.findOneByUuid( application.getContactPersonUuid() );
 		Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( updated.getHolidayUuid() );
 		Person participant = this.personManager.findOneByUuid( updated.getParticipantUuid() );
-		
+
 		if ( sendUpdate ) {
 			this.sendStatusUpdateToOrganisation( updated, participant, holidays, oldStatus, contact );
 		}
+
+		this.touch(updated);
 		
 		return updated;
 		
@@ -294,11 +305,21 @@ public class EnrollmentManager {
 		return enrollment;
 	}
 
-	public Enrollment finalizeParticipant( Enrollment enrollment ) {
-		Person person = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
+	public Enrollment touch( Enrollment enrollment ) {
+		logger.info("enrollment [{}]; touch", enrollment.getUuid());
+		Person participant = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
+		List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(enrollment.getUuid());
+		ofNullable(participant.getExternalId()).ifPresent(id -> {
+			logger.info("participant [{}], is contact [{}]; update...", participant.getUuid(),id);
+			Map<String,String> map = map(qnaList);
+			logger.info("participant [{}], update contact - qlist", participant.getUuid(),id);
+			this.salesforceClient.updateContact(id, map).ifPresent(contact -> {
+				logger.info("person [{}]; saved SF contact with id {}", participant.getUuid(), id);
+			});
+		});
 		return enrollment;
 	}
-	
+
 	 protected boolean sendStatusUpdateToOrganisation( Enrollment enrollment,  Person participant, Set<Holiday> holidays, EnrollmentStatus oldStatus, Person applicant ) {
 
 		String message = this.spokesPerson.formatEnrollmentStatusUpdateMessageOrganisation(enrollment,participant,holidays, oldStatus, applicant);
@@ -313,7 +334,32 @@ public class EnrollmentManager {
 	protected String formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
 		return "TODO";
 	}
-	
 
+	protected static Map<String,String> map(List<QuestionAndAnswer> qnaList) {
+		HashMap<String,String> map = new HashMap();
+		qnaList.stream().forEach( qna -> {
+			map.putAll(SalesForceMapper.map(qna));
+		});
+		return map;
+	}
+
+	protected static Map<String,String> map(Enrollment enrollment) {
+		HashMap<String,String> map = new HashMap();
+		// map holidays
+		//map.putAll("Type_vakantie_Deelname_1", enrollment.);
+		return map;
+	}
+
+	protected String concat(String... values) {
+		StringBuilder sb = new StringBuilder();
+		Arrays.stream(values).iterator().forEachRemaining(value -> {
+			sb.append(value);
+			sb.append(";");
+		});
+		if (sb.length() > 0) {
+			return sb.toString().substring(0, sb.length()-1);
+		}
+		return sb.toString();
+	}
 }
  

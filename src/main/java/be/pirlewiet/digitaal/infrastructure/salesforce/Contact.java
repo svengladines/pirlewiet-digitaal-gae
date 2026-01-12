@@ -6,6 +6,8 @@ public class Contact {
 
     @JsonProperty
     protected String id;
+    @JsonProperty("Type__c")
+    protected String type;
     @JsonProperty("FirstName")
     protected String firstName;
     @JsonProperty("LastName")
@@ -103,6 +105,14 @@ public class Contact {
 
     public Contact street(String street) {
         this.street = street;
+        return this;
+    }
+
+    public String type() {
+        return type;
+    }
+    public Contact type(String type) {
+        this.type = type;
         return this;
     }
 

@@ -27,8 +27,8 @@ public class RunSalesforceClient_Production {
 
     @PostConstruct
     public void run() {
-        Optional<Contact> contact = salesforceClient.findContact("003Tb00000LLi91IAD");
-        //Optional<String> contact = salesforceClient.findContactAsString("003Tb00000LLi91IAD");
+        //Optional<Contact> contact = salesforceClient.findContact("003Tb00000LLi91IAD");
+        Optional<String> contact = salesforceClient.findContactAsString("003Tb00000LLi91IAD");
         logger.info("contact: {}", contact);
     }
 
