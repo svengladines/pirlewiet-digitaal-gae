@@ -29,7 +29,7 @@
 			<form class="form-horizontal">
 				<div class="form-group form-group-lg">
 					<div>
-						<button type="button" id="create" class="btn btn-primary btn"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
+						<button th:if="${applicationsAllowed}" type="button" id="create" class="btn btn-primary btn"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nieuwe inschrijving</button>
 					</div>
 				</div>
 			</form>

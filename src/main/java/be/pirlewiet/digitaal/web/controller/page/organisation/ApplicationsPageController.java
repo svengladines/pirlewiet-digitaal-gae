@@ -1,6 +1,7 @@
 package be.pirlewiet.digitaal.web.controller.page.organisation;
 
 import be.occam.utils.spring.web.Result;
+import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.ApplicationService;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Controller
@@ -32,6 +36,9 @@ public class ApplicationsPageController {
 	
 	@Autowired
 	DoorMan doorMan;
+
+	@Autowired
+	HeadQuarters headQuarters;
 	
 	@Autowired
 	ApplicationService applicationService;
@@ -62,6 +69,7 @@ public class ApplicationsPageController {
 			
 		}
 		model.addAttribute( "applicationsResult", applicationsResult );
+		model.addAttribute( "applicationsAllowed", new Date().after(this.headQuarters.getApplicationsStartDate()));
 		return "organisation/applications";
 	}
 	

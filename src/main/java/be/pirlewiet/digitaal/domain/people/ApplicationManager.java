@@ -89,8 +89,6 @@ public class ApplicationManager {
 	
 };
 	
-	protected final int currentYear;
-	
 	@Autowired
 	protected ApplicationRepository applicationRepository;
 	
@@ -109,13 +107,12 @@ public class ApplicationManager {
 	@Autowired
 	protected EnrollmentManager enrollmentManager;
 	
-	public ApplicationManager( int currentYear ) {
-		this.currentYear = currentYear;
+	public ApplicationManager( ) {
 	}
 	
 	public List<Application> findByOrganisation( Organisation actor ) {
-		logger.info( "find applications for organisation [{}] and year [{}]", actor.getUuid(), this.currentYear );
-		List<Application> byOrganisationAndYear = this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), this.currentYear );
+		logger.info( "find applications for organisation [{}] and year [{}]", actor.getUuid(), this.headQuarters.getYear() );
+		List<Application> byOrganisationAndYear = this.applicationRepository.findByOrganisationUuidAndYear( actor.getUuid(), this.headQuarters.getYear() );
 		Collections.sort( byOrganisationAndYear, this.mostRecentlyCreated );
 		return byOrganisationAndYear;
 	}
@@ -126,7 +123,7 @@ public class ApplicationManager {
 	}
 	
 	public List<Application> findActiveByYear( ) {
-		List<Application> byYear = this.applicationRepository.findByYear( this.currentYear );
+		List<Application> byYear = this.applicationRepository.findByYear( this.headQuarters.getYear() );
 		List<Application> filtered = list();
 		for ( Application application : byYear ) {
 			if ( ( ! ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) && ( ! ApplicationStatus.Value.CANCELLED.equals( application.getStatus().getValue() ) ) ) {
@@ -147,7 +144,7 @@ public class ApplicationManager {
 	
    public Application create( Application application, Organisation actor ) {
 
-		application.setYear( this.currentYear );
+		application.setYear( this.headQuarters.getYear() );
 		application.setStatus( new ApplicationStatus( ApplicationStatus.Value.DRAFT ) );
 		application.setHolidayUuids( "" );
 		application.setHolidayNames( "" );

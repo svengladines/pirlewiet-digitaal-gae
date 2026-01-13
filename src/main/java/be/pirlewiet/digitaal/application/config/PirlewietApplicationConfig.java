@@ -88,8 +88,8 @@ public class PirlewietApplicationConfig {
 	public static class PeopleConfig {
 
 		@Bean
-		ApplicationManager applicationManager(@Value("${pirlewiet.year}") int currentYear) {
-			return new ApplicationManager(currentYear);
+		ApplicationManager applicationManager() {
+			return new ApplicationManager();
 		}
 
 		// can use 'real' javasender, it is stubbed by GAE
@@ -197,8 +197,8 @@ public class PirlewietApplicationConfig {
 	static class HeadQuarterConfig {
 
 		@Bean
-		public HeadQuarters headQuarters(@Value("${pirlewiet.email}")String email) {
-			return new HeadQuarters(email);
+		public HeadQuarters headQuarters(@Value("${pirlewiet.email}")String email,@Value("${pirlewiet.year}")Integer year) {
+			return new HeadQuarters(email,year);
 		}
 
 	}
