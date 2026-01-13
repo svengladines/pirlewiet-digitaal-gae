@@ -23,8 +23,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
-import static be.occam.utils.spring.web.Controller.response;
-
 @Controller
 @RequestMapping( {"/referenced/applications.html"} )
 public class ReferencedApplicationsPageController {
@@ -70,7 +68,7 @@ public class ReferencedApplicationsPageController {
 	public ResponseEntity<String> handleError( Exception e ){
 		
 		logger.warn( "failure while handling request", e );
-		return response( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
+		return new ResponseEntity<>( e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR );
 		
 	}
 	

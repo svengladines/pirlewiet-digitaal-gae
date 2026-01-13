@@ -1,25 +1,5 @@
 package be.pirlewiet.digitaal.web.controller.api;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import be.pirlewiet.digitaal.model.OrganisationType;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-
 import be.occam.utils.spring.web.Result;
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.domain.Mapper;
@@ -27,8 +7,20 @@ import be.pirlewiet.digitaal.domain.people.DoorMan;
 import be.pirlewiet.digitaal.domain.service.EnrollmentService;
 import be.pirlewiet.digitaal.model.EnrollmentStatus;
 import be.pirlewiet.digitaal.model.Organisation;
+import be.pirlewiet.digitaal.model.OrganisationType;
 import be.pirlewiet.digitaal.web.dto.EnrollmentDTO;
-import org.thymeleaf.util.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+
+import java.util.Date;
 
 @Controller
 @RequestMapping( {"/api/applications/{applicationUuid}/enrollments"} )

@@ -37,6 +37,9 @@ public class Person {
 	private Gender gender;
 	
 	private String stateNumber;
+
+	@Index
+	private String externalId;
 	
 	public Person() {
 	}
@@ -105,21 +108,23 @@ public class Person {
 		this.stateNumber = stateNumber;
 	}
 
-	public static Person from( PersonDTO f ) {
-		
-		Person t
-			= new Person();
-		
-		t.setUuid( f.getUuid() );
-		t.setGivenName( f.getGivenName() );
-		t.setFamilyName( f.getFamilyName() );
-		t.setPhone( f.getPhone() );
-		t.setEmail( f.getEmail() );
-		t.setGender( f.getGender() );	
-		t.setStateNumber( f.getStateNumber() );
-		
-		return t;
-		
+	public String getExternalId() {
+		return externalId;
 	}
-	
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
+	}
+
+	public static Person from( PersonDTO f ) {
+		Person t = new Person();
+		t.setUuid(f.getUuid());
+		t.setGivenName(f.getGivenName());
+		t.setFamilyName(f.getFamilyName());
+		t.setPhone(f.getPhone());
+		t.setEmail(f.getEmail());
+		t.setGender(f.getGender());
+		t.setStateNumber( f.getStateNumber());
+		t.setBirthDay(Timing.date(f.getBirthDay()));
+		return t;
+	}
 }

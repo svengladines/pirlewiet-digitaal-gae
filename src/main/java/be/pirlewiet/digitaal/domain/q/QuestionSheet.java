@@ -50,7 +50,7 @@ public class QuestionSheet {
 			= new QuestionAndAnswer[] {
 			new QuestionAndAnswer(100, QuestionType.YesNo, Tags.TAG_PARTICIPANT, QIDs.QID_HISTORY, "Ging deze deelnemer reeds eerder mee op een Pirlewietvakantie ?" ),
 			new QuestionAndAnswer(101,QuestionType.YesNo, Tags.TAG_PARTICIPANT, QIDs.QID_MEDIC_DUTCH, "Spreekt voldoende Nederlands om vlot te communiceren met vrijwilligers en mededeelnemers/om zichzelf verstaanbaar te maken" ),
-			new QuestionAndAnswer(102, QuestionType.MC, Tags.TAG_PARTICIPANT , QIDs.QID_FAMILY_CAR, "Komt naar de vakantieplaats", "Met de auto", "Met de bus en/of trein" ),
+			new QuestionAndAnswer(102, QuestionType.MC, Tags.TAG_PARTICIPANT , QIDs.QID_FAMILY_CAR, "Vervoer naar de vakantieplaats", "Auto", "Openbaar vervoer" ),
 			new QuestionAndAnswer(103,QuestionType.Area, Tags.TAG_PARTICIPANT, QIDs.QID_MEDIC_REMARKS, "Zijn er nog aandachtspunten waar de vakantieleiding rekening mee dient te houden? Beschrijf hier extra zorgnoden of zaken waar we zeker rekening mee moeten houden tijdens de vakantie" ),
 		};
 		

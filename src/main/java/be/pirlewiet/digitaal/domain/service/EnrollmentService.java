@@ -590,31 +590,19 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 		toCreate.setStatus( new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ) );
 		
 		try {
-			
-			PersonDTO participant
-				= enrollment.getParticipant();
-			
-			Person toCreateParticipant
-				= Person.from( participant );
-			
+			PersonDTO participant = enrollment.getParticipant();
+			Person toCreateParticipant = Person.from( participant );
 			this.setBirthDay( participant, toCreateParticipant );
-			
-			Person createdParticipant
-				= this.personManager.create( toCreateParticipant );
-			
+			Person createdParticipant = this.personManager.create( toCreateParticipant );
 			toCreate.setParticipantUuid( createdParticipant.getUuid() );
 			toCreate.setParticipantName( String.format("%s %s", toCreateParticipant.getGivenName(), toCreateParticipant.getFamilyName() ) );
 			
-			Address toCreateAddress
-				= Address.from( enrollment.getAddress() );
-		
-			Address createdAddress 
-				= this.addressManager.create( toCreateAddress );
-			
+			Address toCreateAddress = Address.from( enrollment.getAddress() );
+			Address createdAddress = this.addressManager.create( toCreateAddress );
 			toCreate.setAddressUuid( createdAddress.getUuid() );
+			this.personManager.touch(createdParticipant,createdAddress);
 			
-			Application application
-				= this.applicationManager.findOne( enrollment.getApplicationUuid() );
+			Application application = this.applicationManager.findOne( enrollment.getApplicationUuid() );
 			
 			toCreate.setHolidayUuid( application.getHolidayUuids() );
 			
@@ -667,7 +655,8 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			Person updatedParticipant = this.personManager.update( toUpdateParticipant, updateParticipant );
 			Address toUpdateAddress = this.addressManager.findOneByUuid( toUpdate.getAddressUuid() );
 			Address updateAddress = Address.from( enrollment.getAddress() );
-			this.addressManager.update( toUpdateAddress, updateAddress );
+			Address updatedAddress = this.addressManager.update( toUpdateAddress, updateAddress );
+			this.personManager.touch(updatedParticipant,updatedAddress);
 			Enrollment updated = this.enrollmentManager.update( toUpdate, update );
 			EnrollmentDTO dto = EnrollmentDTO.from( updated );
 			result.setValue( Value.OK);

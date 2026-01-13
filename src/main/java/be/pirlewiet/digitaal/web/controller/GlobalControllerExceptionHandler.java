@@ -1,14 +1,13 @@
 package be.pirlewiet.digitaal.web.controller;
 
-import static be.occam.utils.spring.web.Controller.response;
-
-import java.util.Locale;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import be.occam.utils.spring.web.Result;
+import be.occam.utils.spring.web.Result.Value;
+import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
+import be.pirlewiet.digitaal.domain.exception.PirlewietException;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
-import be.occam.utils.spring.web.Result;
-import be.occam.utils.spring.web.Result.Value;
-import be.pirlewiet.digitaal.domain.exception.ErrorCodes;
-import be.pirlewiet.digitaal.domain.exception.PirlewietException;
+import java.util.Locale;
 
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {

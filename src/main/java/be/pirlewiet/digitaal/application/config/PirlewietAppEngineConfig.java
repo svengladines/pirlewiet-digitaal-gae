@@ -1,12 +1,11 @@
 package be.pirlewiet.digitaal.application.config;
 
+import be.occam.utils.spring.config.ConfigurationProfiles;
+import be.pirlewiet.digitaal.web.util.DataGuard;
+import be.pirlewiet.digitaal.web.util.NoopGuard;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import be.occam.utils.spring.configuration.ConfigurationProfiles;
-import be.pirlewiet.digitaal.web.util.DataGuard;
-import be.pirlewiet.digitaal.web.util.NoopGuard;
 
 @Configuration
 @Profile(ConfigurationProfiles.PRODUCTION)

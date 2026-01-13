@@ -40,7 +40,7 @@ public class CodesController {
 		
 		if ( organisation == null ) {
 			logger.warn( "unknown code [{}] presented!", code );
-			return response( "De opgegeven code werd niet herkend. Probeer opnieuw of vraag je code opnieuw aan.", HttpStatus.UNPROCESSABLE_ENTITY );
+			return new ResponseEntity<>( "De opgegeven code werd niet herkend. Probeer opnieuw of vraag je code opnieuw aan.", HttpStatus.UNPROCESSABLE_ENTITY );
 		}
 		
 		Cookie cookie
@@ -52,7 +52,7 @@ public class CodesController {
 		
 		response.addCookie( cookie );
 		
-		return response( HttpStatus.OK );
+		return new ResponseEntity<>( HttpStatus.OK );
 		
 	}
 	
@@ -79,7 +79,7 @@ public class CodesController {
 			}
 		}
 		
-		return response( HttpStatus.OK );
+		return new ResponseEntity<>( HttpStatus.OK );
 		
 	}
 	

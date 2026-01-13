@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.1</version>
+		<version>3.4.0</version>
 		<relativePath/>
 	</parent>
 
@@ -29,7 +29,7 @@
 	
 	<dependencyManagement>
  		<dependencies>
-  			<dependency>
+			<dependency>
     			<groupId>com.google.cloud</groupId>
     			<artifactId>libraries-bom</artifactId>
     			<version>26.46.0</version>
@@ -59,6 +59,17 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
@@ -69,8 +80,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
 		</dependency>
 
 		<dependency>
@@ -112,28 +123,10 @@
 			<version>5.4.0</version>
 		</dependency>
 
-		<!-- JUnit + Commons Database Pooling dependency -->
-
+		<!-- for testing -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Mockito -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.0</version>
-			<scope>test</scope>
-
-		</dependency>
-		
-		<dependency>
-			<groupId>be.occam</groupId>
- 			 <artifactId>occam-utils</artifactId>
-  			 <version>1.0-LATEST-SNAPSHOT</version>
-			<scope>compile</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 
 		<!-- HSQLDB Dependency on test-scope -->
@@ -174,6 +167,12 @@
 			<groupId>net.htmlparser.jericho</groupId>
 			<artifactId>jericho-html</artifactId>
 			<version>3.3</version>
+		</dependency>
+
+		<!-- To authenticate with Salesforce REST API -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
 	</dependencies>
 
