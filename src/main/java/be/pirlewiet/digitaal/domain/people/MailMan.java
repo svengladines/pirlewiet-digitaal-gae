@@ -8,6 +8,7 @@ import brevo.auth.ApiKeyAuth;
 import brevoApi.TransactionalEmailsApi;
 import brevoModel.CreateSmtpEmail;
 import brevoModel.SendSmtpEmail;
+import brevoModel.SendSmtpEmailSender;
 import brevoModel.SendSmtpEmailTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,6 @@ public class MailMan {
 	
 	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 
-	@Autowired
-	protected JavaMailSender mailSender;
-	
 	@Autowired
 	HeadQuarters headQuarters;
 
@@ -49,11 +47,19 @@ public class MailMan {
 
 			TransactionalEmailsApi apiInstance = new TransactionalEmailsApi();
 			SendSmtpEmail sendSmtpEmail = new SendSmtpEmail();
+			SendSmtpEmailSender sender = new SendSmtpEmailSender();
+			sender.setEmail(this.headQuarters.getEmail());
+			sendSmtpEmail.setSender(sender);
 			sendSmtpEmail.setTo(List.of(new SendSmtpEmailTo().email(to)));
 			sendSmtpEmail.setSubject(subject);
 			sendSmtpEmail.setHtmlContent(text);// SendSmtpEmail | Values to send a transactional email
+			apiInstance.sendTransacEmail(sendSmtpEmail);
 			logger.info( "Sent email to [{}] with subject [{}]", to, subject);
 			return true;
+		}
+		catch( ApiException e ) {
+			logger.error( "Failed to send email to [{}]. Brevo response: [{}]", to, e.getResponseBody() );
+			return false;
 		}
 		catch( Exception e ) {
 			logger.error( "Failed to send email to [{}]", to, e );

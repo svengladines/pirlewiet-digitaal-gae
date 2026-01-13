@@ -105,9 +105,10 @@
 
 		<!-- email, cannot use spring mail, GAE needs the javax stuff, not the jakarta -->
 		<dependency>
-			<groupId>com.sendgrid</groupId>
-			<artifactId>sendgrid-java</artifactId>
-			<version>4.10.1</version>
+			<groupId>com.brevo</groupId>
+			<artifactId>brevo</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Jakarta stuff, formerly javax, thank you Oracle -->
