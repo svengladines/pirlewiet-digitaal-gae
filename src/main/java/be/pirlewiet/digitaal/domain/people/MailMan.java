@@ -1,71 +1,64 @@
 package be.pirlewiet.digitaal.domain.people;
 
-import java.util.Properties;
-import be.pirlewiet.digitaal.application.config.PirlewietApplicationConfig;
 import be.pirlewiet.digitaal.domain.HeadQuarters;
-import com.google.appengine.api.mail.MailService;
-import com.google.appengine.api.mail.MailServiceFactory;
-
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import com.sendgrid.Method;
-import com.sendgrid.Request;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
-import org.springframework.beans.factory.annotation.Autowired;
+import brevo.ApiClient;
+import brevo.ApiException;
+import brevo.Configuration;
+import brevo.auth.ApiKeyAuth;
+import brevoApi.TransactionalEmailsApi;
+import brevoModel.CreateSmtpEmail;
+import brevoModel.SendSmtpEmail;
+import brevoModel.SendSmtpEmailTo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+
+import javax.mail.internet.MimeMessage;
+import java.util.List;
 
 @Component
 public class MailMan {
 	
 	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
+
+	@Autowired
+	protected JavaMailSender mailSender;
 	
 	@Autowired
 	HeadQuarters headQuarters;
 
-	@Value("${sendgrid.api.key}")
-	String sendGridAPIKey;
+	@Value("${brevo.api.key}")
+	String brevoApiKey;
 
 	/**
-	 * Doesnt seem to work with Java 21 & jakarta.mail...
-	 * @param to
-	 * @param subject
-	 * @param text
-	 * @return
+	 * GAE does not support jakarta email stuff (it still expects javax.mail), so use REST API.
 	 */
 	public boolean deliver(String to, String subject, String text) {
 		try {
-			Email f = new Email(PirlewietApplicationConfig.EMAIL_ADDRESS);
-			Email t = new Email(to);
-			Content content = new Content("text/html", text);
-			Mail mail = new Mail(f, subject, t, content);
 
-			SendGrid sg = new SendGrid(sendGridAPIKey);
-			Request request = new Request();
-			request.setMethod(Method.POST);
-			request.setEndpoint("mail/send");
-			request.setBody(mail.build());
-			Response response = sg.api(request);
-			logger.info("sg response status [{}]",response.getStatusCode());
-			logger.info("sg response body [{}]",response.getBody());
-			logger.info("sg response headers [{}]", response.getHeaders());
+			ApiClient defaultClient = Configuration.getDefaultApiClient();
+			ApiKeyAuth apiKey = (ApiKeyAuth) defaultClient.getAuthentication("api-key");
+			apiKey.setApiKey(brevoApiKey);
+			// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+			//apiKey.setApiKeyPrefix("Token");
+
+			TransactionalEmailsApi apiInstance = new TransactionalEmailsApi();
+			SendSmtpEmail sendSmtpEmail = new SendSmtpEmail();
+			sendSmtpEmail.setTo(List.of(new SendSmtpEmailTo().email(to)));
+			sendSmtpEmail.setSubject(subject);
+			sendSmtpEmail.setHtmlContent(text);// SendSmtpEmail | Values to send a transactional email
+			logger.info( "Sent email to [{}] with subject [{}]", to, subject);
 			return true;
 		}
 		catch( Exception e ) {
-			logger.error( "could not send email", e );
+			logger.error( "Failed to send email to [{}]", to, e );
 			return false;
 		}
-		
 	}
 
 	/*
