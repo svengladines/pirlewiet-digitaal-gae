@@ -14,8 +14,11 @@ public class Contact {
     protected String lastName;
     @JsonProperty("Birthdate")
     protected String birthDate;
-    @JsonProperty("MobilePhone")
-    protected String mobilePhone;
+    @JsonProperty("Phone")
+    protected String phone;
+    @JsonProperty("Email")
+    protected String email;
+
     @JsonProperty("Geslacht__c")
     protected String gender;
 
@@ -63,12 +66,12 @@ public class Contact {
         return this;
     }
 
-    public String mobilePhone() {
-        return mobilePhone;
+    public String phone() {
+        return phone;
     }
 
-    public Contact mobilePhone(String mobilePhone) {
-        this.mobilePhone = mobilePhone;
+    public Contact phone(String mobilePhone) {
+        this.phone = mobilePhone;
         return this;
     }
 
@@ -116,4 +119,12 @@ public class Contact {
         return this;
     }
 
+    public String email() {
+        return email;
+    }
+
+    public Contact email(String email) {
+        this.email = email;
+        return this;
+    }
 }

@@ -27,6 +27,7 @@ import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.repository.EnrollmentRepository;
 
+import static be.pirlewiet.digitaal.infrastructure.salesforce.SalesForceMapper.map;
 import static java.util.Optional.ofNullable;
 
 @Component
@@ -311,13 +312,22 @@ public class EnrollmentManager {
 
 	public Enrollment touch( Enrollment enrollment ) {
 		logger.info("enrollment [{}]; touch", enrollment.getUuid());
+		Application application = this.applicationRepository.findByUuid(enrollment.getApplicationUuid());
+		Person applicant = this.personManager.findOneByUuid(application.getContactPersonUuid());
 		Person participant = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
+		Organisation organisation = this.organisationManager.findOneByUuid(application.getOrganisationUuid());
+		Holiday holiday = this.holidayManager.findOneByUuid(enrollment.getHolidayUuid());
 		List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(enrollment.getUuid());
 		ofNullable(participant.getExternalId()).ifPresent(id -> {
 			if (salesforceEnabled) {
 				logger.info("participant [{}], is contact [{}]; update...", participant.getUuid(), id);
-				Map<String, String> map = map(qnaList);
-				logger.info("participant [{}], update contact - qlist", participant.getUuid(), id);
+				Map<String, String> map = new  HashMap<>();
+				map.putAll(SalesForceMapper.mapApplication(application,applicant));
+				map.putAll(SalesForceMapper.mapEnrollment(enrollment,holiday));
+				map.putAll(SalesForceMapper.mapOrganisation(organisation));
+				map.putAll(map(qnaList));
+				SalesForceMapper.removeNulls(map);
+				logger.info("participant [{}], update contact [{}] with data [{}]", participant.getUuid(), id, map);
 				this.salesforceClient.updateContact(id, map).ifPresent(contact -> {
 					logger.info("person [{}]; saved SF contact with id {}", participant.getUuid(), id);
 				});
@@ -341,48 +351,5 @@ public class EnrollmentManager {
 		return "TODO";
 	}
 
-	protected static Map<String,String> map(List<QuestionAndAnswer> qnaList) {
-		HashMap<String,String> map = new HashMap();
-		qnaList.stream().forEach( qna -> {
-			map.putAll(SalesForceMapper.map(qna));
-		});
-		return map;
-	}
-
-	protected static Map<String,String> mapOrganisation(Organisation organisation) {
-		HashMap<String,String> map = new HashMap();
-		// map organisation
-		map.put("Naam_doorverwijzer__c", organisation.getName());
-		return map;
-	}
-
-	protected static Map<String,String> mapApplication(Application application,Person applicant) {
-		HashMap<String,String> map = new HashMap();
-		// map organisation
-		map.put("Naam_aanvrager__c", "%s %s".formatted(applicant.getGivenName(), applicant.getFamilyName()));
-		map.put("Telefoon_aanvrager__c", applicant.getPhone());
-		map.put("E_mail_aanvrager__c", applicant.getEmail());
-
-		return map;
-	}
-
-	protected static Map<String,String> mapEnrollment(Enrollment enrollment) {
-		HashMap<String,String> map = new HashMap();
-		// map holidays
-		//map.putAll("Type_vakantie_Deelname_1", enrollment.);
-		return map;
-	}
-
-	protected String concat(String... values) {
-		StringBuilder sb = new StringBuilder();
-		Arrays.stream(values).iterator().forEachRemaining(value -> {
-			sb.append(value);
-			sb.append(";");
-		});
-		if (sb.length() > 0) {
-			return sb.toString().substring(0, sb.length()-1);
-		}
-		return sb.toString();
-	}
 }
  

@@ -70,7 +70,7 @@ public class ApplicationsPageController {
 		}
 		model.addAttribute( "applicationsResult", applicationsResult );
 		model.addAttribute( "applicationsAllowed", new Date().after(this.headQuarters.getApplicationsStartDate())
-				|| List.of("wod428","mcs924").contains(actor.getCode().toLowerCase()));
+				|| List.of("wod428","mcs924","wam527").contains(actor.getCode().toLowerCase()));
 		return "organisation/applications";
 	}
 	

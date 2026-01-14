@@ -1,10 +1,9 @@
 package be.pirlewiet.digitaal.infrastructure.salesforce;
 
-import be.pirlewiet.digitaal.model.QuestionAndAnswer;
+import be.pirlewiet.digitaal.model.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static be.pirlewiet.digitaal.domain.q.QIDs.*;
 
@@ -38,5 +37,71 @@ public class SalesForceMapper {
             });
         }
         return map;
+    }
+
+    public static Map<String,String> map(List<QuestionAndAnswer> qnaList) {
+        HashMap<String,String> map = new HashMap();
+        qnaList.stream().forEach( qna -> {
+            map.putAll(SalesForceMapper.map(qna));
+        });
+        return map;
+    }
+
+    public static Map<String,String> mapOrganisation(Organisation organisation) {
+        HashMap<String,String> map = new HashMap();
+        // map organisation
+        map.put("Naam_doorverwijzer__c", organisation.getName());
+        return map;
+    }
+
+    public static Map<String,String> mapApplication(Application application, Person applicant) {
+        HashMap<String,String> map = new HashMap();
+        // map organisation
+        map.put("Naam_aanvrager__c", "%s %s".formatted(applicant.getGivenName(), applicant.getFamilyName()));
+        map.put("Telefoon_aanvrager__c", applicant.getPhone());
+        map.put("E_mail_aanvrager__c", applicant.getEmail());
+        return map;
+    }
+
+    public static Map<String,String> mapEnrollment(Enrollment enrollment, Holiday holiday) {
+        HashMap<String,String> map = new HashMap();
+        // map holiday
+        map.put("Type_vakantie__c", switch(holiday.getName()) {
+           case "PaasKIKA" -> "PaasKika";
+           case "PaasGEZINS" -> "PaasGezins";
+           case "VOV 1" -> "VOV1";
+           default -> null;
+        });
+        // map status
+        map.put("Deelname__c", switch(enrollment.getStatus().getValue()) {
+            case EnrollmentStatus.Value.ACCEPTED -> "Inschrijving bevestigd";
+            case EnrollmentStatus.Value.CANCELLED -> "Geannuleerd";
+            case EnrollmentStatus.Value.REJECTED -> "Geweigerd";
+            case EnrollmentStatus.Value.WAITINGLIST ->  "Wachtlijst";
+            default -> null;
+        });
+        return map;
+    }
+
+    public static void removeNulls(Map<String,String> map) {
+        List<String> toRemove = new ArrayList<>();
+        for (String key : map.keySet()) {
+            if (map.get(key) == null) {
+                toRemove.add(key);
+            }
+        }
+        toRemove.forEach(map::remove);
+    }
+
+    protected String concat(String... values) {
+        StringBuilder sb = new StringBuilder();
+        Arrays.stream(values).iterator().forEachRemaining(value -> {
+            sb.append(value);
+            sb.append(";");
+        });
+        if (sb.length() > 0) {
+            return sb.toString().substring(0, sb.length()-1);
+        }
+        return sb.toString();
     }
 }

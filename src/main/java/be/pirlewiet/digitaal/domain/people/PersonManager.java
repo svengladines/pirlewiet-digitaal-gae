@@ -144,16 +144,17 @@ public class PersonManager {
 			.type("Deelnemer")
 			.firstName(person.getGivenName())
 			.lastName(person.getFamilyName())
-			.mobilePhone(person.getPhone())
+			.phone(person.getPhone())
 			.birthDate(Timing.date(person.getBirthDay(),"yyyy-MM-dd"))
 			.city(address.getCity())
 			.street("%s %s".formatted(address.getStreet(),address.getNumber()))
 			.postalCode(address.getZipCode())
-				.gender(switch (person.getGender()) {
-					case Gender.M -> "Man";
-					case Gender.F -> "Vrouw";
-					default -> "X";
-				});
+			.email(person.getEmail())
+			.gender(switch (person.getGender()) {
+				case Gender.M -> "Man";
+				case Gender.F -> "Vrouw";
+				default -> "X";
+			});
 
 	}
        
