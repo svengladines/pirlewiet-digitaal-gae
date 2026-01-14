@@ -124,7 +124,9 @@ public class Person {
 		t.setEmail(f.getEmail());
 		t.setGender(f.getGender());
 		t.setStateNumber( f.getStateNumber());
-		t.setBirthDay(Timing.date(f.getBirthDay()));
+		if (f.getBirthDay()!=null) {
+			t.setBirthDay(Timing.date(f.getBirthDay()));
+		}
 		return t;
 	}
 }

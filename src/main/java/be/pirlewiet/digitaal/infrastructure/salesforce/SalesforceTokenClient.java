@@ -3,6 +3,7 @@ package be.pirlewiet.digitaal.infrastructure.salesforce;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 
+@ConditionalOnProperty("salesforce.enabled")
 @Component
 public class SalesforceTokenClient {
     private final RestTemplate restTemplate;
@@ -27,7 +29,7 @@ public class SalesforceTokenClient {
 
     public SalesforceTokenClient(
             RestTemplateBuilder builder,
-            @Value("${salesforce.api.tokenBaseUrl}") String baseUrl,
+            @Value("${salesforce.api.baseUrl}") String baseUrl,
             @Value("${salesforce.api.clientId}") String clientId,
             @Value("${salesforce.api.clientSecret}") String clientSecret) {
         this.restTemplate = builder.build();

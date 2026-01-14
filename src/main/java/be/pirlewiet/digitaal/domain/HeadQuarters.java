@@ -6,11 +6,13 @@ import java.util.GregorianCalendar;
 public class HeadQuarters {
 	
 	protected final String email;
+	protected final String pdEmail;
 	protected final Integer year;
 	protected final Date applicationsStartDate;
 	
-	public HeadQuarters(String email, Integer year) {
+	public HeadQuarters(String email, String pdEmail, Integer year) {
 		this.email = email;
+		this.pdEmail = pdEmail;
         this.year = year;
 		GregorianCalendar cal = new GregorianCalendar();
 		// applications start from 15/1
@@ -24,6 +26,10 @@ public class HeadQuarters {
 
 	public Integer getYear() {
 		return year;
+	}
+
+	public String getPdEmail() {
+		return pdEmail;
 	}
 
 	public Date getApplicationsStartDate() {

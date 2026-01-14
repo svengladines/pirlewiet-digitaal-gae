@@ -8,6 +8,7 @@ import be.pirlewiet.digitaal.infrastructure.salesforce.Contact;
 import be.pirlewiet.digitaal.infrastructure.salesforce.SalesforceClient;
 import be.pirlewiet.digitaal.model.Address;
 import be.pirlewiet.digitaal.model.Gender;
+import com.sun.jdi.BooleanValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.model.Organisation;
 import be.pirlewiet.digitaal.model.Person;
 import be.pirlewiet.digitaal.repository.PersonRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import static java.util.Optional.ofNullable;
@@ -33,16 +35,18 @@ public class PersonManager {
 	@Autowired
 	protected AddressManager addressManager;
 	
-	protected final Logger logger
-		= LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	@Autowired
 	protected PersonRepository personRepository;
+
+	@Value("${salesforce.enabled}")
+	protected boolean salesforceEnabled;
 	
 	@Autowired
 	MailMan mailMan;
 
-	@Autowired
+	@Autowired(required = false)
 	SalesforceClient salesforceClient;
 	
     public PersonManager() {
@@ -115,18 +119,22 @@ public class PersonManager {
 	public void touch(Person person, Address address) {
 		logger.info("person [{}]; touch", person.getUuid());
 		ofNullable(person.getExternalId()).ifPresentOrElse(id -> {
-			logger.info("person [{}], is contact [{}]; update...", person.getUuid(),id);
-			this.salesforceClient.updateContact(id, toContact(person,address)).ifPresent(contact -> {
-				logger.info("person [{}]; saved SF contact with id {}", person.getUuid(), contact.id());
-				this.personRepository.saveAndFlush(person);
-			});
+			if (salesforceEnabled) {
+				logger.info("person [{}], is SF contact with id [{}]; update...", person.getUuid(),id);
+				this.salesforceClient.updateContact(id, toContact(person, address)).ifPresent(contact -> {
+					logger.info("person [{}]; saved SF contact with id {}", person.getUuid(), contact.id());
+					this.personRepository.saveAndFlush(person);
+				});
+			}
 		}, () -> {
-			logger.info("person [{}]; is no SF contact yet, create", person.getUuid());
-			this.salesforceClient.createContact(toContact(person,address)).ifPresent(contact -> {
-				person.setExternalId(contact.id());
-				logger.info("person [{}]; saved as new SF contact with id {}", person.getUuid(), contact.id());
-				this.personRepository.saveAndFlush(person);
-			});
+			if (salesforceEnabled) {
+				logger.info("person [{}]; is no SF contact yet, create", person.getUuid());
+				this.salesforceClient.createContact(toContact(person, address)).ifPresent(contact -> {
+					person.setExternalId(contact.id());
+					logger.info("person [{}]; saved as new SF contact with id {}", person.getUuid(), contact.id());
+					this.personRepository.saveAndFlush(person);
+				});
+			}
 		});
 	}
 

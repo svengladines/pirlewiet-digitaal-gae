@@ -48,7 +48,7 @@ public class MailMan {
 			TransactionalEmailsApi apiInstance = new TransactionalEmailsApi();
 			SendSmtpEmail sendSmtpEmail = new SendSmtpEmail();
 			SendSmtpEmailSender sender = new SendSmtpEmailSender();
-			sender.setEmail(this.headQuarters.getEmail());
+			sender.setEmail(this.headQuarters.getPdEmail());
 			sendSmtpEmail.setSender(sender);
 			sendSmtpEmail.setTo(List.of(new SendSmtpEmailTo().email(to)));
 			sendSmtpEmail.setSubject(subject);

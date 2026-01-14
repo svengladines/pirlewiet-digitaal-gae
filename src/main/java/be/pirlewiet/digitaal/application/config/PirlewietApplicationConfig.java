@@ -20,10 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
 import org.springframework.format.datetime.DateFormatter;
 
 
@@ -149,6 +146,12 @@ public class PirlewietApplicationConfig {
 	public static class RepositoryConfig {
 
 		@Bean
+		@Profile("default")
+		public Datastore datastore() {
+			return DatastoreOptions.getDefaultInstance().getService();
+		}
+
+		@Bean
 		@Lazy(false)
 		public Objectify objectify(Datastore datastore) {
 			ObjectifyFactory factory = new ObjectifyFactory(datastore);
@@ -197,8 +200,8 @@ public class PirlewietApplicationConfig {
 	static class HeadQuarterConfig {
 
 		@Bean
-		public HeadQuarters headQuarters(@Value("${pirlewiet.email}")String email,@Value("${pirlewiet.year}")Integer year) {
-			return new HeadQuarters(email,year);
+		public HeadQuarters headQuarters(@Value("${pirlewiet.email}")String email,@Value("${pirlewiet.pdEmail}")String pdEmail,@Value("${pirlewiet.year}")Integer year) {
+			return new HeadQuarters(email,pdEmail,year);
 		}
 
 	}
@@ -208,7 +211,8 @@ public class PirlewietApplicationConfig {
 	static class DevConfig {
 
 		@Bean
-		public Datastore datastoreOptions(@Value("${gcp.project-id}")String projectId,@Value("${gcp.datastore.host}") String host) {
+		@Primary
+		public Datastore datastore(@Value("${gcp.project-id}")String projectId,@Value("${gcp.datastore.host}") String host) {
 			DatastoreOptions.Builder builder = DatastoreOptions.newBuilder()
 					.setProjectId(projectId)
 					.setHost(host)

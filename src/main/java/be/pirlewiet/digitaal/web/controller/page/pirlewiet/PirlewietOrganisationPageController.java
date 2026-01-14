@@ -24,7 +24,7 @@ import be.pirlewiet.digitaal.web.dto.OrganisationDTO;
 import be.pirlewiet.digitaal.web.util.PirlewietUtil;
 
 @Controller
-@RequestMapping(value="/organisation-pirlewiet-{uuid}.html")
+@RequestMapping(value="/pirlewiet/organisation.html")
 public class PirlewietOrganisationPageController {
 	
 	private final static Logger logger = LoggerFactory.getLogger( PirlewietOrganisationPageController.class );
@@ -37,8 +37,7 @@ public class PirlewietOrganisationPageController {
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } ) 
 	public ModelAndView view( 
-			@CookieValue( required = true, value="pwtid" ) String pwtID,
-			@PathVariable String uuid)  {
+			@CookieValue( required = true, value="pwtid" ) String pwtID)  {
 		
 		OrganisationDTO organisation
 			= null;
@@ -48,7 +47,7 @@ public class PirlewietOrganisationPageController {
 		
 		
 		Result<OrganisationDTO> result 
-			= this.organisationService.findOneByUuid( uuid, actor );
+			= this.organisationService.findOneByUuid( actor.getUuid(), actor );
 			
 		organisation = result.getObject();
 			

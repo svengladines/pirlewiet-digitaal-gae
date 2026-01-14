@@ -2,6 +2,7 @@ package be.pirlewiet.digitaal.infrastructure.salesforce;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
+@ConditionalOnProperty("salesforce.enabled")
 public class SalesforceClient {
 
     static protected final String SALESFORCE_API_VERSION = "65.0";

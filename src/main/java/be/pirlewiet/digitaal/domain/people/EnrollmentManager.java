@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -67,7 +68,10 @@ public class EnrollmentManager {
 	@Autowired
 	LocaleResolver localeResolver;
 
-	@Autowired
+	@Value("${salesforce.enabled}")
+	protected boolean salesforceEnabled;
+
+	@Autowired(required = false)
 	SalesforceClient salesforceClient;
 	
 	public EnrollmentManager( ) {
@@ -310,12 +314,14 @@ public class EnrollmentManager {
 		Person participant = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
 		List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(enrollment.getUuid());
 		ofNullable(participant.getExternalId()).ifPresent(id -> {
-			logger.info("participant [{}], is contact [{}]; update...", participant.getUuid(),id);
-			Map<String,String> map = map(qnaList);
-			logger.info("participant [{}], update contact - qlist", participant.getUuid(),id);
-			this.salesforceClient.updateContact(id, map).ifPresent(contact -> {
-				logger.info("person [{}]; saved SF contact with id {}", participant.getUuid(), id);
-			});
+			if (salesforceEnabled) {
+				logger.info("participant [{}], is contact [{}]; update...", participant.getUuid(), id);
+				Map<String, String> map = map(qnaList);
+				logger.info("participant [{}], update contact - qlist", participant.getUuid(), id);
+				this.salesforceClient.updateContact(id, map).ifPresent(contact -> {
+					logger.info("person [{}]; saved SF contact with id {}", participant.getUuid(), id);
+				});
+			}
 		});
 		return enrollment;
 	}
@@ -343,7 +349,24 @@ public class EnrollmentManager {
 		return map;
 	}
 
-	protected static Map<String,String> map(Enrollment enrollment) {
+	protected static Map<String,String> mapOrganisation(Organisation organisation) {
+		HashMap<String,String> map = new HashMap();
+		// map organisation
+		map.put("Naam_doorverwijzer__c", organisation.getName());
+		return map;
+	}
+
+	protected static Map<String,String> mapApplication(Application application,Person applicant) {
+		HashMap<String,String> map = new HashMap();
+		// map organisation
+		map.put("Naam_aanvrager__c", "%s %s".formatted(applicant.getGivenName(), applicant.getFamilyName()));
+		map.put("Telefoon_aanvrager__c", applicant.getPhone());
+		map.put("E_mail_aanvrager__c", applicant.getEmail());
+
+		return map;
+	}
+
+	protected static Map<String,String> mapEnrollment(Enrollment enrollment) {
 		HashMap<String,String> map = new HashMap();
 		// map holidays
 		//map.putAll("Type_vakantie_Deelname_1", enrollment.);
