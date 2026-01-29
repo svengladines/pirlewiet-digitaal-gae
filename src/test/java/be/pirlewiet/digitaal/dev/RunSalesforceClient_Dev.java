@@ -43,7 +43,7 @@ public class RunSalesforceClient_Dev {
                 .lastName("Simpson")
                 .gender("Vrouw")
                 .birthDate("1990-01-01")
-                .mobilePhone("0499/290671");
+                .phone("0499/290671");
         salesforceClient.createContact(toCreate).ifPresentOrElse(contact -> {
             logger.info("contact created: {}", contact);
         }, () -> {

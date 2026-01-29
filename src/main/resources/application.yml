@@ -4,7 +4,7 @@ spring:
     locale-resolver: fixed
 
 salesforce:
-  enabled: false
+  enabled: ${SALESFORCE_ENABLED}
   api:
     baseUrl: ${SALESFORCE_API_BASE_URL}
     clientId: ${SALESFORCE_API_CLIENT_ID}

@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.domain.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -101,11 +102,28 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	@Override
 	@Transactional(readOnly=true)
 	public Result<List<Result<ApplicationDTO>>> query( Organisation actor ) {
+		return query(actor,Boolean.FALSE);
+	}
+
+	@Transactional(readOnly=true)
+	public Result<List<Result<ApplicationDTO>>> query( Organisation actor, Boolean all ) {
 		
 		Result<List<Result<ApplicationDTO>>>result = new Result<List<Result<ApplicationDTO>>>();
-		
-		List<Application> applications = PirlewietUtil.isPirlewiet( actor ) ? this.guard().applicationManager.findActiveByYear( ) : this.guard().applicationManager.findByOrganisation( actor );
-		
+
+		List<Application> applications = new ArrayList<Application>();
+
+		if (PirlewietUtil.isPirlewiet(actor)) {
+			if (Boolean.TRUE.equals(all)) {
+				applications.addAll(applicationManager.findAll());
+			}
+			else {
+				applications.addAll(applicationManager.findActive());
+			}
+		}
+		else {
+			applications.addAll(this.guard().applicationManager.findByOrganisation( actor ));
+		}
+
 		List<Result<ApplicationDTO>> individualResults = list();
 		
 		for ( Application application : applications ) {
@@ -280,20 +298,30 @@ public class ApplicationService extends be.pirlewiet.digitaal.domain.service.Ser
 	}
 	
 	protected void extend( ApplicationDTO dto, Application application ) {
-		
-		String holidayString
-			= application.getHolidayUuids();
-		
-		Set<Holiday> holidays
-			= this.holidayManager.holidaysFromUUidString( holidayString );
-		
-		for ( Holiday holiday : holidays ) {
-			
-			HolidayDTO holidayDTO
-				= HolidayDTO.from( holiday );
-			
-			dto.getHolidays().add( holidayDTO );
-			
+
+		try {
+
+			String holidayString
+					= application.getHolidayUuids();
+
+			Set<Holiday> holidays
+					= this.holidayManager.holidaysFromUUidString(holidayString);
+
+			for (Holiday holiday : holidays) {
+
+				HolidayDTO holidayDTO
+						= HolidayDTO.from(holiday);
+
+				dto.getHolidays().add(holidayDTO);
+
+			}
+
+			Organisation organisation = this.organisationManager.findOneByUuid(application.getOrganisationUuid());
+			dto.setOrganisation(OrganisationDTO.from(organisation));
+
+		}
+		catch(Exception e) {
+			logger.error("[{}]; Failed to extend application", application.getUuid(), e);
 		}
 		
 		

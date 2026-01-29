@@ -216,7 +216,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			
 			logger.info( "start download...");
 			
-			List<Application> applications = this.applicationManager.findActiveByYear();
+			List<Application> applications = this.applicationManager.findActive();
 			
 			logger.info( "download - applications loaded");
 			
@@ -380,7 +380,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			logger.info( "start download-100...");
 			
 			List<Application> applications
-				= this.applicationManager.findActiveByYear();
+				= this.applicationManager.findActive();
 			
 			logger.info( "download - applications loaded");
 			

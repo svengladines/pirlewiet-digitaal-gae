@@ -476,3 +476,7 @@ a.edit {
 input:valid {
     background-color: rgb(0 255 0 / 0.1);
 }
+
+.ivv {
+    background-color: rgb(255,255,224);
+}

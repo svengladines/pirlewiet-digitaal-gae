@@ -118,11 +118,11 @@ public class ApplicationManager {
 	}
 	
 	public List<Application> findAll( ) {
-		List<Application> all = this.applicationRepository.findAll();
-		return all;
+		List<Application> list = this.applicationRepository.findByYear( this.headQuarters.getYear() );
+		return list;
 	}
 	
-	public List<Application> findActiveByYear( ) {
+	public List<Application> findActive( ) {
 		List<Application> byYear = this.applicationRepository.findByYear( this.headQuarters.getYear() );
 		List<Application> filtered = list();
 		for ( Application application : byYear ) {

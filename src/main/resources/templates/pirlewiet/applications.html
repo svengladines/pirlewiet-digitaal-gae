@@ -35,13 +35,17 @@
 					Er zijn nog geen dossiers ingediend.
 				</div>
 				<div th:each="applicationResult : ${applicationsResult.object}">
-					<div th:with="app=${applicationResult.object}">
-						<table class="table table-bordered">
+					<div th:with="app=${applicationResult.object}, isIvv=${app.organisation.type == T(be.pirlewiet.digitaal.model.OrganisationType).INDIVIDUAL}">
+						<table class="table table-bordered" th:classappend="${isIvv? 'ivv' : 'non-profit'}">
 							<thead>
 							<tr>
-								<th scope="row" class="th-row">Dossier</th>
+								<th scope="row" class="th-row"><span>Dossier</span>
+									<div class="pull-right">
+										<span class="text-info"><strong th:text="#{application.status.__${app.status.value}__}"></strong></span>&nbsp;&nbsp;
+									</div>
+								</th>
 								<th colspan="2">
-									<span><!--<strong th:text="${#dates.format(app.submitted, 'dd/MM/yyyy')}"></strong>--></span>
+									<span><strong th:if="${app.submitted!=null}" th:text="${#dates.format(app.submitted, 'dd/MM/yyyy')}"></strong></span>
 									<a th:title="${app.uuid}" th:attr="href=@{/organisation/application-{uuid}.html(uuid=${app.uuid})}" class="btn btn-primary pull-right">Wijzig</a>
 								</th>
 							</tr>
@@ -52,8 +56,8 @@
 								<td colspan="2" th:text="${app.holidayNames}"></td>
 							</tr>
 							<tr>
-								<th scope="row" class="th-row">Contactpersoon</th>
-								<td colspan="2" th:text="${app.contactPersonName}"></td>
+								<th scope="row" class="th-row">Aanvrager</th>
+								<td colspan="2" th:text="${app.contactPersonName} + ' (' + ${app.organisation.name} + ')'"></td>
 							</tr>
 							<tr th:each="enrollment : ${app.enrollments}">
 								<th scope="row" class="th-row">Vakantieganger</th>

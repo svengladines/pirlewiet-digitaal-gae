@@ -50,9 +50,7 @@ public class SalesforceTokenClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        ResponseEntity<TokenResponse> response = restTemplate.postForEntity(
-                tokenUri, new HttpEntity<>(form, headers), TokenResponse.class);
-
+        ResponseEntity<TokenResponse> response = restTemplate.postForEntity(tokenUri, new HttpEntity<>(form, headers), TokenResponse.class);
         TokenResponse body = Objects.requireNonNull(response.getBody(), "Empty token response");
         this.cachedToken = body.getAccessToken();
         // Sommige responses bevatten 'expires_in'; als die ontbreekt, kies een veilig korte TTL (bijv. 5 min)

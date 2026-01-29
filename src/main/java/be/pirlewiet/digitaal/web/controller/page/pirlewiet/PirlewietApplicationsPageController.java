@@ -15,10 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
@@ -41,13 +38,13 @@ public class PirlewietApplicationsPageController {
 	EnrollmentService enrollmentService;
 	
 	@RequestMapping( method = { RequestMethod.GET }, produces={ MediaType.TEXT_HTML_VALUE } )
-	public String view( @CookieValue(required=true, value="pwtid") String pwtid, Model model ) {
+	public String view(@RequestParam(required = false) Boolean all, @CookieValue(required=true, value="pwtid") String pwtid, Model model ) {
 		
 		Organisation actor = this.doorMan.guard().whoHasID( pwtid  );
 
 		model.addAttribute( "organisation", actor );
 	
-		Result<List<Result<ApplicationDTO>>> applicationsResult = this.applicationService.guard().query( actor );
+		Result<List<Result<ApplicationDTO>>> applicationsResult = this.applicationService.guard().query( actor, all);
 		
 		Result<Map<String, List<Result<EnrollmentDTO>>>> mappedResult = this.enrollmentService.guard().mapped(applicationsResult.getObject(), actor );
 		

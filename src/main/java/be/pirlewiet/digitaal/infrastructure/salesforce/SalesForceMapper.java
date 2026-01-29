@@ -1,5 +1,6 @@
 package be.pirlewiet.digitaal.infrastructure.salesforce;
 
+import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.model.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +34,18 @@ public class SalesForceMapper {
         if (qnaMapping.containsKey(qna.getQid())) {
             map.put(qnaMapping.get(qna.getQid()), switch (qna.getType()) {
                 case YesNo -> "Y".equalsIgnoreCase(qna.getAnswer()) ? "Ja" : "Neen";
+                case MC ->  {
+                    // temporary mismatch due to options changed in Questionsheet | TODO: remove
+                    if (qna.getAnswer().toLowerCase().contains("auto")) {
+                        yield "Auto";
+                    }
+                    else if (qna.getAnswer().toLowerCase().contains("trein")) {
+                        yield "Openbaar vervoer";
+                    }
+                    else {
+                        yield qna.getAnswer();
+                    }
+                }
                 default -> qna.getAnswer();
             });
         }
@@ -51,12 +64,17 @@ public class SalesForceMapper {
         HashMap<String,String> map = new HashMap();
         // map organisation
         map.put("Naam_doorverwijzer__c", organisation.getName());
+        map.put("Inschrijving__c",switch(organisation.getType()) {
+            case NON_PROFIT -> "Doorverwijzer";
+            case INDIVIDUAL -> "Iedereen Verdient Vakantie";
+            default -> null;});
         return map;
     }
 
     public static Map<String,String> mapApplication(Application application, Person applicant) {
         HashMap<String,String> map = new HashMap();
         // map organisation
+        map.put("Datum_inschrijving__c", date(application.getSubmitted()));
         map.put("Naam_aanvrager__c", "%s %s".formatted(applicant.getGivenName(), applicant.getFamilyName()));
         map.put("Telefoon_aanvrager__c", applicant.getPhone());
         map.put("E_mail_aanvrager__c", applicant.getEmail());
@@ -80,6 +98,7 @@ public class SalesForceMapper {
             case EnrollmentStatus.Value.WAITINGLIST ->  "Wachtlijst";
             default -> null;
         });
+        // contact
         return map;
     }
 
@@ -91,6 +110,13 @@ public class SalesForceMapper {
             }
         }
         toRemove.forEach(map::remove);
+    }
+
+    public static String date(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return Timing.date(date,"yyyy-MM-dd");
     }
 
     protected String concat(String... values) {

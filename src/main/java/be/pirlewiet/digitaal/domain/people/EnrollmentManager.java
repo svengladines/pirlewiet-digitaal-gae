@@ -317,7 +317,8 @@ public class EnrollmentManager {
 		Person participant = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
 		Organisation organisation = this.organisationManager.findOneByUuid(application.getOrganisationUuid());
 		Holiday holiday = this.holidayManager.findOneByUuid(enrollment.getHolidayUuid());
-		List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(enrollment.getUuid());
+		List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(application.getUuid());
+		qnaList.addAll(this.questionAndAnswerManager.findByEntity(enrollment.getUuid()));
 		ofNullable(participant.getExternalId()).ifPresent(id -> {
 			if (salesforceEnabled) {
 				logger.info("participant [{}], is contact [{}]; update...", participant.getUuid(), id);

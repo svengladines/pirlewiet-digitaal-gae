@@ -21,6 +21,7 @@ public class ApplicationDTO {
     protected Date submitted;
     private ApplicationStatus status = new ApplicationStatus();
 	protected PersonDTO applicant;
+	protected OrganisationDTO organisation;
 
     protected List<EnrollmentDTO> enrollments = new ArrayList<EnrollmentDTO>();
 
@@ -110,6 +111,14 @@ public class ApplicationDTO {
 
 	public void setSubmitted(Date submitted) {
 		this.submitted = submitted;
+	}
+
+	public void setOrganisation(OrganisationDTO organisation) {
+		this.organisation = organisation;
+	}
+
+	public OrganisationDTO getOrganisation() {
+		return organisation;
 	}
 
 	public static ApplicationDTO from ( Application f ) {
