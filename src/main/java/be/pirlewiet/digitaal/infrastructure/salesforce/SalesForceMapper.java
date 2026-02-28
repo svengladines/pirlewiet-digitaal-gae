@@ -2,6 +2,7 @@ package be.pirlewiet.digitaal.infrastructure.salesforce;
 
 import be.occam.utils.timing.Timing;
 import be.pirlewiet.digitaal.model.*;
+import be.pirlewiet.digitaal.model.Address;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;

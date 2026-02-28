@@ -111,8 +111,12 @@ public class Person {
 	public String getExternalId() {
 		return externalId;
 	}
-	public void setExternalId(String externalId) {
+	public void setExternalId(String externalId){
 		this.externalId = externalId;
+	}
+
+	public String getName() {
+		return "%s %s".formatted(this.givenName, this.familyName);
 	}
 
 	public static Person from( PersonDTO f ) {

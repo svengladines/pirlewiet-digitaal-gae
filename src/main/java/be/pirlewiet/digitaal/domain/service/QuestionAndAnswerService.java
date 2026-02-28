@@ -20,6 +20,8 @@ import be.pirlewiet.digitaal.web.dto.QuestionAndAnswerDTO;
 
 @Service
 public class QuestionAndAnswerService extends be.pirlewiet.digitaal.domain.service.Service<QuestionAndAnswerDTO,QuestionAndAnswer> {
+
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 	
 	@Autowired
 	protected DoorMan doorMan;
@@ -27,15 +29,11 @@ public class QuestionAndAnswerService extends be.pirlewiet.digitaal.domain.servi
 	@Autowired
 	QuestionAndAnswerManager questionAndAnswerManager;
 	
-	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
-	
 	public Result<List<QuestionAndAnswerDTO>> findByEntityAndTag( String entityUuid, String tag ) {
 		
-		Result<List<QuestionAndAnswerDTO>> result 
-			= new Result<List<QuestionAndAnswerDTO>>();
+		Result<List<QuestionAndAnswerDTO>> result = new Result<List<QuestionAndAnswerDTO>>();
 		
-		List<QuestionAndAnswer> list
-			= this.questionAndAnswerManager.findByEntityAndTag( entityUuid, tag );
+		List<QuestionAndAnswer> list = this.questionAndAnswerManager.findByEntityAndTag( entityUuid, tag );
 		
 		if ( list == null  ) {
 			result.setValue( Value.NOK );
@@ -43,14 +41,9 @@ public class QuestionAndAnswerService extends be.pirlewiet.digitaal.domain.servi
 		}
 		else {
 			
-			List<QuestionAndAnswerDTO> dtos
-				= list();
-			
+			List<QuestionAndAnswerDTO> dtos = list();
 			for ( QuestionAndAnswer answer : list ) {
-			
-				QuestionAndAnswerDTO dto
-					= QuestionAndAnswerDTO.from( answer );
-				
+				QuestionAndAnswerDTO dto = QuestionAndAnswerDTO.from( answer );
 				dtos.add( dto );
 			}
 				
@@ -83,15 +76,9 @@ public class QuestionAndAnswerService extends be.pirlewiet.digitaal.domain.servi
 			else {
 				
 				logger.info( "found [{}] qnas for entity [{}] and tag [{}]", new Object[] { list.size(), entityUuid, tag } );
-				
-				List<QuestionAndAnswerDTO> dtos
-					= list();
-				
+				List<QuestionAndAnswerDTO> dtos = list();
 				for ( QuestionAndAnswer answer : list ) {
-				
-					QuestionAndAnswerDTO dto
-						= QuestionAndAnswerDTO.from( answer );
-					
+					QuestionAndAnswerDTO dto = QuestionAndAnswerDTO.from( answer );
 					dtos.add( dto );
 				}
 					

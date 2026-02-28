@@ -2,14 +2,13 @@ package be.pirlewiet.digitaal.domain.people;
 
 import static be.occam.utils.javax.Utils.isEmpty;
 import static be.occam.utils.javax.Utils.list;
+import static be.pirlewiet.digitaal.infrastructure.salesforce.SalesForceMapper.map;
+import static java.util.Optional.ofNullable;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
+import be.pirlewiet.digitaal.infrastructure.salesforce.SalesForceMapper;
+import be.pirlewiet.digitaal.infrastructure.salesforce.SalesforceClient;
 import be.pirlewiet.digitaal.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +19,7 @@ import be.pirlewiet.digitaal.domain.HeadQuarters;
 import be.pirlewiet.digitaal.domain.q.QIDs;
 import be.pirlewiet.digitaal.domain.q.QuestionSheet;
 import be.pirlewiet.digitaal.repository.ApplicationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /*
@@ -42,6 +42,12 @@ public class ApplicationManager {
 	
 	@Autowired
 	OrganisationManager organisationManager;
+
+	@Value("${salesforce.enabled}")
+	protected boolean salesforceEnabled;
+
+	@Autowired(required = false)
+	SalesforceClient salesforceClient;
 
 	protected final Comparator<Application> mostRecentlySubmitted
 		= new Comparator<Application>() {
@@ -298,18 +304,19 @@ public class ApplicationManager {
 				
 				if ( ApplicationStatus.Value.DRAFT.equals( application.getStatus().getValue() ) ) {
 					logger.info( "Application []; intake", application.getUuid());
+					applicationStatus.setValue( ApplicationStatus.Value.SUBMITTED );
+					application.setSubmitted( new Date() );
+					save = true;
+
 					// TODO, load and manager will load again. performance optimization possible
 					List<Enrollment> enrollments = this.enrollmentManager.findByApplicationUuid( application.getUuid() );
 					for ( Enrollment enrollment : enrollments ) {
 							if ( ( isEmpty( enrollment.getHolidayUuid() ) || ( ! enrollment.getHolidayUuid().equals( application.getHolidayUuids() )) ) || ( isEmpty( enrollment.getHolidayName() ) ) ) {
 								this.enrollmentManager.updateHolidays( enrollment.getUuid(), application.getHolidayUuids(), true );
 							}
-							this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), false );
+							this.enrollmentManager.updateStatus( enrollment.getUuid(), new EnrollmentStatus( EnrollmentStatus.Value.TRANSIT ), application, false );
 					}
-					applicationStatus.setValue( ApplicationStatus.Value.SUBMITTED );
-					application.setSubmitted( new Date() );
-					save = true;
-					
+
 					Organisation organisation = this.organisationManager.findOneByUuid( application.getOrganisationUuid() );
 					Person applicant = this.personManager.findOneByUuid( application.getContactPersonUuid() );
 					Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( application.getHolidayUuids() );
@@ -360,7 +367,7 @@ public class ApplicationManager {
 		
 		return application;
 	}
-	
+
 	protected boolean sendIntakeMessageToOrganisation( Application application,  List<Person> participants, Set<Holiday> holidays, Person applicant ) {
 		String message = message = this.spokesPerson.formatIntakeMessageOrganisation( application, participants, holidays, applicant );
 		if ( message != null ) {
@@ -401,4 +408,3 @@ public class ApplicationManager {
 		return false;
 	}
 }
- 

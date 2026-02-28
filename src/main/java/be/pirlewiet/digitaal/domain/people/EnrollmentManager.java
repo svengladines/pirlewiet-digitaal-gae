@@ -55,6 +55,9 @@ public class EnrollmentManager {
 	protected PersonManager personManager;
 
 	@Autowired
+	protected AddressManager addressManager;
+
+	@Autowired
 	SpokesPerson spokesPerson;
 	
 	@Autowired
@@ -254,7 +257,7 @@ public class EnrollmentManager {
 		
 	}
 	
-	public Enrollment updateStatus( String enrollmentUUid, EnrollmentStatus newStatus, boolean sendUpdate ) {
+	public Enrollment updateStatus( String enrollmentUUid, EnrollmentStatus newStatus, Application application, boolean sendUpdate ) {
 
 		logger.info("Enrollment [{}]; update status to [{}]", enrollmentUUid, newStatus.getValue());
 		
@@ -262,8 +265,9 @@ public class EnrollmentManager {
 		EnrollmentStatus oldStatus = toUpdate.getStatus();
 		toUpdate.setStatus( newStatus );
 		Enrollment updated = this.enrollmentRepository.saveAndFlush( toUpdate );
-		
-		Application application = this.applicationRepository.findByUuid(updated.getApplicationUuid());
+		if (application == null) {
+			application = this.applicationRepository.findByUuid(updated.getApplicationUuid());
+		}
 		Person contact = this.personManager.findOneByUuid( application.getContactPersonUuid() );
 		Set<Holiday> holidays = this.holidayManager.holidaysFromUUidString( updated.getHolidayUuid() );
 		Person participant = this.personManager.findOneByUuid( updated.getParticipantUuid() );
@@ -272,7 +276,7 @@ public class EnrollmentManager {
 			this.sendStatusUpdateToOrganisation( updated, participant, holidays, oldStatus, contact );
 		}
 
-		this.touch(updated);
+		this.touch(updated,application);
 		
 		return updated;
 		
@@ -310,30 +314,40 @@ public class EnrollmentManager {
 		return enrollment;
 	}
 
-	public Enrollment touch( Enrollment enrollment ) {
-		logger.info("enrollment [{}]; touch", enrollment.getUuid());
-		Application application = this.applicationRepository.findByUuid(enrollment.getApplicationUuid());
-		Person applicant = this.personManager.findOneByUuid(application.getContactPersonUuid());
-		Person participant = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
-		Organisation organisation = this.organisationManager.findOneByUuid(application.getOrganisationUuid());
-		Holiday holiday = this.holidayManager.findOneByUuid(enrollment.getHolidayUuid());
-		List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(application.getUuid());
-		qnaList.addAll(this.questionAndAnswerManager.findByEntity(enrollment.getUuid()));
-		ofNullable(participant.getExternalId()).ifPresent(id -> {
-			if (salesforceEnabled) {
-				logger.info("participant [{}], is contact [{}]; update...", participant.getUuid(), id);
-				Map<String, String> map = new  HashMap<>();
-				map.putAll(SalesForceMapper.mapApplication(application,applicant));
-				map.putAll(SalesForceMapper.mapEnrollment(enrollment,holiday));
-				map.putAll(SalesForceMapper.mapOrganisation(organisation));
-				map.putAll(map(qnaList));
-				SalesForceMapper.removeNulls(map);
-				logger.info("participant [{}], update contact [{}] with data [{}]", participant.getUuid(), id, map);
-				this.salesforceClient.updateContact(id, map).ifPresent(contact -> {
-					logger.info("person [{}]; saved SF contact with id {}", participant.getUuid(), id);
+	public Enrollment touch( Enrollment enrollment, Application application ) {
+
+		if (salesforceEnabled){
+			Person participant = this.personManager.findOneByUuid(enrollment.getParticipantUuid());
+			logger.info("enrollment [{}] - ({}) ; touch", enrollment.getUuid(), participant.getName());
+			Person applicant = this.personManager.findOneByUuid(application.getContactPersonUuid());
+			Address participantAddress = this.addressManager.findOneByUuid(enrollment.getAddressUuid());
+			Organisation organisation = this.organisationManager.findOneByUuid(application.getOrganisationUuid());
+			Holiday holiday = this.holidayManager.findOneByUuid(enrollment.getHolidayUuid());
+			List<QuestionAndAnswer> qnaList = this.questionAndAnswerManager.findByEntity(application.getUuid());
+			qnaList.addAll(this.questionAndAnswerManager.findByEntity(enrollment.getUuid()));
+			if (participant.getExternalId() == null){
+				// create it
+				logger.info("participant [{}]; is no SF contact yet, create", participant.getName());
+				this.salesforceClient.createContact(toContact(participant, participantAddress)).ifPresent(contact -> {
+					participant.setExternalId(contact.id());
+					logger.info("person [{}]; saved as new SF contact with id {}", participant.getName(), contact.id());
+					this.personManager.update(participant);
 				});
 			}
-		});
+			String salesForceId = participant.getExternalId();
+			logger.info("participant [{}], is SF contact [{}]; update...", participant.getName(), participant.getExternalId());
+			Map<String, String> map = new HashMap<>();
+			map.putAll(SalesForceMapper.mapApplication(application, applicant));
+			map.putAll(SalesForceMapper.mapEnrollment(enrollment, holiday));
+			map.putAll(SalesForceMapper.mapOrganisation(organisation));
+			map.putAll(map(qnaList));
+			SalesForceMapper.removeNulls(map);
+			logger.info("participant [{}], update contact [{}] with data [{}]", participant.getName(), salesForceId, map);
+			this.salesforceClient.updateContact(salesForceId, map).ifPresent(contact -> {
+				logger.info("person [{}]; saved SF contact with id {}", participant.getName(), salesForceId);
+			});
+		}
+
 		return enrollment;
 	}
 
@@ -341,15 +355,36 @@ public class EnrollmentManager {
 
 		String message = this.spokesPerson.formatEnrollmentStatusUpdateMessageOrganisation(enrollment,participant,holidays, oldStatus, applicant);
 		 if ( message != null ) {
-			 mailMan.deliver(applicant.getEmail(),"Uw inschrijving voor %s %s werd aangepast".formatted(participant.getGivenName(), participant.getFamilyName()), message );
+			 mailMan.deliver(applicant.getEmail(),"Uw inschrijving voor %s werd aangepast".formatted(participant.getName()), message);
 			 logger.info( "Enrollment [{}]; status update email sent to [{}]", enrollment.getUuid(), applicant.getEmail() );
 			 return true;
 		 }
+
 		 return false;
 	 }
 	 
 	protected String formatUpdateMessageToOrganisation( Enrollment enrollment, Person participant, Set<Holiday> holidays, EnrollmentStatus.Value oldStatus, Person recipient ) {
 		return "TODO";
+	}
+
+	protected static Contact toContact(Person person, Address address ) {
+		return new Contact()
+				// TODO: allow other types
+				.type("Deelnemer")
+				.firstName(person.getGivenName())
+				.lastName(person.getFamilyName())
+				.phone(person.getPhone())
+				.birthDate(Timing.date(person.getBirthDay(),"yyyy-MM-dd"))
+				.city(address.getCity())
+				.street("%s %s".formatted(address.getStreet(),address.getNumber()))
+				.postalCode(address.getZipCode())
+				.email(person.getEmail())
+				.gender(switch (person.getGender()) {
+					case Gender.M -> "Man";
+					case Gender.F -> "Vrouw";
+					default -> "X";
+				});
+
 	}
 
 }

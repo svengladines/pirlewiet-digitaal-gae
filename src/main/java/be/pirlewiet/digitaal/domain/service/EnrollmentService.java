@@ -600,8 +600,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			Address toCreateAddress = Address.from( enrollment.getAddress() );
 			Address createdAddress = this.addressManager.create( toCreateAddress );
 			toCreate.setAddressUuid( createdAddress.getUuid() );
-			this.personManager.touch(createdParticipant,createdAddress);
-			
+
 			Application application = this.applicationManager.findOne( enrollment.getApplicationUuid() );
 			
 			toCreate.setHolidayUuid( application.getHolidayUuids() );
@@ -656,7 +655,6 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			Address toUpdateAddress = this.addressManager.findOneByUuid( toUpdate.getAddressUuid() );
 			Address updateAddress = Address.from( enrollment.getAddress() );
 			Address updatedAddress = this.addressManager.update( toUpdateAddress, updateAddress );
-			this.personManager.touch(updatedParticipant,updatedAddress);
 			Enrollment updated = this.enrollmentManager.update( toUpdate, update );
 			EnrollmentDTO dto = EnrollmentDTO.from( updated );
 			result.setValue( Value.OK);
@@ -686,7 +684,7 @@ public class EnrollmentService extends be.pirlewiet.digitaal.domain.service.Serv
 			= new Result<EnrollmentDTO>();
 		
 		Enrollment updated
-			= this.enrollmentManager.updateStatus( uuid, enrollmentStatus, true );
+			= this.enrollmentManager.updateStatus( uuid, enrollmentStatus, null, true );
 		
 		result.setValue( Value.OK );
 		result.setObject( EnrollmentDTO.from( updated ) );
