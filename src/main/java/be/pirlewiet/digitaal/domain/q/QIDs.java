@@ -7,6 +7,7 @@ public class QIDs {
 	public static String QID_SHARED_BILL_DETAIL = "bill-detail";
 	public static String QID_SHARED_CONTACT = "contact";
 	public static String QID_SHARED_CONTACT_PHONE = "phone";
+	public static String QID_SHARED_CONTACT_VIA_ORGANISATION = "contact-via-organisation";
 	
 	public static String QID_MEDIC_MEDIC = "medic_name";
 	public static String QID_MEDIC_MEDIC_TEL = "medic_tel";

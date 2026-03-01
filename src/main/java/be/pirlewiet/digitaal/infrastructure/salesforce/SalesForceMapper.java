@@ -89,6 +89,12 @@ public class SalesForceMapper {
            case "PaasKIKA" -> "PaasKika";
            case "PaasGEZINS" -> "PaasGezins";
            case "VOV 1" -> "VOV1";
+           case "CAVASOL" -> "CAVASOL";
+           case "Gezins 1" -> "Gezins1";
+           case "Gezins 2" -> "Gezins2";
+           case "Kika" -> "Kika";
+           case "Tika" -> "Tika";
+           case "VOV 2" -> "VOV2";
            default -> null;
         });
         // map status

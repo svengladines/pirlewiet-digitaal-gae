@@ -24,6 +24,9 @@ public class ScenarioController {
 	@Autowired
 	ReadyToRockOneScenario readyToRockOneScenario;
 	*/
+
+	@Autowired
+	TouchMissingSalesforceContactsScenario touchMissingSalesforceContactsScenario;
 	
 	@Autowired
 	InjectProductionDataScenario injectProductionDataScenario;
@@ -74,35 +77,13 @@ public class ScenarioController {
 			}
 			else if ( "setMissingApplicantsToReferencedScenario".equals( id ) ) {
 				this.setMissingApplicantsToReferencedScenario.guard().execute();
-				new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
-			}
-		
-			/*
-			if ( "uuid".equals( id ) ) {
-				this.setOrganisationsUuidScenario.guard().execute();
 				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
-			else if ( "ready".equals( id ) ) {
-				// this.readyToRockScenario.guard().execute();
+
+			else if ( "touchMissingSalesforceContactsScenario".equals( id ) ) {
+				this.touchMissingSalesforceContactsScenario.guard().execute();
 				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
 			}
-			else if ( "rockme".equals( id ) ) {
-				this.readyToRockOneScenario.guard().execute( q );
-				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
-			}
-			else if ( "".equals( id ) ) {
-				this.readyToRockOneScenario.guard().execute( q );
-				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
-			}
-			else {
-				return new ResponseEntity<>( Boolean.FALSE, HttpStatus.NOT_FOUND );
-			}
-			if ( "qid".equals( id ) ) {
-				this.setQuestionsQIDScenario.guard().execute();
-				return new ResponseEntity<>( Boolean.TRUE, HttpStatus.OK );
-			}
-			*/
-			
 			return new ResponseEntity<>( Boolean.FALSE, HttpStatus.NOT_FOUND );
 			
 		}

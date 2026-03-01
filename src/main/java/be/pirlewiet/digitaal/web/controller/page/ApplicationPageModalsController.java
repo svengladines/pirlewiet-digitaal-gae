@@ -1,9 +1,6 @@
 package be.pirlewiet.digitaal.web.controller.page;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +76,7 @@ public class ApplicationPageModalsController {
 		
 		if ( "holidays".equals( q ) ) {
 			Result<List<Result<HolidayDTO>>> holidaysResult = this.holidayService.query( actor );
+			Collections.sort(holidaysResult.getObject(), Comparator.comparing(h -> h.getObject().getName()));
 			Set<String> resolved = this.holidayService.resolve(null,applicationResult.getObject().getHolidayUuids(),false,false, false, actor)
 					.getObject().stream().map(h -> h.getUuid()).collect(Collectors.toSet());
 			holidaysResult.getObject().stream().forEach(r -> {
